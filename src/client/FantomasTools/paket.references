@@ -1,0 +1,8 @@
+group Client
+FSharp.Core
+Fable.Elmish.React
+Fable.Elmish.Debugger
+Fable.Elmish.HMR
+Fable.Reactstrap
+Thoth.Json
+Fable.Fetch

@@ -1,0 +1,4 @@
+group Infrastructure
+
+Pulumi.FSharp
+Pulumi.Azure

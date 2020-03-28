@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>FantomasTools.Client</AssemblyName>
+    <RootNamespace>FantomasTools.Client</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="paket.references" />
+    <Compile Include="../../shared/TriviaShared.fs" />
+    <Compile Include="Editor.fs" />
+    <Compile Include="VersionBar.fs" />
+    <Compile Include="Loader.fs" />
+
+    <Compile Include="Trivia\Encoders.fs" />
+    <Compile Include="Trivia\Decoders.fs" />
+    <Compile Include="Trivia\Model.fs" />
+    <Compile Include="Trivia\State.fs" />
+    <Compile Include="Trivia\Menu.fs" />
+    <Compile Include="Trivia\ByTrivia.fs" />
+    <Compile Include="Trivia\ByTriviaNodes.fs" />
+    <Compile Include="Trivia\View.fs" />
+
+    <Folder Include="FantomasOnline" />
+    <Folder Include="FSharpTokens" />
+    <Folder Include="ASTViewer" />
+    
+    <Compile Include="Model.fs" />
+    <Compile Include="State.fs" />
+    <Compile Include="View.fs" />
+    <Compile Include="App.fs" />
+
+  </ItemGroup>
+  <Import Project="..\..\..\.paket\Paket.Restore.targets" />
+</Project>

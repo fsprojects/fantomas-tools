@@ -1,0 +1,53 @@
+version 5.242.2
+source https://api.nuget.org/v3/index.json
+storage: none
+framework: netcore3.1, netstandard2.0, netstandard2.1
+
+group Build
+
+source https://api.nuget.org/v3/index.json
+storage: none
+framework: netstandard2.0
+
+nuget FSharp.Core
+nuget Fake.Core.Target
+nuget Fake.IO.FileSystem
+nuget Fake.JavaScript.Yarn
+nuget Fake.DotNet.Cli
+nuget Fantomas 3.3.0
+nuget Fake.IO.Zip
+nuget Fake.Tools.Git
+
+group Infrastructure
+
+source https://api.nuget.org/v3/index.json
+storage: none
+framework: netcoreapp3.1
+
+nuget Pulumi.FSharp 1.11.1-preview
+nuget Pulumi.Azure 1.13.0-preview
+
+group Server
+
+source https://api.nuget.org/v3/index.json
+storage: none
+framework: netcore3.1
+
+nuget FSharp.Core
+nuget Microsoft.NET.Sdk.Functions
+nuget FSharp.Compiler.Service 34.1.1
+nuget Thoth.Json.Net
+
+group Client
+
+source https://api.nuget.org/v3/index.json
+storage: none
+framework: netstandard2.0
+
+nuget FSharp.Core
+nuget Fable.Elmish.React
+nuget Fable.Elmish.Debugger
+nuget Fable.Elmish.HMR
+nuget Fable.Reactstrap
+nuget Thoth.Json
+nuget Fable.Fetch
