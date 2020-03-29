@@ -51,3 +51,4 @@ nuget Fable.Elmish.HMR
 nuget Fable.Reactstrap
 nuget Thoth.Json
 nuget Fable.Fetch
+nuget Fable.Elmish.Browser

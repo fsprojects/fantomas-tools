@@ -1,6 +1,7 @@
 module FantomasTools.Client.App
 
 open Elmish
+open Elmish.Navigation
 open Elmish.React
 open FantomasTools.Client
 
@@ -15,5 +16,6 @@ Program.mkProgram State.init State.update View.view
 #if DEBUG
 |> Program.withConsoleTrace
 #endif
+|> Program.toNavigable FantomasTools.Client.Navigation.parser FantomasTools.Client.Navigation.urlUpdate
 |> Program.withReactBatched "elmish-app"
 |> Program.run

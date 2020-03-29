@@ -1,6 +1,7 @@
 module FantomasTools.Client.Model
 
 type ActiveTab =
+    | HomeTab
     | TokensTab
     | ASTTab
     | TriviaTab

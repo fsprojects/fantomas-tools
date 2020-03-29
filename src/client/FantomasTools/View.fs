@@ -7,6 +7,7 @@ open Fable.React.Props
 open Reactstrap
 open FantomasTools.Client
 open FantomasTools.Client.Model
+open Reactstrap
 
 let private navigation =
     let title = sprintf "Fantomas tools"
@@ -36,9 +37,18 @@ let private editor model dispatch =
                   [ Editor.OnChange(UpdateSourceCode >> dispatch)
                     Editor.Value model.SourceCode ] ] ]
 
+let private homeTab =
+    Jumbotron.jumbotron [] [
+        h1 [ ClassName "display-3" ] [str "Fantomas tool"]
+        p [ ClassName "lead" ] [str "Welcome at the Fantomas Tools!"]
+        p [] [str "if you plan on using these tools extensively, consider cloning the repository and run everything locally."]
+    ]
+
 let private tabs model dispatch =
     let activeTab =
         match model.ActiveTab with
+        | HomeTab ->
+            homeTab
         | TriviaTab ->
             let triviaDispatch tMsg = dispatch (TriviaMsg tMsg)
             FantomasTools.Client.Trivia.View.view model.TriviaModel triviaDispatch
@@ -57,6 +67,7 @@ let private tabs model dispatch =
 
     let navItems =
         [
+            navItem HomeTab "Home"
             navItem TokensTab "FSharp Tokens"
             navItem ASTTab "AST"
             navItem TriviaTab "Trivia"
