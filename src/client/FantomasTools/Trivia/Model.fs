@@ -19,6 +19,11 @@ type Model =
       IsFsi: bool
       KeepNewlineAfter: bool }
 
+type UrlModel =
+    { IsFsi: bool
+      KeepNewlineAfter: bool
+      Defines: string }
+
 type Msg =
     | SelectTab of ActiveTab
     | GetTrivia

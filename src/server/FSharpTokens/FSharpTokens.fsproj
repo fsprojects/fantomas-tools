@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AzureFunctionsVersion>v3</AzureFunctionsVersion>
+    <AssemblyName>FSharpTokens.Server</AssemblyName>
+    <RootNamespace>FSharpTokens.Server</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Update="host.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="local.settings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="../../../.deps/fantomas/src/Fantomas/SourceOrigin.fs" />
+    <Compile Include="../../../.deps/fantomas/src/Fantomas/Version.fs" />
+    <Compile Include="../../../.deps/fantomas/src/Fantomas/Dbg.fs" />
+    <Compile Include="../../../.deps/fantomas/src/Fantomas/Utils.fs" />
+    <Compile Include="../../../.deps/fantomas/src/Fantomas/FormatConfig.fs" />
+    <Compile Include="../../../.deps/fantomas/src/Fantomas/TokenParserBoolExpr.fs" />
+    <Compile Include="../../../.deps/fantomas/src/Fantomas/TriviaTypes.fs" />
+    <Compile Include="../../../.deps/fantomas/src/Fantomas/TokenParser.fs" />
+    <Compile Include="../../shared/FSharpTokensShared.fs" />
+    <Compile Include="Decoders.fs" />
+    <Compile Include="Encoders.fs" />
+    <Compile Include="GetTokens.fs" />
+    <None Include="paket.references" />
+  </ItemGroup>
+  <Import Project="..\..\..\.paket\Paket.Restore.targets" />
+</Project>

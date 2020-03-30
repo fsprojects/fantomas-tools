@@ -14,7 +14,6 @@ open Thoth.Json.Net
 open TriviaViewer.Shared
 open TriviaViewer.Server
 
-
 module GetTrivia =
 
     let private sendJson json =

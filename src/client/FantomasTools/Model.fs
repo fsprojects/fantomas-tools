@@ -10,9 +10,11 @@ type ActiveTab =
 type Model =
     { ActiveTab: ActiveTab
       SourceCode: string
-      TriviaModel : FantomasTools.Client.Trivia.Model.Model }
+      TriviaModel : FantomasTools.Client.Trivia.Model.Model
+      FSharpTokensModel : FantomasTools.Client.FSharpTokens.Model.Model }
 
 type Msg =
     | SelectTab of ActiveTab
     | UpdateSourceCode of string
     | TriviaMsg of FantomasTools.Client.Trivia.Model.Msg
+    | FSharpTokensMsg of FantomasTools.Client.FSharpTokens.Model.Msg

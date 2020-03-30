@@ -2,6 +2,7 @@ module FantomasTools.Client.Trivia.Decoders
 
 open Thoth.Json
 open TriviaViewer.Shared
+open FantomasTools.Client.Trivia.Model
 
 let private decodeRange =
     Decode.object (fun get ->
@@ -35,19 +36,19 @@ let private decodeParseResult: Decoder<ParseResult> =
 let decodeResult json =
     Decode.fromString decodeParseResult json
 
-let decodeParseRequest: Decoder<ParseRequest> =
-    Decode.object (fun get ->
-        let source =
-            get.Optional.Field "sourceCode" Decode.string |> Option.defaultValue System.String.Empty
-        let defines =
-            get.Optional.Field "defines" (Decode.list Decode.string) |> Option.defaultValue []
-        let fileName =
-            get.Optional.Field "fileName" (Decode.string) |> Option.defaultValue "script.fsx"
-        let keepNewlineAfter =
-            get.Optional.Field "keepNewlineAfter" (Decode.bool) |> Option.defaultValue false
-        { SourceCode = source
-          Defines = defines
-          FileName = fileName
-          KeepNewlineAfter = keepNewlineAfter })
-
 let decodeVersion json = Decode.fromString Decode.string json
+
+let decodeUrlModel (initialModel:Model) : Decoder<Model> =
+    Decode.object (fun get ->
+        let defines =
+            get.Optional.Field "defines" (Decode.string) |> Option.defaultValue ""
+        let isFsi =
+            get.Optional.Field "isFsi" (Decode.bool) |> Option.defaultValue initialModel.IsFsi
+        let keepNewlineAfter =
+            get.Optional.Field "keepNewlineAfter" (Decode.bool) |> Option.defaultValue initialModel.KeepNewlineAfter
+
+        { initialModel with
+            Defines = defines
+            IsFsi = isFsi
+            KeepNewlineAfter = keepNewlineAfter }
+    )

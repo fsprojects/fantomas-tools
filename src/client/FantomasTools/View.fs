@@ -4,6 +4,7 @@ open Browser.Types
 open Fable.Core.JsInterop
 open Fable.React
 open Fable.React.Props
+open FantomasTools.Client
 open Reactstrap
 open FantomasTools.Client
 open FantomasTools.Client.Model
@@ -52,6 +53,9 @@ let private tabs model dispatch =
         | TriviaTab ->
             let triviaDispatch tMsg = dispatch (TriviaMsg tMsg)
             FantomasTools.Client.Trivia.View.view model.TriviaModel triviaDispatch
+        | TokensTab ->
+            let tokensDispatch tMsg  =dispatch (FSharpTokensMsg tMsg)
+            FantomasTools.Client.FSharpTokens.View.view model.FSharpTokensModel tokensDispatch
         | _ ->
             str "other tab not present yet"
 
@@ -62,7 +66,7 @@ let private tabs model dispatch =
     let navItem tab label =
         let isActive = model.ActiveTab = tab
         NavItem.navItem [ NavItem.Custom [ OnClick (onNavItemClick tab) ] ] [
-            NavLink.navLink [ NavLink.Custom [ Href "#"]; NavLink.Active isActive ] [ str label ]
+            NavLink.navLink [ NavLink.Custom [ Href (Navigation.toHash tab)]; NavLink.Active isActive ] [ str label ]
         ]
 
     let navItems =

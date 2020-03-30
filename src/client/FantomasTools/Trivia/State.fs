@@ -1,15 +1,15 @@
 module FantomasTools.Client.Trivia.State
 
 open System
-open Browser
-open Browser.Types
 open Fable.Core.JsInterop
+open FantomasTools.Client
 open Fetch
 open Elmish
 open TriviaViewer.Shared
 open FantomasTools.Client.Trivia.Model
 open FantomasTools.Client.Trivia.Encoders
 open FantomasTools.Client.Trivia.Decoders
+open Thoth.Json
 
 //[<Emit("process.env.BACKEND")>]
 //let private backend: string = jsNative
@@ -50,40 +50,28 @@ let private initialModel : Model =
       Exception = None
       IsLoading = true }
 
-let init _ =
-    let model = initialModel
-    let cmd =
-//        let parseCmd =
-//            match parseRequest with
-//            | Some pr -> Cmd.OfPromise.either fetchTrivia pr TriviaReceived NetworkError
-//            | None -> Cmd.none
-
-        let versionCmd = Cmd.OfPromise.either fetchFSCVersion () FSCVersionReceived NetworkError
-        Cmd.batch [ versionCmd ] //; parseCmd ]
-
-    model, cmd
-
-let private selectRange (range: Range) _ =
-    let data =
-        jsOptions<CustomEventInit> (fun o ->
-            o.detail <-
-                {| startColumn = range.StartColumn + 1
-                   startLineNumber = range.StartLine
-                   endColumn = range.EndColumn + 1
-                   endLineNumber = range.EndLine |})
-
-    let event = CustomEvent.Create("trivia_select_range", data)
-    Dom.window.dispatchEvent (event) |> ignore
-
 let private splitDefines (value: string) =
     value.Split([| ' '; ';' |], StringSplitOptions.RemoveEmptyEntries) |> List.ofArray
 
 let private modelToParseRequest sourceCode (model: Model) =
     { SourceCode = sourceCode
       Defines = splitDefines model.Defines
-      FileName =
-          if model.IsFsi then "script.fsi" else "script.fsx"
+      FileName = if model.IsFsi then "script.fsi" else "script.fsx"
       KeepNewlineAfter = model.KeepNewlineAfter }
+
+let init code =
+    let model = UrlTools.restoreModelFromUrl (decodeUrlModel initialModel) initialModel
+
+    let cmd =
+        let fetchCmd = if String.IsNullOrWhiteSpace code then Cmd.none else Cmd.ofMsg GetTrivia
+        let versionCmd = Cmd.OfPromise.either fetchFSCVersion () FSCVersionReceived NetworkError
+        Cmd.batch [ versionCmd; fetchCmd ]
+
+    model, cmd
+
+let private updateUrl code (model: Model) _ =
+    let json = Encode.toString 2 (encodeUrlModel code model)
+    UrlTools.updateUrlWithData json
 
 let update code msg model =
     match msg with
@@ -95,8 +83,7 @@ let update code msg model =
         let cmd =
             Cmd.batch
                 [ Cmd.OfPromise.either fetchTrivia parseRequest TriviaReceived NetworkError
-                  ]
-                  // Cmd.ofSub (updateUrl model) ]
+                  Cmd.ofSub (updateUrl code model) ]
 
         { model with IsLoading = true }, cmd
     | TriviaReceived result ->
@@ -122,7 +109,7 @@ let update code msg model =
 
         let cmd =
             range
-            |> Option.map (fun r -> Cmd.ofSub (selectRange r))
+            |> Option.map (fun r -> Cmd.ofSub (FantomasTools.Client.Editor.selectRange r.StartLine r.StartColumn r.EndLine r.EndColumn))
             |> Option.defaultValue Cmd.none
 
         model, cmd

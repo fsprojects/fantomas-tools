@@ -8,21 +8,30 @@
   <ItemGroup>
     <None Include="paket.references" />
     <Compile Include="../../shared/TriviaShared.fs" />
+    <Compile Include="../../shared/FSharpTokensShared.fs" />
     <Compile Include="Editor.fs" />
     <Compile Include="VersionBar.fs" />
     <Compile Include="Loader.fs" />
+    <Compile Include="UrlTools.fs" />
 
+    <Compile Include="Trivia\Model.fs" />
     <Compile Include="Trivia\Encoders.fs" />
     <Compile Include="Trivia\Decoders.fs" />
-    <Compile Include="Trivia\Model.fs" />
     <Compile Include="Trivia\State.fs" />
     <Compile Include="Trivia\Menu.fs" />
     <Compile Include="Trivia\ByTrivia.fs" />
     <Compile Include="Trivia\ByTriviaNodes.fs" />
     <Compile Include="Trivia\View.fs" />
 
+    <Compile Include="FSharpTokens\Model.fs" />
+    <Compile Include="FSharpTokens\Encoders.fs" />
+    <Compile Include="FSharpTokens\Decoders.fs" />
+    <Compile Include="FSharpTokens\State.fs" />
+    <Compile Include="FSharpTokens\View.fs" />
+
+    
     <Folder Include="FantomasOnline" />
-    <Folder Include="FSharpTokens" />
+
     <Folder Include="ASTViewer" />
     
     <Compile Include="Model.fs" />
@@ -30,7 +39,7 @@
     <Compile Include="State.fs" />
     <Compile Include="View.fs" />
     <Compile Include="App.fs" />
-
+    
   </ItemGroup>
   <Import Project="..\..\..\.paket\Paket.Restore.targets" />
 </Project>
