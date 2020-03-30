@@ -19,7 +19,16 @@ let parser : (Browser.Types.Location -> ActiveTab option) = parseHash route
 let urlUpdate (result:Option<ActiveTab>) model =
     match result with
     | Some tab ->
-        { model with ActiveTab = tab }, Cmd.none
+        let cmd =
+            if not (System.String.IsNullOrWhiteSpace model.SourceCode) then
+                match tab with
+                | TriviaTab -> Cmd.ofMsg (FantomasTools.Client.Trivia.Model.GetTrivia) |> Cmd.map Msg.TriviaMsg
+                | TokensTab -> Cmd.ofMsg (FantomasTools.Client.FSharpTokens.Model.GetTokens) |> Cmd.map Msg.FSharpTokensMsg
+                | _ -> Cmd.none
+            else
+                Cmd.none
+
+        { model with ActiveTab = tab }, cmd
     | None ->
         ( { model with ActiveTab = HomeTab }, Navigation.modifyUrl "#" ) // no matching route - go home
 
