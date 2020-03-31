@@ -5,8 +5,6 @@ open Fable.Core.JsInterop
 open Fable.React
 open Fable.React.Props
 open FantomasTools.Client
-open Reactstrap
-open FantomasTools.Client
 open FantomasTools.Client.Model
 open Reactstrap
 
@@ -39,61 +37,57 @@ let private editor model dispatch =
                     Editor.Value model.SourceCode ] ] ]
 
 let private homeTab =
-    Jumbotron.jumbotron [] [
-        h1 [ ClassName "display-3" ] [str "Fantomas tool"]
-        p [ ClassName "lead" ] [str "Welcome at the Fantomas Tools!"]
-        p [] [str "if you plan on using these tools extensively, consider cloning the repository and run everything locally."]
-    ]
+    Jumbotron.jumbotron []
+        [ h1 [ ClassName "display-3" ] [ str "Fantomas tool" ]
+          p [ ClassName "lead" ] [ str "Welcome at the Fantomas Tools!" ]
+          p []
+              [ str
+                  "if you plan on using these tools extensively, consider cloning the repository and run everything locally." ] ]
 
 let private tabs model dispatch =
     let activeTab =
         match model.ActiveTab with
-        | HomeTab ->
-            homeTab
+        | HomeTab -> homeTab
         | TriviaTab ->
             let triviaDispatch tMsg = dispatch (TriviaMsg tMsg)
             FantomasTools.Client.Trivia.View.view model.TriviaModel triviaDispatch
         | TokensTab ->
-            let tokensDispatch tMsg  =dispatch (FSharpTokensMsg tMsg)
+            let tokensDispatch tMsg = dispatch (FSharpTokensMsg tMsg)
             FantomasTools.Client.FSharpTokens.View.view model.FSharpTokensModel tokensDispatch
-        | _ ->
-            str "other tab not present yet"
+        | ASTTab ->
+            let astDispatch aMsg = dispatch (ASTMsg aMsg)
+            FantomasTools.Client.ASTViewer.View.view model.ASTModel astDispatch
+        | _ -> str "other tab not present yet"
 
-    let onNavItemClick tab (ev:Event) =
+    let onNavItemClick tab (ev: Event) =
         ev.preventDefault()
         dispatch (SelectTab tab)
 
     let navItem tab label =
         let isActive = model.ActiveTab = tab
-        NavItem.navItem [ NavItem.Custom [ OnClick (onNavItemClick tab) ] ] [
-            NavLink.navLink [ NavLink.Custom [ Href (Navigation.toHash tab)]; NavLink.Active isActive ] [ str label ]
-        ]
+        NavItem.navItem [ NavItem.Custom [ OnClick(onNavItemClick tab); Key label ] ]
+            [ NavLink.navLink
+                [ NavLink.Custom [ Href(Navigation.toHash tab) ]
+                  NavLink.Active isActive ] [ str label ] ]
 
     let navItems =
-        [
-            navItem HomeTab "Home"
-            navItem TokensTab "FSharp Tokens"
-            navItem ASTTab "AST"
-            navItem TriviaTab "Trivia"
-            navItem FantomasTab "Fantomas"
-        ]
+        [ navItem HomeTab "Home"
+          navItem TokensTab "FSharp Tokens"
+          navItem ASTTab "AST"
+          navItem TriviaTab "Trivia"
+          navItem FantomasTab "Fantomas" ]
 
-    Col.col [ Col.Xs(Col.mkCol !^8) ] [
-        Nav.nav
+    Col.col [ Col.Xs(Col.mkCol !^8) ]
+        [ Nav.nav
             [ Nav.Tabs true
               Nav.Custom [ ClassName "" ] ] [ ofList navItems ]
-        div [ Id "tab-content" ] [ activeTab ]
-    ]
+          div [ Id "tab-content" ] [ activeTab ] ]
 
 
 let view model dispatch =
-
-
-
     div [ ClassName "d-flex flex-column h-100" ]
         [ navigation
           main [ ClassName "flex-grow-1" ]
               [ Row.row [ Row.Custom [ ClassName "h-100 no-gutters" ] ]
                     [ editor model dispatch
                       tabs model dispatch ] ] ]
-

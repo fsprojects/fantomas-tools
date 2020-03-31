@@ -31,19 +31,22 @@ let init _ =
 
     let (triviaModel, triviaCmd) = FantomasTools.Client.Trivia.State.init sourceCode
     let (fsharpTokensModel, fsharpTokensCmd) = FantomasTools.Client.FSharpTokens.State.init sourceCode
+    let (astModel, astCmd) = FantomasTools.Client.ASTViewer.State.init sourceCode
 
     let cmd =
         Cmd.batch [
             redirectCmd
             Cmd.map TriviaMsg triviaCmd
             Cmd.map FSharpTokensMsg fsharpTokensCmd
+            Cmd.map ASTMsg astCmd
         ]
 
     let model =
         { ActiveTab = currentTab
           SourceCode = sourceCode
           TriviaModel = triviaModel
-          FSharpTokensModel = fsharpTokensModel }
+          FSharpTokensModel = fsharpTokensModel
+          ASTModel = astModel }
 
     model, cmd
 
@@ -59,5 +62,8 @@ let update msg model =
     | FSharpTokensMsg ftMsg ->
         let (fModel, fCmd) = FantomasTools.Client.FSharpTokens.State.update model.SourceCode ftMsg model.FSharpTokensModel
         { model with FSharpTokensModel = fModel }, Cmd.map FSharpTokensMsg fCmd
+    | ASTMsg aMsg ->
+        let (aModel, aCmd) = FantomasTools.Client.ASTViewer.State.update model.SourceCode aMsg model.ASTModel
+        { model with ASTModel = aModel }, Cmd.map ASTMsg aCmd
     | _ ->
         failwith "not implemented"

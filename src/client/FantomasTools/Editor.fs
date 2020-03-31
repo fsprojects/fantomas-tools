@@ -20,6 +20,9 @@ type EditorProp =
 let inline editor (props: EditorProp list): ReactElement =
     ofImport "default" "../js/Editor.js" (keyValueList CaseRules.LowerFirst props) []
 
+let inline astEditor (props: EditorProp list): ReactElement =
+    ofImport "default" "../../js/Editor.js" (keyValueList CaseRules.LowerFirst props) []
+
 let selectRange startLine startColumn endLine endColumn _ =
     let data =
         jsOptions<CustomEventInit> (fun o ->
