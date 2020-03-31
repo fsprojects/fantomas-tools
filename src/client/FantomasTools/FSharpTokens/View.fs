@@ -96,7 +96,10 @@ let private settings model dispatch =
               [ Input.input
                   [ Input.Custom
                       [ Placeholder "Enter your defines separated with a space"
-                        OnChange (fun ev -> ev.Value |> Msg.DefinesUpdated |> dispatch)
+                        OnChange(fun ev ->
+                            ev.Value
+                            |> Msg.DefinesUpdated
+                            |> dispatch)
                         DefaultValue model.Defines ] ] ]
           Button.button
               [ Button.Color Primary
@@ -105,8 +108,14 @@ let private settings model dispatch =
                 str "Get tokens" ] ]
 
 let view model dispatch =
+    let inner =
+        if model.IsLoading then
+            [ FantomasTools.Client.Loader.loader ]
+        else
+            [ tokens model dispatch
+              details model dispatch ]
+
     fragment []
-        [ tokens model dispatch
-          details model dispatch
-          FantomasTools.Client.VersionBar.versionBar (sprintf "FSC - %s" model.Version)
-          settings model dispatch ]
+        [ yield! inner
+          yield FantomasTools.Client.VersionBar.versionBar (sprintf "FSC - %s" model.Version)
+          yield settings model dispatch ]
