@@ -24,7 +24,7 @@ let rec private nodeDecoder: Decoder<Node> =
         { Type = get.Required.Field "type" Decode.string
           Range = get.Optional.Field "range" rangeDecoder
           Properties = get.Required.Field "properties" decodeKeyValue
-          Childs = get.Required.Field "childs" (Decode.list nodeDecoder) })
+          Childs = get.Required.Field "childs" (Decode.array nodeDecoder) })
 
 
 let responseDecoder: Decoder<Dto> =

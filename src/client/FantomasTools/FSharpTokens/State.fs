@@ -11,16 +11,12 @@ open FantomasTools.Client.FSharpTokens.Decoders
 open FantomasTools.Client.FSharpTokens.Encoders
 open FantomasTools.Client
 
-let private backendRoot =
-#if DEBUG
-    "http://localhost:4563"
-#else
-    "https://azfun-fsharptokens.azurewebsites.net"
-#endif
+[<Emit("process.env.FSHARP_TOKENS_BACKEND")>]
+let private backend: string = jsNative
 
 
 let private getTokens (request: FSharpTokens.Shared.GetTokensRequest): JS.Promise<string> =
-    let url = sprintf "%s/%s" backendRoot "api/get-tokens"
+    let url = sprintf "%s/%s" backend "api/get-tokens"
     let json = Encode.toString 4 (encodeGetTokensRequest request)
 
     fetch url
@@ -29,7 +25,7 @@ let private getTokens (request: FSharpTokens.Shared.GetTokensRequest): JS.Promis
     |> Promise.bind (fun res -> res.text())
 
 let private getVersion() =
-    let url = sprintf "%s/%s" backendRoot "api/version"
+    let url = sprintf "%s/%s" backend "api/version"
     Fetch.fetch url []
     |> Promise.bind (fun res -> res.text())
     |> Promise.map (fun (json: string) ->
@@ -107,7 +103,12 @@ let update code msg model =
                     |> Array.filter (fun t -> t.LineNumber = activeLine)
                     |> Array.item tokenIndex
                     |> fun t -> t.TokenInfo
-                Cmd.ofSub (FantomasTools.Client.Editor.selectRange activeLine token.LeftColumn activeLine token.RightColumn))
+                let range: FantomasTools.Client.Editor.HighLightRange =
+                    { StartLine = activeLine
+                      StartColumn = token.LeftColumn
+                      EndLine = activeLine
+                      EndColumn = token.RightColumn }
+                Cmd.ofSub (FantomasTools.Client.Editor.selectRange range))
             |> Option.defaultValue Cmd.none
         let scrollCmd = Cmd.OfFunc.result (PlayScroll tokenIndex)
 

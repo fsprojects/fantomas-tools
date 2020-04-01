@@ -14,7 +14,7 @@ type Node =
     { Type: string
       Range: Range option
       Properties: obj
-      Childs: Node list }
+      Childs: Node array }
 
 type Dto =
     { Node: Node

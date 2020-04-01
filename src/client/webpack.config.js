@@ -53,9 +53,14 @@ const commonPlugins = [
   // ensure that we get a production build of any dependencies
   // this is primarily for React, where this removes 179KB from the bundle
   new webpack.DefinePlugin({
-    "process.env.NODE_ENV": isProduction ? '"production"' : '"development"',
-    "process.env.BACKEND": `"${process.env.BACKEND}"`
-  })
+    "process.env.NODE_ENV": isProduction ? '"production"' : '"development"'
+  }),
+  // https://webpack.js.org/plugins/environment-plugin/
+  new webpack.EnvironmentPlugin([
+    "FSHARP_TOKENS_BACKEND",
+    "AST_BACKEND",
+    "TRIVIA_BACKEND"
+  ])
 ];
 
 module.exports = {
@@ -85,8 +90,8 @@ module.exports = {
   //      - HotModuleReplacementPlugin: Enables hot reloading when code changes without refreshing
   plugins: isProduction
     ? commonPlugins.concat([
-      new CopyWebpackPlugin([{ from: resolve("./public") }])
-    ])
+        new CopyWebpackPlugin([{ from: resolve("./public") }])
+      ])
     : commonPlugins.concat([new webpack.HotModuleReplacementPlugin()]),
   // Configuration for webpack-dev-server
   devServer: {

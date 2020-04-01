@@ -1,6 +1,7 @@
 module FantomasTools.Client.Trivia.State
 
 open System
+open Fable.Core
 open Fable.Core.JsInterop
 open FantomasTools.Client
 open Fetch
@@ -11,10 +12,10 @@ open FantomasTools.Client.Trivia.Encoders
 open FantomasTools.Client.Trivia.Decoders
 open Thoth.Json
 
-//[<Emit("process.env.BACKEND")>]
-//let private backend: string = jsNative
+[<Emit("process.env.TRIVIA_BACKEND")>]
+let private backend: string = jsNative
 
-let private backend: string = "http://localhost:7896"
+// let private backend: string = "http://localhost:7896"
 
 let private fetchTrivia (payload: ParseRequest) =
     let url = sprintf "%s/api/get-trivia" backend
@@ -109,7 +110,13 @@ let update code msg model =
 
         let cmd =
             range
-            |> Option.map (fun r -> Cmd.ofSub (FantomasTools.Client.Editor.selectRange r.StartLine r.StartColumn r.EndLine r.EndColumn))
+            |> Option.map (fun r ->
+                let highLightRange: FantomasTools.Client.Editor.HighLightRange =
+                    { StartLine = r.StartLine
+                      StartColumn = r.StartColumn
+                      EndLine = r.EndLine
+                      EndColumn = r.EndColumn }
+                Cmd.ofSub (FantomasTools.Client.Editor.selectRange highLightRange))
             |> Option.defaultValue Cmd.none
 
         model, cmd

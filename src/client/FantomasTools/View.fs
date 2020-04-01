@@ -77,7 +77,7 @@ let private tabs model dispatch =
           navItem TriviaTab "Trivia"
           navItem FantomasTab "Fantomas" ]
 
-    Col.col [ Col.Xs(Col.mkCol !^8) ]
+    div [ ClassName "col-8 h-100 d-flex flex-column" ]
         [ Nav.nav
             [ Nav.Tabs true
               Nav.Custom [ ClassName "" ] ] [ ofList navItems ]

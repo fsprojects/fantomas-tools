@@ -1,10 +1,12 @@
 module FantomasTools.Client.ASTViewer.View
 
+open Fable.Core.JsInterop
 open Fable.React
 open Fable.React.Props
 open FantomasTools.Client.ASTViewer.Model
 open FantomasTools.Client.Editor
 open Reactstrap
+open Thoth.Json
 
 let private isJsonView =
     function
@@ -40,121 +42,120 @@ let private results model dispatch =
                 [ EditorProp.Language "fsharp"
                   EditorProp.IsReadOnly true
                   EditorProp.Value(Fable.Core.JS.JSON.stringify (parsed.Node, space = 4)) ]
-    //        | JsonViewer ->
-    //            Control.div [Control.CustomClass "viewer"] [
-    //                JsonViewer.viewer [ JsonViewer.Src (Fable.Core.JS.JSON.parse parsed.NodeJson)
-    //                                    JsonViewer.Name null
-    //                                    JsonViewer.DisplayDataTypes false
-    //                                    JsonViewer.DisplayObjectSize false
-    //                                    JsonViewer.IndentWidth 2
-    //                                    JsonViewer.OnLookup (fun (o) ->
-    //                                        editor |> Option.iter (fun editor ->
-    //                                            let range = createEmpty<Monaco.IRange>
-    //                                            range.endColumn <- !!(o.value?EndCol) + 1
-    //                                            range.endLineNumber <- !!(o.value?EndLine)
-    //                                            range.startColumn <- !!(o.value?StartCol) + 1
-    //                                            range.startLineNumber <- !!(o.value?StartLine)
-    //                                            editor.setSelection(range)
-    //                                            editor.revealRangeInCenter(range, ScrollType.Smooth)
-    //                                        )
-    //                                    )
-    //                                    JsonViewer.ShouldLookup(fun (o) ->o.key = "Range")
-    //                                    JsonViewer.ShouldCollapse (fun x -> x?name = "Range")]
-    //            ]
-    //        | Graph ->
-    //           let node = parsed.NodeJson |> Thoth.Json.Decode.Auto.fromString<Shared.Node> |> Result.toOption |> Option.get
-    //           let rec propertiesToHtml inArray p =
-    //               match p with
-    //               | JNumber x -> sprintf "%f" x
-    //               | JString x -> x
-    //               | JBool x -> sprintf "%b" x
-    //               | JNull -> "null"
-    //               | JArray [JString k; v] when inArray ->
-    //                   propertiesToHtml false (JObject (Map.ofSeq[k,v]))
-    //               | JArray xs -> xs |> Seq.map (propertiesToHtml true >> sprintf "<li>%s</li>") |> String.concat "" |> sprintf "<ul>%s</ul>"
-    //               | JObject o ->
-    //                   o |> Map.filter (fun k _ -> not (k.ToLower().Contains "range")) |> Map.toSeq
-    //                   |> Seq.map (fun (k, v) -> sprintf "<li><b>%s: </b>%s</li>" k (propertiesToHtml false v))
-    //                   |> String.concat "" |> sprintf "<ul>%s</ul>"
-    //
-    //           let simpleType (t: string) = t.Split([|'.'|]) |> Seq.last
-    //           let rec buildTree isRoot n = {
-    //               Label = simpleType n.Type
-    //               Color = if isRoot then Some "lime" else None
-    //               Tooltip =
-    //                   Thoth.Json.Encode.Auto.toString(0, n.Properties) |> SimpleJson.parse
-    //                   |> fun x -> JArray[JString (sprintf "<b><i>%s</i></b>" n.Type); x] |> propertiesToHtml false
-    //               Childrens = List.map (buildTree false) n.Childs
-    //               Original = n
-    //               }
-    //           let buildTree n = buildTree true n
-    //           let limitTree = memoize2 <| fun allowedSet n ->
-    //               let rec f n =
-    //                   let childs = n.Childrens |> List.filter (fun c -> List.contains c allowedSet)
-    //                   let limit = not(List.isEmpty n.Childrens) && List.isEmpty childs
-    //                   { n with Childrens = childs |> List.map f
-    //                            Color = if limit then Some "cyan" else None}
-    //               f n
-    //           let limitTreeByNodes = memoize2 <| fun maxNodes n ->
-    //               let q = Queue.empty
-    //               let rec loop q acc i =
-    //                    if i >= maxNodes then acc else
-    //                    match Queue.dequeue q with
-    //                    | None -> acc
-    //                    | Some (x, q2) ->
-    //                        let q3 = x.Childrens |> List.fold Queue.enqueue q2
-    //                        loop q3 (x::acc) (i+1)
-    //               let allowedNodes = loop (Queue.enqueue Queue.empty n) [] 1
-    //               limitTree allowedNodes n
-    //
-    //           let rec childsRange = memoize <| fun n ->
-    //               match n.Range with
-    //               | Some r -> Some r
-    //               | None ->
-    //               let rs = n.Childs |> Seq.choose childsRange
-    //               if Seq.isEmpty rs then None else Some (rs |> Seq.reduce (fun r1 r2 -> {
-    //                   StartLine = min r1.StartLine r2.StartLine
-    //                   StartCol = min r1.StartCol r2.StartCol
-    //                   EndLine = max r1.EndLine r2.EndLine
-    //                   EndCol = max r1.EndCol r2.EndCol
-    //                   }))
-    //           let onHover (n: Node) =
-    //               //Browser.Dom.console.log("hoverNode Event", n, editor)
-    //               editor |> Option.iter (fun editor ->
-    //                   let empty = createEmpty<Monaco.IRange>
-    //                   let range = empty
-    //                   n |> childsRange |> Option.iter (fun r ->
-    //                       range.endColumn <- r.EndCol + 1
-    //                       range.endLineNumber <- r.EndLine
-    //                       range.startColumn <- r.StartCol + 1
-    //                       range.startLineNumber <- r.StartLine
-    //                       //Browser.Dom.console.log("set range", range)
-    //                       editor.setSelection(range)
-    //                       editor.revealRangeInCenter(range, ScrollType.Smooth))
-    //               )
-    //           let onSelect (n: Node) = dispatch (Graph <| GraphMsg.SetRoot n)
-    //
-    //           let root = model.Graph.RootsPath |> List.tryHead |> Option.defaultValue node
-    //           let graphButtons =
-    //               Columns.columns [ ]
-    //                   [ Column.column [ Column.Width(Screen.All, Column.Is3) ]
-    //                       [if not model.Graph.RootsPath.IsEmpty then
-    //                           yield button [Button.Color IsPrimary; Button.Size IsSmall] "Back" (fun _ -> dispatch (Graph <| GraphMsg.RootBack))]
-    //                     Column.column [ Column.Width(Screen.All, Column.Is3) ]
-    //                       [button [Button.Color IsDark; Button.Size IsSmall] "Free view" (fun _ -> dispatch (Graph <| GraphMsg.SetOptions {model.Graph.Options with Layout = Graph.Free}))]
-    //                     Column.column [ Column.Width(Screen.All, Column.Is3) ]
-    //                       [button [Button.Color IsDark; Button.Size IsSmall] "Left-Right view" (fun _ -> dispatch (Graph <| GraphMsg.SetOptions {model.Graph.Options with Layout = Graph.HierarchicalLeftRight}))]
-    //                     Column.column [ Column.Width(Screen.All, Column.Is3) ]
-    //                       [button [Button.Color IsDark; Button.Size IsSmall] "Upper-Down view" (fun _ -> dispatch (Graph <| GraphMsg.SetOptions {model.Graph.Options with Layout = Graph.HierarchicalUpDown}))]
-    //                   ]
-    //           div [] [
-    //               graphButtons
-    //               GraphView.graph [
-    //                   GraphView.Props.Tree (buildTree root |> limitTreeByNodes model.Graph.Options.MaxNodes)
-    //                   GraphView.Props.OnHover onHover
-    //                   GraphView.Props.OnSelect onSelect
-    //                   GraphView.Props.Options model.Graph.Options
-    //                   ] ]
+        | JsonViewer ->
+            div [ ClassName "viewer"] [
+                ReactJsonView.viewer [ ReactJsonView.Src (parsed.Node)
+                                       ReactJsonView.Name null
+                                       ReactJsonView.DisplayDataTypes false
+                                       ReactJsonView.DisplayObjectSize false
+                                       ReactJsonView.IndentWidth 2
+                                       ReactJsonView.OnLookup (fun (o) ->
+                                            let range: FantomasTools.Client.Editor.HighLightRange =
+                                                { StartLine = !!(o.value?StartLine)
+                                                  StartColumn = !!(o.value?StartCol)
+                                                  EndLine = !!(o.value?EndLine)
+                                                  EndColumn = !!(o.value?EndCol) }
+                                            dispatch (HighLight range)
+                                        )
+                                       ReactJsonView.ShouldLookup(fun (o) ->o.key = "Range")
+                                       ReactJsonView.ShouldCollapse (fun x -> x?name = "Range")]
+            ]
+        | Graph -> div [] [ str "graph view has not been ported yet" ]
+            // Please extract this to its own file
+
+//           let node = parsed.Node
+//           let rec propertiesToHtml inArray p =
+//               match p with
+//               | JNumber x -> sprintf "%f" x
+//               | JString x -> x
+//               | JBool x -> sprintf "%b" x
+//               | JNull -> "null"
+//               | JArray [JString k; v] when inArray ->
+//                   propertiesToHtml false (JObject (Map.ofSeq[k,v]))
+//               | JArray xs -> xs |> Seq.map (propertiesToHtml true >> sprintf "<li>%s</li>") |> String.concat "" |> sprintf "<ul>%s</ul>"
+//               | JObject o ->
+//                   o |> Map.filter (fun k _ -> not (k.ToLower().Contains "range")) |> Map.toSeq
+//                   |> Seq.map (fun (k, v) -> sprintf "<li><b>%s: </b>%s</li>" k (propertiesToHtml false v))
+//                   |> String.concat "" |> sprintf "<ul>%s</ul>"
+//
+//           let simpleType (t: string) = t.Split([|'.'|]) |> Seq.last
+//           let rec buildTree isRoot n = {
+//               Label = simpleType n.Type
+//               Color = if isRoot then Some "lime" else None
+//               Tooltip =
+//                   Thoth.Json.Encode.Auto.toString(0, n.Properties) |> SimpleJson.parse
+//                   |> fun x -> JArray[JString (sprintf "<b><i>%s</i></b>" n.Type); x] |> propertiesToHtml false
+//               Childrens = List.map (buildTree false) n.Childs
+//               Original = n
+//               }
+//           let buildTree n = buildTree true n
+//           let limitTree = memoize2 <| fun allowedSet n ->
+//               let rec f n =
+//                   let childs = n.Childrens |> List.filter (fun c -> List.contains c allowedSet)
+//                   let limit = not(List.isEmpty n.Childrens) && List.isEmpty childs
+//                   { n with Childrens = childs |> List.map f
+//                            Color = if limit then Some "cyan" else None}
+//               f n
+//           let limitTreeByNodes = memoize2 <| fun maxNodes n ->
+//               let q = Queue.empty
+//               let rec loop q acc i =
+//                    if i >= maxNodes then acc else
+//                    match Queue.dequeue q with
+//                    | None -> acc
+//                    | Some (x, q2) ->
+//                        let q3 = x.Childrens |> List.fold Queue.enqueue q2
+//                        loop q3 (x::acc) (i+1)
+//               let allowedNodes = loop (Queue.enqueue Queue.empty n) [] 1
+//               limitTree allowedNodes n
+//
+//           let rec childsRange = memoize <| fun n ->
+//               match n.Range with
+//               | Some r -> Some r
+//               | None ->
+//               let rs = n.Childs |> Seq.choose childsRange
+//               if Seq.isEmpty rs then None else Some (rs |> Seq.reduce (fun r1 r2 -> {
+//                   StartLine = min r1.StartLine r2.StartLine
+//                   StartCol = min r1.StartCol r2.StartCol
+//                   EndLine = max r1.EndLine r2.EndLine
+//                   EndCol = max r1.EndCol r2.EndCol
+//                   }))
+//           let onHover (n: Node) =
+//               //Browser.Dom.console.log("hoverNode Event", n, editor)
+//               editor |> Option.iter (fun editor ->
+//                   let empty = createEmpty<Monaco.IRange>
+//                   let range = empty
+//                   n |> childsRange |> Option.iter (fun r ->
+//                       range.endColumn <- r.EndCol + 1
+//                       range.endLineNumber <- r.EndLine
+//                       range.startColumn <- r.StartCol + 1
+//                       range.startLineNumber <- r.StartLine
+//                       //Browser.Dom.console.log("set range", range)
+//                       editor.setSelection(range)
+//                       editor.revealRangeInCenter(range, ScrollType.Smooth))
+//               )
+//           let onSelect (n: Node) = dispatch (Graph <| GraphMsg.SetRoot n)
+//
+//           let root = model.Graph.RootsPath |> List.tryHead |> Option.defaultValue node
+//           let graphButtons =
+//               Columns.columns [ ]
+//                   [ Column.column [ Column.Width(Screen.All, Column.Is3) ]
+//                       [if not model.Graph.RootsPath.IsEmpty then
+//                           yield button [Button.Color IsPrimary; Button.Size IsSmall] "Back" (fun _ -> dispatch (Graph <| GraphMsg.RootBack))]
+//                     Column.column [ Column.Width(Screen.All, Column.Is3) ]
+//                       [button [Button.Color IsDark; Button.Size IsSmall] "Free view" (fun _ -> dispatch (Graph <| GraphMsg.SetOptions {model.Graph.Options with Layout = Graph.Free}))]
+//                     Column.column [ Column.Width(Screen.All, Column.Is3) ]
+//                       [button [Button.Color IsDark; Button.Size IsSmall] "Left-Right view" (fun _ -> dispatch (Graph <| GraphMsg.SetOptions {model.Graph.Options with Layout = Graph.HierarchicalLeftRight}))]
+//                     Column.column [ Column.Width(Screen.All, Column.Is3) ]
+//                       [button [Button.Color IsDark; Button.Size IsSmall] "Upper-Down view" (fun _ -> dispatch (Graph <| GraphMsg.SetOptions {model.Graph.Options with Layout = Graph.HierarchicalUpDown}))]
+//                   ]
+//           div [] [
+//               graphButtons
+//               GraphView.graph [
+//                   GraphView.Props.Tree (buildTree root |> limitTreeByNodes model.Graph.Options.MaxNodes)
+//                   GraphView.Props.OnHover onHover
+//                   GraphView.Props.OnSelect onSelect
+//                   GraphView.Props.Options model.Graph.Options
+//                   ] ]
     | Result.Error errors ->
         FantomasTools.Client.Editor.astEditor
             [ EditorProp.Language "fsharp"
@@ -203,7 +204,13 @@ let private settings model dispatch =
 
 let view model dispatch =
     let inner =
-        if model.IsLoading then FantomasTools.Client.Loader.loader else results model dispatch
+        if model.IsLoading then
+            FantomasTools.Client.Loader.loader
+        else
+            div [ ClassName "tab-result" ] [
+               results model dispatch
+            ]
+            //
 
     fragment []
         [ inner

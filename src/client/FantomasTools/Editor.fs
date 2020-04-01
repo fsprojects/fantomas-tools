@@ -23,14 +23,21 @@ let inline editor (props: EditorProp list): ReactElement =
 let inline astEditor (props: EditorProp list): ReactElement =
     ofImport "default" "../../js/Editor.js" (keyValueList CaseRules.LowerFirst props) []
 
-let selectRange startLine startColumn endLine endColumn _ =
+type HighLightRange =
+    { StartLine: int
+      StartColumn: int
+      EndLine: int
+      EndColumn: int }
+
+let selectRange (range:HighLightRange) _ =
+    printfn "highlight range: %A" range
     let data =
         jsOptions<CustomEventInit> (fun o ->
             o.detail <-
-                {| startColumn = startColumn + 1
-                   startLineNumber = startLine
-                   endColumn = endColumn + 1
-                   endLineNumber = endLine |})
+                {| startColumn = range.StartColumn + 1
+                   startLineNumber = range.StartLine
+                   endLineNumber = range.EndLine
+                   endColumn = range.EndColumn + 1 |})
 
     let event = CustomEvent.Create("select_range", data)
     Dom.window.dispatchEvent (event) |> ignore

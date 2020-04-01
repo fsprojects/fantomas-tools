@@ -37,6 +37,10 @@
 @import "node_modules/bootstrap/scss/_spinners.scss"
 @import "node_modules/bootstrap/scss/_utilities.scss"
 // @import "node_modules/bootstrap/scss/_print.scss"
+
+#elmish-app
+  height: 100vh
+
 .fa-github-wrapper
   width: 24px
   display: inline
@@ -73,8 +77,14 @@
 
 #tab-content
   display: flex
+  flex: 1
   flex-direction: column
-  height: calc(100% - #{$nav-link-height} - 2px)
+
+  .tab-result
+    flex: 1
+    overflow-y: auto
+
+  .tab-settings
 
 @import "trivia"
 @import "tokens"

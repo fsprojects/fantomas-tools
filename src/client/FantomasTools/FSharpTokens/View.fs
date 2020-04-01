@@ -110,12 +110,11 @@ let private settings model dispatch =
 let view model dispatch =
     let inner =
         if model.IsLoading then
-            [ FantomasTools.Client.Loader.loader ]
+            FantomasTools.Client.Loader.loader
         else
-            [ tokens model dispatch
-              details model dispatch ]
+            div [ClassName "tab-result"] [ tokens model dispatch ; details model dispatch ]
 
     fragment []
-        [ yield! inner
-          yield FantomasTools.Client.VersionBar.versionBar (sprintf "FSC - %s" model.Version)
-          yield settings model dispatch ]
+        [ inner
+          FantomasTools.Client.VersionBar.versionBar (sprintf "FSC - %s" model.Version)
+          settings model dispatch ]

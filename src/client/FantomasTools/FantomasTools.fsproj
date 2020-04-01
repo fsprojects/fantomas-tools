@@ -37,9 +37,9 @@
     <Compile Include="ASTViewer\Encoders.fs" />
     <Compile Include="ASTViewer\Decoders.fs" />
     <Compile Include="ASTViewer\State.fs" />
+    <Compile Include="ASTViewer\vis.fs" />
     <Compile Include="ASTViewer\GraphView.fs" />
     <Compile Include="ASTViewer\ReactJsonView.fs" />
-    <Compile Include="ASTViewer\vis.fs" />
     <Compile Include="ASTViewer\View.fs" />
     
     <Compile Include="Model.fs" />

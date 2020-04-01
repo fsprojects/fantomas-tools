@@ -60,7 +60,7 @@ let rec nodeEncoder (node: Fantomas.AstTransformer.Node) =
         [ "type", Encode.string node.Type
           "range", Encode.option rangeEncoder node.Range
           "properties", properties
-          "childs", Encode.list (List.map nodeEncoder node.Childs) ]
+          "childs", Encode.array (Array.map nodeEncoder (Array.ofList node.Childs)) ]
 
 let rec encodeResponse nodeJson string =
     Encode.object

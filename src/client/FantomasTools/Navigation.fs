@@ -24,6 +24,7 @@ let urlUpdate (result:Option<ActiveTab>) model =
                 match tab with
                 | TriviaTab -> Cmd.ofMsg (FantomasTools.Client.Trivia.Model.GetTrivia) |> Cmd.map Msg.TriviaMsg
                 | TokensTab -> Cmd.ofMsg (FantomasTools.Client.FSharpTokens.Model.GetTokens) |> Cmd.map Msg.FSharpTokensMsg
+                | ASTTab -> Cmd.ofMsg (FantomasTools.Client.ASTViewer.Model.DoParse) |> Cmd.map Msg.ASTMsg
                 | _ -> Cmd.none
             else
                 Cmd.none

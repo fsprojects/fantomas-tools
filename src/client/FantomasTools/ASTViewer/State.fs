@@ -4,6 +4,7 @@ open System
 open Elmish
 open Thoth.Json
 open Fetch
+open Fable.Core
 open Fable.Core.JsInterop
 open ASTViewer
 open FantomasTools.Client.ASTViewer.Model
@@ -11,10 +12,11 @@ open FantomasTools.Client
 open FantomasTools.Client.ASTViewer.Decoders
 open FantomasTools.Client.ASTViewer.Encoders
 
-let private backendRoot = "http://localhost:7412"
+[<Emit("process.env.AST_BACKEND")>]
+let private backend: string = jsNative
 
 let private getVersion() =
-    let url = sprintf "%s/%s" backendRoot "api/version"
+    let url = sprintf "%s/%s" backend "api/version"
     Fetch.fetch url []
     |> Promise.bind (fun res -> res.text())
     |> Promise.map (fun (json: string) ->
@@ -34,14 +36,14 @@ let private fetchNodeRequest url (payload: Shared.Input) =
         | Result.Error err -> failwithf "failed to decode result: %A" err)
 
 let private fetchUntypedAST (payload: Shared.Input) =
-    let url = sprintf "%s/api/untyped-ast" backendRoot
+    let url = sprintf "%s/api/untyped-ast" backend
     fetchNodeRequest url payload
 
 let private fetchTypedAst (payload: Shared.Input) =
-    let url = sprintf "%s/api/typed-ast" backendRoot
+    let url = sprintf "%s/api/typed-ast" backend
     fetchNodeRequest url payload
 
-let private initialGraphModel : Graph.Model =
+let initialGraphModel : Graph.Model =
     { RootsPath = []
       Options = { MaxNodes = 30
                   MaxNodesInRow = 7
@@ -142,3 +144,4 @@ let update code (msg : Msg) (model : Model) : Model * Cmd<Msg> =
     | Msg.Graph (GraphMsg.SetOptions opt) -> { model with Graph = { model.Graph with Options = opt }}, Cmd.none
     | DefinesUpdated defines -> { model with Defines = defines }, Cmd.none
     | SetFsiFile isFsi -> { model with IsFsi = isFsi }, Cmd.none
+    | HighLight hlr -> model, Cmd.ofSub (FantomasTools.Client.Editor.selectRange hlr)

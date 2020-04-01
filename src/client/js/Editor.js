@@ -23,7 +23,7 @@ const Editor = ({ onChange, language, getEditor, value, isReadOnly }) => {
     }
   }
 
-  useEventListener(window, "trivia_select_range", selectRange);
+  useEventListener(window, "select_range", selectRange);
 
   const options = {
     readOnly: isReadOnly,
