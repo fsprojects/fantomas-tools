@@ -1,0 +1,8 @@
+group Server
+Microsoft.NET.Sdk.Functions
+FSharp.Core
+Thoth.Json.Net
+
+group Previous
+FSharp.Compiler.Service
+Fantomas

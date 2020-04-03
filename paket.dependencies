@@ -38,6 +38,24 @@ nuget Microsoft.NET.Sdk.Functions
 nuget FSharp.Compiler.Service 34.1.1
 nuget Thoth.Json.Net
 
+group Latest
+
+source https://api.nuget.org/v3/index.json
+storage: none
+framework: netcore3.1
+
+nuget FSharp.Compiler.Service 34.1.0
+nuget Fantomas 3.3.0
+
+group Previous
+
+source https://api.nuget.org/v3/index.json
+storage: none
+framework: netcore3.1
+
+nuget FSharp.Compiler.Service 25.0.1
+nuget Fantomas 2.9.2
+
 group Client
 
 source https://api.nuget.org/v3/index.json
