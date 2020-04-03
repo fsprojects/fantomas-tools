@@ -13,11 +13,16 @@ module Func =
         { Cors: string
           Port: int
           WorkingDirectory: string }
+
     let host (hostOptions: HostOptions): unit =
         let funcPath = ProcessUtils.findPath [] "func"
-        let parameters = [ "start"
-                           "--cors"; hostOptions.Cors
-                           "--port"; hostOptions.Port.ToString() ]
+
+        let parameters =
+            [ "start"
+              "--cors"
+              hostOptions.Cors
+              "--port"
+              hostOptions.Port.ToString() ]
 
         CreateProcess.fromRawCommand funcPath parameters
         |> CreateProcess.withWorkingDirectory hostOptions.WorkingDirectory
@@ -29,13 +34,13 @@ let fablePort = 9060
 let fsharpTokensPort = 7899
 let astPort = 7412
 let triviaPort = 9856
-let fantomasMasterPort = 1256
-let fantomasV2Port = 2568
-let fantomasStablePort = 9091
+let fantomasPreviewPort = 107007
+let fantomasPreviousPort = 2568
+let fantomasLatestPort = 9091
 
 let localhostBackend port = sprintf "http://localhost:%i" port
 
-let clientDir = __SOURCE_DIRECTORY__  </> "src" </> "client"
+let clientDir = __SOURCE_DIRECTORY__ </> "src" </> "client"
 let serverDir = __SOURCE_DIRECTORY__ </> "src" </> "server"
 
 Target.create "Fantomas-Git" (fun _ ->
@@ -43,30 +48,42 @@ Target.create "Fantomas-Git" (fun _ ->
     Fake.IO.Shell.cleanDir targetDir
     Git.Repository.cloneSingleBranch "." "https://github.com/fsprojects/fantomas.git" "master" targetDir
     DotNet.exec (fun opt -> { opt with WorkingDirectory = targetDir }) "tool" "restore" |> ignore
-    DotNet.build (fun opt -> { opt with Configuration = DotNet.BuildConfiguration.Release }) "./.deps/fantomas/src/Fantomas/Fantomas.fsproj"
-)
+    DotNet.build (fun opt -> { opt with Configuration = DotNet.BuildConfiguration.Release })
+        "./.deps/fantomas/src/Fantomas/Fantomas.fsproj")
 
 Target.create "Build" ignore
 
 Target.create "Watch" (fun _ ->
 
-   Environment.setEnvironVar "FSHARP_TOKENS_BACKEND" (localhostBackend fsharpTokensPort)
-   Environment.setEnvironVar "AST_BACKEND" (localhostBackend astPort)
-   Environment.setEnvironVar "TRIVIA_BACKEND" (localhostBackend triviaPort)
-   Environment.setEnvironVar "FRONTEND_PORT" (fablePort.ToString())
+    Environment.setEnvironVar "FSHARP_TOKENS_BACKEND" (localhostBackend fsharpTokensPort)
+    Environment.setEnvironVar "AST_BACKEND" (localhostBackend astPort)
+    Environment.setEnvironVar "TRIVIA_BACKEND" (localhostBackend triviaPort)
+    Environment.setEnvironVar "FANTOMAS_PREVIOUS" (localhostBackend fantomasPreviousPort)
+    Environment.setEnvironVar "FANTOMAS_LATEST" (localhostBackend fantomasLatestPort)
+    Environment.setEnvironVar "FANTOMAS_PREVIEW" (localhostBackend fantomasPreviewPort)
+    Environment.setEnvironVar "FRONTEND_PORT" (fablePort.ToString())
 
-   let fable = async { Yarn.exec "start" (fun opt -> { opt with WorkingDirectory = clientDir }) }
+    let fable = async { Yarn.exec "start" (fun opt -> { opt with WorkingDirectory = clientDir }) }
 
-   let cors = localhostBackend fablePort
-   let hostAzureFunction name port = async { Func.host { Cors = cors; Port = port; WorkingDirectory = serverDir </> name } }
+    let cors = localhostBackend fablePort
 
-   let fsharpTokens = hostAzureFunction "FSharpTokens" fsharpTokensPort
-   let astViewer = hostAzureFunction "ASTViewer" astPort
-   let triviaViewer = hostAzureFunction "TriviaViewer" triviaPort
+    let hostAzureFunction name port =
+        async {
+            Func.host
+                { Cors = cors
+                  Port = port
+                  WorkingDirectory = serverDir </> name }
+        }
 
-   Async.Parallel [ fable; fsharpTokens; astViewer; triviaViewer ]
-   |> Async.Ignore
-   |> Async.RunSynchronously
-)
+    let fsharpTokens = hostAzureFunction "FSharpTokens" fsharpTokensPort
+    let astViewer = hostAzureFunction "ASTViewer" astPort
+    let triviaViewer = hostAzureFunction "TriviaViewer" triviaPort
+    let fantomasPrevious = hostAzureFunction "FantomasOnlinePrevious" fantomasPreviousPort
+    let fantomasLatest = hostAzureFunction "FantomasOnlineLatest" fantomasLatestPort
+    let fantomasPreview = hostAzureFunction "FantomasOnlinePreview" fantomasPreviewPort
+
+    Async.Parallel [ fable; fsharpTokens; astViewer; triviaViewer; fantomasPrevious; fantomasLatest; fantomasPreview ]
+    |> Async.Ignore
+    |> Async.RunSynchronously)
 
 Target.runOrDefault "Build"
