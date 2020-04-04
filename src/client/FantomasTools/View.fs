@@ -57,7 +57,7 @@ let private tabs model dispatch =
         | ASTTab ->
             let astDispatch aMsg = dispatch (ASTMsg aMsg)
             ASTViewer.View.view model.ASTModel astDispatch
-        | FantomasTab ->
+        | FantomasTab _ ->
             let fantomasDispatch fMsg = dispatch (FantomasMsg fMsg)
             FantomasOnline.View.view model.FantomasModel fantomasDispatch
 
@@ -77,14 +77,13 @@ let private tabs model dispatch =
           navItem TokensTab "FSharp Tokens"
           navItem ASTTab "AST"
           navItem TriviaTab "Trivia"
-          navItem FantomasTab "Fantomas" ]
+          navItem (FantomasTab FantomasTools.Client.FantomasOnline.Model.Preview) "Fantomas" ]
 
     div [ ClassName "col-8 h-100 d-flex flex-column" ]
         [ Nav.nav
             [ Nav.Tabs true
               Nav.Custom [ ClassName "" ] ] [ ofList navItems ]
           div [ Id "tab-content" ] [ activeTab ] ]
-
 
 let view model dispatch =
     div [ ClassName "d-flex flex-column h-100" ]

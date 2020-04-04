@@ -10,6 +10,7 @@
     <Compile Include="../../shared/TriviaShared.fs" />
     <Compile Include="../../shared/FSharpTokensShared.fs" />
     <Compile Include="../../shared/ASTViewerShared.fs" />
+    <Compile Include="../../shared/FantomasOnlineShared.fs" />
     <Compile Include="Editor.fs" />
     <Compile Include="VersionBar.fs" />
     <Compile Include="Loader.fs" />

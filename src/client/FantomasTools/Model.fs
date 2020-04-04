@@ -7,7 +7,7 @@ type ActiveTab =
     | TokensTab
     | ASTTab
     | TriviaTab
-    | FantomasTab
+    | FantomasTab of FantomasTools.Client.FantomasOnline.Model.FantomasMode
 
 type Model =
     { ActiveTab: ActiveTab

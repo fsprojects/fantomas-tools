@@ -21,7 +21,7 @@ let init _ =
     let (triviaModel, triviaCmd) = Trivia.State.init sourceCode
     let (fsharpTokensModel, fsharpTokensCmd) = FSharpTokens.State.init sourceCode
     let (astModel, astCmd) = ASTViewer.State.init sourceCode
-    let (fantomasModel, fantomasCmd) = FantomasOnline.State.init sourceCode
+    let (fantomasModel, fantomasCmd) = FantomasOnline.State.init (FantomasTools.Client.FantomasOnline.Model.Preview)
 
     let cmd =
         Cmd.batch [
@@ -45,17 +45,18 @@ let init _ =
 let update msg model =
     match msg with
     | SelectTab tab ->
-        model, Elmish.Navigation.Navigation.newUrl (Navigation.toHash tab)
+        model, Navigation.Navigation.newUrl (Navigation.toHash tab)
     | UpdateSourceCode code ->
         { model with SourceCode = code }, Cmd.none
     | TriviaMsg tMsg ->
-        let (tModel, tCmd) = FantomasTools.Client.Trivia.State.update model.SourceCode tMsg model.TriviaModel
+        let (tModel, tCmd) = Trivia.State.update model.SourceCode tMsg model.TriviaModel
         { model with TriviaModel = tModel }, Cmd.map TriviaMsg tCmd
     | FSharpTokensMsg ftMsg ->
-        let (fModel, fCmd) = FantomasTools.Client.FSharpTokens.State.update model.SourceCode ftMsg model.FSharpTokensModel
+        let (fModel, fCmd) = FSharpTokens.State.update model.SourceCode ftMsg model.FSharpTokensModel
         { model with FSharpTokensModel = fModel }, Cmd.map FSharpTokensMsg fCmd
     | ASTMsg aMsg ->
-        let (aModel, aCmd) = FantomasTools.Client.ASTViewer.State.update model.SourceCode aMsg model.ASTModel
+        let (aModel, aCmd) = ASTViewer.State.update model.SourceCode aMsg model.ASTModel
         { model with ASTModel = aModel }, Cmd.map ASTMsg aCmd
-    | _ ->
-        failwith "not implemented"
+    | FantomasMsg fMsg ->
+        let (fModel, fCmd) = FantomasOnline.State.update model.SourceCode fMsg model.FantomasModel
+        { model with FantomasModel = fModel }, Cmd.map FantomasMsg fCmd

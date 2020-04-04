@@ -4,7 +4,9 @@ open Elmish
 open Elmish.UrlParser
 open Elmish.Navigation
 
+open FantomasTools.Client
 open FantomasTools.Client.Model
+open FantomasTools.Client.FantomasOnline.Model
 
 let private route : Parser<ActiveTab->_,_> =
     UrlParser.oneOf [
@@ -12,7 +14,9 @@ let private route : Parser<ActiveTab->_,_> =
         map ActiveTab.TriviaTab (s "trivia")
         map ActiveTab.TokensTab (s "tokens")
         map ActiveTab.ASTTab (s "ast")
-        map ActiveTab.FantomasTab (s "fantomas")
+        map (ActiveTab.FantomasTab (Previous)) (s "fantomas" </> s "previous")
+        map (ActiveTab.FantomasTab (Latest)) (s "fantomas" </> s "latest")
+        map (ActiveTab.FantomasTab (Preview)) (s "fantomas" </> s "preview")
     ]
 let parser : (Browser.Types.Location -> ActiveTab option) = parseHash route
 
@@ -22,9 +26,9 @@ let urlUpdate (result:Option<ActiveTab>) model =
         let cmd =
             if not (System.String.IsNullOrWhiteSpace model.SourceCode) then
                 match tab with
-                | TriviaTab -> Cmd.ofMsg (FantomasTools.Client.Trivia.Model.GetTrivia) |> Cmd.map Msg.TriviaMsg
-                | TokensTab -> Cmd.ofMsg (FantomasTools.Client.FSharpTokens.Model.GetTokens) |> Cmd.map Msg.FSharpTokensMsg
-                | ASTTab -> Cmd.ofMsg (FantomasTools.Client.ASTViewer.Model.DoParse) |> Cmd.map Msg.ASTMsg
+                | TriviaTab -> Cmd.ofMsg (Trivia.Model.GetTrivia) |> Cmd.map Msg.TriviaMsg
+                | TokensTab -> Cmd.ofMsg (FSharpTokens.Model.GetTokens) |> Cmd.map Msg.FSharpTokensMsg
+                | ASTTab -> Cmd.ofMsg (ASTViewer.Model.DoParse) |> Cmd.map Msg.ASTMsg
                 | _ -> Cmd.none
             else
                 Cmd.none
@@ -39,4 +43,6 @@ let toHash =
     | TriviaTab -> "#/trivia"
     | TokensTab -> "#/tokens"
     | ASTTab -> "#/ast"
-    | FantomasTab -> "#/fantomas"
+    | FantomasTab (Previous) -> "#/fantomas/previous"
+    | FantomasTab (Latest) -> "#/fantomas/latest"
+    | FantomasTab (Preview) -> "#/fantomas/preview"

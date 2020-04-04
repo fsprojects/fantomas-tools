@@ -59,7 +59,10 @@ const commonPlugins = [
   new webpack.EnvironmentPlugin([
     "FSHARP_TOKENS_BACKEND",
     "AST_BACKEND",
-    "TRIVIA_BACKEND"
+    "TRIVIA_BACKEND",
+    "FANTOMAS_PREVIOUS",
+    "FANTOMAS_LATEST",
+    "FANTOMAS_PREVIEW"
   ])
 ];
 

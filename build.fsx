@@ -38,7 +38,7 @@ let fablePort = 9060
 let fsharpTokensPort = 7899
 let astPort = 7412
 let triviaPort = 9856
-let fantomasPreviewPort = 107007
+let fantomasPreviewPort = 10707
 let fantomasPreviousPort = 2568
 let fantomasLatestPort = 9091
 
@@ -58,15 +58,13 @@ Target.create "Fantomas-Git" (fun _ ->
 
 Target.create "Clean" (fun _ ->
     Shell.rm_rf artifactDir
-
-    !! (serverDir + "/*/bin")
-    |> Seq.iter Shell.rm_rf)
+    !!(serverDir + "/*/bin") |> Seq.iter Shell.rm_rf
+    !!(serverDir + "/*/obj") |> Seq.iter Shell.rm_rf)
 
 Target.create "Build" (fun _ ->
     [ "FSharpTokens"; "ASTViewer"; "TriviaViewer"; "FantomasOnlinePrevious"; "FantomasOnlineLatest"; "FantomasOnlinePreview" ]
     |> List.iter (fun project ->
-        DotNet.build
-            (fun config -> { config with Configuration = DotNet.BuildConfiguration.Release })
+        DotNet.build (fun config -> { config with Configuration = DotNet.BuildConfiguration.Release })
             (sprintf "%s/%s/%s.fsproj" serverDir project project)))
 
 Target.create "Watch" (fun _ ->
@@ -105,6 +103,7 @@ Target.create "Watch" (fun _ ->
 open Fake.Core.TargetOperators
 
 "Clean" ==> "Build"
+"Build"
 "Build" ==> "Watch"
 
 Target.runOrDefault "Build"
