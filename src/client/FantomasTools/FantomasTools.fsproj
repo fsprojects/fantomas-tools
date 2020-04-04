@@ -31,7 +31,11 @@
     <Compile Include="FSharpTokens\View.fs" />
 
     
-    <Folder Include="FantomasOnline" />
+    <Compile Include="FantomasOnline\Model.fs" />
+    <Compile Include="FantomasOnline\Encoders.fs" />
+    <Compile Include="FantomasOnline\Decoders.fs" />
+    <Compile Include="FantomasOnline\State.fs" />
+    <Compile Include="FantomasOnline\View.fs" />
 
     <Compile Include="ASTViewer\Model.fs" />
     <Compile Include="ASTViewer\Encoders.fs" />

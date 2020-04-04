@@ -1,3 +1,5 @@
+open Fake.DotNet
+
 #r "paket: groupref build //"
 #load ".fake/build.fsx/intellisense.fsx"
 
@@ -5,6 +7,7 @@ open Fake.Core
 open Fake.DotNet
 open Fake.IO
 open Fake.IO.FileSystemOperators
+open Fake.IO.Globbing.Operators
 open Fake.JavaScript
 open Fake.Tools
 
@@ -22,7 +25,8 @@ module Func =
               "--cors"
               hostOptions.Cors
               "--port"
-              hostOptions.Port.ToString() ]
+              hostOptions.Port.ToString()
+              "--no-build" ]
 
         CreateProcess.fromRawCommand funcPath parameters
         |> CreateProcess.withWorkingDirectory hostOptions.WorkingDirectory
@@ -42,6 +46,7 @@ let localhostBackend port = sprintf "http://localhost:%i" port
 
 let clientDir = __SOURCE_DIRECTORY__ </> "src" </> "client"
 let serverDir = __SOURCE_DIRECTORY__ </> "src" </> "server"
+let artifactDir = __SOURCE_DIRECTORY__ </> "artifacts"
 
 Target.create "Fantomas-Git" (fun _ ->
     let targetDir = ".deps" @@ "fantomas"
@@ -51,7 +56,18 @@ Target.create "Fantomas-Git" (fun _ ->
     DotNet.build (fun opt -> { opt with Configuration = DotNet.BuildConfiguration.Release })
         "./.deps/fantomas/src/Fantomas/Fantomas.fsproj")
 
-Target.create "Build" ignore
+Target.create "Clean" (fun _ ->
+    Shell.rm_rf artifactDir
+
+    !! (serverDir + "/*/bin")
+    |> Seq.iter Shell.rm_rf)
+
+Target.create "Build" (fun _ ->
+    [ "FSharpTokens"; "ASTViewer"; "TriviaViewer"; "FantomasOnlinePrevious"; "FantomasOnlineLatest"; "FantomasOnlinePreview" ]
+    |> List.iter (fun project ->
+        DotNet.build
+            (fun config -> { config with Configuration = DotNet.BuildConfiguration.Release })
+            (sprintf "%s/%s/%s.fsproj" serverDir project project)))
 
 Target.create "Watch" (fun _ ->
 
@@ -72,7 +88,7 @@ Target.create "Watch" (fun _ ->
             Func.host
                 { Cors = cors
                   Port = port
-                  WorkingDirectory = serverDir </> name }
+                  WorkingDirectory = serverDir </> name </> "bin" </> "Release" </> "netcoreapp3.1" }
         }
 
     let fsharpTokens = hostAzureFunction "FSharpTokens" fsharpTokensPort
@@ -85,5 +101,10 @@ Target.create "Watch" (fun _ ->
     Async.Parallel [ fable; fsharpTokens; astViewer; triviaViewer; fantomasPrevious; fantomasLatest; fantomasPreview ]
     |> Async.Ignore
     |> Async.RunSynchronously)
+
+open Fake.Core.TargetOperators
+
+"Clean" ==> "Build"
+"Build" ==> "Watch"
 
 Target.runOrDefault "Build"

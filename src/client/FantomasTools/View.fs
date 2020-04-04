@@ -50,14 +50,16 @@ let private tabs model dispatch =
         | HomeTab -> homeTab
         | TriviaTab ->
             let triviaDispatch tMsg = dispatch (TriviaMsg tMsg)
-            FantomasTools.Client.Trivia.View.view model.TriviaModel triviaDispatch
+            Trivia.View.view model.TriviaModel triviaDispatch
         | TokensTab ->
             let tokensDispatch tMsg = dispatch (FSharpTokensMsg tMsg)
-            FantomasTools.Client.FSharpTokens.View.view model.FSharpTokensModel tokensDispatch
+            FSharpTokens.View.view model.FSharpTokensModel tokensDispatch
         | ASTTab ->
             let astDispatch aMsg = dispatch (ASTMsg aMsg)
-            FantomasTools.Client.ASTViewer.View.view model.ASTModel astDispatch
-        | _ -> str "other tab not present yet"
+            ASTViewer.View.view model.ASTModel astDispatch
+        | FantomasTab ->
+            let fantomasDispatch fMsg = dispatch (FantomasMsg fMsg)
+            FantomasOnline.View.view model.FantomasModel fantomasDispatch
 
     let onNavItemClick tab (ev: Event) =
         ev.preventDefault()

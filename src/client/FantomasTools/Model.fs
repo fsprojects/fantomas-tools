@@ -1,5 +1,7 @@
 module FantomasTools.Client.Model
 
+open FantomasTools.Client
+
 type ActiveTab =
     | HomeTab
     | TokensTab
@@ -10,13 +12,15 @@ type ActiveTab =
 type Model =
     { ActiveTab: ActiveTab
       SourceCode: string
-      TriviaModel : FantomasTools.Client.Trivia.Model.Model
-      FSharpTokensModel : FantomasTools.Client.FSharpTokens.Model.Model
-      ASTModel: FantomasTools.Client.ASTViewer.Model.Model }
+      TriviaModel : Trivia.Model.Model
+      FSharpTokensModel : FSharpTokens.Model.Model
+      ASTModel: ASTViewer.Model.Model
+      FantomasModel: FantomasOnline.Model.Model }
 
 type Msg =
     | SelectTab of ActiveTab
     | UpdateSourceCode of string
-    | TriviaMsg of FantomasTools.Client.Trivia.Model.Msg
-    | FSharpTokensMsg of FantomasTools.Client.FSharpTokens.Model.Msg
-    | ASTMsg of FantomasTools.Client.ASTViewer.Model.Msg
+    | TriviaMsg of Trivia.Model.Msg
+    | FSharpTokensMsg of FSharpTokens.Model.Msg
+    | ASTMsg of ASTViewer.Model.Msg
+    | FantomasMsg of FantomasOnline.Model.Msg

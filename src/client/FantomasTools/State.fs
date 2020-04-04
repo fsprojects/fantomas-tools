@@ -1,22 +1,11 @@
 module FantomasTools.Client.State
 
-open System
+open FantomasTools.Client
 open Browser
-open Browser
-open Browser.Types
 open Fable.Core
-open Fable.Core.JsInterop
 open Elmish
-open FantomasTools.Client
-open FantomasTools.Client
-open FantomasTools.Client
 open FantomasTools.Client.Model
-open Fetch
 open Thoth.Json
-
-[<Emit("process.env.BACKEND")>]
-let private backend: string = jsNative
-
 
 let private getCodeFromUrl () =
     UrlTools.restoreModelFromUrl (Decode.object (fun get -> get.Required.Field "code" Decode.string)) ""
@@ -29,9 +18,10 @@ let init _ =
         | Some tab -> tab, Cmd.none
         | None -> ActiveTab.HomeTab, Elmish.Navigation.Navigation.modifyUrl (Navigation.toHash ActiveTab.HomeTab)
 
-    let (triviaModel, triviaCmd) = FantomasTools.Client.Trivia.State.init sourceCode
-    let (fsharpTokensModel, fsharpTokensCmd) = FantomasTools.Client.FSharpTokens.State.init sourceCode
-    let (astModel, astCmd) = FantomasTools.Client.ASTViewer.State.init sourceCode
+    let (triviaModel, triviaCmd) = Trivia.State.init sourceCode
+    let (fsharpTokensModel, fsharpTokensCmd) = FSharpTokens.State.init sourceCode
+    let (astModel, astCmd) = ASTViewer.State.init sourceCode
+    let (fantomasModel, fantomasCmd) = FantomasOnline.State.init sourceCode
 
     let cmd =
         Cmd.batch [
@@ -39,6 +29,7 @@ let init _ =
             Cmd.map TriviaMsg triviaCmd
             Cmd.map FSharpTokensMsg fsharpTokensCmd
             Cmd.map ASTMsg astCmd
+            Cmd.map FantomasMsg fantomasCmd
         ]
 
     let model =
@@ -46,7 +37,8 @@ let init _ =
           SourceCode = sourceCode
           TriviaModel = triviaModel
           FSharpTokensModel = fsharpTokensModel
-          ASTModel = astModel }
+          ASTModel = astModel
+          FantomasModel = fantomasModel }
 
     model, cmd
 

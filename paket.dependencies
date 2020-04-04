@@ -1,7 +1,9 @@
 version 5.242.2
 source https://api.nuget.org/v3/index.json
 storage: none
-framework: netcore3.1, netstandard2.0, netstandard2.1
+framework: netstandard2.0
+# for the local Fantomas build
+nuget FSharp.Compiler.Service 34.1.0
 
 group Build
 
@@ -44,6 +46,8 @@ source https://api.nuget.org/v3/index.json
 storage: none
 framework: netcore3.1
 
+nuget Microsoft.NET.Sdk.Functions
+nuget Thoth.Json.Net
 nuget FSharp.Compiler.Service 34.1.0
 nuget Fantomas 3.3.0
 
@@ -53,6 +57,8 @@ source https://api.nuget.org/v3/index.json
 storage: none
 framework: netcore3.1
 
+nuget Microsoft.NET.Sdk.Functions
+nuget Thoth.Json.Net
 nuget FSharp.Compiler.Service 25.0.1
 nuget Fantomas 2.9.2
 
