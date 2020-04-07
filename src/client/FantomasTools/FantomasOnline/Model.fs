@@ -11,9 +11,13 @@ type Msg =
     | VersionReceived of string
     | OptionsReceived of FantomasOption list
     | NetworkError of exn
+    | Format
+    | FormattedReceived of string
 
 type Model =
     { IsFsi: bool
       Version: string
       IsLoading: bool
-      Options: FantomasOption list }
+      Options: FantomasOption list
+      Mode: FantomasMode
+      Result: string option }

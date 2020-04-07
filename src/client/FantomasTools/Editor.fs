@@ -20,7 +20,7 @@ type EditorProp =
 let inline editor (props: EditorProp list): ReactElement =
     ofImport "default" "../js/Editor.js" (keyValueList CaseRules.LowerFirst props) []
 
-let inline astEditor (props: EditorProp list): ReactElement =
+let inline editorInTab (props: EditorProp list): ReactElement =
     ofImport "default" "../../js/Editor.js" (keyValueList CaseRules.LowerFirst props) []
 
 type HighLightRange =

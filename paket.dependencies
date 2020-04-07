@@ -37,6 +37,8 @@ framework: netcore3.1
 
 nuget FSharp.Core
 nuget Microsoft.NET.Sdk.Functions
+# workaround for https://github.com/Azure/azure-functions-host/issues/5786
+nuget Microsoft.Azure.WebJobs.Script.ExtensionsMetadataGenerator 1.1.5
 nuget FSharp.Compiler.Service 34.1.1
 nuget Thoth.Json.Net
 
@@ -46,10 +48,14 @@ source https://api.nuget.org/v3/index.json
 storage: none
 framework: netcore3.1
 
+nuget FSharp.Core
 nuget Microsoft.NET.Sdk.Functions
+# workaround for https://github.com/Azure/azure-functions-host/issues/5786
+nuget Microsoft.Azure.WebJobs.Script.ExtensionsMetadataGenerator 1.1.5
 nuget Thoth.Json.Net
 nuget FSharp.Compiler.Service 34.1.0
 nuget Fantomas 3.3.0
+
 
 group Previous
 
@@ -57,7 +63,10 @@ source https://api.nuget.org/v3/index.json
 storage: none
 framework: netcore3.1
 
+nuget FSharp.Core
 nuget Microsoft.NET.Sdk.Functions
+# workaround for https://github.com/Azure/azure-functions-host/issues/5786
+nuget Microsoft.Azure.WebJobs.Script.ExtensionsMetadataGenerator 1.1.5
 nuget Thoth.Json.Net
 nuget FSharp.Compiler.Service 25.0.1
 nuget Fantomas 2.9.2

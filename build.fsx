@@ -25,8 +25,7 @@ module Func =
               "--cors"
               hostOptions.Cors
               "--port"
-              hostOptions.Port.ToString()
-              "--no-build" ]
+              hostOptions.Port.ToString() ]
 
         CreateProcess.fromRawCommand funcPath parameters
         |> CreateProcess.withWorkingDirectory hostOptions.WorkingDirectory
@@ -86,7 +85,7 @@ Target.create "Watch" (fun _ ->
             Func.host
                 { Cors = cors
                   Port = port
-                  WorkingDirectory = serverDir </> name </> "bin" </> "Release" </> "netcoreapp3.1" }
+                  WorkingDirectory = serverDir </> name }
         }
 
     let fsharpTokens = hostAzureFunction "FSharpTokens" fsharpTokensPort
@@ -103,7 +102,5 @@ Target.create "Watch" (fun _ ->
 open Fake.Core.TargetOperators
 
 "Clean" ==> "Build"
-"Build"
-"Build" ==> "Watch"
 
 Target.runOrDefault "Build"

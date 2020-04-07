@@ -33,12 +33,12 @@ let private results model dispatch =
     | Ok(Some parsed) ->
         match model.View with
         | Raw ->
-            FantomasTools.Client.Editor.astEditor
+            FantomasTools.Client.Editor.editorInTab
                 [ EditorProp.Language "fsharp"
                   EditorProp.IsReadOnly true
                   EditorProp.Value parsed.String ]
         | Editor ->
-            FantomasTools.Client.Editor.astEditor
+            FantomasTools.Client.Editor.editorInTab
                 [ EditorProp.Language "fsharp"
                   EditorProp.IsReadOnly true
                   EditorProp.Value(Fable.Core.JS.JSON.stringify (parsed.Node, space = 4)) ]
@@ -157,7 +157,7 @@ let private results model dispatch =
 //                   GraphView.Props.Options model.Graph.Options
 //                   ] ]
     | Result.Error errors ->
-        FantomasTools.Client.Editor.astEditor
+        FantomasTools.Client.Editor.editorInTab
             [ EditorProp.Language "fsharp"
               EditorProp.IsReadOnly true
               EditorProp.Value errors ]

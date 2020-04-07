@@ -16,12 +16,14 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="../../shared/FantomasOnlineShared.fs" />
     <None Include="paket.references" />
+    <Compile Include="../../shared/FantomasOnlineShared.fs" />
+    <Compile Include="../FantomasOnline.Shared/Encoders.fs" />
+    <Compile Include="../FantomasOnline.Shared/Decoders.fs" />
+    <Compile Include="../FantomasOnline.Shared/Http.fs" />
     <Compile Include="FormatCode.fs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\FantomasOnline.Shared\FantomasOnline.Shared.fsproj" />
     <ProjectReference Include="..\..\..\.deps\fantomas\src\Fantomas\Fantomas.fsproj" />
   </ItemGroup>
   <Import Project="..\..\..\.paket\Paket.Restore.targets" />
