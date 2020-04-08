@@ -50,8 +50,8 @@ let private mapFantomasOptionsToRecord<'t> options =
     let newValues =
         options
         |> Seq.map (function
-            | BoolOption (_, v) -> box v
-            | IntOption (_, v) -> box v)
+            | BoolOption (_, _, v) -> box v
+            | IntOption (_, _, v) -> box v)
         |> Seq.toArray
 
     let formatConfigType = typeof<'t>
@@ -73,10 +73,11 @@ let private formatResponse<'options> (format: string -> string -> 'options -> As
 
 let private getOptions defaultInstance =
     Reflection.getRecordFields defaultInstance
-    |> Seq.choose (fun (k: string, v: obj) ->
+    |> Seq.indexed
+    |> Seq.choose (fun (idx, (k: string, v: obj)) ->
         match v with
-        | :? int as i -> FantomasOption.IntOption(k, i) |> Some
-        | :? bool as b -> FantomasOption.BoolOption(k, b) |> Some
+        | :? int as i -> FantomasOption.IntOption(idx, k, i) |> Some
+        | :? bool as b -> FantomasOption.BoolOption(idx, k, b) |> Some
         | _ -> None)
     |> Seq.toList
     |> Encoders.encodeOptions

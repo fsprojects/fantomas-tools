@@ -8,13 +8,13 @@ let encodeOptions options =
     |> List.toArray
     |> Array.map (fun option ->
         match option with
-        | IntOption (k, i) ->
+        | IntOption (o, k, i) ->
             Encode.object
                 [ "$type", Encode.string "int"
-                  "$value", Encode.tuple2 Encode.string Encode.int (k, i) ]
-        | BoolOption (k, b) ->
+                  "$value", Encode.tuple3 Encode.int Encode.string Encode.int (o, k, i) ]
+        | BoolOption (o, k, b) ->
             Encode.object
                 [ "$type", Encode.string "bool"
-                  "$value", Encode.tuple2 Encode.string Encode.bool (k, b) ])
+                  "$value", Encode.tuple3 Encode.int Encode.string Encode.bool (o, k, b) ])
     |> Encode.array
     |> Encode.toString 4

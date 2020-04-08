@@ -10,13 +10,13 @@ open Reactstrap
 let private mapToOption dispatch (key, fantomasOption) =
     let editor =
         match fantomasOption with
-        | FantomasOption.BoolOption (_, v) ->
+        | FantomasOption.BoolOption (o, _, v) ->
             let buttonProps v =
                 let className =
                     if v then "rounded-0 text-white" else "rounded-0 hover-white"
                     |> ClassName
 
-                let onClick _ = UpdateOption(key, BoolOption(key, not v)) |> dispatch
+                let onClick _ = UpdateOption(key, BoolOption(o, key, not v)) |> dispatch
                 Button.Custom
                     [ className
                       OnClick onClick ]
@@ -29,7 +29,12 @@ let private mapToOption dispatch (key, fantomasOption) =
                       [ buttonProps (not v)
                         Button.Outline v
                         Button.Size Sm ] [ str "False" ] ]
-        | FantomasOption.IntOption (_, v) ->
+        | FantomasOption.IntOption (o, _, v) ->
+            let onChange (ev: Browser.Types.Event) =
+                let v = ev.Value |> (int)
+                UpdateOption(key, IntOption(o, key, v))
+                |> dispatch
+
             InputGroup.inputGroup
                 [ InputGroup.Size Sm
                   InputGroup.Custom [ ClassName "w-25 d-inline-block" ] ]
@@ -39,6 +44,7 @@ let private mapToOption dispatch (key, fantomasOption) =
                           ClassName "rounded-0 text-center"
                           Min "0"
                           DefaultValue v
+                          OnChange onChange
                           Step "1" ] ] ]
 
     div

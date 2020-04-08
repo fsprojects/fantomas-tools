@@ -74,8 +74,8 @@ let update code msg model =
         let userOptions =
             options
             |> List.map (function
-                | FantomasOption.BoolOption (k, b) as fo -> k, fo
-                | FantomasOption.IntOption (k, i) as fo -> k, fo)
+                | FantomasOption.BoolOption (_, k, _) as fo -> k, fo
+                | FantomasOption.IntOption (_, k, _) as fo -> k, fo)
             |> Map.ofList
 
         { model with
