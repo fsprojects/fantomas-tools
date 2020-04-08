@@ -2,7 +2,6 @@ module FantomasTools.Client.FantomasOnline.Decoders
 
 open Thoth.Json
 open FantomasOnline.Shared
-open Thoth.Json
 
 let private optionDecoder : Decoder<FantomasOption> =
     Decode.object (fun get ->

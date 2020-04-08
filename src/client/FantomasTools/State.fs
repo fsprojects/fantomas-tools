@@ -57,6 +57,8 @@ let update msg model =
     | ASTMsg aMsg ->
         let (aModel, aCmd) = ASTViewer.State.update model.SourceCode aMsg model.ASTModel
         { model with ASTModel = aModel }, Cmd.map ASTMsg aCmd
+    | FantomasMsg (FantomasOnline.Model.ChangeMode mode) ->
+        model, Navigation.Navigation.newUrl (Navigation.toHash (FantomasTab(mode)))
     | FantomasMsg fMsg ->
         let (fModel, fCmd) = FantomasOnline.State.update model.SourceCode fMsg model.FantomasModel
         { model with FantomasModel = fModel }, Cmd.map FantomasMsg fCmd

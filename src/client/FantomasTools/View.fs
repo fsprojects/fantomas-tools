@@ -27,7 +27,7 @@ let private navigation =
 
 let private editor model dispatch =
     Col.col
-        [ Col.Xs(Col.mkCol !^4)
+        [ Col.Xs(Col.mkCol !^5)
           Col.Custom [ ClassName "border-right h-100 d-flex flex-column" ] ]
         [ div
             [ Id "source"
@@ -79,7 +79,7 @@ let private tabs model dispatch =
           navItem TriviaTab "Trivia"
           navItem (FantomasTab FantomasTools.Client.FantomasOnline.Model.Preview) "Fantomas" ]
 
-    div [ ClassName "col-8 h-100 d-flex flex-column" ]
+    div [ ClassName "col-7 h-100 d-flex flex-column" ]
         [ Nav.nav
             [ Nav.Tabs true
               Nav.Custom [ ClassName "" ] ] [ ofList navItems ]

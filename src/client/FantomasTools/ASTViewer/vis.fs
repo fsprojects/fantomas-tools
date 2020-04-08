@@ -2,7 +2,6 @@
 module rec Vis
 open System
 open Fable.Core
-open Fable.Core.JS
 open Browser.Types
 
 type Array<'T> = System.Collections.Generic.IList<'T>

@@ -1,6 +1,5 @@
 module FantomasTools.Client.ASTViewer.GraphView
 
-open Elmish
 open Fable.Core
 open Fable.Core.JsInterop
 open Fable.React

@@ -1,26 +1,25 @@
 module FantomasTools.Client.Navigation
 
 open Elmish
-open Elmish.UrlParser
 open Elmish.Navigation
-
+open Elmish.UrlParser
 open FantomasTools.Client
-open FantomasTools.Client.Model
 open FantomasTools.Client.FantomasOnline.Model
+open FantomasTools.Client.Model
 
-let private route : Parser<ActiveTab->_,_> =
-    UrlParser.oneOf [
-        map ActiveTab.HomeTab (s "")
-        map ActiveTab.TriviaTab (s "trivia")
-        map ActiveTab.TokensTab (s "tokens")
-        map ActiveTab.ASTTab (s "ast")
-        map (ActiveTab.FantomasTab (Previous)) (s "fantomas" </> s "previous")
-        map (ActiveTab.FantomasTab (Latest)) (s "fantomas" </> s "latest")
-        map (ActiveTab.FantomasTab (Preview)) (s "fantomas" </> s "preview")
-    ]
-let parser : (Browser.Types.Location -> ActiveTab option) = parseHash route
+let private route: Parser<ActiveTab -> _, _> =
+    UrlParser.oneOf
+        [ map ActiveTab.HomeTab (s "")
+          map ActiveTab.TriviaTab (s "trivia")
+          map ActiveTab.TokensTab (s "tokens")
+          map ActiveTab.ASTTab (s "ast")
+          map (ActiveTab.FantomasTab(Previous)) (s "fantomas" </> s "previous")
+          map (ActiveTab.FantomasTab(Latest)) (s "fantomas" </> s "latest")
+          map (ActiveTab.FantomasTab(Preview)) (s "fantomas" </> s "preview") ]
 
-let urlUpdate (result:Option<ActiveTab>) model =
+let parser: Browser.Types.Location -> ActiveTab option = parseHash route
+
+let urlUpdate (result: Option<ActiveTab>) model =
     match result with
     | Some tab ->
         let cmd =
@@ -33,9 +32,20 @@ let urlUpdate (result:Option<ActiveTab>) model =
             else
                 Cmd.none
 
-        { model with ActiveTab = tab }, cmd
+        let fantomasModel, fantomasCmd =
+            match tab with
+            | FantomasTab (ft) when (ft <> model.FantomasModel.Mode) -> FantomasOnline.State.init ft
+            | _ -> model.FantomasModel, Cmd.none
+
+        { model with
+              ActiveTab = tab
+              FantomasModel = fantomasModel },
+        Cmd.batch
+            [ cmd
+              Cmd.map FantomasMsg fantomasCmd ]
+
     | None ->
-        ( { model with ActiveTab = HomeTab }, Navigation.modifyUrl "#" ) // no matching route - go home
+        ({ model with ActiveTab = HomeTab }, Navigation.modifyUrl "#") // no matching route - go home
 
 let toHash =
     function

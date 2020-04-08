@@ -15,9 +15,9 @@ let private encodeOption fantomasOption =
     ]
 
 
-let encodeRequest code model =
+let encodeRequest code (model:Model) =
     Encode.object
         [ "sourceCode", Encode.string code
-          "options", List.map encodeOption model.Options |> Encode.list
+          "options", List.map encodeOption model.DefaultOptions |> Encode.list
           "isFsi", Encode.bool model.IsFsi ]
     |> Encode.toString 2

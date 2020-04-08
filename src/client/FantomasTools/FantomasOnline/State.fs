@@ -1,16 +1,12 @@
 module FantomasTools.Client.FantomasOnline.State
 
 open Elmish
-open Fable.Core
-open FantomasTools.Client
-open FantomasTools.Client.FantomasOnline
-open FantomasTools.Client.FantomasOnline
-open FantomasTools.Client.FantomasOnline
-open FantomasTools.Client.FantomasOnline.Model
-open System
+open Elmish.Navigation
 open Fable.Core
 open Fable.Core.JsInterop
-open Elmish
+open FantomasOnline.Shared
+open FantomasTools.Client.FantomasOnline
+open FantomasTools.Client.FantomasOnline.Model
 open Fetch
 open Thoth.Json
 
@@ -29,12 +25,12 @@ let private backend =
         [ (FantomasMode.Previous, previousBackend)
           (FantomasMode.Latest, latestBackend)
           (FantomasMode.Preview, previewBackend) ]
+
 let private getVersion mode =
     let url = sprintf "%s/%s" (Map.find mode backend) "api/version"
 
-    fetch url
-        [ RequestProperties.Method HttpMethod.GET ]
-    |> Promise.bind (fun res -> res.text())
+    fetch url [ RequestProperties.Method HttpMethod.GET ]
+    |> Promise.bind (fun res -> res.text ())
     |> Promise.map (fun (json: string) ->
         match Decode.fromString Decode.string json with
         | Ok v -> v
@@ -43,7 +39,7 @@ let private getVersion mode =
 let private getOptions mode =
     let url = sprintf "%s/%s" (Map.find mode backend) "api/options"
     fetch url [ RequestProperties.Method HttpMethod.GET ]
-    |> Promise.bind (fun res -> res.text())
+    |> Promise.bind (fun res -> res.text ())
     |> Promise.map (fun (json: string) ->
         match Decoders.decodeOptions json with
         | Ok v -> v
@@ -52,8 +48,10 @@ let private getOptions mode =
 let private getFormattedCode code model =
     let url = sprintf "%s/%s" (Map.find model.Mode backend) "api/format"
     let json = Encoders.encodeRequest code model
-    fetch url [ RequestProperties.Method HttpMethod.POST; RequestProperties.Body (!^json) ]
-    |> Promise.bind (fun res -> res.text())
+    fetch url
+        [ RequestProperties.Method HttpMethod.POST
+          RequestProperties.Body(!^json) ]
+    |> Promise.bind (fun res -> res.text ())
 
 let init (mode: FantomasMode) =
     let cmd =
@@ -64,19 +62,36 @@ let init (mode: FantomasMode) =
     { IsFsi = false
       IsLoading = true
       Version = "???"
-      Options = []
+      DefaultOptions = []
+      UserOptions = Map.empty
       Mode = mode
       Result = None }, cmd
 
 let update code msg model =
     match msg with
-    | VersionReceived version ->
-        { model with Version = version }, Cmd.none
+    | VersionReceived version -> { model with Version = version }, Cmd.none
     | OptionsReceived options ->
-        { model with Options = options; IsLoading = false }, Cmd.none
+        let userOptions =
+            options
+            |> List.map (function
+                | FantomasOption.BoolOption (k, b) as fo -> k, fo
+                | FantomasOption.IntOption (k, i) as fo -> k, fo)
+            |> Map.ofList
+
+        { model with
+              DefaultOptions = options
+              UserOptions = userOptions
+              IsLoading = false }, Cmd.none
     | Format ->
-        { model with IsLoading = true }, Cmd.OfPromise.either (getFormattedCode code) model FormattedReceived NetworkError
+        { model with IsLoading = true },
+        Cmd.OfPromise.either (getFormattedCode code) model FormattedReceived NetworkError
     | FormattedReceived result ->
-        { model with Result = Some result; IsLoading = false }, Cmd.none
-    | _ ->
-        model, Cmd.none
+        { model with
+              Result = Some result
+              IsLoading = false }, Cmd.none
+    | UpdateOption (key, value) ->
+        let userOptions = Map.add key value model.UserOptions
+        { model with UserOptions = userOptions }, Cmd.none
+    | ChangeMode _ ->
+        model, Cmd.none // handle in upper update function
+    | _ -> model, Cmd.none

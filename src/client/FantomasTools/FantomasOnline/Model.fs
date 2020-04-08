@@ -13,11 +13,14 @@ type Msg =
     | NetworkError of exn
     | Format
     | FormattedReceived of string
+    | UpdateOption of (string * FantomasOption)
+    | ChangeMode of FantomasMode
 
 type Model =
     { IsFsi: bool
       Version: string
       IsLoading: bool
-      Options: FantomasOption list
+      DefaultOptions: FantomasOption list
+      UserOptions: Map<string, FantomasOption>
       Mode: FantomasMode
       Result: string option }

@@ -6,7 +6,6 @@ open Fable.React.Props
 open FantomasTools.Client.ASTViewer.Model
 open FantomasTools.Client.Editor
 open Reactstrap
-open Thoth.Json
 
 let private isJsonView =
     function
