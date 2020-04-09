@@ -1,10 +1,10 @@
 module FantomasTools.Client.FantomasOnline.State
 
 open Elmish
-open Elmish.Navigation
 open Fable.Core
 open Fable.Core.JsInterop
 open FantomasOnline.Shared
+open FantomasTools.Client
 open FantomasTools.Client.FantomasOnline
 open FantomasTools.Client.FantomasOnline.Model
 open Fetch
@@ -53,6 +53,10 @@ let private getFormattedCode code model =
           RequestProperties.Body(!^json) ]
     |> Promise.bind (fun res -> res.text ())
 
+let private updateUrl code model _ =
+    let json = Encode.toString 2 (Encoders.encodeUrlModel code model)
+    UrlTools.updateUrlWithData json
+
 let init (mode: FantomasMode) =
     let cmd =
         let versionCmd = Cmd.OfPromise.either getVersion mode VersionReceived NetworkError
@@ -83,8 +87,14 @@ let update code msg model =
               UserOptions = userOptions
               IsLoading = false }, Cmd.none
     | Format ->
-        { model with IsLoading = true },
-        Cmd.OfPromise.either (getFormattedCode code) model FormattedReceived NetworkError
+        let cmd =
+            Cmd.batch [
+                Cmd.OfPromise.either (getFormattedCode code) model FormattedReceived NetworkError
+                Cmd.ofSub (updateUrl code model)
+            ]
+
+        { model with IsLoading = true }, cmd
+
     | FormattedReceived result ->
         { model with
               Result = Some result
