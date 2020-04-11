@@ -16,3 +16,9 @@ let private optionDecoder : Decoder<FantomasOption> =
 let decodeOptions json =
     Decode.fromString (Decode.array optionDecoder) json
     |> Result.map (Array.sortBy sortByOption >> List.ofArray)
+
+let decodeOptionsFromUrl : Decoder<FantomasOption list * bool> =
+    Decode.object (fun get ->
+        let settings = get.Required.Field "settings" (Decode.list optionDecoder)
+        let isFSI = get.Required.Field "isFsi" Decode.bool
+        settings, isFSI)

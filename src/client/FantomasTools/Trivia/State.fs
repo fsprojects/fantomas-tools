@@ -60,14 +60,12 @@ let private modelToParseRequest sourceCode (model: Model) =
       FileName = if model.IsFsi then "script.fsi" else "script.fsx"
       KeepNewlineAfter = model.KeepNewlineAfter }
 
-let init code =
-    let model = UrlTools.restoreModelFromUrl (decodeUrlModel initialModel) initialModel
-
-    let cmd =
-        let fetchCmd = if String.IsNullOrWhiteSpace code then Cmd.none else Cmd.ofMsg GetTrivia
-        let versionCmd = Cmd.OfPromise.either fetchFSCVersion () FSCVersionReceived NetworkError
-        Cmd.batch [ versionCmd; fetchCmd ]
-
+let init isActive =
+    let model =
+        if isActive
+        then UrlTools.restoreModelFromUrl (decodeUrlModel initialModel) initialModel
+        else initialModel
+    let cmd = Cmd.OfPromise.either fetchFSCVersion () FSCVersionReceived NetworkError
     model, cmd
 
 let private updateUrl code (model: Model) _ =

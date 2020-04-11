@@ -65,19 +65,20 @@ let private tabs model dispatch =
         ev.preventDefault()
         dispatch (SelectTab tab)
 
-    let navItem tab label =
-        let isActive = model.ActiveTab = tab
+    let navItem tab label isActive =
         NavItem.navItem [ NavItem.Custom [ OnClick(onNavItemClick tab); Key label ] ]
             [ NavLink.navLink
                 [ NavLink.Custom [ Href(Navigation.toHash tab) ]
                   NavLink.Active isActive ] [ str label ] ]
 
+    let isFantomasTab = function | FantomasTab _ -> true | _ -> false
+
     let navItems =
-        [ navItem HomeTab "Home"
-          navItem TokensTab "FSharp Tokens"
-          navItem ASTTab "AST"
-          navItem TriviaTab "Trivia"
-          navItem (FantomasTab FantomasTools.Client.FantomasOnline.Model.Preview) "Fantomas" ]
+        [ navItem HomeTab "Home" (model.ActiveTab = HomeTab)
+          navItem TokensTab "FSharp Tokens" (model.ActiveTab = HomeTab)
+          navItem ASTTab "AST" (model.ActiveTab = HomeTab)
+          navItem TriviaTab "Trivia" (model.ActiveTab = HomeTab)
+          navItem (FantomasTab FantomasTools.Client.FantomasOnline.Model.Preview) "Fantomas" (isFantomasTab model.ActiveTab) ]
 
     div [ ClassName "col-7 h-100 d-flex flex-column" ]
         [ Nav.nav

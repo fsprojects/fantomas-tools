@@ -57,10 +57,12 @@ let private updateUrl code model _ =
     let json = Encode.toString 2 (Encoders.encodeUrlModel code model)
     UrlTools.updateUrlWithData json
 
+let getOptionsCmd mode = Cmd.OfPromise.either getOptions mode OptionsReceived NetworkError
+
 let init (mode: FantomasMode) =
     let cmd =
         let versionCmd = Cmd.OfPromise.either getVersion mode VersionReceived NetworkError
-        let optionsCmd = Cmd.OfPromise.either getOptions mode OptionsReceived NetworkError
+        let optionsCmd = getOptionsCmd mode
         Cmd.batch [ versionCmd; optionsCmd ]
 
     { IsFsi = false
@@ -71,21 +73,52 @@ let init (mode: FantomasMode) =
       Mode = mode
       Result = None }, cmd
 
-let update code msg model =
+let optionsListToMap options =
+    options
+    |> List.map (function
+        | FantomasOption.BoolOption (_, k, _) as fo -> k, fo
+        | FantomasOption.IntOption (_, k, _) as fo -> k, fo)
+    |> Map.ofList
+
+let private updateOptionValue defaultOption userOption =
+    match defaultOption, userOption with
+    | IntOption(o,k, _), IntOption(_,_,v) -> IntOption(o,k,v)
+    | BoolOption(o,k,_), BoolOption(_,_,v) -> BoolOption(o,k,v)
+    | _ -> defaultOption
+
+let private restoreUserOptionsFromUrl (defaultOptions: FantomasOption list) =
+    let userOptions, isFsi = UrlTools.restoreModelFromUrl (Decoders.decodeOptionsFromUrl) ([], false)
+    let reconstructedOptions =
+        match userOptions with
+        | [] -> optionsListToMap defaultOptions
+        | uo ->
+            defaultOptions
+            |> List.map (fun defOpt ->
+                // map the value from the url if found
+                 let key = getOptionKey defOpt
+                 let matchingUserOption = List.tryFind (fun uOpt -> (getOptionKey uOpt) = key) uo
+                 match matchingUserOption with
+                 | Some muo -> updateOptionValue defOpt muo
+                 | None -> defOpt
+            )
+            |> optionsListToMap
+    reconstructedOptions, isFsi
+
+let update isActiveTab code msg model =
     match msg with
     | VersionReceived version -> { model with Version = version }, Cmd.none
     | OptionsReceived options ->
-        let userOptions =
-            options
-            |> List.map (function
-                | FantomasOption.BoolOption (_, k, _) as fo -> k, fo
-                | FantomasOption.IntOption (_, k, _) as fo -> k, fo)
-            |> Map.ofList
+        let userOptions,isFsi = restoreUserOptionsFromUrl options
+        let cmd =
+            if not (System.String.IsNullOrWhiteSpace code) && isActiveTab
+            then Cmd.ofMsg Format
+            else Cmd.none
 
         { model with
               DefaultOptions = options
               UserOptions = userOptions
-              IsLoading = false }, Cmd.none
+              IsFsi = isFsi
+              IsLoading = false }, cmd
     | Format ->
         let cmd =
             Cmd.batch [

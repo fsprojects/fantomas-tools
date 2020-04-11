@@ -18,19 +18,10 @@ let init _ =
         | Some tab -> tab, Cmd.none
         | None -> ActiveTab.HomeTab, Elmish.Navigation.Navigation.modifyUrl (Navigation.toHash ActiveTab.HomeTab)
 
-    let (triviaModel, triviaCmd) = Trivia.State.init sourceCode
-    let (fsharpTokensModel, fsharpTokensCmd) = FSharpTokens.State.init sourceCode
-    let (astModel, astCmd) = ASTViewer.State.init sourceCode
+    let (triviaModel, triviaCmd) = Trivia.State.init (currentTab = TriviaTab)
+    let (fsharpTokensModel, fsharpTokensCmd) = FSharpTokens.State.init (currentTab = TokensTab)
+    let (astModel, astCmd) = ASTViewer.State.init (currentTab = ASTTab)
     let (fantomasModel, fantomasCmd) = FantomasOnline.State.init (FantomasTools.Client.FantomasOnline.Model.Preview)
-
-    let cmd =
-        Cmd.batch [
-            redirectCmd
-            Cmd.map TriviaMsg triviaCmd
-            Cmd.map FSharpTokensMsg fsharpTokensCmd
-            Cmd.map ASTMsg astCmd
-            Cmd.map FantomasMsg fantomasCmd
-        ]
 
     let model =
         { ActiveTab = currentTab
@@ -39,6 +30,18 @@ let init _ =
           FSharpTokensModel = fsharpTokensModel
           ASTModel = astModel
           FantomasModel = fantomasModel }
+
+    let initialCmd = Navigation.cmdForCurrentTab currentTab model
+
+    let cmd =
+        Cmd.batch [
+            redirectCmd
+            Cmd.map TriviaMsg triviaCmd
+            Cmd.map FSharpTokensMsg fsharpTokensCmd
+            Cmd.map ASTMsg astCmd
+            Cmd.map FantomasMsg fantomasCmd
+            initialCmd
+        ]
 
     model, cmd
 
@@ -58,7 +61,21 @@ let update msg model =
         let (aModel, aCmd) = ASTViewer.State.update model.SourceCode aMsg model.ASTModel
         { model with ASTModel = aModel }, Cmd.map ASTMsg aCmd
     | FantomasMsg (FantomasOnline.Model.ChangeMode mode) ->
-        model, Navigation.Navigation.newUrl (Navigation.toHash (FantomasTab(mode)))
+        let url =
+            // preserve options from hash
+            let hash =
+                let parts = window.location.hash.Split('?')
+                if Seq.length parts = 2
+                then sprintf "?%s" (parts.[1])
+                else System.String.Empty
+            Navigation.toHash (FantomasTab(mode)) + hash
+
+        model, Navigation.Navigation.newUrl url
     | FantomasMsg fMsg ->
-        let (fModel, fCmd) = FantomasOnline.State.update model.SourceCode fMsg model.FantomasModel
+        let isActiveTab =
+            match model.ActiveTab with
+            | FantomasTab _ -> true
+            | _ -> false
+
+        let (fModel, fCmd) = FantomasOnline.State.update isActiveTab model.SourceCode fMsg model.FantomasModel
         { model with FantomasModel = fModel }, Cmd.map FantomasMsg fCmd

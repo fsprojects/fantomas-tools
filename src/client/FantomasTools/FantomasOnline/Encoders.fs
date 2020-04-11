@@ -30,4 +30,5 @@ let encodeRequest code (model: Model) =
 let encodeUrlModel code model =
     Encode.object
         [ "code", Encode.string code
-          "settings", encodeUserSettings model ]
+          "settings", encodeUserSettings model
+          "isFsi", Encode.bool model.IsFsi ]

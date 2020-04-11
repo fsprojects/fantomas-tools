@@ -60,14 +60,12 @@ let private updateUrl code (model: Model) _ =
     let json = Encode.toString 2 (encodeUrlModel code model)
     UrlTools.updateUrlWithData json
 
-let init code =
-    let model = UrlTools.restoreModelFromUrl (decodeUrlModel initialModel) initialModel
-
-    let cmd =
-        let fetchCmd = if String.IsNullOrWhiteSpace code then Cmd.none else Cmd.ofMsg GetTokens
-        let versionCmd = Cmd.OfPromise.either getVersion () VersionFound NetworkException
-        Cmd.batch [ versionCmd; fetchCmd ]
-
+let init isActive =
+    let model =
+        if isActive
+        then UrlTools.restoreModelFromUrl (decodeUrlModel initialModel) initialModel
+        else initialModel
+    let cmd = Cmd.OfPromise.either getVersion () VersionFound NetworkException
     model, cmd
 
 let update code msg model =

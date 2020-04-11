@@ -63,25 +63,13 @@ let private initialModel =
 let private getMessageFromError (ex:exn) = Error ex.Message
 
 // defines the initial state and initial command (= side-effect) of the application
-let init code : Model * Cmd<Msg> =
-    let model = UrlTools.restoreModelFromUrl (decodeUrlModel initialModel) initialModel
-
-    let cmd =
-        let fetchCmd = if String.IsNullOrWhiteSpace code then Cmd.none else Cmd.ofMsg DoParse
-        let versionCmd = Cmd.OfPromise.either getVersion () VersionFound getMessageFromError
-        Cmd.batch [ versionCmd; fetchCmd ]
-
+let init isActive : Model * Cmd<Msg> =
+    let model =
+        if isActive
+        then UrlTools.restoreModelFromUrl (decodeUrlModel initialModel) initialModel
+        else initialModel
+    let cmd = Cmd.OfPromise.either getVersion () VersionFound getMessageFromError
     model, cmd
-
-
-//    let query = URI.parseQuery()
-//    let code = query |> Map.tryFind "code" |> Option.defaultValue ""
-//    let filename = query |> Map.tryFind "filename" |> Option.defaultValue initialModel.FileName
-//    let defines = query |> Map.tryFind "defines" |> Option.defaultValue ""
-//    { initialModel with
-//        Source = code
-//        FileName = filename
-//        Defines = defines}, Cmd.batch [cmd; Cmd.ofMsg (DoParse)]
 
 let private getDefines (model:Model) =
     model.Defines.Split([|' ';',';';'|], StringSplitOptions.RemoveEmptyEntries)
