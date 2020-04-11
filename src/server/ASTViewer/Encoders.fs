@@ -30,12 +30,12 @@ let private encodeKeyValue (k, v: obj) =
         | :? uint16 as ui -> Encode.uint16 ui
         | :? FSharp.Compiler.Range.range as r -> rangeEncoder r
         | :? Fantomas.AstTransformer.Id as id -> idEncoder id
-        | :? FSharp.Compiler.Ast.SynModuleOrNamespaceKind as kind ->
+        | :? FSharp.Compiler.SyntaxTree.SynModuleOrNamespaceKind as kind ->
             match kind with
-            | FSharp.Compiler.Ast.SynModuleOrNamespaceKind.AnonModule -> Encode.string "AnonModule"
-            | FSharp.Compiler.Ast.SynModuleOrNamespaceKind.DeclaredNamespace -> Encode.string "DeclaredNamespace"
-            | FSharp.Compiler.Ast.SynModuleOrNamespaceKind.GlobalNamespace -> Encode.string "GlobalNamespace"
-            | FSharp.Compiler.Ast.SynModuleOrNamespaceKind.NamedModule -> Encode.string "NamedModule"
+            | FSharp.Compiler.SyntaxTree.SynModuleOrNamespaceKind.AnonModule -> Encode.string "AnonModule"
+            | FSharp.Compiler.SyntaxTree.SynModuleOrNamespaceKind.DeclaredNamespace -> Encode.string "DeclaredNamespace"
+            | FSharp.Compiler.SyntaxTree.SynModuleOrNamespaceKind.GlobalNamespace -> Encode.string "GlobalNamespace"
+            | FSharp.Compiler.SyntaxTree.SynModuleOrNamespaceKind.NamedModule -> Encode.string "NamedModule"
         | :? (ref<bool>) as r -> encodeValue r.Value
         | :? (option<FSharp.Compiler.Range.range>) as o -> Encode.option encodeValue o
         | IsList l ->

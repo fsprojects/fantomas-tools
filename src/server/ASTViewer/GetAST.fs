@@ -6,7 +6,7 @@ open Microsoft.Azure.WebJobs.Extensions.Http
 open Microsoft.Extensions.Logging
 open System.IO
 open FSharp.Compiler.SourceCodeServices
-open FSharp.Compiler.Ast
+open FSharp.Compiler.SyntaxTree
 open System.Net
 open System.Net.Http
 open Thoth.Json.Net
