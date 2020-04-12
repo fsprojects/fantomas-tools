@@ -75,9 +75,9 @@ let private tabs model dispatch =
 
     let navItems =
         [ navItem HomeTab "Home" (model.ActiveTab = HomeTab)
-          navItem TokensTab "FSharp Tokens" (model.ActiveTab = HomeTab)
-          navItem ASTTab "AST" (model.ActiveTab = HomeTab)
-          navItem TriviaTab "Trivia" (model.ActiveTab = HomeTab)
+          navItem TokensTab "FSharp Tokens" (model.ActiveTab = TokensTab)
+          navItem ASTTab "AST" (model.ActiveTab = ASTTab)
+          navItem TriviaTab "Trivia" (model.ActiveTab = TriviaTab)
           navItem (FantomasTab FantomasTools.Client.FantomasOnline.Model.Preview) "Fantomas" (isFantomasTab model.ActiveTab) ]
 
     div [ ClassName "col-7 h-100 d-flex flex-column" ]
