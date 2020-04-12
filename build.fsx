@@ -51,6 +51,7 @@ let fantomasLatestPort = 9091
 let localhostBackend port = sprintf "http://localhost:%i" port
 
 let clientDir = __SOURCE_DIRECTORY__ </> "src" </> "client"
+let setClientDir = (fun (opt: Yarn.YarnParams) -> { opt with WorkingDirectory = clientDir })
 let serverDir = __SOURCE_DIRECTORY__ </> "src" </> "server"
 let artifactDir = __SOURCE_DIRECTORY__ </> "artifacts"
 
@@ -83,7 +84,7 @@ Target.create "Watch" (fun _ ->
     Environment.setEnvironVar "FANTOMAS_PREVIEW" (localhostBackend fantomasPreviewPort)
     Environment.setEnvironVar "FRONTEND_PORT" (fablePort.ToString())
 
-    let fable = async { Yarn.exec "start" (fun opt -> { opt with WorkingDirectory = clientDir }) }
+    let fable = async { Yarn.exec "start" setClientDir }
 
     let cors = localhostBackend fablePort
 
@@ -116,6 +117,17 @@ Target.create "DeployFunctions" (fun _ ->
                                 OutputPath = Some output })
             (sprintf "%s/%s/%s.fsproj" serverDir project project)
     )
+)
+
+Target.create "DeployFrontend" (fun _ ->
+    Environment.setEnvironVar "FSHARP_TOKENS_BACKEND" "https://azfun-fsharp-tokens-main.azurewebsites.net"
+    Environment.setEnvironVar "AST_BACKEND" "https://azfun-ast-viewer-main.azurewebsites.net"
+    Environment.setEnvironVar "TRIVIA_BACKEND" "https://azfun-trivia-viewer-main.azurewebsites.net"
+    Environment.setEnvironVar "FANTOMAS_PREVIOUS" "https://azfun-fantomas-online-previous-main.azurewebsites.net"
+    Environment.setEnvironVar "FANTOMAS_LATEST" "https://azfun-fantomas-online-latest-main.azurewebsites.net"
+    Environment.setEnvironVar "FANTOMAS_PREVIEW" "https://azfun-fantomas-online-preview-main.azurewebsites.net"
+
+    Yarn.exec "deploy" setClientDir
 )
 
 open Fake.Core.TargetOperators

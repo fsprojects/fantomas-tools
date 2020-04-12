@@ -71,7 +71,7 @@ module.exports = {
   output: {
     path: resolve("./output"),
     filename: isProduction ? "[name].[hash].js" : "[name].js",
-    publicPath: isProduction ? "/trivia-tool/" : "/"
+    publicPath: isProduction ? "/fantomas-tools/" : "/"
   },
   mode: isProduction ? "production" : "development",
   devtool: isProduction ? undefined : "source-map",

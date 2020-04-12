@@ -71,7 +71,7 @@ let infra () =
           "fantomas-online-previous"
           "fantomas-online-preview"
           "ast-viewer"
-          "fsharp-Tokens"
+          "fsharp-tokens"
           "trivia-viewer" ]
         |> List.map (fun funcName ->
             let path = Path.Combine(artifactsFolder, (toPascalCase funcName))
