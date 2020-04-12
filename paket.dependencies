@@ -26,8 +26,8 @@ source https://api.nuget.org/v3/index.json
 storage: none
 framework: netcoreapp3.1
 
-nuget Pulumi.FSharp 1.11.1-preview
-nuget Pulumi.Azure 1.13.0-preview
+nuget FSharp.Core 4.7.1
+nuget Pulumi.Azure 2.1.0-preview
 
 group Server
 

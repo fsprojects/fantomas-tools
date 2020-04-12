@@ -11,6 +11,13 @@ open Fake.IO.Globbing.Operators
 open Fake.JavaScript
 open Fake.Tools
 
+module Azure =
+    let az parameters =
+        let azPath = ProcessUtils.findPath [] "az"
+        CreateProcess.fromRawCommand azPath parameters
+        |> Proc.run
+        |> ignore
+
 module Func =
     type HostOptions =
         { Cors: string
@@ -98,6 +105,18 @@ Target.create "Watch" (fun _ ->
     Async.Parallel [ fable; fsharpTokens; astViewer; triviaViewer; fantomasPrevious; fantomasLatest; fantomasPreview ]
     |> Async.Ignore
     |> Async.RunSynchronously)
+
+Target.create "DeployFunctions" (fun _ ->
+    ["FantomasOnlineLatest"; "FantomasOnlinePrevious"; "FantomasOnlinePreview"; "ASTViewer"; "FSharpTokens"; "TriviaViewer"]
+    |> List.iter (fun project ->
+        let output = artifactDir </> project
+        DotNet.publish
+            (fun config -> { config with
+                                Configuration = DotNet.BuildConfiguration.Release
+                                OutputPath = Some output })
+            (sprintf "%s/%s/%s.fsproj" serverDir project project)
+    )
+)
 
 open Fake.Core.TargetOperators
 

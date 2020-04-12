@@ -1,13 +1,15 @@
 module Program
 
+open Pulumi
 open Pulumi.Azure.AppInsights
 open Pulumi.Azure.AppService
 open Pulumi.Azure.AppService.Inputs
-open Pulumi.FSharp
 open Pulumi.Azure.Core
 open Pulumi.Azure.Storage
+open Pulumi.FSharp
+open System.IO
 
-let infra() =
+let infra () =
     let stackName = Pulumi.Deployment.Instance.StackName
 
     // Create an Azure Resource Group
@@ -21,6 +23,14 @@ let infra() =
              AccountArgs
                  (ResourceGroupName = io resourceGroup.Name, Name = input (sprintf "storfantomas%s" stackName),
                   AccountReplicationType = input "LRS", AccountTier = input "Standard"))
+
+    // container for zips
+    let zipContainer =
+        Container
+            ("zips",
+             ContainerArgs
+                 (Name = input "zips", StorageAccountName = io storageAccount.Name,
+                  ContainerAccessType = input "private"))
 
     // Create Application Insights
     let applicationsInsight =
@@ -39,42 +49,64 @@ let infra() =
                   Sku = input (PlanSkuArgs(Tier = input "Dynamic", Size = input "Y1")),
                   Name = input (sprintf "azfun-fantomas-plan-%s" stackName)))
 
-    let genericFunctionAppSettings =
-        inputMap
-            [ "FUNCTIONS_WORKER_RUNTIME", input "DotNet"
-              "APPINSIGHTS_INSTRUMENTATIONKEY", io applicationsInsight.InstrumentationKey ]
     let genericSiteConfig =
         input
             (FunctionAppSiteConfigArgs
                 (Http2Enabled = input true,
-                 Cors =
-                     input
-                         (FunctionAppSiteConfigCorsArgs
-                             (AllowedOrigins =
-                                 inputList
-                                     [ input "https://nojaf.be" // temporary
-                                       input "http://localhost:8080" ]))))
+                 Cors = input
+                            (FunctionAppSiteConfigCorsArgs(AllowedOrigins = inputList [ input "https://nojaf.com" ]))))
 
-    let fantomasOnlineApp =
-        FunctionApp
-            ("azfun-fantomas-online-plan",
-             FunctionAppArgs
-                 (ResourceGroupName = io resourceGroup.Name,
-                  Name = input (sprintf "azfun-fantomas-online-%s" stackName), AppServicePlanId = io appServicePlan.Id,
-                  StorageConnectionString = io storageAccount.PrimaryConnectionString,
-                  AppSettings = genericFunctionAppSettings, SiteConfig = genericSiteConfig, HttpsOnly = input true,
-                  Version = input "~3"))
+    let artifactsFolder = @"C:\Users\nojaf\Projects\fantomas-tools\artifacts"
 
-    let fantomasOnlinePreviewApp() = failwith "meh"
-    let fantomasOnlineVersionTwoApp() = failwith "meh"
-    let fsharpTokensApp() = failwith "meh"
-    let astViewerApp() = failwith "meh"
-    let triviaApp() = failwith "meh"
+    let toPascalCase (v: string) =
+        v.Split('-')
+        |> Array.map (fun piece ->
+            if String.length piece > 3
+            then piece.[0].ToString().ToUpper() + piece.Substring(1)
+            else piece.ToUpper())
+        |> String.concat ""
 
-    // Export the connection string for the storage account
+    let functionHostNames =
+        [ "fantomas-online-latest"
+          "fantomas-online-previous"
+          "fantomas-online-preview"
+          "ast-viewer"
+          "fsharp-Tokens"
+          "trivia-viewer" ]
+        |> List.map (fun funcName ->
+            let path = Path.Combine(artifactsFolder, (toPascalCase funcName))
+            let archive: AssetOrArchive = FileArchive(path) :> AssetOrArchive
+            let blob =
+                Blob
+                    (sprintf "%s-zip" funcName,
+                     BlobArgs
+                         (StorageAccountName = io storageAccount.Name, StorageContainerName = io zipContainer.Name,
+                          Type = input "Block", Source = input archive))
+
+            let codeBlobUrl = SharedAccessSignature.SignedBlobReadUrl(blob, storageAccount)
+
+            let functionAppSettings =
+                inputMap
+                    [ "FUNCTIONS_WORKER_RUNTIME", input "DotNet"
+                      "APPINSIGHTS_INSTRUMENTATIONKEY", io applicationsInsight.InstrumentationKey
+                      "WEBSITE_RUN_FROM_PACKAGE", io codeBlobUrl ]
+
+            let funcApp =
+                FunctionApp
+                    (sprintf "azfun-%s-plan" funcName,
+                     FunctionAppArgs
+                         (ResourceGroupName = io resourceGroup.Name,
+                          Name = input (sprintf "azfun-%s-%s" funcName stackName),
+                          AppServicePlanId = io appServicePlan.Id,
+                          StorageConnectionString = io storageAccount.PrimaryConnectionString,
+                          AppSettings = functionAppSettings, SiteConfig = genericSiteConfig, HttpsOnly = input true,
+                          Version = input "~3"))
+
+            (sprintf "%s-app-host-name" funcName, funcApp.DefaultHostname :> obj))
+
     dict
-        [ ("connectionString", storageAccount.PrimaryConnectionString :> obj)
-          ("fantomasOnlineAppHostName", fantomasOnlineApp.DefaultHostname :> obj) ]
+        [ yield ("connectionString", storageAccount.PrimaryConnectionString :> obj)
+          yield! functionHostNames ]
 
 [<EntryPoint>]
 let main _ = Deployment.run infra

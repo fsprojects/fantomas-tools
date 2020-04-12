@@ -1,4 +1,4 @@
 group Infrastructure
 
-Pulumi.FSharp
+FSharp.Core
 Pulumi.Azure
