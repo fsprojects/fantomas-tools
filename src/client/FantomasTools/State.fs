@@ -13,7 +13,6 @@ let private getCodeFromUrl () =
 let init _ =
     let sourceCode = getCodeFromUrl ()
     let currentTab, redirectCmd =
-        JS.console.log (Navigation.parser Dom.window.location)
         match Navigation.parser Dom.window.location with
         | Some tab -> tab, Cmd.none
         | None -> ActiveTab.HomeTab, Elmish.Navigation.Navigation.modifyUrl (Navigation.toHash ActiveTab.HomeTab)
