@@ -18,7 +18,7 @@ let private navigation =
           div [ ClassName "navbar-text py1" ]
               [ Button.button
                   [ Button.Custom
-                      [ Href "https://github.com/nojaf/trivia-tool"
+                      [ Href "https://github.com/nojaf/fantomas-tools"
                         Target "_blank"
                         ClassName "text-white" ]
                     Button.Color Dark ]
