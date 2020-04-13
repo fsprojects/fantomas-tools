@@ -47,7 +47,6 @@ let private initialModel : Model =
       Defines = ""
       FSCVersion = "???"
       IsFsi = false
-      KeepNewlineAfter = false
       Exception = None
       IsLoading = true }
 
@@ -57,8 +56,7 @@ let private splitDefines (value: string) =
 let private modelToParseRequest sourceCode (model: Model) =
     { SourceCode = sourceCode
       Defines = splitDefines model.Defines
-      FileName = if model.IsFsi then "script.fsi" else "script.fsx"
-      KeepNewlineAfter = model.KeepNewlineAfter }
+      FileName = if model.IsFsi then "script.fsi" else "script.fsx" }
 
 let init isActive =
     let model =
@@ -124,5 +122,3 @@ let update code msg model =
         { model with FSCVersion = version; IsLoading = false }, Cmd.none
     | SetFsiFile v ->
         { model with IsFsi = v }, Cmd.none
-    | SetKeepNewlineAfter kna ->
-        { model with KeepNewlineAfter = kna }, Cmd.none

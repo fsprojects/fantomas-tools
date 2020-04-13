@@ -31,7 +31,6 @@ let private mapToTriviaContent (tc: TriviaContent) =
     | Comment c -> Shared.Comment(mapToComment c)
     | Newline -> Shared.Newline
     | Directive d -> Shared.Directive d
-    | NewlineAfter -> Shared.NewlineAfter
 
 let private triviaContentEncoder = Encode.Auto.generateEncoder<Shared.TriviaContent>()
 let private encodeTriviaContent = mapToTriviaContent >> triviaContentEncoder

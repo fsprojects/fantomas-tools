@@ -133,5 +133,6 @@ Target.create "DeployFrontend" (fun _ ->
 open Fake.Core.TargetOperators
 
 "Clean" ==> "Build"
+"Clean" ==> "DeployFunctions"
 
 Target.runOrDefault "Build"

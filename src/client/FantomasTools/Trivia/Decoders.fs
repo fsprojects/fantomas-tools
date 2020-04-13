@@ -44,11 +44,8 @@ let decodeUrlModel (initialModel:Model) : Decoder<Model> =
             get.Optional.Field "defines" (Decode.string) |> Option.defaultValue ""
         let isFsi =
             get.Optional.Field "isFsi" (Decode.bool) |> Option.defaultValue initialModel.IsFsi
-        let keepNewlineAfter =
-            get.Optional.Field "keepNewlineAfter" (Decode.bool) |> Option.defaultValue initialModel.KeepNewlineAfter
 
         { initialModel with
             Defines = defines
-            IsFsi = isFsi
-            KeepNewlineAfter = keepNewlineAfter }
+            IsFsi = isFsi }
     )

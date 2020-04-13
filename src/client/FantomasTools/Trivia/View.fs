@@ -82,11 +82,6 @@ let private settings (model: Model) dispatch =
               [ ButtonGroup.buttonGroup [ ButtonGroup.Custom [ ClassName "btn-group-toggle rounded-0 mw120" ] ]
                     [ toggleButton (SetFsiFile false) (not model.IsFsi) "*.fs"
                       toggleButton (SetFsiFile true) model.IsFsi "*.fsi" ] ]
-          FormGroup.formGroup [ FormGroup.Custom [ ClassName "flex-1" ] ]
-              [ Label.label [] [ str "KeepNewlineAfter" ]
-                ButtonGroup.buttonGroup [ ButtonGroup.Custom [ ClassName "btn-group-toggle rounded-0 mw120" ] ]
-                    [ toggleButton (SetKeepNewlineAfter true) model.KeepNewlineAfter "True"
-                      toggleButton (SetKeepNewlineAfter false) (not model.KeepNewlineAfter) "False" ] ]
           Button.button
               [ Button.Color Primary
                 Button.Custom [ ClassName "rounded-0" ] ]

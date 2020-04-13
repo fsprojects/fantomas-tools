@@ -16,12 +16,10 @@ type Model =
       ActiveByTriviaIndex: int
       Defines: string
       FSCVersion: string
-      IsFsi: bool
-      KeepNewlineAfter: bool }
+      IsFsi: bool }
 
 type UrlModel =
     { IsFsi: bool
-      KeepNewlineAfter: bool
       Defines: string }
 
 type Msg =
@@ -32,5 +30,4 @@ type Msg =
     | UpdateDefines of string
     | FSCVersionReceived of string
     | SetFsiFile of bool
-    | SetKeepNewlineAfter of bool
     | NetworkError of exn
