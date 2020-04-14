@@ -15,6 +15,7 @@ type Msg =
     | FormattedReceived of string
     | UpdateOption of (string * FantomasOption)
     | ChangeMode of FantomasMode
+    | SetFsiFile of bool
 
 type Model =
     { IsFsi: bool

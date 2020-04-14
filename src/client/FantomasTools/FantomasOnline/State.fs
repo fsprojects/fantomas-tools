@@ -137,4 +137,6 @@ let update isActiveTab code msg model =
         { model with UserOptions = userOptions }, Cmd.none
     | ChangeMode _ ->
         model, Cmd.none // handle in upper update function
-    | _ -> model, Cmd.none
+
+    | SetFsiFile isFsi ->
+        { model with IsFsi = isFsi }, Cmd.none

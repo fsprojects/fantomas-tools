@@ -13,7 +13,7 @@ module FormatCode =
         let checker = Fantomas.FakeHelpers.sharedChecker.Force()
         let options = Fantomas.FakeHelpers.createParsingOptionsFromFile filename
         let source = SourceOrigin.SourceString code
-        CodeFormatter.FormatDocumentAsync("tmp.fsx", source, config, options, checker)
+        CodeFormatter.FormatDocumentAsync(filename, source, config, options, checker)
 
     [<FunctionName("FormatCode")>]
     let run

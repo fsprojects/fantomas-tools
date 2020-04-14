@@ -93,6 +93,20 @@ let fantomasModeBar model dispatch =
             [ str "Preview (master branch)" ]
     ]
 
+let fileExtension model dispatch =
+    let toggleButton msg active label =
+        let className =
+            if active then "rounded-0 text-white" else "rounded-0"
+        Button.button
+            [ Button.Custom
+                [ ClassName className
+                  OnClick(fun _ -> dispatch msg) ]
+              Button.Outline(not active) ] [ str label ]
+
+    ButtonGroup.buttonGroup [ ButtonGroup.Custom [ ClassName "btn-group-toggle rounded-0" ] ]
+                    [ toggleButton (SetFsiFile false) (not model.IsFsi) "*.fs"
+                      toggleButton (SetFsiFile true) model.IsFsi "*.fsi" ]
+
 let view model dispatch =
     if model.IsLoading then
         FantomasTools.Client.Loader.loader
@@ -106,6 +120,7 @@ let view model dispatch =
                                 Editor.IsReadOnly true ]) model.Result) ]
               FantomasTools.Client.VersionBar.versionBar (sprintf "Version: %s" model.Version)
               options model dispatch
+              fileExtension model dispatch
               fantomasModeBar model dispatch
               Button.button
                   [ Button.Color Primary
