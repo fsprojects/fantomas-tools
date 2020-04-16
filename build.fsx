@@ -138,6 +138,14 @@ Target.create "Format" (fun _ ->
         if result.OK then result.Messages else result.Errors
         |> List.iter (printfn "%s"))
 
+Target.create "CheckFormat" (fun _ ->
+    DotNet.exec id "run" "-p .deps/fantomas/src/Fantomas.CoreGlobalTool/Fantomas.CoreGlobalTool.fsproj -c Release -- --check --recurse ./src"
+    |> fun result ->
+        if result.OK then result.Messages else result.Errors
+        |> List.iter (printfn "%s")
+
+        if result.ExitCode <> 0 then failwith "No everything was formatted")
+
 open Fake.Core.TargetOperators
 
 "Clean" ==> "Build"
