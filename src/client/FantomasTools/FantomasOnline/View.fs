@@ -16,10 +16,12 @@ let private mapToOption dispatch (key, fantomasOption) =
                     if v then "rounded-0 text-white" else "rounded-0 hover-white"
                     |> ClassName
 
-                let onClick _ = UpdateOption(key, BoolOption(o, key, not v)) |> dispatch
-                Button.Custom
-                    [ className
-                      OnClick onClick ]
+                let onClick _ =
+                    UpdateOption(key, BoolOption(o, key, not v))
+                    |> dispatch
+
+                Button.Custom [ className; OnClick onClick ]
+
             ButtonGroup.buttonGroup [ ButtonGroup.Custom [ ClassName "btn-group-toggle rounded-0 w-25" ] ]
                 [ Button.button
                     [ buttonProps v
@@ -47,9 +49,7 @@ let private mapToOption dispatch (key, fantomasOption) =
                           OnChange onChange
                           Step "1" ] ] ]
 
-    div
-        [ Key key
-          ClassName "flex-1 px-2" ]
+    div [ Key key; ClassName "flex-1 px-2" ]
         [ label [ ClassName "w-75 m-0" ] [ str key ]
           editor ]
 
@@ -66,37 +66,26 @@ let options model dispatch =
 let fantomasModeBar model dispatch =
     let buttonProps mode =
         let className =
-            if mode = model.Mode then
-                "rounded-0 text-white"
-            else
-                "rounded-0 hover-white"
+            if mode = model.Mode then "rounded-0 text-white" else "rounded-0 hover-white"
 
         let custom =
-            Button.Custom [
-                ClassName className
-                OnClick (fun _ -> ChangeMode mode |> dispatch)
-            ]
+            Button.Custom
+                [ ClassName className
+                  OnClick(fun _ -> ChangeMode mode |> dispatch) ]
 
-        [ custom; Button.Outline (mode <> model.Mode) ]
+        [ custom
+          Button.Outline(mode <> model.Mode) ]
 
-    ButtonGroup.buttonGroup [
-        ButtonGroup.Custom [ ClassName "btn-group-toggle rounded-0" ]
-    ] [
-        Button.button
-            (buttonProps FantomasMode.Previous)
-            [ str "Fantomas 2.9.1" ]
-        Button.button
-            (buttonProps FantomasMode.Latest)
-            [ str "Latest on NuGet" ]
-        Button.button
-            (buttonProps FantomasMode.Preview)
-            [ str "Preview (master branch)" ]
-    ]
+    ButtonGroup.buttonGroup [ ButtonGroup.Custom [ ClassName "btn-group-toggle rounded-0" ] ]
+        [ Button.button (buttonProps FantomasMode.Previous) [ str "Fantomas 2.9.1" ]
+          Button.button (buttonProps FantomasMode.Latest) [ str "Latest on NuGet" ]
+          Button.button (buttonProps FantomasMode.Preview) [ str "Preview (master branch)" ] ]
 
 let fileExtension model dispatch =
     let toggleButton msg active label =
         let className =
             if active then "rounded-0 text-white" else "rounded-0"
+
         Button.button
             [ Button.Custom
                 [ ClassName className
@@ -104,8 +93,8 @@ let fileExtension model dispatch =
               Button.Outline(not active) ] [ str label ]
 
     ButtonGroup.buttonGroup [ ButtonGroup.Custom [ ClassName "btn-group-toggle rounded-0" ] ]
-                    [ toggleButton (SetFsiFile false) (not model.IsFsi) "*.fs"
-                      toggleButton (SetFsiFile true) model.IsFsi "*.fsi" ]
+        [ toggleButton (SetFsiFile false) (not model.IsFsi) "*.fs"
+          toggleButton (SetFsiFile true) model.IsFsi "*.fsi" ]
 
 let view model dispatch =
     if model.IsLoading then

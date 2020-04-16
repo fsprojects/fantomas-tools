@@ -12,8 +12,8 @@ type ActiveTab =
 type Model =
     { ActiveTab: ActiveTab
       SourceCode: string
-      TriviaModel : Trivia.Model.Model
-      FSharpTokensModel : FSharpTokens.Model.Model
+      TriviaModel: Trivia.Model.Model
+      FSharpTokensModel: FSharpTokens.Model.Model
       ASTModel: ASTViewer.Model.Model
       FantomasModel: FantomasOnline.Model.Model }
 

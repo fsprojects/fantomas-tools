@@ -17,9 +17,11 @@ let private idEncoder (id: Fantomas.AstTransformer.Id) =
 let private encodeKeyValue (k, v: obj) =
     let (|IsList|_|) (candidate: obj) =
         let t = candidate.GetType()
-        if t.IsGenericType && t.GetGenericTypeDefinition() = typedefof<list<_>>
-        then Some(candidate :?> System.Collections.IEnumerable)
-        else None
+        if t.IsGenericType
+           && t.GetGenericTypeDefinition() = typedefof<list<_>> then
+            Some(candidate :?> System.Collections.IEnumerable)
+        else
+            None
 
     let rec encodeValue (v: obj) =
         match v with

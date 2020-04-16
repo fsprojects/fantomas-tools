@@ -11,14 +11,16 @@ let private decodeRange =
           EndLine = get.Required.Field "endLine" Decode.int
           EndColumn = get.Required.Field "endColumn" Decode.int })
 
-let private decodeTriviaContent = Decode.Auto.generateDecoderCached<TriviaContent>()
+let private decodeTriviaContent =
+    Decode.Auto.generateDecoderCached<TriviaContent> ()
 
 let private decodeTrivia: Decoder<Trivia> =
     Decode.object (fun get ->
         { Item = get.Required.Field "item" decodeTriviaContent
           Range = get.Required.Field "range" decodeRange })
 
-let private decodeTriviaNodeType = Decode.Auto.generateDecoderCached<TriviaNodeType>()
+let private decodeTriviaNodeType =
+    Decode.Auto.generateDecoderCached<TriviaNodeType> ()
 
 let private decodeTriviaNode: Decoder<TriviaNode> =
     Decode.object (fun get ->
@@ -33,19 +35,20 @@ let private decodeParseResult: Decoder<ParseResult> =
         { Trivia = get.Required.Field "trivia" (Decode.list decodeTrivia)
           TriviaNodes = get.Required.Field "triviaNodes" (Decode.list decodeTriviaNode) })
 
-let decodeResult json =
-    Decode.fromString decodeParseResult json
+let decodeResult json = Decode.fromString decodeParseResult json
 
 let decodeVersion json = Decode.fromString Decode.string json
 
-let decodeUrlModel (initialModel:Model) : Decoder<Model> =
+let decodeUrlModel (initialModel: Model): Decoder<Model> =
     Decode.object (fun get ->
         let defines =
-            get.Optional.Field "defines" (Decode.string) |> Option.defaultValue ""
+            get.Optional.Field "defines" (Decode.string)
+            |> Option.defaultValue ""
+
         let isFsi =
-            get.Optional.Field "isFsi" (Decode.bool) |> Option.defaultValue initialModel.IsFsi
+            get.Optional.Field "isFsi" (Decode.bool)
+            |> Option.defaultValue initialModel.IsFsi
 
         { initialModel with
-            Defines = defines
-            IsFsi = isFsi }
-    )
+              Defines = defines
+              IsFsi = isFsi })

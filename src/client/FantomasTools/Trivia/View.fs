@@ -24,9 +24,11 @@ let private tab activeTab tabType tabContent =
         [ TabPane.TabId(!^(tabToId tabType))
           TabPane.Custom [ ClassName tabClassName ] ] [ tabContent ]
 
-let private byTriviaNodes model dispatch = tab model.ActiveTab ByTriviaNodes (ByTriviaNodes.view model dispatch)
+let private byTriviaNodes model dispatch =
+    tab model.ActiveTab ByTriviaNodes (ByTriviaNodes.view model dispatch)
 
-let private byTrivia model dispatch = tab model.ActiveTab ByTrivia (ByTrivia.view model dispatch)
+let private byTrivia model dispatch =
+    tab model.ActiveTab ByTrivia (ByTrivia.view model dispatch)
 
 let private results model dispatch =
     let tabHeader label tabType =
@@ -58,6 +60,7 @@ let private settings (model: Model) dispatch =
     let toggleButton msg active label =
         let className =
             if active then "rounded-0 text-white" else "rounded-0"
+
         Button.button
             [ Button.Custom
                 [ ClassName className
@@ -68,16 +71,13 @@ let private settings (model: Model) dispatch =
         [ Form.Custom
             [ Id "trivia-settings"
               OnSubmit(fun ev ->
-                  ev.preventDefault()
+                  ev.preventDefault ()
                   dispatch GetTrivia) ] ]
         [ FormGroup.formGroup [ FormGroup.Custom [ ClassName "flex-1" ] ]
               [ Input.input
                   [ Input.Custom
                       [ Placeholder "Enter your defines separated with a space"
-                        OnClick(fun ev ->
-                            ev.Value
-                            |> Msg.UpdateDefines
-                            |> dispatch) ] ] ]
+                        OnClick(fun ev -> ev.Value |> Msg.UpdateDefines |> dispatch) ] ] ]
           FormGroup.formGroup []
               [ ButtonGroup.buttonGroup [ ButtonGroup.Custom [ ClassName "btn-group-toggle rounded-0 mw120" ] ]
                     [ toggleButton (SetFsiFile false) (not model.IsFsi) "*.fs"

@@ -17,4 +17,3 @@ let private decodeEnum<'t> (path: string) (token: JsonValue) =
     | _ ->
         let typeName = typeof<'t>.Name
         Error(DecoderError(sprintf "Cannot decode to %s" typeName, ErrorReason.BadField(path, token)))
-

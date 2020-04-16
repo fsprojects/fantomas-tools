@@ -39,7 +39,7 @@ type Msg =
     | Graph of GraphMsg
     | DefinesUpdated of string
     | SetFsiFile of bool
-    | HighLight of (FantomasTools.Client.Editor.HighLightRange)
+    | HighLight of FantomasTools.Client.Editor.HighLightRange
 
 type EditorState =
     | Loading

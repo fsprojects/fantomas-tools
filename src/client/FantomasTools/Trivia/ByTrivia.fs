@@ -39,7 +39,8 @@ let private typeName c =
     | NewlineAfter -> "Newline-after"
 
 let private activeTrivia trivia =
-    let title = sprintf "%s %s" (typeName trivia.Item) (rangeToText trivia.Range)
+    let title =
+        sprintf "%s %s" (typeName trivia.Item) (rangeToText trivia.Range)
 
     let content =
         match trivia.Item with
@@ -53,8 +54,9 @@ let private activeTrivia trivia =
             match c with
             | LineCommentAfterSourceCode c
             | LineCommentOnSingleLine c -> Some c
-            | BlockComment(c, nb, na) ->
-                sprintf "%s (newline before: %b) (newline after: %b)" c nb na |> Some
+            | BlockComment (c, nb, na) ->
+                sprintf "%s (newline before: %b) (newline after: %b)" c nb na
+                |> Some
         | _ -> None
         |> Option.map (fun c -> code [] [ str c ])
 
@@ -73,10 +75,12 @@ let view (model: Model) dispatch =
               Title = label
               Range = t.Range })
 
-    let onClick idx = dispatch (Msg.ActiveItemChange(ActiveTab.ByTrivia, idx))
+    let onClick idx =
+        dispatch (Msg.ActiveItemChange(ActiveTab.ByTrivia, idx))
 
     let activeTrivia =
-        List.tryItem model.ActiveByTriviaIndex model.Trivia |> Option.map activeTrivia
+        List.tryItem model.ActiveByTriviaIndex model.Trivia
+        |> Option.map activeTrivia
 
     div [ ClassName "d-flex h-100" ]
         [ menu onClick model.ActiveByTriviaIndex navItems

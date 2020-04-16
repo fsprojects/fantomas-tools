@@ -6,7 +6,8 @@ open Fable.React.Props
 open Reactstrap
 open TriviaViewer.Shared
 
-let rangeToText (r: Range) = sprintf "(%i,%i - %i,%i)" r.StartLine r.StartColumn r.EndLine r.EndColumn
+let rangeToText (r: Range) =
+    sprintf "(%i,%i - %i,%i)" r.StartLine r.StartColumn r.EndLine r.EndColumn
 
 let private rangeToBadge (r: Range) =
     Badge.badge
@@ -23,11 +24,11 @@ let private triviaContentToDetail tc =
     | Newline -> str "Newline"
     | StringContent sc -> fragment [] (wrap "StringContent" sc)
     | CharContent cc -> fragment [] (wrap "CharContent" cc)
-    | Comment(c) ->
+    | Comment (c) ->
         match c with
-        | BlockComment(bc, _, _) -> (wrap "BlockComment" bc)
-        | LineCommentOnSingleLine(lc) -> (wrap "LineCommentOnSingleLine" lc)
-        | LineCommentAfterSourceCode(lc) -> (wrap "LineCommentAfterSourceCode" lc)
+        | BlockComment (bc, _, _) -> (wrap "BlockComment" bc)
+        | LineCommentOnSingleLine (lc) -> (wrap "LineCommentOnSingleLine" lc)
+        | LineCommentAfterSourceCode (lc) -> (wrap "LineCommentAfterSourceCode" lc)
         |> fun inner ->
             fragment []
                 [ str "Comment("
@@ -51,21 +52,20 @@ let menu onItemClick activeIndex items =
         items
         |> List.mapi (fun idx mi ->
             let className =
-                mi.ClassName |> sprintf "d-flex %s %s" (if idx = activeIndex then "active" else "")
+                mi.ClassName
+                |> sprintf "d-flex %s %s" (if idx = activeIndex then "active" else "")
 
             NavItem.navItem
                 [ NavItem.Custom
                     [ Key !!idx
                       Title mi.Title
                       OnClick(fun ev ->
-                          ev.preventDefault()
+                          ev.preventDefault ()
                           onItemClick idx) ] ]
-                [ NavLink.navLink
-                    [ NavLink.Custom
-                        [ Href "#"
-                          ClassName className ] ]
+                [ NavLink.navLink [ NavLink.Custom [ Href "#"; ClassName className ] ]
                       [ span [ ClassName "mr-4" ] [ str mi.Label ]
                         rangeToBadge mi.Range ] ])
+
     Nav.nav
         [ Nav.Pills true
           Nav.Custom [ ClassName "flex-column" ] ] [ ofList navItems ]

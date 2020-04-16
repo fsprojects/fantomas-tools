@@ -34,9 +34,7 @@ type TriviaNode =
       ContentAfter: TriviaContent list
       Range: Range }
 
-type Trivia =
-    { Item: TriviaContent
-      Range: Range }
+type Trivia = { Item: TriviaContent; Range: Range }
 
 type ParseResult =
     { Trivia: Trivia list

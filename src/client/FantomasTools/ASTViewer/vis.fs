@@ -1,5 +1,6 @@
 // ts2fable 0.7.0
 module rec Vis
+
 open System
 open Fable.Core
 open Browser.Types
@@ -10,7 +11,8 @@ type Array<'T> = System.Collections.Generic.IList<'T>
 // type MomentFormatSpecification = Moment.MomentFormatSpecification
 // type Moment = Moment.Moment
 
-type [<AllowNullLiteral>] IExports =
+[<AllowNullLiteral>]
+type IExports =
     abstract DataSet: DataSetStatic
     abstract DataView: DataViewStatic
     abstract Graph2d: Graph2dStatic
@@ -27,35 +29,39 @@ type [<AllowNullLiteral>] IExports =
 // type MomentConstructor =
 //     U2<MomentConstructor1, MomentConstructor2>
 
-type IdType =
-    U2<string, float>
+type IdType = U2<string, float>
 
-type SubgroupType =
-    IdType
+type SubgroupType = IdType
 
-type DateType =
-    U3<DateTime, float, string>
+type DateType = U3<DateTime, float, string>
 
-type [<StringEnum>] [<RequireQualifiedAccess>] DirectionType =
+[<StringEnum>]
+[<RequireQualifiedAccess>]
+type DirectionType =
     | From
     | To
 
-type HeightWidthType =
-    IdType
+type HeightWidthType = IdType
 
-type [<StringEnum>] [<RequireQualifiedAccess>] TimelineItemType =
+[<StringEnum>]
+[<RequireQualifiedAccess>]
+type TimelineItemType =
     | Box
     | Point
     | Range
     | Background
 
-type [<StringEnum>] [<RequireQualifiedAccess>] TimelineAlignType =
+[<StringEnum>]
+[<RequireQualifiedAccess>]
+type TimelineAlignType =
     | Auto
     | Center
     | Left
     | Right
 
-type [<StringEnum>] [<RequireQualifiedAccess>] TimelineTimeAxisScaleType =
+[<StringEnum>]
+[<RequireQualifiedAccess>]
+type TimelineTimeAxisScaleType =
     | Millisecond
     | Second
     | Minute
@@ -66,7 +72,9 @@ type [<StringEnum>] [<RequireQualifiedAccess>] TimelineTimeAxisScaleType =
     | Month
     | Year
 
-type [<StringEnum>] [<RequireQualifiedAccess>] TimelineEventPropertiesResultWhatType =
+[<StringEnum>]
+[<RequireQualifiedAccess>]
+type TimelineEventPropertiesResultWhatType =
     | Item
     | Background
     | Axis
@@ -74,7 +82,9 @@ type [<StringEnum>] [<RequireQualifiedAccess>] TimelineEventPropertiesResultWhat
     | [<CompiledName "custom-time">] CustomTime
     | [<CompiledName "current-time">] CurrentTime
 
-type [<StringEnum>] [<RequireQualifiedAccess>] TimelineEvents =
+[<StringEnum>]
+[<RequireQualifiedAccess>]
+type TimelineEvents =
     | CurrentTimeTick
     | Click
     | Contextmenu
@@ -94,45 +104,61 @@ type [<StringEnum>] [<RequireQualifiedAccess>] TimelineEvents =
     | Timechange
     | Timechanged
 
-type [<StringEnum>] [<RequireQualifiedAccess>] Graph2dStyleType =
+[<StringEnum>]
+[<RequireQualifiedAccess>]
+type Graph2dStyleType =
     | Line
     | Bar
     | Points
 
-type [<StringEnum>] [<RequireQualifiedAccess>] Graph2dBarChartAlign =
+[<StringEnum>]
+[<RequireQualifiedAccess>]
+type Graph2dBarChartAlign =
     | Left
     | Center
     | Right
 
-type [<StringEnum>] [<RequireQualifiedAccess>] Graph2dDrawPointsStyle =
+[<StringEnum>]
+[<RequireQualifiedAccess>]
+type Graph2dDrawPointsStyle =
     | Square
     | Circle
 
-type [<StringEnum>] [<RequireQualifiedAccess>] LegendPositionType =
+[<StringEnum>]
+[<RequireQualifiedAccess>]
+type LegendPositionType =
     | [<CompiledName "top-right">] TopRight
     | [<CompiledName "top-left">] TopLeft
     | [<CompiledName "bottom-right">] BottomRight
     | [<CompiledName "bottom-left">] BottomLeft
 
-type [<StringEnum>] [<RequireQualifiedAccess>] ParametrizationInterpolationType =
+[<StringEnum>]
+[<RequireQualifiedAccess>]
+type ParametrizationInterpolationType =
     | Centripetal
     | Chordal
     | Uniform
     | Disabled
 
-type [<StringEnum>] [<RequireQualifiedAccess>] TopBottomEnumType =
+[<StringEnum>]
+[<RequireQualifiedAccess>]
+type TopBottomEnumType =
     | Top
     | Bottom
 
-type [<StringEnum>] [<RequireQualifiedAccess>] RightLeftEnumType =
+[<StringEnum>]
+[<RequireQualifiedAccess>]
+type RightLeftEnumType =
     | Right
     | Left
 
-type [<AllowNullLiteral>] LegendPositionOptions =
+[<AllowNullLiteral>]
+type LegendPositionOptions =
     abstract visible: bool option with get, set
     abstract position: LegendPositionType option with get, set
 
-type [<AllowNullLiteral>] LegendOptions =
+[<AllowNullLiteral>]
+type LegendOptions =
     abstract enabled: bool option with get, set
     abstract icons: bool option with get, set
     abstract iconSize: float option with get, set
@@ -140,7 +166,8 @@ type [<AllowNullLiteral>] LegendOptions =
     abstract left: LegendPositionOptions option with get, set
     abstract right: LegendPositionOptions option with get, set
 
-type [<AllowNullLiteral>] DataItem =
+[<AllowNullLiteral>]
+type DataItem =
     abstract className: string option with get, set
     abstract content: string with get, set
     abstract ``end``: DateType option with get, set
@@ -153,49 +180,59 @@ type [<AllowNullLiteral>] DataItem =
     abstract ``type``: string option with get, set
     abstract editable: bool option with get, set
 
-type [<AllowNullLiteral>] PointItem =
+[<AllowNullLiteral>]
+type PointItem =
     inherit DataItem
     abstract x: string with get, set
     abstract y: float with get, set
 
-type [<AllowNullLiteral>] SubGroupStackOptions =
-    [<Emit "$0[$1]{{=$2}}">] abstract Item: name: string -> bool with get, set
+[<AllowNullLiteral>]
+type SubGroupStackOptions =
+    [<Emit "$0[$1]{{=$2}}">]
+    abstract Item: name:string -> bool with get, set
 
-type [<AllowNullLiteral>] DataGroup =
+[<AllowNullLiteral>]
+type DataGroup =
     abstract className: string option with get, set
     abstract content: string with get, set
     abstract id: IdType with get, set
     abstract options: DataGroupOptions option with get, set
     abstract style: string option with get, set
-    abstract subgroupOrder: U2<string, (unit -> unit)> option with get, set
+    abstract subgroupOrder: U2<string, unit -> unit> option with get, set
     abstract title: string option with get, set
     abstract nestedGroups: ResizeArray<IdType> option with get, set
     abstract subgroupStack: U2<SubGroupStackOptions, bool> option with get, set
     abstract visible: bool option with get, set
     abstract showNested: bool option with get, set
 
-type [<AllowNullLiteral>] DataGroupOptions =
-    abstract drawPoints: U2<Graph2dDrawPointsOption, (unit -> unit)> option with get, set
+[<AllowNullLiteral>]
+type DataGroupOptions =
+    abstract drawPoints: U2<Graph2dDrawPointsOption, unit -> unit> option with get, set
     abstract excludeFromLegend: bool option with get, set
     abstract interpolation: U2<bool, InterpolationOptions> option with get, set
     abstract shaded: Graph2dShadedOption option with get, set
     abstract style: string option with get, set
     abstract yAxisOrientation: RightLeftEnumType option with get, set
 
-type [<AllowNullLiteral>] InterpolationOptions =
+[<AllowNullLiteral>]
+type InterpolationOptions =
     abstract parametrization: ParametrizationInterpolationType with get, set
 
-type [<AllowNullLiteral>] TimelineEditableOption =
+[<AllowNullLiteral>]
+type TimelineEditableOption =
     abstract add: bool option with get, set
     abstract remove: bool option with get, set
     abstract updateGroup: bool option with get, set
     abstract updateTime: bool option with get, set
     abstract overrideItems: bool option with get, set
 
-type [<AllowNullLiteral>] TimelineFormatLabelsFunction =
-    [<Emit "$0($1...)">] abstract Invoke: date: DateTime * scale: string * step: float -> string
+[<AllowNullLiteral>]
+type TimelineFormatLabelsFunction =
+    [<Emit "$0($1...)">]
+    abstract Invoke: date:DateTime * scale:string * step:float -> string
 
-type [<AllowNullLiteral>] TimelineFormatLabelsOption =
+[<AllowNullLiteral>]
+type TimelineFormatLabelsOption =
     abstract millisecond: string option with get, set
     abstract second: string option with get, set
     abstract minute: string option with get, set
@@ -206,100 +243,115 @@ type [<AllowNullLiteral>] TimelineFormatLabelsOption =
     abstract month: string option with get, set
     abstract year: string option with get, set
 
-type [<AllowNullLiteral>] TimelineFormatOption =
+[<AllowNullLiteral>]
+type TimelineFormatOption =
     abstract minorLabels: U2<TimelineFormatLabelsOption, TimelineFormatLabelsFunction> option with get, set
     abstract majorLabels: U2<TimelineFormatLabelsOption, TimelineFormatLabelsFunction> option with get, set
 
-type [<AllowNullLiteral>] TimelineGroupEditableOption =
+[<AllowNullLiteral>]
+type TimelineGroupEditableOption =
     abstract add: bool option with get, set
     abstract remove: bool option with get, set
     abstract order: bool option with get, set
 
-type [<AllowNullLiteral>] TimelineHiddenDateOption =
+[<AllowNullLiteral>]
+type TimelineHiddenDateOption =
     abstract start: DateType with get, set
     abstract ``end``: DateType with get, set
     abstract repeat: TimelineHiddenDateOptionRepeat option with get, set
 
-type [<AllowNullLiteral>] TimelineItemsAlwaysDraggableOption =
+[<AllowNullLiteral>]
+type TimelineItemsAlwaysDraggableOption =
     abstract item: bool option with get, set
     abstract range: bool option with get, set
 
-type [<AllowNullLiteral>] TimelineMarginItem =
+[<AllowNullLiteral>]
+type TimelineMarginItem =
     abstract horizontal: float option with get, set
     abstract vertical: float option with get, set
 
-type TimelineMarginItemType =
-    U2<float, TimelineMarginItem>
+type TimelineMarginItemType = U2<float, TimelineMarginItem>
 
-type [<AllowNullLiteral>] TimelineMarginOption =
+[<AllowNullLiteral>]
+type TimelineMarginOption =
     abstract axis: float option with get, set
     abstract item: TimelineMarginItemType option with get, set
 
-type [<AllowNullLiteral>] TimelineOrientationOption =
+[<AllowNullLiteral>]
+type TimelineOrientationOption =
     abstract axis: string option with get, set
     abstract item: string option with get, set
 
-type [<AllowNullLiteral>] TimelineTimeAxisOption =
+[<AllowNullLiteral>]
+type TimelineTimeAxisOption =
     abstract scale: TimelineTimeAxisScaleType option with get, set
     abstract step: float option with get, set
 
-type [<AllowNullLiteral>] TimelineRollingModeOption =
+[<AllowNullLiteral>]
+type TimelineRollingModeOption =
     abstract follow: bool option with get, set
     abstract offset: float option with get, set
 
-type [<AllowNullLiteral>] TimelineTooltipOption =
+[<AllowNullLiteral>]
+type TimelineTooltipOption =
     abstract followMouse: bool option with get, set
     abstract overflowMethod: TimelineTooltipOptionOverflowMethod option with get, set
 
-type [<AllowNullLiteral>] TimelineOptionsConfigureFunction =
-    [<Emit "$0($1...)">] abstract Invoke: option: string * path: ResizeArray<string> -> bool
+[<AllowNullLiteral>]
+type TimelineOptionsConfigureFunction =
+    [<Emit "$0($1...)">]
+    abstract Invoke: option:string * path:ResizeArray<string> -> bool
 
-type TimelineOptionsConfigureType =
-    U2<bool, TimelineOptionsConfigureFunction>
+type TimelineOptionsConfigureType = U2<bool, TimelineOptionsConfigureFunction>
 
-type TimelineOptionsDataAttributesType =
-    U3<bool, string, ResizeArray<string>>
+type TimelineOptionsDataAttributesType = U3<bool, string, ResizeArray<string>>
 
-type TimelineOptionsEditableType =
-    U2<bool, TimelineEditableOption>
+type TimelineOptionsEditableType = U2<bool, TimelineEditableOption>
 
-type [<AllowNullLiteral>] TimelineOptionsItemCallbackFunction =
-    [<Emit "$0($1...)">] abstract Invoke: item: TimelineItem * callback: (TimelineItem option -> unit) -> unit
+[<AllowNullLiteral>]
+type TimelineOptionsItemCallbackFunction =
+    [<Emit "$0($1...)">]
+    abstract Invoke: item:TimelineItem * callback:(TimelineItem option -> unit) -> unit
 
-type [<AllowNullLiteral>] TimelineOptionsGroupCallbackFunction =
-    [<Emit "$0($1...)">] abstract Invoke: group: TimelineGroup * callback: (TimelineGroup option -> unit) -> unit
+[<AllowNullLiteral>]
+type TimelineOptionsGroupCallbackFunction =
+    [<Emit "$0($1...)">]
+    abstract Invoke: group:TimelineGroup * callback:(TimelineGroup option -> unit) -> unit
 
-type TimelineOptionsGroupEditableType =
-    U2<bool, TimelineGroupEditableOption>
+type TimelineOptionsGroupEditableType = U2<bool, TimelineGroupEditableOption>
 
-type TimelineOptionsGroupOrderType =
-    U2<string, TimelineOptionsComparisonFunction>
+type TimelineOptionsGroupOrderType = U2<string, TimelineOptionsComparisonFunction>
 
-type [<AllowNullLiteral>] TimelineOptionsGroupOrderSwapFunction =
-    [<Emit "$0($1...)">] abstract Invoke: fromGroup: obj option * toGroup: obj option * groups: DataSet<DataGroup> -> unit
+[<AllowNullLiteral>]
+type TimelineOptionsGroupOrderSwapFunction =
+    [<Emit "$0($1...)">]
+    abstract Invoke: fromGroup:obj option * toGroup:obj option * groups:DataSet<DataGroup> -> unit
 
-type TimelineOptionsHiddenDatesType =
-    U2<TimelineHiddenDateOption, ResizeArray<TimelineHiddenDateOption>>
+type TimelineOptionsHiddenDatesType = U2<TimelineHiddenDateOption, ResizeArray<TimelineHiddenDateOption>>
 
-type TimelineOptionsItemsAlwaysDraggableType =
-    U2<bool, TimelineItemsAlwaysDraggableOption>
+type TimelineOptionsItemsAlwaysDraggableType = U2<bool, TimelineItemsAlwaysDraggableOption>
 
-type TimelineOptionsMarginType =
-    U2<float, TimelineMarginOption>
+type TimelineOptionsMarginType = U2<float, TimelineMarginOption>
 
-type TimelineOptionsOrientationType =
-    U2<string, TimelineOrientationOption>
+type TimelineOptionsOrientationType = U2<string, TimelineOrientationOption>
 
-type [<AllowNullLiteral>] TimelineOptionsSnapFunction =
-    [<Emit "$0($1...)">] abstract Invoke: date: DateTime * scale: string * step: float -> U2<DateTime, float>
+[<AllowNullLiteral>]
+type TimelineOptionsSnapFunction =
+    [<Emit "$0($1...)">]
+    abstract Invoke: date:DateTime * scale:string * step:float -> U2<DateTime, float>
 
-type [<AllowNullLiteral>] TimelineOptionsTemplateFunction =
-    [<Emit "$0($1...)">] abstract Invoke: ?item: obj * ?element: obj * ?data: obj -> string
+[<AllowNullLiteral>]
+type TimelineOptionsTemplateFunction =
+    [<Emit "$0($1...)">]
+    abstract Invoke: ?item:obj * ?element:obj * ?data:obj -> string
 
-type [<AllowNullLiteral>] TimelineOptionsComparisonFunction =
-    [<Emit "$0($1...)">] abstract Invoke: a: obj option * b: obj option -> float
+[<AllowNullLiteral>]
+type TimelineOptionsComparisonFunction =
+    [<Emit "$0($1...)">]
+    abstract Invoke: a:obj option * b:obj option -> float
 
-type [<AllowNullLiteral>] TimelineOptions =
+[<AllowNullLiteral>]
+type TimelineOptions =
     abstract align: TimelineAlignType option with get, set
     abstract autoResize: bool option with get, set
     abstract clickToUse: bool option with get, set
@@ -320,7 +372,9 @@ type [<AllowNullLiteral>] TimelineOptions =
     abstract locales: obj option with get, set
     // abstract moment: MomentConstructor option with get, set
     abstract margin: TimelineOptionsMarginType option with get, set
+
     abstract max: DateType option with get, set
+
     abstract maxHeight: HeightWidthType option with get, set
     abstract maxMinorChars: float option with get, set
     abstract min: DateType option with get, set
@@ -364,13 +418,14 @@ type [<AllowNullLiteral>] TimelineOptions =
     abstract zoomMax: float option with get, set
     abstract zoomMin: float option with get, set
 
-type TimelineAnimationType =
-    U2<bool, AnimationOptions>
+type TimelineAnimationType = U2<bool, AnimationOptions>
 
-type [<AllowNullLiteral>] TimelineAnimationOptions =
+[<AllowNullLiteral>]
+type TimelineAnimationOptions =
     abstract animation: TimelineAnimationType option with get, set
 
-type [<AllowNullLiteral>] TimelineEventPropertiesResult =
+[<AllowNullLiteral>]
+type TimelineEventPropertiesResult =
     /// The id of the clicked group
     abstract group: float option with get, set
     /// The id of the clicked item.
@@ -390,10 +445,11 @@ type [<AllowNullLiteral>] TimelineEventPropertiesResult =
     /// Name of the clicked thing.
     abstract what: TimelineEventPropertiesResultWhatType option with get, set
     /// The original click event.
-    abstract ``event``: Event with get, set
+    abstract event: Event with get, set
 
 /// Options that can be passed to a DataSet.
-type [<AllowNullLiteral>] DataSetOptions =
+[<AllowNullLiteral>]
+type DataSetOptions =
     inherit DataSetQueueOptions
     /// The name of the field containing the id of the items.
     /// When data is fetched from a server which uses some specific field to identify items,
@@ -408,7 +464,8 @@ type [<AllowNullLiteral>] DataSetOptions =
     /// The available data types are listed in section Data Types.
     abstract ``type``: obj option with get, set
 
-type [<AllowNullLiteral>] DataSetQueueOptions =
+[<AllowNullLiteral>]
+type DataSetQueueOptions =
     /// Queue data changes ('add', 'update', 'remove') and flush them at once.
     /// The queue can be flushed manually by calling DataSet.flush(),
     /// or can be flushed after a configured delay or maximum number of entries.
@@ -420,84 +477,89 @@ type [<AllowNullLiteral>] DataSetQueueOptions =
     /// Default value is Infinity.
     abstract queue: U2<obj option, bool> option with get, set
 
-type [<AllowNullLiteral>] DataSet<'T> =
+[<AllowNullLiteral>]
+type DataSet<'T> =
     /// The number of items in the DataSet.
     abstract length: float with get, set
     /// <summary>Add one or multiple items to the DataSet.
     /// Adding an item will fail when there already is an item with the same id.</summary>
     /// <param name="data">data can be a single item or an array with items.</param>
     /// <param name="senderId">Optional sender id.</param>
-    abstract add: data: U2<'T, ResizeArray<'T>> * ?senderId: IdType -> ResizeArray<IdType>
+    abstract add: data:U2<'T, ResizeArray<'T>> * ?senderId:IdType -> ResizeArray<IdType>
     /// <summary>Clear all data from the DataSet.</summary>
     /// <param name="senderId">Optional sender id.</param>
-    abstract clear: ?senderId: IdType -> ResizeArray<IdType>
+    abstract clear: ?senderId:IdType -> ResizeArray<IdType>
     /// <summary>Find all distinct values of a specified field.
     /// If data items do not contain the specified field are ignored.</summary>
     /// <param name="field">The search term.</param>
-    abstract distinct: field: string -> ResizeArray<obj option>
+    abstract distinct: field:string -> ResizeArray<obj option>
     /// Flush queued changes.
     /// Only available when the DataSet is configured with the option queue.
     abstract flush: unit -> unit
     /// <summary>Execute a callback function for every item in the dataset.</summary>
     /// <param name="callback">The item callback.</param>
     /// <param name="options">Optional options</param>
-    abstract forEach: callback: ('T -> IdType -> unit) * ?options: DataSelectionOptions<'T> -> unit
+    abstract forEach: callback:('T -> IdType -> unit) * ?options:DataSelectionOptions<'T> -> unit
     /// <summary>Get all items from the DataSet.</summary>
     /// <param name="options">Optional options.</param>
-    abstract get: ?options: DataSelectionOptions<'T> -> ResizeArray<'T>
+    abstract get: ?options:DataSelectionOptions<'T> -> ResizeArray<'T>
     /// <summary>Get a single item from the DataSet.</summary>
     /// <param name="id">The item id.</param>
-    abstract get: id: IdType * ?options: DataSelectionOptions<'T> -> 'T option
+    abstract get: id:IdType * ?options:DataSelectionOptions<'T> -> 'T option
     /// <summary>Get multiple items from the DataSet.</summary>
     /// <param name="ids">Array of item ids.</param>
     /// <param name="options">Optional options.</param>
-    abstract get: ids: ResizeArray<IdType> * ?options: DataSelectionOptions<'T> -> ResizeArray<'T>
+    abstract get: ids:ResizeArray<IdType> * ?options:DataSelectionOptions<'T> -> ResizeArray<'T>
     /// Get the DataSet itself.
     /// In case of a DataView, this function does not return the DataSet
     /// to which the DataView is connected.
     abstract getDataSet: unit -> DataSet<'T>
     /// Get ids of all items or of a filtered set of items.
-    abstract getIds: ?options: DataSelectionOptions<'T> -> ResizeArray<IdType>
+    abstract getIds: ?options:DataSelectionOptions<'T> -> ResizeArray<IdType>
     /// <summary>Map every item in the DataSet.</summary>
     /// <param name="callback">The mapping callback.</param>
     /// <param name="options">Optional options.</param>
-    abstract map: callback: ('T -> IdType -> 'M) * ?options: DataSelectionOptions<'T> -> ResizeArray<'M>
+    abstract map: callback:('T -> IdType -> 'M) * ?options:DataSelectionOptions<'T> -> ResizeArray<'M>
     /// Find the item with maximum value of specified field.
-    abstract max: field: string -> 'T
+    abstract max: field:string -> 'T
     /// Find the item with minimum value of specified field.
-    abstract min: field: string -> 'T
+    abstract min: field:string -> 'T
     /// <summary>Subscribe from an event.</summary>
     /// <param name="event">The event name.</param>
     /// <param name="callback">a callback function which will be called each time the event occurs.</param>
-    abstract on: ``event``: string * callback: (string -> obj option -> IdType -> unit) -> unit
+    abstract on: event:string * callback:(string -> obj option -> IdType -> unit) -> unit
     /// <summary>Unsubscribe to an event.</summary>
     /// <param name="event">The event name.</param>
     /// <param name="callback">The exact same callback that was used when calling 'on'.</param>
-    abstract off: ``event``: string * callback: (string -> obj option -> IdType -> unit) -> unit
+    abstract off: event:string * callback:(string -> obj option -> IdType -> unit) -> unit
     /// <summary>Remove one or more items by id.</summary>
     /// <param name="id">The item id.</param>
     /// <param name="senderId">The sender id.</param>
-    abstract remove: id: U2<IdType, ResizeArray<IdType>> * ?senderId: IdType -> ResizeArray<IdType>
+    abstract remove: id:U2<IdType, ResizeArray<IdType>> * ?senderId:IdType -> ResizeArray<IdType>
     /// Set options for the DataSet.
-    abstract setOptions: ?options: DataSetQueueOptions -> unit
+    abstract setOptions: ?options:DataSetQueueOptions -> unit
     /// <summary>Update one or multiple existing items.
     /// When an item doesn't exist, it will be created.</summary>
     /// <param name="data">a single item or an array with items.</param>
-    abstract update: data: U2<'T, ResizeArray<'T>> * ?senderId: IdType -> ResizeArray<IdType>
+    abstract update: data:U2<'T, ResizeArray<'T>> * ?senderId:IdType -> ResizeArray<IdType>
 
-type [<AllowNullLiteral>] DataSetStatic =
+[<AllowNullLiteral>]
+type DataSetStatic =
     /// <summary>Creates an instance of DataSet.</summary>
     /// <param name="options">DataSet options.</param>
-    [<Emit "new $0($1...)">] abstract Create: options: DataSetOptions -> DataSet<'T>
+    [<Emit "new $0($1...)">]
+    abstract Create: options:DataSetOptions -> DataSet<'T>
     /// <summary>Creates an instance of DataSet.</summary>
     /// <param name="data">An Array with items.</param>
     /// <param name="options">DataSet options.</param>
-    [<Emit "new $0($1...)">] abstract Create: ?data: ResizeArray<'T> * ?options: DataSetOptions -> DataSet<'T>
+    [<Emit "new $0($1...)">]
+    abstract Create: ?data:ResizeArray<'T> * ?options:DataSetOptions -> DataSet<'T>
 
 /// The DataSet contains functionality to format, filter, and sort data retrieved
 /// via the methods get, getIds, forEach, and map.
 /// These methods can have these options as a parameter.
-type [<AllowNullLiteral>] DataSelectionOptions<'T> =
+[<AllowNullLiteral>]
+type DataSelectionOptions<'T> =
     /// An array with field names, or an object with current field name
     /// and new field name that the field is returned as.
     /// By default, all properties of the items are emitted.
@@ -516,47 +578,53 @@ type [<AllowNullLiteral>] DataSelectionOptions<'T> =
     /// The function must return a boolean.
     /// All items for which the filter function returns true will be emitted.
     /// See section Data Filtering.
-    abstract filter: item: 'T -> bool
+    abstract filter: item:'T -> bool
     /// Order the items by a field name or custom sort function.
-    abstract order: U2<string, ('T -> 'T -> float)> option with get, set
+    abstract order: U2<string, 'T -> 'T -> float> option with get, set
     /// Determine the type of output of the get function.
     /// Allowed values are 'Array' | 'Object'.
     /// The default returnType is an Array.
     /// The Object type will return a JSON object with the ID's as keys.
     abstract returnType: DataSelectionOptionsReturnType option with get, set
 
-type [<AllowNullLiteral>] DataView<'T> =
+[<AllowNullLiteral>]
+type DataView<'T> =
     abstract length: float with get, set
 
-type [<AllowNullLiteral>] DataViewStatic =
-    [<Emit "new $0($1...)">] abstract Create: items: ResizeArray<'T> -> DataView<'T>
+[<AllowNullLiteral>]
+type DataViewStatic =
+    [<Emit "new $0($1...)">]
+    abstract Create: items:ResizeArray<'T> -> DataView<'T>
 
-type DataItemCollectionType =
-    U3<ResizeArray<DataItem>, DataSet<DataItem>, DataView<DataItem>>
+type DataItemCollectionType = U3<ResizeArray<DataItem>, DataSet<DataItem>, DataView<DataItem>>
 
-type DataGroupCollectionType =
-    U3<ResizeArray<DataGroup>, DataSet<DataGroup>, DataView<DataGroup>>
+type DataGroupCollectionType = U3<ResizeArray<DataGroup>, DataSet<DataGroup>, DataView<DataGroup>>
 
-type [<AllowNullLiteral>] TitleOption =
+[<AllowNullLiteral>]
+type TitleOption =
     abstract text: string option with get, set
     abstract style: string option with get, set
 
-type [<AllowNullLiteral>] RangeType =
+[<AllowNullLiteral>]
+type RangeType =
     abstract min: IdType with get, set
     abstract max: IdType with get, set
 
-type [<AllowNullLiteral>] DataAxisSideOption =
+[<AllowNullLiteral>]
+type DataAxisSideOption =
     abstract range: RangeType option with get, set
     abstract format: unit -> string
     abstract title: TitleOption option with get, set
 
-type [<AllowNullLiteral>] Graph2dBarChartOption =
+[<AllowNullLiteral>]
+type Graph2dBarChartOption =
     abstract width: float option with get, set
     abstract minWidth: float option with get, set
     abstract sideBySide: bool option with get, set
     abstract align: Graph2dBarChartAlign option with get, set
 
-type [<AllowNullLiteral>] Graph2dDataAxisOption =
+[<AllowNullLiteral>]
+type Graph2dDataAxisOption =
     abstract orientation: TimelineOptionsOrientationType option with get, set
     abstract showMinorLabels: bool option with get, set
     abstract showMajorLabels: bool option with get, set
@@ -572,29 +640,28 @@ type [<AllowNullLiteral>] Graph2dDataAxisOption =
     abstract left: DataAxisSideOption option with get, set
     abstract right: DataAxisSideOption option with get, set
 
-type [<AllowNullLiteral>] Graph2dDrawPointsOption =
+[<AllowNullLiteral>]
+type Graph2dDrawPointsOption =
     abstract enabled: bool option with get, set
     abstract onRender: unit -> bool
     abstract size: float option with get, set
     abstract style: Graph2dDrawPointsStyle with get, set
 
-type [<AllowNullLiteral>] Graph2dShadedOption =
+[<AllowNullLiteral>]
+type Graph2dShadedOption =
     abstract orientation: TopBottomEnumType option with get, set
     abstract groupid: IdType option with get, set
 
-type Graph2dOptionBarChart =
-    U2<float, Graph2dBarChartOption>
+type Graph2dOptionBarChart = U2<float, Graph2dBarChartOption>
 
-type Graph2dOptionDataAxis =
-    U2<bool, Graph2dDataAxisOption>
+type Graph2dOptionDataAxis = U2<bool, Graph2dDataAxisOption>
 
-type Graph2dOptionDrawPoints =
-    U2<bool, Graph2dDrawPointsOption>
+type Graph2dOptionDrawPoints = U2<bool, Graph2dDrawPointsOption>
 
-type Graph2dLegendOption =
-    U2<bool, LegendOptions>
+type Graph2dLegendOption = U2<bool, LegendOptions>
 
-type [<AllowNullLiteral>] Graph2dOptions =
+[<AllowNullLiteral>]
+type Graph2dOptions =
     abstract autoResize: bool option with get, set
     abstract barChart: Graph2dOptionBarChart option with get, set
     abstract clickToUse: bool option with get, set
@@ -612,7 +679,9 @@ type [<AllowNullLiteral>] Graph2dOptions =
     abstract locales: obj option with get, set
     // abstract moment: MomentConstructor option with get, set
     abstract max: DateType option with get, set
+
     abstract maxHeight: HeightWidthType option with get, set
+
     abstract maxMinorChars: float option with get, set
     abstract min: DateType option with get, set
     abstract minHeight: HeightWidthType option with get, set
@@ -637,70 +706,80 @@ type [<AllowNullLiteral>] Graph2dOptions =
     abstract zoomMin: float option with get, set
     abstract zIndex: float option with get, set
 
-type [<AllowNullLiteral>] Graph2d =
-    abstract addCustomTime: time: DateType * ?id: IdType -> IdType
+[<AllowNullLiteral>]
+type Graph2d =
+    abstract addCustomTime: time:DateType * ?id:IdType -> IdType
     abstract destroy: unit -> unit
-    abstract fit: ?options: TimelineAnimationOptions -> unit
-    abstract focus: ids: U2<IdType, ResizeArray<IdType>> * ?options: TimelineAnimationOptions -> unit
+    abstract fit: ?options:TimelineAnimationOptions -> unit
+    abstract focus: ids:U2<IdType, ResizeArray<IdType>> * ?options:TimelineAnimationOptions -> unit
     abstract getCurrentTime: unit -> DateTime
-    abstract getCustomTime: ?id: IdType -> DateTime
-    abstract getEventProperties: ``event``: Event -> TimelineEventPropertiesResult
+    abstract getCustomTime: ?id:IdType -> DateTime
+    abstract getEventProperties: event:Event -> TimelineEventPropertiesResult
     abstract getItemRange: unit -> obj option
     abstract getSelection: unit -> ResizeArray<IdType>
     abstract getVisibleItems: unit -> ResizeArray<IdType>
     abstract getWindow: unit -> Graph2dGetWindowReturn
-    abstract moveTo: time: DateType * ?options: TimelineAnimationOptions -> unit
-    abstract on: ``event``: TimelineEvents * callback: (unit -> unit) -> unit
-    abstract off: ``event``: TimelineEvents * callback: (unit -> unit) -> unit
+    abstract moveTo: time:DateType * ?options:TimelineAnimationOptions -> unit
+    abstract on: event:TimelineEvents * callback:(unit -> unit) -> unit
+    abstract off: event:TimelineEvents * callback:(unit -> unit) -> unit
     abstract redraw: unit -> unit
-    abstract removeCustomTime: id: IdType -> unit
-    abstract setCurrentTime: time: DateType -> unit
-    abstract setCustomTime: time: DateType * ?id: IdType -> unit
-    abstract setCustomTimeTitle: title: string * ?id: IdType -> unit
-    abstract setData: data: Graph2dSetDataData -> unit
-    abstract setGroups: ?groups: DataGroupCollectionType -> unit
-    abstract setItems: items: DataItemCollectionType -> unit
-    abstract setOptions: options: TimelineOptions -> unit
-    abstract setSelection: ids: U2<IdType, ResizeArray<IdType>> -> unit
-    abstract setWindow: start: DateType * ``end``: DateType * ?options: TimelineAnimationOptions -> unit
-    abstract setGroups: ?groups: ResizeArray<TimelineGroup> -> unit
-    abstract setItems: ?items: ResizeArray<TimelineItem> -> unit
+    abstract removeCustomTime: id:IdType -> unit
+    abstract setCurrentTime: time:DateType -> unit
+    abstract setCustomTime: time:DateType * ?id:IdType -> unit
+    abstract setCustomTimeTitle: title:string * ?id:IdType -> unit
+    abstract setData: data:Graph2dSetDataData -> unit
+    abstract setGroups: ?groups:DataGroupCollectionType -> unit
+    abstract setItems: items:DataItemCollectionType -> unit
+    abstract setOptions: options:TimelineOptions -> unit
+    abstract setSelection: ids:U2<IdType, ResizeArray<IdType>> -> unit
+    abstract setWindow: start:DateType * ``end``:DateType * ?options:TimelineAnimationOptions -> unit
+    abstract setGroups: ?groups:ResizeArray<TimelineGroup> -> unit
+    abstract setItems: ?items:ResizeArray<TimelineItem> -> unit
     abstract getLegend: unit -> TimelineWindow
-    abstract setWindow: start: obj option * date: obj option -> unit
-    abstract focus: selection: obj option -> unit
-    abstract on: ?``event``: string * ?callback: (obj option -> unit) -> unit
+    abstract setWindow: start:obj option * date:obj option -> unit
+    abstract focus: selection:obj option -> unit
+    abstract on: ?event:string * ?callback:(obj option -> unit) -> unit
 
-type [<AllowNullLiteral>] Graph2dGetWindowReturn =
+[<AllowNullLiteral>]
+type Graph2dGetWindowReturn =
     abstract start: DateTime with get, set
     abstract ``end``: DateTime with get, set
 
-type [<AllowNullLiteral>] Graph2dSetDataData =
+[<AllowNullLiteral>]
+type Graph2dSetDataData =
     abstract groups: DataGroupCollectionType option with get, set
     abstract items: DataItemCollectionType option with get, set
 
-type [<AllowNullLiteral>] Graph2dStatic =
-    [<Emit "new $0($1...)">] abstract Create: container: HTMLElement * items: DataItemCollectionType * groups: DataGroupCollectionType * ?options: Graph2dOptions -> Graph2d
-    [<Emit "new $0($1...)">] abstract Create: container: HTMLElement * items: DataItemCollectionType * ?options: Graph2dOptions -> Graph2d
+[<AllowNullLiteral>]
+type Graph2dStatic =
+    [<Emit "new $0($1...)">]
+    abstract Create: container:HTMLElement * items:DataItemCollectionType * groups:DataGroupCollectionType * ?options:Graph2dOptions
+     -> Graph2d
 
-type [<AllowNullLiteral>] Timeline =
+    [<Emit "new $0($1...)">]
+    abstract Create: container:HTMLElement * items:DataItemCollectionType * ?options:Graph2dOptions -> Graph2d
+
+[<AllowNullLiteral>]
+type Timeline =
     /// Add new vertical bar representing a custom time that can be dragged by the user.
     /// Parameter time can be a Date, Number, or String, and is new Date() by default.
     /// Parameter id can be Number or String and is undefined by default.
     /// The id is added as CSS class name of the custom time bar, allowing to style multiple time bars differently.
     /// The method returns id of the created bar.
-    abstract addCustomTime: time: DateType * ?id: IdType -> IdType
+    abstract addCustomTime: time:DateType * ?id:IdType -> IdType
     /// Destroy the Timeline. The timeline is removed from memory. all DOM elements and event listeners are cleaned up.
     abstract destroy: unit -> unit
     /// Adjust the visible window such that it fits all items. See also focus(id).
-    abstract fit: ?options: TimelineAnimationOptions -> unit
+    abstract fit: ?options:TimelineAnimationOptions -> unit
     /// Adjust the visible window such that the selected item (or multiple items) are centered on screen. See also function fit()
-    abstract focus: ids: U2<IdType, ResizeArray<IdType>> * ?options: TimelineAnimationOptions -> unit
+    abstract focus: ids:U2<IdType, ResizeArray<IdType>> * ?options:TimelineAnimationOptions -> unit
     /// Get the current time. Only applicable when option showCurrentTime is true.
     abstract getCurrentTime: unit -> DateTime
     /// <summary>Retrieve the custom time from the custom time bar with given id.</summary>
     /// <param name="id">Id is undefined by default.</param>
-    abstract getCustomTime: ?id: IdType -> DateTime
-    abstract getEventProperties: ``event``: Event -> TimelineEventPropertiesResult
+    abstract getCustomTime: ?id:IdType -> DateTime
+
+    abstract getEventProperties: event:Event -> TimelineEventPropertiesResult
     /// Get the range of all the items as an object containing min date and max date
     abstract getItemRange: unit -> TimelineGetItemRangeReturn
     /// Get an array with the ids of the currently selected items
@@ -710,102 +789,119 @@ type [<AllowNullLiteral>] Timeline =
     /// Get the current visible window.
     abstract getWindow: unit -> TimelineWindow
     /// Move the window such that given time is centered on screen.
-    abstract moveTo: time: DateType * ?options: TimelineAnimationOptions * ?callback: (obj -> unit) -> unit
+    abstract moveTo: time:DateType * ?options:TimelineAnimationOptions * ?callback:(obj -> unit) -> unit
     /// Create an event listener. The callback function is invoked every time the event is triggered.
-    abstract on: ``event``: TimelineEvents * ?callback: (obj -> unit) -> unit
+    abstract on: event:TimelineEvents * ?callback:(obj -> unit) -> unit
     /// Remove an event listener created before via function on(event[, callback]).
-    abstract off: ``event``: TimelineEvents * ?callback: (obj -> unit) -> unit
+    abstract off: event:TimelineEvents * ?callback:(obj -> unit) -> unit
     /// Force a redraw of the Timeline. The size of all items will be recalculated.
     /// Can be useful to manually redraw when option autoResize=false and the window has been resized, or when the items CSS has been changed.
     abstract redraw: unit -> unit
     /// <summary>Remove vertical bars previously added to the timeline via addCustomTime method.</summary>
     /// <param name="id">ID of the custom vertical bar returned by addCustomTime method.</param>
-    abstract removeCustomTime: id: IdType -> unit
+    abstract removeCustomTime: id:IdType -> unit
     /// Set a current time. This can be used for example to ensure that a client's time is synchronized with a shared server time.
     /// Only applicable when option showCurrentTime is true.
-    abstract setCurrentTime: time: DateType -> unit
+    abstract setCurrentTime: time:DateType -> unit
     /// <summary>Adjust the time of a custom time bar.</summary>
     /// <param name="time">The time the custom time bar should point to</param>
     /// <param name="id">Id of the custom time bar, and is undefined by default.</param>
-    abstract setCustomTime: time: DateType * ?id: IdType -> unit
+    abstract setCustomTime: time:DateType * ?id:IdType -> unit
     /// <summary>Adjust the title attribute of a custom time bar.</summary>
     /// <param name="title">The title shown when hover over time bar</param>
     /// <param name="id">Id of the custom time bar, and is undefined by default.</param>
-    abstract setCustomTimeTitle: title: string * ?id: IdType -> unit
+    abstract setCustomTimeTitle: title:string * ?id:IdType -> unit
     /// Set both groups and items at once. Both properties are optional.
     /// This is a convenience method for individually calling both setItems(items) and setGroups(groups).
     /// Both items and groups can be an Array with Objects, a DataSet (offering 2 way data binding), or a DataView (offering 1 way data binding).
-    abstract setData: data: TimelineSetDataData -> unit
+    abstract setData: data:TimelineSetDataData -> unit
     /// Set a data set with groups for the Timeline.
-    abstract setGroups: ?groups: DataGroupCollectionType -> unit
+    abstract setGroups: ?groups:DataGroupCollectionType -> unit
     /// Set a data set with items for the Timeline.
-    abstract setItems: items: DataItemCollectionType -> unit
+    abstract setItems: items:DataItemCollectionType -> unit
     /// Set or update options. It is possible to change any option of the timeline at any time.
     /// You can for example switch orientation on the fly.
-    abstract setOptions: options: TimelineOptions -> unit
+    abstract setOptions: options:TimelineOptions -> unit
     /// Select one or multiple items by their id. The currently selected items will be unselected.
     /// To unselect all selected items, call `setSelection([])`.
-    abstract setSelection: ids: U2<IdType, ResizeArray<IdType>> * ?options: TimelineSetSelectionOptions -> unit
+    abstract setSelection: ids:U2<IdType, ResizeArray<IdType>> * ?options:TimelineSetSelectionOptions -> unit
     /// <summary>Set the current visible window.</summary>
     /// <param name="start">If the parameter value of start is null, the parameter will be left unchanged.</param>
     /// <param name="end">If the parameter value of end is null, the parameter will be left unchanged.</param>
     /// <param name="options">Timeline animation options. See {@link TimelineAnimationOptions}</param>
     /// <param name="callback">The callback function</param>
-    abstract setWindow: start: DateType * ``end``: DateType * ?options: TimelineAnimationOptions * ?callback: (unit -> unit) -> unit
+    abstract setWindow: start:DateType * ``end``:DateType * ?options:TimelineAnimationOptions * ?callback:(unit -> unit)
+     -> unit
     /// Toggle rollingMode.
     abstract toggleRollingMode: unit -> unit
     /// <summary>Zoom in the current visible window.</summary>
     /// <param name="percentage">A number and must be between 0 and 1. If null, the window will be left unchanged.</param>
     /// <param name="options">Timeline animation options. See {@link TimelineAnimationOptions}</param>
     /// <param name="callback">The callback function</param>
-    abstract zoomIn: percentage: float * ?options: TimelineAnimationOptions * ?callback: (unit -> unit) -> unit
+    abstract zoomIn: percentage:float * ?options:TimelineAnimationOptions * ?callback:(unit -> unit) -> unit
     /// <summary>Zoom out the current visible window.</summary>
     /// <param name="percentage">A number and must be between 0 and 1. If null, the window will be left unchanged.</param>
     /// <param name="options">Timeline animation options. See {@link TimelineAnimationOptions}</param>
     /// <param name="callback">The callback function</param>
-    abstract zoomOut: percentage: float * ?options: TimelineAnimationOptions * ?callback: (unit -> unit) -> unit
-    abstract setGroups: ?groups: ResizeArray<TimelineGroup> -> unit
-    abstract setItems: ?items: ResizeArray<TimelineItem> -> unit
-    abstract setWindow: start: obj option * date: obj option -> unit
-    abstract focus: selection: obj option -> unit
-    abstract on: ?``event``: string * ?callback: (obj option -> unit) -> unit
-    abstract off: ``event``: string * ?callback: (obj -> unit) -> unit
+    abstract zoomOut: percentage:float * ?options:TimelineAnimationOptions * ?callback:(unit -> unit) -> unit
 
-type [<AllowNullLiteral>] TimelineGetItemRangeReturn =
+    abstract setGroups: ?groups:ResizeArray<TimelineGroup> -> unit
+
+    abstract setItems: ?items:ResizeArray<TimelineItem> -> unit
+    abstract setWindow: start:obj option * date:obj option -> unit
+    abstract focus: selection:obj option -> unit
+    abstract on: ?event:string * ?callback:(obj option -> unit) -> unit
+    abstract off: event:string * ?callback:(obj -> unit) -> unit
+
+[<AllowNullLiteral>]
+type TimelineGetItemRangeReturn =
     abstract min: DateTime with get, set
     abstract max: DateTime with get, set
 
-type [<AllowNullLiteral>] TimelineSetDataData =
+[<AllowNullLiteral>]
+type TimelineSetDataData =
     abstract groups: DataGroupCollectionType option with get, set
     abstract items: DataItemCollectionType option with get, set
 
-type [<AllowNullLiteral>] TimelineSetSelectionOptions =
+[<AllowNullLiteral>]
+type TimelineSetSelectionOptions =
     abstract focus: bool with get, set
     abstract animation: TimelineAnimationOptions with get, set
 
-type [<AllowNullLiteral>] TimelineStatic =
-    [<Emit "new $0($1...)">] abstract Create: container: HTMLElement * items: DataItemCollectionType * groups: DataGroupCollectionType * ?options: TimelineOptions -> Timeline
-    [<Emit "new $0($1...)">] abstract Create: container: HTMLElement * items: DataItemCollectionType * ?options: TimelineOptions -> Timeline
+[<AllowNullLiteral>]
+type TimelineStatic =
+    [<Emit "new $0($1...)">]
+    abstract Create: container:HTMLElement * items:DataItemCollectionType * groups:DataGroupCollectionType * ?options:TimelineOptions
+     -> Timeline
 
-type [<AllowNullLiteral>] ITimelineStatic =
-    interface end
+    [<Emit "new $0($1...)">]
+    abstract Create: container:HTMLElement * items:DataItemCollectionType * ?options:TimelineOptions -> Timeline
 
-type [<AllowNullLiteral>] TimelineStaticStatic =
-    [<Emit "new $0($1...)">] abstract Create: id: HTMLElement * data: obj option * ?options: obj -> TimelineStatic
+[<AllowNullLiteral>]
+type ITimelineStatic =
+    interface
+    end
 
-type [<AllowNullLiteral>] TimelineWindow =
+[<AllowNullLiteral>]
+type TimelineStaticStatic =
+    [<Emit "new $0($1...)">]
+    abstract Create: id:HTMLElement * data:obj option * ?options:obj -> TimelineStatic
+
+[<AllowNullLiteral>]
+type TimelineWindow =
     abstract start: DateTime with get, set
     abstract ``end``: DateTime with get, set
 
-type [<AllowNullLiteral>] TimelineItemEditableOption =
+[<AllowNullLiteral>]
+type TimelineItemEditableOption =
     abstract remove: bool option with get, set
     abstract updateGroup: bool option with get, set
     abstract updateTime: bool option with get, set
 
-type TimelineItemEditableType =
-    U2<bool, TimelineItemEditableOption>
+type TimelineItemEditableType = U2<bool, TimelineItemEditableOption>
 
-type [<AllowNullLiteral>] TimelineItem =
+[<AllowNullLiteral>]
+type TimelineItem =
     abstract className: string option with get, set
     abstract align: TimelineAlignType option with get, set
     abstract content: string with get, set
@@ -819,7 +915,8 @@ type [<AllowNullLiteral>] TimelineItem =
     abstract ``type``: TimelineItemType option with get, set
     abstract editable: TimelineItemEditableType option with get, set
 
-type [<AllowNullLiteral>] TimelineGroup =
+[<AllowNullLiteral>]
+type TimelineGroup =
     abstract className: string option with get, set
     abstract content: U2<string, HTMLElement> with get, set
     abstract id: IdType with get, set
@@ -831,10 +928,13 @@ type [<AllowNullLiteral>] TimelineGroup =
     abstract nestedGroups: ResizeArray<IdType> option with get, set
     abstract showNested: bool option with get, set
 
-type [<AllowNullLiteral>] VisSelectProperties =
+[<AllowNullLiteral>]
+type VisSelectProperties =
     abstract items: ResizeArray<float> with get, set
 
-type [<StringEnum>] [<RequireQualifiedAccess>] NetworkEvents =
+[<StringEnum>]
+[<RequireQualifiedAccess>]
+type NetworkEvents =
     | Click
     | DoubleClick
     | Oncontext
@@ -870,7 +970,8 @@ type [<StringEnum>] [<RequireQualifiedAccess>] NetworkEvents =
 /// The visualization is easy to use and supports custom shapes, styles, colors, sizes, images, and more.
 /// The network visualization works smooth on any modern browser for up to a few thousand nodes and edges.
 /// To handle a larger amount of nodes, Network has clustering support. Network uses HTML canvas for rendering.
-type [<AllowNullLiteral>] Network =
+[<AllowNullLiteral>]
+type Network =
     /// Remove the network from the DOM and remove all Hammer bindings and references.
     abstract destroy: unit -> unit
     /// <summary>Override all the data in the network.
@@ -878,55 +979,55 @@ type [<AllowNullLiteral>] Network =
     /// the network will stabilize again.
     /// This method is also performed when first initializing the network.</summary>
     /// <param name="data">network data</param>
-    abstract setData: data: Data -> unit
+    abstract setData: data:Data -> unit
     /// <summary>Set the options.
     /// All available options can be found in the modules above.
     /// Each module requires it's own container with the module name to contain its options.</summary>
     /// <param name="options">network options</param>
-    abstract setOptions: options: Options -> unit
+    abstract setOptions: options:Options -> unit
     /// <summary>Set an event listener.
     /// Depending on the type of event you get different parameters for the callback function.</summary>
     /// <param name="eventName">the name of the event, f.e. 'click'</param>
     /// <param name="callback">the callback function that will be raised</param>
-    abstract on: eventName: NetworkEvents * callback: (obj -> unit) -> unit
+    abstract on: eventName:NetworkEvents * callback:(obj -> unit) -> unit
     /// <summary>Remove an event listener.
     /// The function you supply has to be the exact same as the one you used in the on function.
     /// If no function is supplied, all listeners will be removed.</summary>
     /// <param name="eventName">the name of the event, f.e. 'click'</param>
     /// <param name="callback">the exact same callback function that was used when calling 'on'</param>
-    abstract off: eventName: NetworkEvents * ?callback: (obj -> unit) -> unit
+    abstract off: eventName:NetworkEvents * ?callback:(obj -> unit) -> unit
     /// <summary>Set an event listener only once.
     /// After it has taken place, the event listener will be removed.
     /// Depending on the type of event you get different parameters for the callback function.</summary>
     /// <param name="eventName">the name of the event, f.e. 'click'</param>
     /// <param name="callback">the callback function that will be raised once</param>
-    abstract once: eventName: NetworkEvents * callback: (obj -> unit) -> unit
+    abstract once: eventName:NetworkEvents * callback:(obj -> unit) -> unit
     /// <summary>This function converts canvas coordinates to coordinates on the DOM.
     /// Input and output are in the form of {x:Number, y:Number} (IPosition interface).
     /// The DOM values are relative to the network container.</summary>
     /// <param name="position">the canvas coordinates</param>
-    abstract canvasToDOM: position: Position -> Position
+    abstract canvasToDOM: position:Position -> Position
     /// <summary>This function converts DOM coordinates to coordinates on the canvas.
     /// Input and output are in the form of {x:Number,y:Number} (IPosition interface).
     /// The DOM values are relative to the network container.</summary>
     /// <param name="position">the DOM coordinates</param>
-    abstract DOMtoCanvas: position: Position -> Position
+    abstract DOMtoCanvas: position:Position -> Position
     /// Redraw the network.
     abstract redraw: unit -> unit
     /// <summary>Set the size of the canvas.
     /// This is automatically done on a window resize.</summary>
     /// <param name="width">width in a common format, f.e. '100px'</param>
     /// <param name="height">height in a common format, f.e. '100px'</param>
-    abstract setSize: width: string * height: string -> unit
+    abstract setSize: width:string * height:string -> unit
     /// The joinCondition function is presented with all nodes.
-    abstract cluster: ?options: ClusterOptions -> unit
+    abstract cluster: ?options:ClusterOptions -> unit
     /// <summary>This method looks at the provided node and makes a cluster of it and all it's connected nodes.
     /// The behaviour can be customized by proving the options object.
     /// All options of this object are explained below.
     /// The joinCondition is only presented with the connected nodes.</summary>
     /// <param name="nodeId">the id of the node</param>
     /// <param name="options">the cluster options</param>
-    abstract clusterByConnection: nodeId: string * ?options: ClusterOptions -> unit
+    abstract clusterByConnection: nodeId:string * ?options:ClusterOptions -> unit
     /// <summary>This method checks all nodes in the network and those with a equal or higher
     /// amount of edges than specified with the hubsize qualify.
     /// If a hubsize is not defined, the hubsize will be determined as the average
@@ -935,10 +1036,10 @@ type [<AllowNullLiteral>] Network =
     /// The options object is described for clusterByConnection and does the same here.</summary>
     /// <param name="hubsize">optional hubsize</param>
     /// <param name="options">optional cluster options</param>
-    abstract clusterByHubsize: ?hubsize: float * ?options: ClusterOptions -> unit
+    abstract clusterByHubsize: ?hubsize:float * ?options:ClusterOptions -> unit
     /// <summary>This method will cluster all nodes with 1 edge with their respective connected node.</summary>
     /// <param name="options">optional cluster options</param>
-    abstract clusterOutliers: ?options: ClusterOptions -> unit
+    abstract clusterOutliers: ?options:ClusterOptions -> unit
     /// <summary>Nodes can be in clusters.
     /// Clusters can also be in clusters.
     /// This function returns an array of nodeIds showing where the node is.
@@ -949,39 +1050,39 @@ type [<AllowNullLiteral>] Network =
     ///
     /// network.clustering.findNode('fred') will return ['A','B','C','fred'].</summary>
     /// <param name="nodeId">the node id.</param>
-    abstract findNode: nodeId: IdType -> ResizeArray<IdType>
+    abstract findNode: nodeId:IdType -> ResizeArray<IdType>
     /// <summary>Similar to findNode in that it returns all the edge ids that were
     /// created from the provided edge during clustering.</summary>
     /// <param name="baseEdgeId">the base edge id</param>
-    abstract getClusteredEdges: baseEdgeId: IdType -> ResizeArray<IdType>
+    abstract getClusteredEdges: baseEdgeId:IdType -> ResizeArray<IdType>
     /// When a clusteredEdgeId is available, this method will return the original
     /// baseEdgeId provided in data.edges ie.
     /// After clustering the 'SelectEdge' event is fired but provides only the clustered edge.
     /// This method can then be used to return the baseEdgeId.
-    abstract getBaseEdge: clusteredEdgeId: IdType -> IdType
+    abstract getBaseEdge: clusteredEdgeId:IdType -> IdType
     /// For the given clusteredEdgeId, this method will return all the original
     /// base edge id's provided in data.edges.
     /// For a non-clustered (i.e. 'base') edge, clusteredEdgeId is returned.
     /// Only the base edge id's are returned.
     /// All clustered edges id's under clusteredEdgeId are skipped,
     /// but scanned recursively to return their base id's.
-    abstract getBaseEdges: clusteredEdgeId: IdType -> ResizeArray<IdType>
+    abstract getBaseEdges: clusteredEdgeId:IdType -> ResizeArray<IdType>
     /// Visible edges between clustered nodes are not the same edge as the ones provided
     /// in data.edges passed on network creation. With each layer of clustering, copies of
     /// the edges between clusters are created and the previous edges are hidden,
     /// until the cluster is opened. This method takes an edgeId (ie. a base edgeId from data.edges)
     /// and applys the options to it and any edges that were created from it while clustering.
-    abstract updateEdge: startEdgeId: IdType * ?options: EdgeOptions -> unit
+    abstract updateEdge: startEdgeId:IdType * ?options:EdgeOptions -> unit
     /// Clustered Nodes when created are not contained in the original data.nodes
     /// passed on network creation. This method updates the cluster node.
-    abstract updateClusteredNode: clusteredNodeId: IdType * ?options: NodeOptions -> unit
+    abstract updateClusteredNode: clusteredNodeId:IdType * ?options:NodeOptions -> unit
     /// <summary>Returns true if the node whose ID has been supplied is a cluster.</summary>
     /// <param name="nodeId">the node id.</param>
-    abstract isCluster: nodeId: IdType -> bool
+    abstract isCluster: nodeId:IdType -> bool
     /// <summary>Returns an array of all nodeIds of the nodes that
     /// would be released if you open the cluster.</summary>
     /// <param name="clusterNodeId">the id of the cluster node</param>
-    abstract getNodesInCluster: clusterNodeId: IdType -> ResizeArray<IdType>
+    abstract getNodesInCluster: clusterNodeId:IdType -> ResizeArray<IdType>
     /// <summary>Opens the cluster, releases the contained nodes and edges,
     /// removing the cluster node and cluster edges.
     /// The options object is optional and currently supports one option,
@@ -989,7 +1090,7 @@ type [<AllowNullLiteral>] Network =
     /// position the nodes after the cluster is opened.</summary>
     /// <param name="nodeId">the node id</param>
     /// <param name="options">optional open cluster options</param>
-    abstract openCluster: nodeId: IdType * ?options: OpenClusterOptions -> unit
+    abstract openCluster: nodeId:IdType * ?options:OpenClusterOptions -> unit
     /// If you like the layout of your network
     /// and would like it to start in the same way next time,
     /// ask for the seed using this method and put it in the layout.randomSeed option.
@@ -1022,8 +1123,9 @@ type [<AllowNullLiteral>] Network =
     /// Alternative inputs are a String containing a nodeId or nothing.
     /// When a String is supplied, the position of the node corresponding to the ID is returned.
     /// When nothing is supplied, the positions of all nodes are returned.
-    abstract getPositions: ?nodeIds: ResizeArray<IdType> -> NetworkGetPositionsReturn
-    abstract getPositions: nodeId: IdType -> Position
+    abstract getPositions: ?nodeIds:ResizeArray<IdType> -> NetworkGetPositionsReturn
+
+    abstract getPositions: nodeId:IdType -> Position
     /// When using the vis.DataSet to load your nodes into the network,
     /// this method will put the X and Y positions of all nodes into that dataset.
     /// If you're loading your nodes from a database and have this dynamically coupled with the DataSet,
@@ -1042,17 +1144,18 @@ type [<AllowNullLiteral>] Network =
     /// <param name="nodeId">the node that will be moved</param>
     /// <param name="x">new canvas space x position</param>
     /// <param name="y">new canvas space y position</param>
-    abstract moveNode: nodeId: IdType * x: float * y: float -> unit
+    abstract moveNode: nodeId:IdType * x:float * y:float -> unit
     /// Returns a bounding box for the node including label.
-    abstract getBoundingBox: nodeId: IdType -> BoundingBox
+    abstract getBoundingBox: nodeId:IdType -> BoundingBox
     /// <summary>Returns an array of nodeIds of the all the nodes that are directly connected to this node.
     /// If you supply an edgeId, vis will first match the id to nodes.
     /// If no match is found, it will search in the edgelist and return an array: [fromId, toId].</summary>
     /// <param name="nodeOrEdgeId">a node or edge id</param>
-    abstract getConnectedNodes: nodeOrEdgeId: IdType * ?direction: DirectionType -> U2<ResizeArray<IdType>, Array<NetworkGetConnectedNodesArray>>
+    abstract getConnectedNodes: nodeOrEdgeId:IdType * ?direction:DirectionType
+     -> U2<ResizeArray<IdType>, Array<NetworkGetConnectedNodesArray>>
     /// <summary>Returns an array of edgeIds of the edges connected to this node.</summary>
     /// <param name="nodeId">the node id</param>
-    abstract getConnectedEdges: nodeId: IdType -> ResizeArray<IdType>
+    abstract getConnectedEdges: nodeId:IdType -> ResizeArray<IdType>
     /// Start the physics simulation.
     /// This is normally done whenever needed and is only really useful
     /// if you stop the simulation yourself and wish to continue it afterwards.
@@ -1065,7 +1168,7 @@ type [<AllowNullLiteral>] Network =
     /// All the stabilization options above are used.
     /// You can optionally supply the number of iterations it should do.</summary>
     /// <param name="iterations">the number of iterations it should do</param>
-    abstract stabilize: ?iterations: float -> unit
+    abstract stabilize: ?iterations:float -> unit
     /// Returns an object with selected nodes and edges ids.
     abstract getSelection: unit -> NetworkGetSelectionReturn
     /// Returns an array of selected node ids like so:
@@ -1076,21 +1179,21 @@ type [<AllowNullLiteral>] Network =
     abstract getSelectedEdges: unit -> ResizeArray<IdType>
     /// Returns a nodeId or undefined.
     /// The DOM positions are expected to be in pixels from the top left corner of the canvas.
-    abstract getNodeAt: position: Position -> IdType
+    abstract getNodeAt: position:Position -> IdType
     /// Returns a edgeId or undefined.
     /// The DOM positions are expected to be in pixels from the top left corner of the canvas.
-    abstract getEdgeAt: position: Position -> IdType
+    abstract getEdgeAt: position:Position -> IdType
     /// Selects the nodes corresponding to the id's in the input array.
     /// If highlightEdges is true or undefined, the neighbouring edges will also be selected.
     /// This method unselects all other objects before selecting its own objects. Does not fire events.
-    abstract selectNodes: nodeIds: ResizeArray<IdType> * ?highlightEdges: bool -> unit
+    abstract selectNodes: nodeIds:ResizeArray<IdType> * ?highlightEdges:bool -> unit
     /// Selects the edges corresponding to the id's in the input array.
     /// This method unselects all other objects before selecting its own objects.
     /// Does not fire events.
-    abstract selectEdges: edgeIds: ResizeArray<IdType> -> unit
+    abstract selectEdges: edgeIds:ResizeArray<IdType> -> unit
     /// Sets the selection.
     /// You can also pass only nodes or edges in selection object.
-    abstract setSelection: selection: NetworkSetSelectionSelection * ?options: SelectionOptions -> unit
+    abstract setSelection: selection:NetworkSetSelectionSelection * ?options:SelectionOptions -> unit
     /// Unselect all objects.
     /// Does not fire events.
     abstract unselectAll: unit -> unit
@@ -1101,27 +1204,31 @@ type [<AllowNullLiteral>] Network =
     abstract getViewPosition: unit -> Position
     /// <summary>Zooms out so all nodes fit on the canvas.</summary>
     /// <param name="options">All options are optional for the fit method</param>
-    abstract fit: ?options: FitOptions -> unit
+    abstract fit: ?options:FitOptions -> unit
     /// You can focus on a node with this function.
     /// What that means is the view will lock onto that node, if it is moving, the view will also move accordingly.
     /// If the view is dragged by the user, the focus is broken. You can supply options to customize the effect.
-    abstract focus: nodeId: IdType * ?options: FocusOptions -> unit
+    abstract focus: nodeId:IdType * ?options:FocusOptions -> unit
     /// You can animate or move the camera using the moveTo method.
-    abstract moveTo: options: MoveToOptions -> unit
+    abstract moveTo: options:MoveToOptions -> unit
     /// Programatically release the focussed node.
     abstract releaseNode: unit -> unit
     /// If you use the configurator, you can call this method to get an options object that contains
     /// all differences from the default options caused by users interacting with the configurator.
     abstract getOptionsFromConfigurator: unit -> obj option
 
-type [<AllowNullLiteral>] NetworkGetPositionsReturn =
-    [<Emit "$0[$1]{{=$2}}">] abstract Item: nodeId: string -> Position with get, set
+[<AllowNullLiteral>]
+type NetworkGetPositionsReturn =
+    [<Emit "$0[$1]{{=$2}}">]
+    abstract Item: nodeId:string -> Position with get, set
 
-type [<AllowNullLiteral>] NetworkGetSelectionReturn =
+[<AllowNullLiteral>]
+type NetworkGetSelectionReturn =
     abstract nodes: ResizeArray<IdType> with get, set
     abstract edges: ResizeArray<IdType> with get, set
 
-type [<AllowNullLiteral>] NetworkSetSelectionSelection =
+[<AllowNullLiteral>]
+type NetworkSetSelectionSelection =
     abstract nodes: ResizeArray<IdType> with get, set
     abstract edges: ResizeArray<IdType> with get, set
 
@@ -1129,15 +1236,18 @@ type [<AllowNullLiteral>] NetworkSetSelectionSelection =
 /// The visualization is easy to use and supports custom shapes, styles, colors, sizes, images, and more.
 /// The network visualization works smooth on any modern browser for up to a few thousand nodes and edges.
 /// To handle a larger amount of nodes, Network has clustering support. Network uses HTML canvas for rendering.
-type [<AllowNullLiteral>] NetworkStatic =
+[<AllowNullLiteral>]
+type NetworkStatic =
     /// <summary>Creates an instance of Network.</summary>
     /// <param name="container">the HTML element representing the network container</param>
     /// <param name="data">network data</param>
     /// <param name="options">optional network options</param>
-    [<Emit "new $0($1...)">] abstract Create: container: HTMLElement * data: Data * ?options: Options -> Network
+    [<Emit "new $0($1...)">]
+    abstract Create: container:HTMLElement * data:Data * ?options:Options -> Network
 
 /// Options interface for focus function.
-type [<AllowNullLiteral>] FocusOptions =
+[<AllowNullLiteral>]
+type FocusOptions =
     inherit ViewPortOptions
     /// Locked denotes whether or not the view remains locked to
     /// the node once the zoom-in animation is finished.
@@ -1145,7 +1255,8 @@ type [<AllowNullLiteral>] FocusOptions =
     abstract locked: bool option with get, set
 
 /// Base options interface for some viewport functions.
-type [<AllowNullLiteral>] ViewPortOptions =
+[<AllowNullLiteral>]
+type ViewPortOptions =
     /// The scale is the target zoomlevel.
     /// Default value is 1.0.
     abstract scale: float option with get, set
@@ -1158,13 +1269,15 @@ type [<AllowNullLiteral>] ViewPortOptions =
 
 /// You will have to define at least a scale, position or offset.
 /// Otherwise, there is nothing to move to.
-type [<AllowNullLiteral>] MoveToOptions =
+[<AllowNullLiteral>]
+type MoveToOptions =
     inherit ViewPortOptions
     /// The position (in canvas units!) is the position of the central focus point of the camera.
     abstract position: Position option with get, set
 
 /// Animation options interface.
-type [<AllowNullLiteral>] AnimationOptions =
+[<AllowNullLiteral>]
+type AnimationOptions =
     /// The duration (in milliseconds).
     abstract duration: float with get, set
     /// The easing function.
@@ -1175,7 +1288,9 @@ type [<AllowNullLiteral>] AnimationOptions =
     /// easeInQuint, easeOutQuint, easeInOutQuint.
     abstract easingFunction: EasingFunction with get, set
 
-type [<StringEnum>] [<RequireQualifiedAccess>] EasingFunction =
+[<StringEnum>]
+[<RequireQualifiedAccess>]
+type EasingFunction =
     | Linear
     | EaseInQuad
     | EaseOutQuad
@@ -1191,38 +1306,43 @@ type [<StringEnum>] [<RequireQualifiedAccess>] EasingFunction =
     | EaseInOutQuint
 
 /// Optional options for the fit method.
-type [<AllowNullLiteral>] FitOptions =
+[<AllowNullLiteral>]
+type FitOptions =
     /// The nodes can be used to zoom to fit only specific nodes in the view.
     abstract nodes: ResizeArray<string> option with get, set
     /// For animation you can either use a Boolean to use it with the default options or
     /// disable it or you can define the duration (in milliseconds) and easing function manually.
     abstract animation: TimelineAnimationType with get, set
 
-type [<AllowNullLiteral>] SelectionOptions =
+[<AllowNullLiteral>]
+type SelectionOptions =
     abstract unselectAll: bool option with get, set
     abstract highlightEdges: bool option with get, set
 
 /// These values are in canvas space.
-type [<AllowNullLiteral>] BoundingBox =
+[<AllowNullLiteral>]
+type BoundingBox =
     abstract top: float with get, set
     abstract left: float with get, set
     abstract right: float with get, set
     abstract bottom: float with get, set
 
 /// Cluster methods options interface.
-type [<AllowNullLiteral>] ClusterOptions =
+[<AllowNullLiteral>]
+type ClusterOptions =
     /// Optional for all but the cluster method.
     /// The cluster module loops over all nodes that are selected to be in the cluster
     /// and calls this function with their data as argument. If this function returns true,
     /// this node will be added to the cluster. You have access to all options (including the default)
     /// as well as any custom fields you may have added to the node to determine whether or not to include it in the cluster.
-    abstract joinCondition: nodeOptions: obj option -> bool
+    abstract joinCondition: nodeOptions:obj option -> bool
     /// Optional.
     /// Before creating the new cluster node, this (optional) function will be called with the properties
     /// supplied by you (clusterNodeProperties), all contained nodes and all contained edges.
     /// You can use this to update the properties of the cluster based on which items it contains.
     /// The function should return the properties to create the cluster node.
-    abstract processProperties: clusterOptions: obj option * childNodesOptions: ResizeArray<obj option> * childEdgesOptions: ResizeArray<obj option> -> obj option
+    abstract processProperties: clusterOptions:obj option * childNodesOptions:ResizeArray<obj option> * childEdgesOptions:ResizeArray<obj option>
+     -> obj option
     /// Optional.
     /// This is an object containing the options for the cluster node.
     /// All options described in the nodes module are allowed.
@@ -1239,7 +1359,8 @@ type [<AllowNullLiteral>] ClusterOptions =
     abstract clusterEdgeProperties: EdgeOptions option with get, set
 
 /// Options for the openCluster function of Network.
-type [<AllowNullLiteral>] OpenClusterOptions =
+[<AllowNullLiteral>]
+type OpenClusterOptions =
     /// A function that can be used to manually position the nodes after the cluster is opened.
     /// The containedNodesPositions contain the positions of the nodes in the cluster at the
     /// moment they were clustered. This function is expected to return the newPositions,
@@ -1250,45 +1371,60 @@ type [<AllowNullLiteral>] OpenClusterOptions =
     /// For all nodeIds not listed in this returned object,
     /// we will position them at the location of the cluster.
     /// This is also the default behaviour when no releaseFunction is defined.
-    abstract releaseFunction: clusterPosition: Position * containedNodesPositions: OpenClusterOptionsReleaseFunctionContainedNodesPositions -> OpenClusterOptionsReleaseFunctionReturn
+    abstract releaseFunction: clusterPosition:Position * containedNodesPositions:OpenClusterOptionsReleaseFunctionContainedNodesPositions
+     -> OpenClusterOptionsReleaseFunctionReturn
 
-type [<AllowNullLiteral>] OpenClusterOptionsReleaseFunctionContainedNodesPositions =
-    [<Emit "$0[$1]{{=$2}}">] abstract Item: nodeId: string -> Position with get, set
+[<AllowNullLiteral>]
+type OpenClusterOptionsReleaseFunctionContainedNodesPositions =
+    [<Emit "$0[$1]{{=$2}}">]
+    abstract Item: nodeId:string -> Position with get, set
 
-type [<AllowNullLiteral>] OpenClusterOptionsReleaseFunctionReturn =
-    [<Emit "$0[$1]{{=$2}}">] abstract Item: nodeId: string -> Position with get, set
+[<AllowNullLiteral>]
+type OpenClusterOptionsReleaseFunctionReturn =
+    [<Emit "$0[$1]{{=$2}}">]
+    abstract Item: nodeId:string -> Position with get, set
 
-type [<AllowNullLiteral>] Position =
+[<AllowNullLiteral>]
+type Position =
     abstract x: float with get, set
     abstract y: float with get, set
 
-type [<AllowNullLiteral>] Properties =
+[<AllowNullLiteral>]
+type Properties =
     abstract nodes: ResizeArray<string> with get, set
     abstract edges: ResizeArray<string> with get, set
-    abstract ``event``: ResizeArray<string> with get, set
+    abstract event: ResizeArray<string> with get, set
     abstract pointer: PropertiesPointer with get, set
     abstract previousSelection: PropertiesPreviousSelection option with get, set
 
-type [<AllowNullLiteral>] Callback =
-    abstract callback: ?``params``: obj -> unit
+[<AllowNullLiteral>]
+type Callback =
+    abstract callback: ?``params``:obj -> unit
 
-type [<AllowNullLiteral>] Data =
+[<AllowNullLiteral>]
+type Data =
     abstract nodes: U2<ResizeArray<Node>, DataSet<Node>> option with get, set
     abstract edges: U2<ResizeArray<Edge>, DataSet<Edge>> option with get, set
 
-type [<AllowNullLiteral>] Node =
+[<AllowNullLiteral>]
+type Node =
     inherit NodeOptions
     abstract id: IdType option with get, set
 
-type [<AllowNullLiteral>] Edge =
+[<AllowNullLiteral>]
+type Edge =
     inherit EdgeOptions
     abstract from: IdType option with get, set
     abstract ``to``: IdType option with get, set
     abstract id: IdType option with get, set
 
-type [<AllowNullLiteral>] Locales =
-    [<Emit "$0[$1]{{=$2}}">] abstract Item: language: string -> LocaleMessages option with get, set
+[<AllowNullLiteral>]
+type Locales =
+    [<Emit "$0[$1]{{=$2}}">]
+    abstract Item: language:string -> LocaleMessages option with get, set
+
     abstract en: LocaleMessages option with get, set
+
     abstract cn: LocaleMessages option with get, set
     abstract de: LocaleMessages option with get, set
     abstract es: LocaleMessages option with get, set
@@ -1297,7 +1433,8 @@ type [<AllowNullLiteral>] Locales =
     abstract ``pt-br``: LocaleMessages option with get, set
     abstract ru: LocaleMessages option with get, set
 
-type [<AllowNullLiteral>] LocaleMessages =
+[<AllowNullLiteral>]
+type LocaleMessages =
     abstract edit: string with get, set
     abstract del: string with get, set
     abstract back: string with get, set
@@ -1312,7 +1449,8 @@ type [<AllowNullLiteral>] LocaleMessages =
     abstract deleteClusterError: string with get, set
     abstract editClusterError: string with get, set
 
-type [<AllowNullLiteral>] Options =
+[<AllowNullLiteral>]
+type Options =
     abstract autoResize: bool option with get, set
     abstract width: string option with get, set
     abstract height: string option with get, set
@@ -1328,17 +1466,20 @@ type [<AllowNullLiteral>] Options =
     abstract manipulation: obj option with get, set
     abstract physics: obj option with get, set
 
-type [<AllowNullLiteral>] Image =
+[<AllowNullLiteral>]
+type Image =
     abstract unselected: string option with get, set
     abstract selected: string option with get, set
 
-type [<AllowNullLiteral>] Color =
+[<AllowNullLiteral>]
+type Color =
     abstract border: string option with get, set
     abstract background: string option with get, set
     abstract highlight: U2<string, ColorHighlight> option with get, set
     abstract hover: U2<string, ColorHighlight> option with get, set
 
-type [<AllowNullLiteral>] NodeOptions =
+[<AllowNullLiteral>]
+type NodeOptions =
     abstract borderWidth: float option with get, set
     abstract borderWidthSelected: float option with get, set
     abstract brokenImage: string option with get, set
@@ -1366,10 +1507,13 @@ type [<AllowNullLiteral>] NodeOptions =
     /// The node's label's lines will be broken on spaces to stay below the maximum and the node's width
     /// will be set to the minimum if less than the value.
     abstract widthConstraint: U3<float, bool, NodeOptionsWidthConstraint> option with get, set
+
     abstract x: float option with get, set
+
     abstract y: float option with get, set
 
-type [<AllowNullLiteral>] EdgeOptions =
+[<AllowNullLiteral>]
+type EdgeOptions =
     abstract arrows: U2<string, EdgeOptionsArrows> option with get, set
     abstract arrowStrikethrough: bool option with get, set
     abstract color: U2<string, EdgeOptionsColor> option with get, set
@@ -1390,64 +1534,80 @@ type [<AllowNullLiteral>] EdgeOptions =
     abstract value: float option with get, set
     abstract width: float option with get, set
 
-type [<AllowNullLiteral>] FontOptions =
+[<AllowNullLiteral>]
+type FontOptions =
     abstract color: string option with get, set
     abstract size: float option with get, set
     abstract face: string option with get, set
     abstract ``mod``: string option with get, set
     abstract vadjust: string option with get, set
 
-type [<AllowNullLiteral>] OptionsScaling =
+[<AllowNullLiteral>]
+type OptionsScaling =
     abstract min: float option with get, set
     abstract max: float option with get, set
     abstract label: U2<bool, OptionsScalingLabel> option with get, set
-    abstract customScalingFunction: ?min: float * ?max: float * ?total: float * ?value: float -> float
+    abstract customScalingFunction: ?min:float * ?max:float * ?total:float * ?value:float -> float
 
-type [<AllowNullLiteral>] OptionsShadow =
+[<AllowNullLiteral>]
+type OptionsShadow =
     abstract enabled: bool with get, set
     abstract color: string with get, set
     abstract size: float with get, set
     abstract x: float with get, set
     abstract y: float with get, set
 
-type [<StringEnum>] [<RequireQualifiedAccess>] TimelineHiddenDateOptionRepeat =
+[<StringEnum>]
+[<RequireQualifiedAccess>]
+type TimelineHiddenDateOptionRepeat =
     | Daily
     | Weekly
     | Monthly
     | Yearly
 
-type [<StringEnum>] [<RequireQualifiedAccess>] TimelineTooltipOptionOverflowMethod =
+[<StringEnum>]
+[<RequireQualifiedAccess>]
+type TimelineTooltipOptionOverflowMethod =
     | Cap
     | Flip
 
-type [<AllowNullLiteral>] TimelineOptionsTooltipOnItemUpdateTime =
-    abstract template: item: obj option -> obj option
+[<AllowNullLiteral>]
+type TimelineOptionsTooltipOnItemUpdateTime =
+    abstract template: item:obj option -> obj option
 
-type [<StringEnum>] [<RequireQualifiedAccess>] DataSelectionOptionsReturnType =
+[<StringEnum>]
+[<RequireQualifiedAccess>]
+type DataSelectionOptionsReturnType =
     | [<CompiledName "Array">] Array
     | [<CompiledName "Object">] Object
 
-type [<AllowNullLiteral>] NetworkGetConnectedNodesArray =
+[<AllowNullLiteral>]
+type NetworkGetConnectedNodesArray =
     abstract fromId: IdType with get, set
     abstract toId: IdType with get, set
 
-type [<AllowNullLiteral>] PropertiesPointer =
+[<AllowNullLiteral>]
+type PropertiesPointer =
     abstract DOM: Position with get, set
     abstract canvas: Position with get, set
 
-type [<AllowNullLiteral>] PropertiesPreviousSelection =
+[<AllowNullLiteral>]
+type PropertiesPreviousSelection =
     abstract nodes: ResizeArray<string> with get, set
     abstract edges: ResizeArray<string> with get, set
 
-type [<AllowNullLiteral>] ColorHighlight =
+[<AllowNullLiteral>]
+type ColorHighlight =
     abstract border: string option with get, set
     abstract background: string option with get, set
 
-type [<AllowNullLiteral>] NodeOptionsFixed =
+[<AllowNullLiteral>]
+type NodeOptionsFixed =
     abstract x: bool option with get, set
     abstract y: bool option with get, set
 
-type [<AllowNullLiteral>] NodeOptionsFont =
+[<AllowNullLiteral>]
+type NodeOptionsFont =
     abstract color: string option with get, set
     abstract size: float option with get, set
     abstract face: string option with get, set
@@ -1462,53 +1622,62 @@ type [<AllowNullLiteral>] NodeOptionsFont =
     abstract boldital: U2<string, FontOptions> option with get, set
     abstract mono: U2<string, FontOptions> option with get, set
 
-type [<AllowNullLiteral>] NodeOptionsIcon =
+[<AllowNullLiteral>]
+type NodeOptionsIcon =
     abstract face: string option with get, set
     abstract code: string option with get, set
     abstract size: float option with get, set
     abstract color: string option with get, set
 
-type [<AllowNullLiteral>] NodeOptionsMargin =
+[<AllowNullLiteral>]
+type NodeOptionsMargin =
     abstract top: float option with get, set
     abstract right: float option with get, set
     abstract bottom: float option with get, set
     abstract left: float option with get, set
 
-type [<AllowNullLiteral>] NodeOptionsShapeProperties =
+[<AllowNullLiteral>]
+type NodeOptionsShapeProperties =
     abstract borderDashes: U2<bool, ResizeArray<float>> option with get, set
     abstract borderRadius: float option with get, set
     abstract interpolation: bool option with get, set
     abstract useImageSize: bool option with get, set
     abstract useBorderWithImage: bool option with get, set
 
-type [<AllowNullLiteral>] NodeOptionsWidthConstraint =
+[<AllowNullLiteral>]
+type NodeOptionsWidthConstraint =
     abstract minimum: float option with get, set
     abstract maximum: float option with get, set
 
-type [<AllowNullLiteral>] EdgeOptionsArrowsTo =
+[<AllowNullLiteral>]
+type EdgeOptionsArrowsTo =
     abstract enabled: bool option with get, set
     abstract scaleFactor: float option with get, set
     abstract ``type``: string option with get, set
 
-type [<AllowNullLiteral>] EdgeOptionsArrows =
+[<AllowNullLiteral>]
+type EdgeOptionsArrows =
     abstract ``to``: U2<bool, EdgeOptionsArrowsTo> option with get, set
     abstract middle: U2<bool, EdgeOptionsArrowsTo> option with get, set
     abstract from: U2<bool, EdgeOptionsArrowsTo> option with get, set
 
-type [<AllowNullLiteral>] EdgeOptionsColor =
+[<AllowNullLiteral>]
+type EdgeOptionsColor =
     abstract color: string option with get, set
     abstract highlight: string option with get, set
     abstract hover: string option with get, set
     abstract ``inherit``: U2<bool, string> option with get, set
     abstract opacity: float option with get, set
 
-type [<AllowNullLiteral>] EdgeOptionsSmooth =
+[<AllowNullLiteral>]
+type EdgeOptionsSmooth =
     abstract enabled: bool with get, set
     abstract ``type``: string with get, set
     abstract forceDirection: U2<string, bool> option with get, set
     abstract roundness: float with get, set
 
-type [<AllowNullLiteral>] OptionsScalingLabel =
+[<AllowNullLiteral>]
+type OptionsScalingLabel =
     abstract enabled: bool option with get, set
     abstract min: float option with get, set
     abstract max: float option with get, set

@@ -20,8 +20,10 @@ let private decodeToken: Decoder<Token> =
           LineNumber = get.Required.Field "lineNumber" Decode.int
           Content = get.Required.Field "content" Decode.string })
 
-let decodeTokens json = Decode.fromString (Decode.array decodeToken) json
+let decodeTokens json =
+    Decode.fromString (Decode.array decodeToken) json
 
 let decodeUrlModel initialModel: Decoder<Model> =
-    Decode.object (fun get -> { initialModel with Defines = get.Required.Field "defines" Decode.string })
-
+    Decode.object (fun get ->
+        { initialModel with
+              Defines = get.Required.Field "defines" Decode.string })

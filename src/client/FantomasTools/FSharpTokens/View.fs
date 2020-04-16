@@ -5,7 +5,8 @@ open Fable.React.Props
 open FantomasTools.Client.FSharpTokens.Model
 open Reactstrap
 
-let private tokenNameClass token = sprintf "is-%s" (token.TokenInfo.TokenName.ToLower())
+let private tokenNameClass token =
+    sprintf "is-%s" (token.TokenInfo.TokenName.ToLower())
 
 let private lineToken dispatch index (token: Token) =
     div
@@ -15,7 +16,9 @@ let private lineToken dispatch index (token: Token) =
         [ span [ ClassName(sprintf "tag %s" (tokenNameClass token)) ] [ str token.TokenInfo.TokenName ] ]
 
 let private line dispatch activeLine (lineNumber, tokens) =
-    let tokens = tokens |> Array.mapi (fun idx token -> lineToken dispatch idx token)
+    let tokens =
+        tokens
+        |> Array.mapi (fun idx token -> lineToken dispatch idx token)
 
     let className =
         match activeLine with
@@ -43,7 +46,8 @@ let private tokenDetailRow label content =
           td [] [ content ] ]
 
 let private tokenDetail dispatch index token =
-    let className = tokenNameClass token |> sprintf "tag is-large %s"
+    let className =
+        tokenNameClass token |> sprintf "tag is-large %s"
 
     let { TokenName = tokenName; LeftColumn = leftColumn; RightColumn = rightColumn; ColorClass = colorClass;
           CharClass = charClass; Tag = tag; FullMatchedLength = fullMatchedLength }
@@ -90,16 +94,13 @@ let private settings model dispatch =
         [ Form.Custom
             [ Id "tokens-settings"
               OnSubmit(fun ev ->
-                  ev.preventDefault()
+                  ev.preventDefault ()
                   dispatch GetTokens) ] ]
         [ FormGroup.formGroup [ FormGroup.Custom [ ClassName "flex-1" ] ]
               [ Input.input
                   [ Input.Custom
                       [ Placeholder "Enter your defines separated with a space"
-                        OnChange(fun ev ->
-                            ev.Value
-                            |> Msg.DefinesUpdated
-                            |> dispatch)
+                        OnChange(fun ev -> ev.Value |> Msg.DefinesUpdated |> dispatch)
                         DefaultValue model.Defines ] ] ]
           Button.button
               [ Button.Color Primary
@@ -112,7 +113,9 @@ let view model dispatch =
         if model.IsLoading then
             FantomasTools.Client.Loader.loader
         else
-            div [ClassName "tab-result"] [ tokens model dispatch ; details model dispatch ]
+            div [ ClassName "tab-result" ]
+                [ tokens model dispatch
+                  details model dispatch ]
 
     fragment []
         [ inner

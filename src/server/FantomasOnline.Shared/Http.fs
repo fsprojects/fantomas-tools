@@ -19,12 +19,17 @@ module Reflection =
     open FSharp.Reflection
 
     let inline getRecordFields x =
-        let names = FSharpType.GetRecordFields(x.GetType()) |> Seq.map (fun x -> x.Name)
+        let names =
+            FSharpType.GetRecordFields(x.GetType())
+            |> Seq.map (fun x -> x.Name)
+
         let values = FSharpValue.GetRecordFields x
         Seq.zip names values |> Seq.toArray
 
 let private notFound () =
-    let json = Encode.string "Not found" |> Encode.toString 4
+    let json =
+        Encode.string "Not found" |> Encode.toString 4
+
     new HttpResponseMessage(HttpStatusCode.NotFound,
                             Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json"))
     |> Async.lift
@@ -42,9 +47,10 @@ let private sendInternalError err =
                             Content = new StringContent(err, System.Text.Encoding.UTF8, "application/text"))
 
 let private getVersionResponse version =
-    let json = Encode.string version |> Encode.toString 4
-    sendJson json
-    |> Async.lift
+    let json =
+        Encode.string version |> Encode.toString 4
+
+    sendJson json |> Async.lift
 
 let private mapFantomasOptionsToRecord<'t> options =
     let newValues =
@@ -62,7 +68,10 @@ let private formatResponse<'options> (format: string -> string -> 'options -> As
         use stream = new StreamReader(req.Body)
         let! json = stream.ReadToEndAsync() |> Async.AwaitTask
         let model = Decoders.decodeRequest json
-        let configResult = Result.map (fun r -> r, mapFantomasOptionsToRecord r.Options) model
+
+        let configResult =
+            Result.map (fun r -> r, mapFantomasOptionsToRecord r.Options) model
+
         match configResult with
         | Ok ({ SourceCode = code; IsFsi = isFsi }, config) ->
             let fileName = if isFsi then "tmp.fsi" else "tmp.fsx"
@@ -100,6 +109,5 @@ let main
     match method, path with
     | "POST", "/api/format" -> formatResponse format req
     | "GET", "/api/options" -> getOptions defaultInstance
-    | "GET", "/api/version" ->
-        getVersionResponse version
+    | "GET", "/api/version" -> getVersionResponse version
     | _ -> notFound ()

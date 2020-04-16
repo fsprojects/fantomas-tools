@@ -17,9 +17,10 @@ let private rangeDecoder: Decoder<Range> =
           EndLine = get.Required.Field "endLine" Decode.int
           EndCol = get.Required.Field "endCol" Decode.int })
 
-let decodeKeyValue : Decoder<obj> = fun _key jsonValue -> Ok jsonValue
+let decodeKeyValue: Decoder<obj> = fun _key jsonValue -> Ok jsonValue
 
 #nowarn "40"
+
 let rec private nodeDecoder: Decoder<Node> =
     Decode.object (fun get ->
         { Type = get.Required.Field "type" Decode.string

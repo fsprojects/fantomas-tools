@@ -18,9 +18,7 @@ type Model =
       FSCVersion: string
       IsFsi: bool }
 
-type UrlModel =
-    { IsFsi: bool
-      Defines: string }
+type UrlModel = { IsFsi: bool; Defines: string }
 
 type Msg =
     | SelectTab of ActiveTab

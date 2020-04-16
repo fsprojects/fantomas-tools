@@ -17,17 +17,19 @@ let private backend: string = jsNative
 
 let private getTokens (request: FSharpTokens.Shared.GetTokensRequest): JS.Promise<string> =
     let url = sprintf "%s/%s" backend "api/get-tokens"
-    let json = Encode.toString 4 (encodeGetTokensRequest request)
+
+    let json =
+        Encode.toString 4 (encodeGetTokensRequest request)
 
     fetch url
         [ RequestProperties.Body(!^json)
           RequestProperties.Method HttpMethod.POST ]
-    |> Promise.bind (fun res -> res.text())
+    |> Promise.bind (fun res -> res.text ())
 
-let private getVersion() =
+let private getVersion () =
     let url = sprintf "%s/%s" backend "api/version"
     Fetch.fetch url []
-    |> Promise.bind (fun res -> res.text())
+    |> Promise.bind (fun res -> res.text ())
     |> Promise.map (fun (json: string) ->
         match Decode.fromString Decode.string json with
         | Ok v -> v
@@ -47,7 +49,8 @@ let private decodeGetTokensRequest: Decoder<FSharpTokens.Shared.GetTokensRequest
           SourceCode = get.Required.Field "sourceCode" Decode.string })
 
 let private splitDefines (value: string) =
-    value.Split([| ' '; ';' |], StringSplitOptions.RemoveEmptyEntries) |> List.ofArray
+    value.Split([| ' '; ';' |], StringSplitOptions.RemoveEmptyEntries)
+    |> List.ofArray
 
 let private scrollTo (index: int): unit = import "scrollTo" "../../js/scrollTo.js"
 
@@ -57,7 +60,9 @@ let private modelToParseRequest sourceCode (model: Model): FSharpTokens.Shared.G
       SourceCode = sourceCode }
 
 let private updateUrl code (model: Model) _ =
-    let json = Encode.toString 2 (encodeUrlModel code model)
+    let json =
+        Encode.toString 2 (encodeUrlModel code model)
+
     UrlTools.updateUrlWithData json
 
 let init isActive =
@@ -65,19 +70,24 @@ let init isActive =
         if isActive
         then UrlTools.restoreModelFromUrl (decodeUrlModel initialModel) initialModel
         else initialModel
-    let cmd = Cmd.OfPromise.either getVersion () VersionFound NetworkException
+
+    let cmd =
+        Cmd.OfPromise.either getVersion () VersionFound NetworkException
+
     model, cmd
 
 let update code msg model =
     match msg with
     | GetTokens ->
         let cmd =
-            let requestCmd = Cmd.OfPromise.perform getTokens (modelToParseRequest code model) TokenReceived
+            let requestCmd =
+                Cmd.OfPromise.perform getTokens (modelToParseRequest code model) TokenReceived
+
             let updateUrlCmd = Cmd.ofSub (updateUrl code model)
             Cmd.batch [ requestCmd; updateUrlCmd ]
 
         { model with IsLoading = true }, cmd
-    | TokenReceived(tokensText) ->
+    | TokenReceived (tokensText) ->
         match Decoders.decodeTokens tokensText with
         | Ok tokens ->
             let cmd =
@@ -85,12 +95,15 @@ let update code msg model =
 
             { model with
                   Tokens = tokens
-                  IsLoading = false }, cmd
+                  IsLoading = false },
+            cmd
         | Error error ->
             printfn "%A" error
             { model with IsLoading = false }, Cmd.none
     | LineSelected lineNumber ->
-        { model with ActiveLine = Some lineNumber }, Cmd.none
+        { model with
+              ActiveLine = Some lineNumber },
+        Cmd.none
 
     | TokenSelected tokenIndex ->
         let highlightCmd =
@@ -101,20 +114,24 @@ let update code msg model =
                     |> Array.filter (fun t -> t.LineNumber = activeLine)
                     |> Array.item tokenIndex
                     |> fun t -> t.TokenInfo
+
                 let range: FantomasTools.Client.Editor.HighLightRange =
                     { StartLine = activeLine
                       StartColumn = token.LeftColumn
                       EndLine = activeLine
                       EndColumn = token.RightColumn }
+
                 Cmd.ofSub (FantomasTools.Client.Editor.selectRange range))
             |> Option.defaultValue Cmd.none
-        let scrollCmd = Cmd.OfFunc.result (PlayScroll tokenIndex)
 
-        { model with ActiveTokenIndex = Some tokenIndex }, Cmd.batch [ highlightCmd ; scrollCmd ]
-    | PlayScroll index ->
-        model, Cmd.ofSub (fun _ -> scrollTo index)
-    | DefinesUpdated defines ->
-        { model with Defines = defines }, Cmd.none
+        let scrollCmd =
+            Cmd.OfFunc.result (PlayScroll tokenIndex)
+
+        { model with
+              ActiveTokenIndex = Some tokenIndex },
+        Cmd.batch [ highlightCmd; scrollCmd ]
+    | PlayScroll index -> model, Cmd.ofSub (fun _ -> scrollTo index)
+    | DefinesUpdated defines -> { model with Defines = defines }, Cmd.none
     | VersionFound v -> { model with Version = v }, Cmd.none
     | NetworkException e ->
         JS.console.error e

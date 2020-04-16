@@ -23,9 +23,15 @@ let cmdForCurrentTab tab model =
     if not (System.String.IsNullOrWhiteSpace model.SourceCode) then
         match tab with
         | HomeTab -> Cmd.none
-        | TokensTab -> Cmd.ofMsg (FSharpTokens.Model.GetTokens) |> Cmd.map Msg.FSharpTokensMsg
-        | ASTTab -> Cmd.ofMsg (ASTViewer.Model.DoParse) |> Cmd.map Msg.ASTMsg
-        | TriviaTab -> Cmd.ofMsg (Trivia.Model.GetTrivia) |> Cmd.map Msg.TriviaMsg
+        | TokensTab ->
+            Cmd.ofMsg (FSharpTokens.Model.GetTokens)
+            |> Cmd.map Msg.FSharpTokensMsg
+        | ASTTab ->
+            Cmd.ofMsg (ASTViewer.Model.DoParse)
+            |> Cmd.map Msg.ASTMsg
+        | TriviaTab ->
+            Cmd.ofMsg (Trivia.Model.GetTrivia)
+            |> Cmd.map Msg.TriviaMsg
         | FantomasTab _ -> Cmd.none
     else
         Cmd.none
@@ -34,21 +40,17 @@ let urlUpdate (result: Option<ActiveTab>) model =
     match result with
     | Some tab ->
         let cmd = cmdForCurrentTab tab model
+
         let fantomasModel, fantomasCmd =
             match tab with
-            | FantomasTab (ft) when (ft <> model.FantomasModel.Mode) ->
-                FantomasOnline.State.init ft
-            | _ ->
-                model.FantomasModel, Cmd.none
+            | FantomasTab (ft) when (ft <> model.FantomasModel.Mode) -> FantomasOnline.State.init ft
+            | _ -> model.FantomasModel, Cmd.none
 
         { model with
               ActiveTab = tab
               FantomasModel = fantomasModel },
-        Cmd.batch
-            [ cmd
-              Cmd.map FantomasMsg fantomasCmd ]
-    | None ->
-        ({ model with ActiveTab = HomeTab }, Navigation.modifyUrl "#") // no matching route - go home
+        Cmd.batch [ cmd; Cmd.map FantomasMsg fantomasCmd ]
+    | None -> ({ model with ActiveTab = HomeTab }, Navigation.modifyUrl "#") // no matching route - go home
 
 let toHash =
     function

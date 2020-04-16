@@ -11,7 +11,9 @@ open System.Net
 module FormatCode =
 
     let version () =
-        let assembly = typeof<Fantomas.FormatConfig.FormatConfig>.Assembly
+        let assembly =
+            typeof<Fantomas.FormatConfig.FormatConfig>.Assembly
+
         let version = assembly.GetName().Version
         sprintf "%i.%i.%i" version.Major version.Minor version.Build
 
@@ -21,6 +23,7 @@ module FormatCode =
     [<FunctionName("FormatCode")>]
     let run
         ([<HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "{*any}")>] req: HttpRequest)
-        (log: ILogger) =
-            Http.main version format FormatConfig.FormatConfig.Default log req
-            |> Async.StartAsTask
+        (log: ILogger)
+        =
+        Http.main version format FormatConfig.FormatConfig.Default log req
+        |> Async.StartAsTask

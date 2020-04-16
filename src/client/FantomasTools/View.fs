@@ -29,9 +29,7 @@ let private editor model dispatch =
     Col.col
         [ Col.Xs(Col.mkCol !^5)
           Col.Custom [ ClassName "border-right h-100 d-flex flex-column" ] ]
-        [ div
-            [ Id "source"
-              ClassName "flex-grow-1" ]
+        [ div [ Id "source"; ClassName "flex-grow-1" ]
               [ Editor.editor
                   [ Editor.OnChange(UpdateSourceCode >> dispatch)
                     Editor.Value model.SourceCode ] ] ]
@@ -62,23 +60,30 @@ let private tabs model dispatch =
             FantomasOnline.View.view model.FantomasModel fantomasDispatch
 
     let onNavItemClick tab (ev: Event) =
-        ev.preventDefault()
+        ev.preventDefault ()
         dispatch (SelectTab tab)
 
     let navItem tab label isActive =
-        NavItem.navItem [ NavItem.Custom [ OnClick(onNavItemClick tab); Key label ] ]
+        NavItem.navItem
+            [ NavItem.Custom
+                [ OnClick(onNavItemClick tab)
+                  Key label ] ]
             [ NavLink.navLink
                 [ NavLink.Custom [ Href(Navigation.toHash tab) ]
                   NavLink.Active isActive ] [ str label ] ]
 
-    let isFantomasTab = function | FantomasTab _ -> true | _ -> false
+    let isFantomasTab =
+        function
+        | FantomasTab _ -> true
+        | _ -> false
 
     let navItems =
         [ navItem HomeTab "Home" (model.ActiveTab = HomeTab)
           navItem TokensTab "FSharp Tokens" (model.ActiveTab = TokensTab)
           navItem ASTTab "AST" (model.ActiveTab = ASTTab)
           navItem TriviaTab "Trivia" (model.ActiveTab = TriviaTab)
-          navItem (FantomasTab FantomasTools.Client.FantomasOnline.Model.Preview) "Fantomas" (isFantomasTab model.ActiveTab) ]
+          navItem (FantomasTab FantomasTools.Client.FantomasOnline.Model.Preview) "Fantomas"
+              (isFantomasTab model.ActiveTab) ]
 
     div [ ClassName "col-7 h-100 d-flex flex-column" ]
         [ Nav.nav

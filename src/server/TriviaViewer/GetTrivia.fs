@@ -35,18 +35,26 @@ module GetTrivia =
                 |> Seq.map (fun d -> sprintf "-d:%s" d)
                 |> Seq.toArray
 
-            let! (opts, _) = checker.GetProjectOptionsFromScript
-                                 (file, source, otherFlags = otherFlags, assumeDotNetFramework = true)
+            let! (opts, _) =
+                checker.GetProjectOptionsFromScript(file, source, otherFlags = otherFlags, assumeDotNetFramework = true)
             return opts
         }
 
 
     let private collectAST (log: ILogger) fileName defines source =
         async {
-            let sourceText = FSharp.Compiler.Text.SourceText.ofString (source)
-            let checker = FSharpChecker.Create(keepAssemblyContents = false)
+            let sourceText =
+                FSharp.Compiler.Text.SourceText.ofString (source)
+
+            let checker =
+                FSharpChecker.Create(keepAssemblyContents = false)
+
             let! checkOptions = getProjectOptionsFromScript fileName sourceText defines checker
-            let parsingOptions = checker.GetParsingOptionsFromProjectOptions(checkOptions) |> fst
+
+            let parsingOptions =
+                checker.GetParsingOptionsFromProjectOptions(checkOptions)
+                |> fst
+
             let! ast = checker.ParseFile(fileName, sourceText, parsingOptions)
 
             match ast.ParseTree with
@@ -57,20 +65,24 @@ module GetTrivia =
                 return Error ast.Errors
         }
 
-    let private getVersion() =
+    let private getVersion () =
         let version =
-            let assembly = typeof<FSharp.Compiler.SourceCodeServices.FSharpChecker>.Assembly
+            let assembly =
+                typeof<FSharp.Compiler.SourceCodeServices.FSharpChecker>.Assembly
+
             let version = assembly.GetName().Version
             sprintf "%i.%i.%i" version.Major version.Minor version.Revision
 
         let json =
             Encode.string version |> Encode.toString 4
+
         new HttpResponseMessage(HttpStatusCode.OK,
                                 Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json"))
 
-    let private notFound() =
+    let private notFound () =
         let json =
             Encode.string "Not found" |> Encode.toString 4
+
         new HttpResponseMessage(HttpStatusCode.NotFound,
                                 Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json"))
 
@@ -88,20 +100,25 @@ module GetTrivia =
 
                 match astResult with
                 | Result.Ok ast ->
-                    let trivias = TokenParser.getTriviaFromTokens tokens lineCount
-                    let triviaNodes = Trivia.collectTrivia tokens lineCount ast
-                    let json = Encoders.encodeParseResult trivias triviaNodes
+                    let trivias =
+                        TokenParser.getTriviaFromTokens tokens lineCount
+
+                    let triviaNodes =
+                        Trivia.collectTrivia tokens lineCount ast
+
+                    let json =
+                        Encoders.encodeParseResult trivias triviaNodes
+
                     return sendJson json
-                | Error err ->
-                    return sendInternalError (sprintf "%A" err)
-            | Error err ->
-                return sendInternalError (sprintf "%A" err)
+                | Error err -> return sendInternalError (sprintf "%A" err)
+            | Error err -> return sendInternalError (sprintf "%A" err)
         }
 
     [<FunctionName("GetTrivia")>]
     let run
         ([<HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "{*any}")>] req: HttpRequest)
-        (log: ILogger) =
+        (log: ILogger)
+        =
         async {
             log.LogInformation("F# HTTP trigger function processed a request.")
 
@@ -110,7 +127,7 @@ module GetTrivia =
 
             match method, path with
             | "POST", "/api/get-trivia" -> return! getTrivia log req
-            | "GET", "/api/version" -> return getVersion()
-            | _ -> return notFound()
+            | "GET", "/api/version" -> return getVersion ()
+            | _ -> return notFound ()
         }
         |> Async.StartAsTask

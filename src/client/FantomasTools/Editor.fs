@@ -29,8 +29,9 @@ type HighLightRange =
       EndLine: int
       EndColumn: int }
 
-let selectRange (range:HighLightRange) _ =
+let selectRange (range: HighLightRange) _ =
     printfn "highlight range: %A" range
+
     let data =
         jsOptions<CustomEventInit> (fun o ->
             o.detail <-

@@ -19,7 +19,8 @@ let private typeTitle =
     | TriviaNodeType.Token _ -> "Token"
     | TriviaNodeType.MainNode _ -> "MainNode"
 
-let private rangeToText (r: Range) = sprintf "(%i,%i - %i,%i)" r.StartLine r.StartColumn r.EndLine r.EndColumn
+let private rangeToText (r: Range) =
+    sprintf "(%i,%i - %i,%i)" r.StartLine r.StartColumn r.EndLine r.EndColumn
 
 let private rangeToBadge (r: Range) =
     Badge.badge
@@ -38,11 +39,11 @@ let private triviaContentToDetail tc =
     | Newline -> str "Newline"
     | StringContent sc -> fragment [] (wrap "StringContent" sc)
     | CharContent cc -> fragment [] (wrap "CharContent" cc)
-    | Comment(c) ->
+    | Comment (c) ->
         match c with
-        | BlockComment(bc, _, _) -> (wrap "BlockComment" bc)
-        | LineCommentOnSingleLine(lc) -> (wrap "LineCommentOnSingleLine" lc)
-        | LineCommentAfterSourceCode(lc) -> (wrap "LineCommentAfterSourceCode" lc)
+        | BlockComment (bc, _, _) -> (wrap "BlockComment" bc)
+        | LineCommentOnSingleLine (lc) -> (wrap "LineCommentOnSingleLine" lc)
+        | LineCommentAfterSourceCode (lc) -> (wrap "LineCommentAfterSourceCode" lc)
         |> fun inner ->
             fragment []
                 [ str "Comment("
@@ -58,12 +59,14 @@ let private triviaContentToDetail tc =
 
 
 let private activeTriviaNode tn =
-    let title = sprintf "%s %s" (typeName tn.Type) (rangeToText tn.Range)
+    let title =
+        sprintf "%s %s" (typeName tn.Type) (rangeToText tn.Range)
 
     let contentInfo title items =
         if (isNotAnEmptyList items) then
             let listItems =
-                items |> List.mapi (fun idx item -> li [ Key !!idx ] [ triviaContentToDetail item ])
+                items
+                |> List.mapi (fun idx item -> li [ Key !!idx ] [ triviaContentToDetail item ])
 
             fragment []
                 [ h4 [] [ str title ]
@@ -85,15 +88,18 @@ let view (model: Model) dispatch =
                 match tn.Type with
                 | TriviaNodeType.Token _ -> "nav-link-token"
                 | TriviaNodeType.MainNode _ -> "nav-link-main-node"
+
             { Label = typeName tn.Type
               ClassName = className
               Title = typeTitle tn.Type
               Range = tn.Range })
 
-    let onClick idx = dispatch (Msg.ActiveItemChange(ActiveTab.ByTriviaNodes, idx))
+    let onClick idx =
+        dispatch (Msg.ActiveItemChange(ActiveTab.ByTriviaNodes, idx))
 
     let activeNode =
-        List.tryItem model.ActiveByTriviaNodeIndex model.TriviaNodes |> Option.map activeTriviaNode
+        List.tryItem model.ActiveByTriviaNodeIndex model.TriviaNodes
+        |> Option.map activeTriviaNode
 
     div [ ClassName "d-flex h-100" ]
         [ menu onClick model.ActiveByTriviaNodeIndex navItems

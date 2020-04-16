@@ -9,6 +9,7 @@ let private encodeOption fantomasOption =
         match fantomasOption with
         | IntOption (o, k, v) -> "int", Encode.tuple3 Encode.int Encode.string Encode.int (o, k, v)
         | BoolOption (o, k, v) -> "bool", Encode.tuple3 Encode.int Encode.string Encode.bool (o, k, v)
+
     Encode.object
         [ "$type", Encode.string key
           "$value", value ]

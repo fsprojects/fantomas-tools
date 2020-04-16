@@ -5,8 +5,12 @@ open Fable.Core
 open Thoth.Json
 
 let private setGetParam _encodedJson: unit = import "setGetParam" "../js/urlUtils.js"
-let private encodeUrl (_x: string): string = import "compressToEncodedURIComponent" "../js/urlUtils.js"
-let private decodeUrl (_x: string): string = import "decompressFromEncodedURIComponent" "../js/urlUtils.js"
+
+let private encodeUrl (_x: string): string =
+    import "compressToEncodedURIComponent" "../js/urlUtils.js"
+
+let private decodeUrl (_x: string): string =
+    import "decompressFromEncodedURIComponent" "../js/urlUtils.js"
 
 let updateUrlWithData json = setGetParam (encodeUrl json)
 
@@ -18,14 +22,14 @@ let private (|KeyValuesFromHash|_|) hash =
         if Seq.length search > 1 then
             search.[1].Split('&')
             |> Array.map (fun kv -> kv.Split('=').[0], kv.Split('=').[1])
-            |> Array.choose (fun (k,v) -> if k = "data" then Some v else None)
+            |> Array.choose (fun (k, v) -> if k = "data" then Some v else None)
             |> Array.tryHead
         else
             None
 
 let restoreModelFromUrl decoder defaultValue =
     match Browser.Dom.window.location.hash with
-    | KeyValuesFromHash(v) ->
+    | KeyValuesFromHash (v) ->
         let json = JS.decodeURIComponent (v) |> decodeUrl
         let modelResult = Decode.fromString decoder json
         match modelResult with
@@ -33,5 +37,4 @@ let restoreModelFromUrl decoder defaultValue =
         | Error err ->
             printfn "%A" err
             defaultValue
-    | _ ->
-        defaultValue
+    | _ -> defaultValue

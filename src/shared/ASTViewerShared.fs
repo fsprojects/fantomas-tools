@@ -6,9 +6,7 @@ type Range =
       EndLine: int
       EndCol: int }
 
-type Id =
-    { Ident: string
-      Range: Range option }
+type Id = { Ident: string; Range: Range option }
 
 type Node =
     { Type: string
@@ -16,13 +14,9 @@ type Node =
       Properties: obj
       Childs: Node array }
 
-type Dto =
-    { Node: Node
-      String: string }
+type Dto = { Node: Node; String: string }
 
 type Input =
     { SourceCode: string
       Defines: string array
       IsFsi: bool }
-
-

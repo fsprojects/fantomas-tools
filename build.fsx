@@ -61,7 +61,9 @@ Target.create "Fantomas-Git" (fun _ ->
     Git.Repository.cloneSingleBranch "." "https://github.com/fsprojects/fantomas.git" "master" targetDir
     DotNet.exec (fun opt -> { opt with WorkingDirectory = targetDir }) "tool" "restore" |> ignore
     DotNet.build (fun opt -> { opt with Configuration = DotNet.BuildConfiguration.Release })
-        "./.deps/fantomas/src/Fantomas/Fantomas.fsproj")
+        "./.deps/fantomas/src/Fantomas/Fantomas.fsproj"
+    DotNet.build (fun opt -> { opt with Configuration = DotNet.BuildConfiguration.Release })
+        "./.deps/fantomas/src/Fantomas.CoreGlobalTool/Fantomas.CoreGlobalTool.fsproj")
 
 Target.create "Clean" (fun _ ->
     Shell.rm_rf artifactDir
@@ -129,6 +131,12 @@ Target.create "DeployFrontend" (fun _ ->
 
     Yarn.exec "deploy" setClientDir
 )
+
+Target.create "Format" (fun _ ->
+    DotNet.exec id "run" "-p .deps/fantomas/src/Fantomas.CoreGlobalTool/Fantomas.CoreGlobalTool.fsproj -c Release -- --recurse ./src"
+    |> fun result ->
+        if result.OK then result.Messages else result.Errors
+        |> List.iter (printfn "%s"))
 
 open Fake.Core.TargetOperators
 

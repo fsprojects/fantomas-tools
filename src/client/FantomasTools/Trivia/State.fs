@@ -23,22 +23,22 @@ let private fetchTrivia (payload: ParseRequest) =
     Fetch.fetch url
         [ RequestProperties.Body(!^json)
           RequestProperties.Method HttpMethod.POST ]
-    |> Promise.bind (fun res -> res.text())
+    |> Promise.bind (fun res -> res.text ())
     |> Promise.map (fun json ->
         match decodeResult json with
         | Ok r -> r
         | Error err -> failwithf "failed to decode result: %A" err)
 
-let private fetchFSCVersion() =
+let private fetchFSCVersion () =
     let url = sprintf "%s/api/version" backend
     Fetch.fetch url []
-    |> Promise.bind (fun response -> response.text())
+    |> Promise.bind (fun response -> response.text ())
     |> Promise.map (fun json ->
         match decodeVersion json with
         | Ok v -> v
         | Error err -> failwithf "failed to decode version: %A" err)
 
-let private initialModel : Model =
+let private initialModel: Model =
     { ActiveTab = ByTriviaNodes
       Trivia = []
       TriviaNodes = []
@@ -51,7 +51,8 @@ let private initialModel : Model =
       IsLoading = true }
 
 let private splitDefines (value: string) =
-    value.Split([| ' '; ';' |], StringSplitOptions.RemoveEmptyEntries) |> List.ofArray
+    value.Split([| ' '; ';' |], StringSplitOptions.RemoveEmptyEntries)
+    |> List.ofArray
 
 let private modelToParseRequest sourceCode (model: Model) =
     { SourceCode = sourceCode
@@ -63,17 +64,21 @@ let init isActive =
         if isActive
         then UrlTools.restoreModelFromUrl (decodeUrlModel initialModel) initialModel
         else initialModel
-    let cmd = Cmd.OfPromise.either fetchFSCVersion () FSCVersionReceived NetworkError
+
+    let cmd =
+        Cmd.OfPromise.either fetchFSCVersion () FSCVersionReceived NetworkError
+
     model, cmd
 
 let private updateUrl code (model: Model) _ =
-    let json = Encode.toString 2 (encodeUrlModel code model)
+    let json =
+        Encode.toString 2 (encodeUrlModel code model)
+
     UrlTools.updateUrlWithData json
 
 let update code msg model =
     match msg with
-    | SelectTab tab ->
-        { model with ActiveTab = tab }, Cmd.none
+    | SelectTab tab -> { model with ActiveTab = tab }, Cmd.none
     | GetTrivia ->
         let parseRequest = modelToParseRequest code model
 
@@ -89,20 +94,31 @@ let update code msg model =
               Trivia = result.Trivia
               TriviaNodes = result.TriviaNodes
               ActiveByTriviaIndex = 0
-              ActiveByTriviaNodeIndex = 0 }, Cmd.none
+              ActiveByTriviaNodeIndex = 0 },
+        Cmd.none
     | NetworkError err ->
-        { initialModel with Exception = Some err }, Cmd.none
-    | ActiveItemChange(tab, index) ->
+        { initialModel with
+              Exception = Some err },
+        Cmd.none
+    | ActiveItemChange (tab, index) ->
         let model, range =
             match tab with
             | ByTriviaNodes ->
                 let range =
-                    List.tryItem index model.TriviaNodes |> Option.map (fun t -> t.Range)
-                { model with ActiveByTriviaNodeIndex = index }, range
+                    List.tryItem index model.TriviaNodes
+                    |> Option.map (fun t -> t.Range)
+
+                { model with
+                      ActiveByTriviaNodeIndex = index },
+                range
             | ByTrivia ->
                 let range =
-                    List.tryItem index model.Trivia |> Option.map (fun tv -> tv.Range)
-                { model with ActiveByTriviaIndex = index }, range
+                    List.tryItem index model.Trivia
+                    |> Option.map (fun tv -> tv.Range)
+
+                { model with
+                      ActiveByTriviaIndex = index },
+                range
 
         let cmd =
             range
@@ -112,13 +128,15 @@ let update code msg model =
                       StartColumn = r.StartColumn
                       EndLine = r.EndLine
                       EndColumn = r.EndColumn }
+
                 Cmd.ofSub (FantomasTools.Client.Editor.selectRange highLightRange))
             |> Option.defaultValue Cmd.none
 
         model, cmd
-    | UpdateDefines d ->
-        { model with Defines = d }, Cmd.none
+    | UpdateDefines d -> { model with Defines = d }, Cmd.none
     | FSCVersionReceived version ->
-        { model with FSCVersion = version; IsLoading = false }, Cmd.none
-    | SetFsiFile v ->
-        { model with IsFsi = v }, Cmd.none
+        { model with
+              FSCVersion = version
+              IsLoading = false },
+        Cmd.none
+    | SetFsiFile v -> { model with IsFsi = v }, Cmd.none

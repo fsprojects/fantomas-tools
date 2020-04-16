@@ -10,7 +10,8 @@ let private mapToSharedType (tnt: TriviaNodeType) =
     | MainNode mn -> Shared.MainNode mn
     | Token t -> Shared.Token t.TokenInfo.TokenName
 
-let private typeEncoder = Encode.Auto.generateEncoder<Shared.TriviaNodeType>()
+let private typeEncoder =
+    Encode.Auto.generateEncoder<Shared.TriviaNodeType> ()
 
 let private encodeTriviaNodeType = mapToSharedType >> typeEncoder
 
@@ -18,7 +19,7 @@ let private mapToComment comment =
     match comment with
     | LineCommentAfterSourceCode c -> Shared.LineCommentAfterSourceCode c
     | LineCommentOnSingleLine c -> Shared.LineCommentOnSingleLine c
-    | BlockComment(c, nb, na) -> Shared.BlockComment(c, nb, na)
+    | BlockComment (c, nb, na) -> Shared.BlockComment(c, nb, na)
 
 let private mapToTriviaContent (tc: TriviaContent) =
     match tc with
@@ -32,8 +33,11 @@ let private mapToTriviaContent (tc: TriviaContent) =
     | Newline -> Shared.Newline
     | Directive d -> Shared.Directive d
 
-let private triviaContentEncoder = Encode.Auto.generateEncoder<Shared.TriviaContent>()
-let private encodeTriviaContent = mapToTriviaContent >> triviaContentEncoder
+let private triviaContentEncoder =
+    Encode.Auto.generateEncoder<Shared.TriviaContent> ()
+
+let private encodeTriviaContent =
+    mapToTriviaContent >> triviaContentEncoder
 
 let private encodeRange (range: range) =
     Encode.object
@@ -45,9 +49,15 @@ let private encodeRange (range: range) =
 let private encodeTriviaNode (tn: TriviaNode) =
     Encode.object
         [ "type", encodeTriviaNodeType tn.Type
-          "contentBefore", List.map encodeTriviaContent tn.ContentBefore |> Encode.list
-          "contentItself", Option.map mapToTriviaContent tn.ContentItself |> Encode.option triviaContentEncoder
-          "contentAfter", List.map encodeTriviaContent tn.ContentAfter |> Encode.list
+          "contentBefore",
+          List.map encodeTriviaContent tn.ContentBefore
+          |> Encode.list
+          "contentItself",
+          Option.map mapToTriviaContent tn.ContentItself
+          |> Encode.option triviaContentEncoder
+          "contentAfter",
+          List.map encodeTriviaContent tn.ContentAfter
+          |> Encode.list
           "range", encodeRange tn.Range ]
 
 let private encodeTrivia (t: Trivia) =
@@ -58,5 +68,7 @@ let private encodeTrivia (t: Trivia) =
 let encodeParseResult trivia triviaNodes =
     Encode.object
         [ "trivia", List.map encodeTrivia trivia |> Encode.list
-          "triviaNodes", List.map encodeTriviaNode triviaNodes |> Encode.list ]
+          "triviaNodes",
+          List.map encodeTriviaNode triviaNodes
+          |> Encode.list ]
     |> Encode.toString 4
