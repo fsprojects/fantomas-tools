@@ -57,7 +57,7 @@ let private initialModel =
       Parsed = Ok None
       IsLoading = false
       Version = ""
-      View = Editor
+      View = Raw
       FSharpEditorState = Loading
       Graph = initialGraphModel }
 
