@@ -16,8 +16,8 @@ let getOptionKey =
 
 let optionValue =
     function
-    | IntOption (_,_, i) -> i.ToString()
-    | BoolOption (_,_,b) -> b.ToString()
+    | IntOption (_, _, i) -> i.ToString()
+    | BoolOption (_, _, b) -> b.ToString()
 
 type FormatRequest =
     { SourceCode: string

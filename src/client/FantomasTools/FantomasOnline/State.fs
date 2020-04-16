@@ -143,17 +143,23 @@ let update isActiveTab code msg model =
                 [ Cmd.OfPromise.either (getFormattedCode code) model FormattedReceived FormatException
                   Cmd.ofSub (updateUrl code model) ]
 
-        { model with State = LoadingFormatRequest }, cmd
+        { model with
+              State = LoadingFormatRequest },
+        cmd
 
     | FormatException exn ->
-        { model with State = FormatError exn.Message }, Cmd.none
+        { model with
+              State = FormatError exn.Message },
+        Cmd.none
 
     | NetworkError e ->
         printfn "%A" e
         model, Cmd.none
 
     | FormattedReceived result ->
-        { model with State = FormatResult result }, Cmd.none
+        { model with
+              State = FormatResult result },
+        Cmd.none
     | UpdateOption (key, value) ->
         let userOptions = Map.add key value model.UserOptions
         { model with UserOptions = userOptions }, Cmd.none

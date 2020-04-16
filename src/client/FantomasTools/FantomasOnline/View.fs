@@ -97,8 +97,9 @@ let fileExtension model dispatch =
           toggleButton (SetFsiFile true) model.IsFsi "*.fsi" ]
 
 
-let githubIssueUri code (model : Model) =
+let githubIssueUri code (model: Model) =
     let location = Browser.Dom.window.location
+
     let config =
         model.UserOptions
         |> Map.toList
@@ -109,14 +110,18 @@ let githubIssueUri code (model : Model) =
         model.DefaultOptions
         |> List.sortBy FantomasOnline.Shared.sortByOption
 
-    let options = Seq.zip config defaultValues
-               |> Seq.toArray
-               |> Seq.map (fun (userV, defV) ->
+    let options =
+        Seq.zip config defaultValues
+        |> Seq.toArray
+        |> Seq.map (fun (userV, defV) ->
 
-                    sprintf (if userV <>defV then "| **`%s`** | **`%s`** |" else "| `%s` | `%s` |") (getOptionKey userV) (optionValue userV))
-               |> String.concat "\n"
+            sprintf (if userV <> defV then "| **`%s`** | **`%s`** |" else "| `%s` | `%s` |") (getOptionKey userV)
+                (optionValue userV))
+        |> String.concat "\n"
+
     let title = "Bug report from fantomas-online"
     let label = "bug"
+
     let codeTemplate header code =
         sprintf """
 #### %s
@@ -126,16 +131,14 @@ let githubIssueUri code (model : Model) =
 ```
             """ header code
 
-    let (left,right) =
+    let (left, right) =
         match model.State with
-        | FormatError e ->
-            codeTemplate "Code" code, codeTemplate "Error" e
-        | FormatResult result ->
-            codeTemplate "Code" code, codeTemplate "Result" result
-        | _ ->
-            codeTemplate "Code" code, ""
+        | FormatError e -> codeTemplate "Code" code, codeTemplate "Error" e
+        | FormatResult result -> codeTemplate "Code" code, codeTemplate "Result" result
+        | _ -> codeTemplate "Code" code, ""
 
     let code = left + "" + right
+
     let body =
         sprintf """
 Issue created from [fantomas-online](%s)
@@ -150,21 +153,23 @@ Fantomas %s
 | Name | Value |
 | ---- | ----- |
 %s
-        """ location.href left right model.Version options |> System.Uri.EscapeDataString
+        """ location.href left right model.Version options
+        |> System.Uri.EscapeDataString
 
-    let uri = sprintf "https://github.com/fsprojects/fantomas/issues/new?title=%s&labels=%s&body=%s" title label body
-    uri
-    |> Href
+    let uri =
+        sprintf "https://github.com/fsprojects/fantomas/issues/new?title=%s&labels=%s&body=%s" title label body
+
+    uri |> Href
 
 
 let private createGitHubIssue code model =
     match model.Mode with
     | Preview when (not (System.String.IsNullOrWhiteSpace(code))) ->
-        Button.button [ Button.Color Danger; Button.Outline true; Button.Custom [ githubIssueUri code model  ] ] [
-            str "Looks wrong? Create an issue!"
-        ]
-    | _ ->
-        null
+        Button.button
+            [ Button.Color Danger
+              Button.Outline true
+              Button.Custom [ githubIssueUri code model ] ] [ str "Looks wrong? Create an issue!" ]
+    | _ -> null
 
 let view code model dispatch =
     let options =
@@ -176,12 +181,11 @@ let view code model dispatch =
         Button.button
             [ Button.Color Primary
               Button.Custom
-                 [ OnClick(fun _ -> dispatch Msg.Format)
-                   ClassName "rounded-0 w-100" ] ] [ str "Format" ]
+                  [ OnClick(fun _ -> dispatch Msg.Format)
+                    ClassName "rounded-0 w-100" ] ] [ str "Format" ]
 
     match model.State with
-    | EditorState.LoadingOptions ->
-        FantomasTools.Client.Loader.loader
+    | EditorState.LoadingOptions -> FantomasTools.Client.Loader.loader
 
     | EditorState.OptionsLoaded ->
         fragment []
@@ -199,11 +203,10 @@ let view code model dispatch =
 
     | EditorState.FormatResult result ->
         fragment []
-            [ div [ ClassName "tab-result" ] [
-                Editor.editorInTab
-                    [ Editor.Value result
-                      Editor.IsReadOnly true ]
-              ]
+            [ div [ ClassName "tab-result" ]
+                  [ Editor.editorInTab
+                      [ Editor.Value result
+                        Editor.IsReadOnly true ] ]
               createGitHubIssue code model
               FantomasTools.Client.VersionBar.versionBar (sprintf "Version: %s" model.Version)
               yield! options
@@ -211,11 +214,10 @@ let view code model dispatch =
 
     | EditorState.FormatError error ->
         fragment []
-            [ div [ ClassName "tab-result" ] [
-                Editor.editorInTab
-                    [ Editor.Value error
-                      Editor.IsReadOnly true ]
-              ]
+            [ div [ ClassName "tab-result" ]
+                  [ Editor.editorInTab
+                      [ Editor.Value error
+                        Editor.IsReadOnly true ] ]
               createGitHubIssue code model
               FantomasTools.Client.VersionBar.versionBar (sprintf "Version: %s" model.Version)
               yield! options
