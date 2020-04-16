@@ -57,7 +57,7 @@ let private tabs model dispatch =
             ASTViewer.View.view model.ASTModel astDispatch
         | FantomasTab _ ->
             let fantomasDispatch fMsg = dispatch (FantomasMsg fMsg)
-            FantomasOnline.View.view model.FantomasModel fantomasDispatch
+            FantomasOnline.View.view model.SourceCode model.FantomasModel fantomasDispatch
 
     let onNavItemClick tab (ev: Event) =
         ev.preventDefault ()

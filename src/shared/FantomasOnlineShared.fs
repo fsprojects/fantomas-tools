@@ -14,6 +14,11 @@ let getOptionKey =
     | IntOption (_, k, _)
     | BoolOption (_, k, _) -> k
 
+let optionValue =
+    function
+    | IntOption (_,_, i) -> i.ToString()
+    | BoolOption (_,_,b) -> b.ToString()
+
 type FormatRequest =
     { SourceCode: string
       Options: FantomasOption list

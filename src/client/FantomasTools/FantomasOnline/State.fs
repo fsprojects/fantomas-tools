@@ -10,7 +10,6 @@ open FantomasTools.Client.FantomasOnline.Model
 open Fetch
 open Thoth.Json
 
-
 [<Emit("process.env.FANTOMAS_PREVIOUS")>]
 let private previousBackend: string = jsNative
 
@@ -76,12 +75,11 @@ let init (mode: FantomasMode) =
         Cmd.batch [ versionCmd; optionsCmd ]
 
     { IsFsi = false
-      IsLoading = true
       Version = "???"
       DefaultOptions = []
       UserOptions = Map.empty
       Mode = mode
-      Result = None },
+      State = LoadingOptions },
     cmd
 
 let optionsListToMap options =
@@ -137,21 +135,25 @@ let update isActiveTab code msg model =
               DefaultOptions = options
               UserOptions = userOptions
               IsFsi = isFsi
-              IsLoading = false },
+              State = OptionsLoaded },
         cmd
     | Format ->
         let cmd =
             Cmd.batch
-                [ Cmd.OfPromise.either (getFormattedCode code) model FormattedReceived NetworkError
+                [ Cmd.OfPromise.either (getFormattedCode code) model FormattedReceived FormatException
                   Cmd.ofSub (updateUrl code model) ]
 
-        { model with IsLoading = true }, cmd
+        { model with State = LoadingFormatRequest }, cmd
+
+    | FormatException exn ->
+        { model with State = FormatError exn.Message }, Cmd.none
+
+    | NetworkError e ->
+        printfn "%A" e
+        model, Cmd.none
 
     | FormattedReceived result ->
-        { model with
-              Result = Some result
-              IsLoading = false },
-        Cmd.none
+        { model with State = FormatResult result }, Cmd.none
     | UpdateOption (key, value) ->
         let userOptions = Map.add key value model.UserOptions
         { model with UserOptions = userOptions }, Cmd.none

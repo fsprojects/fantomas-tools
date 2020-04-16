@@ -10,6 +10,7 @@ type FantomasMode =
 type Msg =
     | VersionReceived of string
     | OptionsReceived of FantomasOption list
+    | FormatException of exn
     | NetworkError of exn
     | Format
     | FormattedReceived of string
@@ -17,11 +18,17 @@ type Msg =
     | ChangeMode of FantomasMode
     | SetFsiFile of bool
 
+type EditorState =
+    | LoadingOptions
+    | OptionsLoaded
+    | LoadingFormatRequest
+    | FormatResult of string
+    | FormatError of string
+
 type Model =
     { IsFsi: bool
       Version: string
-      IsLoading: bool
       DefaultOptions: FantomasOption list
       UserOptions: Map<string, FantomasOption>
       Mode: FantomasMode
-      Result: string option }
+      State: EditorState }
