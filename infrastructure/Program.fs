@@ -55,7 +55,8 @@ let infra () =
                  Cors = input
                             (FunctionAppSiteConfigCorsArgs(AllowedOrigins = inputList [ input "https://nojaf.com" ]))))
 
-    let artifactsFolder = Path.Combine(Directory.GetCurrentDirectory(), "artifacts")
+    let artifactsFolder = Path.Combine(Directory.GetCurrentDirectory(), "..", "artifacts")
+
     printfn "Current directory: %s" artifactsFolder
 
     let toPascalCase (v: string) =

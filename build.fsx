@@ -53,7 +53,7 @@ let localhostBackend port = sprintf "http://localhost:%i" port
 let clientDir = __SOURCE_DIRECTORY__ </> "src" </> "client"
 let setClientDir = (fun (opt: Yarn.YarnParams) -> { opt with WorkingDirectory = clientDir })
 let serverDir = __SOURCE_DIRECTORY__ </> "src" </> "server"
-let artifactDir = __SOURCE_DIRECTORY__ </> "infrastructure" </> "artifacts"
+let artifactDir = __SOURCE_DIRECTORY__ </> "artifacts"
 
 Target.create "Fantomas-Git" (fun _ ->
     let targetDir = ".deps" @@ "fantomas"
@@ -156,6 +156,6 @@ open Fake.Core.TargetOperators
 
 "YarnInstall" ==> "BundleFrontend"
 
-"Clean" ==> "Fantomas-Git" ==> "DeployFunctions" ==> "BundleFrontend" ==> "CI"
+"Fantomas-Git" ==> "Clean" ==> "DeployFunctions" ==> "BundleFrontend" ==> "CI"
 
 Target.runOrDefault "Build"
