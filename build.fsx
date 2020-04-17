@@ -121,6 +121,8 @@ Target.create "DeployFunctions" (fun _ ->
     )
 )
 
+Target.create "YarnInstall" (fun _ -> Yarn.install setClientDir)
+
 Target.create "DeployFrontend" (fun _ ->
     Environment.setEnvironVar "FSHARP_TOKENS_BACKEND" "https://azfun-fsharp-tokens-main.azurewebsites.net"
     Environment.setEnvironVar "AST_BACKEND" "https://azfun-ast-viewer-main.azurewebsites.net"
@@ -151,6 +153,8 @@ Target.create "CI" ignore
 open Fake.Core.TargetOperators
 
 "Clean" ==> "Build"
+
+"YarnInstall" ==> "DeployFrontend"
 
 "Fantomas-Git" ==> "Clean" ==> "DeployFunctions" ==> "DeployFrontend" ==> "CI"
 
