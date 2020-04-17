@@ -168,7 +168,7 @@ let private createGitHubIssue code model =
         Button.button
             [ Button.Color Danger
               Button.Outline true
-              Button.Custom [ githubIssueUri code model ] ] [ str "Looks wrong? Create an issue!" ]
+              Button.Custom [ githubIssueUri code model; ClassName "rounded-0" ] ] [ str "Looks wrong? Create an issue!" ]
     | _ -> null
 
 let view code model dispatch =
