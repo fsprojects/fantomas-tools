@@ -62,10 +62,10 @@ let infra () =
     let toPascalCase (v: string) =
         v.Split('-')
         |> Array.map (fun piece ->
-            if String.length piece > 3 then
-                piece.[0].ToString().ToUpper() + piece.Substring(1)
-            elif piece = "fsharp" then
+            if piece = "fsharp" then
                 "FSharp"
+            elif String.length piece > 3 then
+                piece.[0].ToString().ToUpper() + piece.Substring(1)
             else
                 piece.ToUpper())
         |> String.concat ""
@@ -79,6 +79,7 @@ let infra () =
           "trivia-viewer" ]
         |> List.map (fun funcName ->
             let path = Path.Combine(artifactsFolder, (toPascalCase funcName))
+            printfn "PATH: %s" path
             let archive: AssetOrArchive = FileArchive(path) :> AssetOrArchive
             let blob =
                 Blob
