@@ -40,7 +40,6 @@ let infra () =
                  (ResourceGroupName = io resourceGroup.Name, Name = input (sprintf "ai-fantomas-%s" stackName),
                   ApplicationType = input "web"))
 
-
     let appServicePlan =
         Plan
             ("azfun-fantomas",
@@ -56,7 +55,9 @@ let infra () =
                  Cors = input
                             (FunctionAppSiteConfigCorsArgs(AllowedOrigins = inputList [ input "https://nojaf.com" ]))))
 
-    let artifactsFolder = @"C:\Users\nojaf\Projects\fantomas-tools\artifacts"
+    let artifactsFolder = Path.Combine(Directory.GetCurrentDirectory(), "..", "artifacts")
+
+    printfn "Current directory: %s" artifactsFolder
 
     let toPascalCase (v: string) =
         v.Split('-')
