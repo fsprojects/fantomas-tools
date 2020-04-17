@@ -62,9 +62,12 @@ let infra () =
     let toPascalCase (v: string) =
         v.Split('-')
         |> Array.map (fun piece ->
-            if String.length piece > 3
-            then piece.[0].ToString().ToUpper() + piece.Substring(1)
-            else piece.ToUpper())
+            if String.length piece > 3 then
+                piece.[0].ToString().ToUpper() + piece.Substring(1)
+            elif piece = "fsharp" then
+                "FSharp"
+            else
+                piece.ToUpper())
         |> String.concat ""
 
     let functionHostNames =
