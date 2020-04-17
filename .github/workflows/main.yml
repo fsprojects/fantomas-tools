@@ -29,4 +29,4 @@ jobs:
       run: dotnet tool restore
 
     - name: BuildFunctions
-      run: dotnet fake run build.fsx -t BuildFunctions
+      run: dotnet fake run build.fsx -t CI
