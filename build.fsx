@@ -146,9 +146,12 @@ Target.create "CheckFormat" (fun _ ->
 
         if result.ExitCode <> 0 then failwith "No everything was formatted")
 
+Target.create "CI" ignore
+
 open Fake.Core.TargetOperators
 
 "Clean" ==> "Build"
-"Clean" ==> "DeployFunctions"
+
+"Fantomas-Git" ==> "Clean" ==> "DeployFunctions" ==> "CI"
 
 Target.runOrDefault "Build"
