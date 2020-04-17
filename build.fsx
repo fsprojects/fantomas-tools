@@ -152,6 +152,6 @@ open Fake.Core.TargetOperators
 
 "Clean" ==> "Build"
 
-"Fantomas-Git" ==> "Clean" ==> "DeployFunctions" ==> "CI"
+"Fantomas-Git" ==> "Clean" ==> "DeployFunctions" ==> "DeployFrontend" ==> "CI"
 
 Target.runOrDefault "Build"
