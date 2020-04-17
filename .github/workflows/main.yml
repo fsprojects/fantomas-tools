@@ -28,5 +28,11 @@ jobs:
     - name: Restore local tools
       run: dotnet tool restore
 
-    - name: BuildFunctions
+    - name: FAKE
       run: dotnet fake run build.fsx -t CI
+
+    - name: Deploy Frontend
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./src/client/output

@@ -123,7 +123,7 @@ Target.create "DeployFunctions" (fun _ ->
 
 Target.create "YarnInstall" (fun _ -> Yarn.install setClientDir)
 
-Target.create "DeployFrontend" (fun _ ->
+Target.create "BundleFrontend" (fun _ ->
     Environment.setEnvironVar "FSHARP_TOKENS_BACKEND" "https://azfun-fsharp-tokens-main.azurewebsites.net"
     Environment.setEnvironVar "AST_BACKEND" "https://azfun-ast-viewer-main.azurewebsites.net"
     Environment.setEnvironVar "TRIVIA_BACKEND" "https://azfun-trivia-viewer-main.azurewebsites.net"
@@ -131,7 +131,7 @@ Target.create "DeployFrontend" (fun _ ->
     Environment.setEnvironVar "FANTOMAS_LATEST" "https://azfun-fantomas-online-latest-main.azurewebsites.net"
     Environment.setEnvironVar "FANTOMAS_PREVIEW" "https://azfun-fantomas-online-preview-main.azurewebsites.net"
 
-    Yarn.exec "deploy" setClientDir
+    Yarn.exec "build" setClientDir
 )
 
 Target.create "Format" (fun _ ->
@@ -154,8 +154,8 @@ open Fake.Core.TargetOperators
 
 "Clean" ==> "Build"
 
-"YarnInstall" ==> "DeployFrontend"
+"YarnInstall" ==> "BundleFrontend"
 
-"Fantomas-Git" ==> "Clean" ==> "DeployFunctions" ==> "DeployFrontend" ==> "CI"
+"Fantomas-Git" ==> "Clean" ==> "DeployFunctions" ==> "BundleFrontend" ==> "CI"
 
 Target.runOrDefault "Build"
