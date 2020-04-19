@@ -62,6 +62,7 @@ let options model dispatch =
             [ ClassName "d-flex flex-row"
               Key(sprintf "option-row-%i" idx) ] [ ofList (List.map (mapToOption dispatch) group) ])
     |> ofList
+    |> fun options -> div [Id "fantomas-options"] [ options ]
 
 let fantomasModeBar model dispatch =
     let buttonProps mode =
