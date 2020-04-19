@@ -42,23 +42,22 @@ let private results model dispatch =
                   EditorProp.IsReadOnly true
                   EditorProp.Value(Fable.Core.JS.JSON.stringify (parsed.Node, space = 4)) ]
         | JsonViewer ->
-            div [ ClassName "viewer" ]
-                [ ReactJsonView.viewer
-                    [ ReactJsonView.Src(parsed.Node)
-                      ReactJsonView.Name null
-                      ReactJsonView.DisplayDataTypes false
-                      ReactJsonView.DisplayObjectSize false
-                      ReactJsonView.IndentWidth 2
-                      ReactJsonView.OnLookup(fun o ->
-                          let range: FantomasTools.Client.Editor.HighLightRange =
-                              { StartLine = !!(o.value?StartLine)
-                                StartColumn = !!(o.value?StartCol)
-                                EndLine = !!(o.value?EndLine)
-                                EndColumn = !!(o.value?EndCol) }
+            ReactJsonView.viewer
+                [ ReactJsonView.Src(parsed.Node)
+                  ReactJsonView.Name null
+                  ReactJsonView.DisplayDataTypes false
+                  ReactJsonView.DisplayObjectSize false
+                  ReactJsonView.IndentWidth 2
+                  ReactJsonView.OnLookup(fun o ->
+                      let range: FantomasTools.Client.Editor.HighLightRange =
+                          { StartLine = !!(o.value?StartLine)
+                            StartColumn = !!(o.value?StartCol)
+                            EndLine = !!(o.value?EndLine)
+                            EndColumn = !!(o.value?EndCol) }
 
-                          dispatch (HighLight range))
-                      ReactJsonView.ShouldLookup(fun o -> o.key = "Range")
-                      ReactJsonView.ShouldCollapse(fun x -> x?name = "Range") ] ]
+                      dispatch (HighLight range))
+                  ReactJsonView.ShouldLookup(fun o -> o.key = "Range")
+                  ReactJsonView.ShouldCollapse(fun x -> x?name = "Range") ]
         | Graph -> div [] [ str "graph view has not been ported yet" ]
     // Please extract this to its own file
 
@@ -203,10 +202,13 @@ let view model dispatch =
     let inner =
         if model.IsLoading
         then FantomasTools.Client.Loader.loader
-        else div [ ClassName "tab-result" ] [ results model dispatch ]
+        else results model dispatch
+        //else div [ ClassName "tab-result" ] [ results model dispatch ]
     //
 
     fragment []
         [ inner
-          FantomasTools.Client.VersionBar.versionBar (sprintf "FSC - %s" model.Version)
-          settings model dispatch ]
+          div [] [
+             FantomasTools.Client.VersionBar.versionBar (sprintf "FSC - %s" model.Version)
+             settings model dispatch
+          ] ]

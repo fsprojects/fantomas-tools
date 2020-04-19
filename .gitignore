@@ -353,3 +353,4 @@ MigrationBackup/
 .fake
 .ionide
 src/client/output
+watch.ps1
