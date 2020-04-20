@@ -1,0 +1,44 @@
+@import "variables"
+
+$width: 400px
+
+.settings
+  position: fixed
+  height: 100vh
+  width: 100vw
+  top: 0
+  left: 0
+  z-index: -10
+
+  .inner
+    position: fixed
+    width: $width
+    z-index: 10
+    height: 100vh
+    top: 0
+    right: -$width
+    background-color: $white
+    padding: 1rem
+    transition: 0.4s all
+
+    h1
+      margin-bottom: 2rem
+
+    .close
+      cursor: pointer
+
+  &.open
+    z-index: 15
+    background-color: transparentize($dark, 0.5)
+
+    .inner
+      right: 0
+
+#commands
+  position: fixed
+  z-index: 10
+  bottom:  1.5rem
+  right: 1.5rem
+
+  .btn
+    border-radius: 0

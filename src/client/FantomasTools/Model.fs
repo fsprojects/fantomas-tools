@@ -12,6 +12,7 @@ type ActiveTab =
 type Model =
     { ActiveTab: ActiveTab
       SourceCode: string
+      SettingsOpen: bool
       TriviaModel: Trivia.Model.Model
       FSharpTokensModel: FSharpTokens.Model.Model
       ASTModel: ASTViewer.Model.Model
@@ -24,3 +25,4 @@ type Msg =
     | FSharpTokensMsg of FSharpTokens.Model.Msg
     | ASTMsg of ASTViewer.Model.Msg
     | FantomasMsg of FantomasOnline.Model.Msg
+    | ToggleSettings

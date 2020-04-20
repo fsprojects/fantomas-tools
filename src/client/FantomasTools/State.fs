@@ -33,6 +33,7 @@ let init _ =
     let model =
         { ActiveTab = currentTab
           SourceCode = sourceCode
+          SettingsOpen = false
           TriviaModel = triviaModel
           FSharpTokensModel = fsharpTokensModel
           ASTModel = astModel
@@ -52,10 +53,23 @@ let init _ =
 
     model, cmd
 
+let private reload model =
+    if not model.SettingsOpen then
+        match model.ActiveTab with
+        | TokensTab ->
+            Cmd.ofMsg (FantomasTools.Client.FSharpTokens.Model.GetTokens)
+            |> Cmd.map FSharpTokensMsg
+        | _ -> Cmd.none
+    else
+        Cmd.none
+
 let update msg model =
     match msg with
     | SelectTab tab -> model, Navigation.Navigation.newUrl (Navigation.toHash tab)
     | UpdateSourceCode code -> { model with SourceCode = code }, Cmd.none
+    | ToggleSettings ->
+        let m = { model with SettingsOpen = not model.SettingsOpen }
+        m, reload m
     | TriviaMsg tMsg ->
         let (tModel, tCmd) =
             Trivia.State.update model.SourceCode tMsg model.TriviaModel
