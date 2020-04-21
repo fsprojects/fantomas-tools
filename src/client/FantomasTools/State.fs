@@ -4,6 +4,7 @@ open FantomasTools.Client
 open Browser
 open Fable.Core
 open Elmish
+open FantomasTools.Client.FantomasOnline.Model
 open FantomasTools.Client.Model
 open Thoth.Json
 
@@ -65,6 +66,9 @@ let private reload model =
         | TriviaTab ->
             Cmd.ofMsg (FantomasTools.Client.Trivia.Model.GetTrivia)
             |> Cmd.map TriviaMsg
+        | FantomasTab ->
+            Cmd.ofMsg (FantomasTools.Client.FantomasOnline.Model.Format)
+            |> Cmd.map FantomasMsg
         | _ -> Cmd.none
     else
         Cmd.none

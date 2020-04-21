@@ -11,92 +11,24 @@ let private mapToOption dispatch (key, fantomasOption) =
     let editor =
         match fantomasOption with
         | FantomasOption.BoolOption (o, _, v) ->
-            let buttonProps v =
-                let className =
-                    if v then "rounded-0 text-white" else "rounded-0 hover-white"
-                    |> ClassName
+            SettingControls.toggleButton (fun _ -> UpdateOption(key, BoolOption(o, key, v)) |> dispatch) (fun _ ->
+                UpdateOption(key, BoolOption(o, key, not v)) |> dispatch) "true" "false" key v
 
-                let onClick _ =
-                    UpdateOption(key, BoolOption(o, key, not v))
-                    |> dispatch
-
-                Button.Custom [ className; OnClick onClick ]
-
-            ButtonGroup.buttonGroup [ ButtonGroup.Custom [ ClassName "btn-group-toggle rounded-0 w-25" ] ]
-                [ Button.button
-                    [ buttonProps v
-                      Button.Outline(not v)
-                      Button.Size Sm ] [ str "True" ]
-                  Button.button
-                      [ buttonProps (not v)
-                        Button.Outline v
-                        Button.Size Sm ] [ str "False" ] ]
         | FantomasOption.IntOption (o, _, v) ->
-            let onChange (ev: Browser.Types.Event) =
-                let v = ev.Value |> (int)
-                UpdateOption(key, IntOption(o, key, v))
-                |> dispatch
+            let onChange (nv: string) =
+                let v = nv |> (int)
+                UpdateOption(key, IntOption(o, key, v)) |> dispatch
+            SettingControls.input onChange key "integer" v
 
-            InputGroup.inputGroup
-                [ InputGroup.Size Sm
-                  InputGroup.Custom [ ClassName "w-25 d-inline-block" ] ]
-                [ Input.input
-                    [ Input.Custom
-                        [ Type "number"
-                          ClassName "rounded-0 text-center"
-                          Min "0"
-                          DefaultValue v
-                          OnChange onChange
-                          Step "1" ] ] ]
-
-    div [ Key key; ClassName "flex-1 px-2" ]
-        [ label [ ClassName "w-75 m-0" ] [ str key ]
-          editor ]
+    div
+        [ Key key
+          ClassName "fantomas-setting" ] [ editor ]
 
 let options model dispatch =
-    let optionList = Map.toList model.UserOptions
-
-    List.chunkBySize 2 optionList
-    |> List.mapi (fun idx group ->
-        div
-            [ ClassName "d-flex flex-row"
-              Key(sprintf "option-row-%i" idx) ] [ ofList (List.map (mapToOption dispatch) group) ])
+    let optionList = Map.toList model.UserOptions |> List.sortBy fst
+    optionList
+    |> List.map (mapToOption dispatch)
     |> ofList
-    |> fun options -> div [Id "fantomas-options"] [ options ]
-
-let fantomasModeBar model dispatch =
-    let buttonProps mode =
-        let className =
-            if mode = model.Mode then "rounded-0 text-white" else "rounded-0 hover-white"
-
-        let custom =
-            Button.Custom
-                [ ClassName className
-                  OnClick(fun _ -> ChangeMode mode |> dispatch) ]
-
-        [ custom
-          Button.Outline(mode <> model.Mode) ]
-
-    ButtonGroup.buttonGroup [ ButtonGroup.Custom [ ClassName "btn-group-toggle rounded-0" ] ]
-        [ Button.button (buttonProps FantomasMode.Previous) [ str "Fantomas 2.9.1" ]
-          Button.button (buttonProps FantomasMode.Latest) [ str "Latest on NuGet" ]
-          Button.button (buttonProps FantomasMode.Preview) [ str "Preview (master branch)" ] ]
-
-let fileExtension model dispatch =
-    let toggleButton msg active label =
-        let className =
-            if active then "rounded-0 text-white" else "rounded-0"
-
-        Button.button
-            [ Button.Custom
-                [ ClassName className
-                  OnClick(fun _ -> dispatch msg) ]
-              Button.Outline(not active) ] [ str label ]
-
-    ButtonGroup.buttonGroup [ ButtonGroup.Custom [ ClassName "btn-group-toggle rounded-0" ] ]
-        [ toggleButton (SetFsiFile false) (not model.IsFsi) "*.fs"
-          toggleButton (SetFsiFile true) model.IsFsi "*.fsi" ]
-
 
 let githubIssueUri code (model: Model) =
     let location = Browser.Dom.window.location
@@ -107,9 +39,7 @@ let githubIssueUri code (model: Model) =
         |> List.map snd
         |> List.sortBy FantomasOnline.Shared.sortByOption
 
-    let defaultValues =
-        model.DefaultOptions
-        |> List.sortBy FantomasOnline.Shared.sortByOption
+    let defaultValues = model.DefaultOptions |> List.sortBy FantomasOnline.Shared.sortByOption
 
     let options =
         Seq.zip config defaultValues
@@ -169,57 +99,70 @@ let private createGitHubIssue code model =
         Button.button
             [ Button.Color Danger
               Button.Outline true
-              Button.Custom [ githubIssueUri code model; ClassName "rounded-0" ] ] [ str "Looks wrong? Create an issue!" ]
+              Button.Custom
+                  [ githubIssueUri code model
+                    ClassName "rounded-0" ] ] [ str "Looks wrong? Create an issue!" ]
     | _ -> null
 
-let view code model dispatch =
-    let options =
-        [ options model dispatch
-          fileExtension model dispatch
-          fantomasModeBar model dispatch ]
+let view model =
+    match model.State with
+    | EditorState.LoadingFormatRequest
+    | EditorState.LoadingOptions -> FantomasTools.Client.Loader.loader
+    | EditorState.OptionsLoaded -> null
+    | EditorState.FormatResult result ->
+        div [ ClassName "tab-result" ]
+            [ Editor.editorInTab
+                [ Editor.Value result
+                  Editor.IsReadOnly true ] ]
 
-    let submitButton =
+    | EditorState.FormatError error ->
+        div [ ClassName "tab-result" ]
+            [ Editor.editorInTab
+                [ Editor.Value error
+                  Editor.IsReadOnly true ] ]
+
+
+let commands code model dispatch =
+    let formatButton =
         Button.button
             [ Button.Color Primary
               Button.Custom
-                  [ OnClick(fun _ -> dispatch Msg.Format)
-                    ClassName "rounded-0 w-100" ] ] [ str "Format" ]
+                  [ OnClick(fun _ -> dispatch Msg.Format) ] ] [ str "Format" ]
 
     match model.State with
+    | EditorState.LoadingOptions -> null
+    | EditorState.LoadingFormatRequest -> formatButton
+    | EditorState.OptionsLoaded
+    | EditorState.FormatResult _
+    | EditorState.FormatError _ ->
+        fragment []
+            [ createGitHubIssue code model
+              formatButton ]
+
+let settings model dispatch =
+    match model.State with
     | EditorState.LoadingOptions -> FantomasTools.Client.Loader.loader
+    | _ ->
+        let fantomasMode =
+            [ FantomasMode.Previous, "2.9.1"
+              FantomasMode.Latest, "Latest"
+              FantomasMode.Preview, "Preview" ]
+            |> List.map (fun (m, l) ->
+                { IsActive = model.Mode = m
+                  Label = l
+                  OnClick = (fun _ -> ChangeMode m |> dispatch) }: SettingControls.MultiButtonSettings)
+            |> SettingControls.multiButton "Mode"
 
-    | EditorState.OptionsLoaded ->
-        fragment []
-            [ div [ ClassName "tab-result" ] []
-              createGitHubIssue code model
-              FantomasTools.Client.VersionBar.versionBar (sprintf "Version: %s" model.Version)
-              yield! options
-              submitButton ]
+        let fileExtension =
+            SettingControls.toggleButton (fun _ -> SetFsiFile true |> dispatch)
+                (fun _ -> SetFsiFile false |> dispatch) "*.fsi" "*.fs" "File extension" model.IsFsi
 
-    | EditorState.LoadingFormatRequest ->
-        fragment []
-            [ div [ ClassName "tab-result" ] [ FantomasTools.Client.Loader.loader ]
-              FantomasTools.Client.VersionBar.versionBar (sprintf "Version: %s" model.Version)
-              yield! options ]
+        let options = options model dispatch
 
-    | EditorState.FormatResult result ->
         fragment []
-            [ div [ ClassName "tab-result" ]
-                  [ Editor.editorInTab
-                      [ Editor.Value result
-                        Editor.IsReadOnly true ] ]
-              createGitHubIssue code model
-              FantomasTools.Client.VersionBar.versionBar (sprintf "Version: %s" model.Version)
-              yield! options
-              submitButton ]
+            [ FantomasTools.Client.VersionBar.versionBar (sprintf "Version: %s" model.Version)
+              fantomasMode
+              fileExtension
+              hr []
+              options ]
 
-    | EditorState.FormatError error ->
-        fragment []
-            [ div [ ClassName "tab-result" ]
-                  [ Editor.editorInTab
-                      [ Editor.Value error
-                        Editor.IsReadOnly true ] ]
-              createGitHubIssue code model
-              FantomasTools.Client.VersionBar.versionBar (sprintf "Version: %s" model.Version)
-              yield! options
-              submitButton ]
