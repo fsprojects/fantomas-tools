@@ -45,7 +45,7 @@ let private initialModel: Model =
       ActiveByTriviaIndex = 0
       ActiveByTriviaNodeIndex = 0
       Defines = ""
-      FSCVersion = "???"
+      Version = "???"
       IsFsi = false
       Exception = None
       IsLoading = true }
@@ -133,10 +133,10 @@ let update code msg model =
             |> Option.defaultValue Cmd.none
 
         model, cmd
-    | UpdateDefines d -> { model with Defines = d }, Cmd.none
+    | DefinesUpdated d -> { model with Defines = d }, Cmd.none
     | FSCVersionReceived version ->
         { model with
-              FSCVersion = version
+              Version = version
               IsLoading = false },
         Cmd.none
     | SetFsiFile v -> { model with IsFsi = v }, Cmd.none

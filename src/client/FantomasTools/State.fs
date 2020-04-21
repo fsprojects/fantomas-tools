@@ -62,6 +62,9 @@ let private reload model =
         | ASTTab ->
             Cmd.ofMsg (FantomasTools.Client.ASTViewer.Model.DoParse)
             |> Cmd.map ASTMsg
+        | TriviaTab ->
+            Cmd.ofMsg (FantomasTools.Client.Trivia.Model.GetTrivia)
+            |> Cmd.map TriviaMsg
         | _ -> Cmd.none
     else
         Cmd.none

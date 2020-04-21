@@ -15,7 +15,7 @@ type Model =
       ActiveByTriviaNodeIndex: int
       ActiveByTriviaIndex: int
       Defines: string
-      FSCVersion: string
+      Version: string
       IsFsi: bool }
 
 type UrlModel = { IsFsi: bool; Defines: string }
@@ -25,7 +25,7 @@ type Msg =
     | GetTrivia
     | TriviaReceived of ParseResult
     | ActiveItemChange of ActiveTab * int
-    | UpdateDefines of string
+    | DefinesUpdated of string
     | FSCVersionReceived of string
     | SetFsiFile of bool
     | NetworkError of exn

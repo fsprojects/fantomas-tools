@@ -67,7 +67,9 @@ let private tabs model dispatch =
         | HomeTab -> homeTab, null, null
         | TriviaTab ->
             let triviaDispatch tMsg = dispatch (TriviaMsg tMsg)
-            Trivia.View.view model.TriviaModel triviaDispatch, null, null
+            Trivia.View.view model.TriviaModel triviaDispatch,
+            Trivia.View.settings model.TriviaModel triviaDispatch,
+            Trivia.View.commands triviaDispatch
         | TokensTab ->
             let tokensDispatch tMsg = dispatch (FSharpTokensMsg tMsg)
             FSharpTokens.View.view model.FSharpTokensModel tokensDispatch,
