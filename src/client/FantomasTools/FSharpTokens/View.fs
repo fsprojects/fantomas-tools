@@ -102,13 +102,5 @@ let commands dispatch =
 let settings model dispatch =
     fragment []
         [ FantomasTools.Client.VersionBar.versionBar (sprintf "FSC - %s" model.Version)
-          FormGroup.formGroup []
-              [ label [] [ str "Defines" ]
-                Input.input
-                    [ Input.Custom
-                        [ Placeholder "Enter your defines separated with a space"
-                          OnChange(fun ev ->
-                              ev.Value
-                              |> Msg.DefinesUpdated
-                              |> dispatch)
-                          DefaultValue model.Defines ] ] ] ]
+          SettingControls.input (DefinesUpdated >> dispatch) "Defines" "Enter your defines separated with a space"
+              model.Defines ]

@@ -59,6 +59,9 @@ let private reload model =
         | TokensTab ->
             Cmd.ofMsg (FantomasTools.Client.FSharpTokens.Model.GetTokens)
             |> Cmd.map FSharpTokensMsg
+        | ASTTab ->
+            Cmd.ofMsg (FantomasTools.Client.ASTViewer.Model.DoParse)
+            |> Cmd.map ASTMsg
         | _ -> Cmd.none
     else
         Cmd.none

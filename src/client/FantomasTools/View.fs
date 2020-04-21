@@ -75,7 +75,9 @@ let private tabs model dispatch =
             FSharpTokens.View.commands tokensDispatch
         | ASTTab ->
             let astDispatch aMsg = dispatch (ASTMsg aMsg)
-            ASTViewer.View.view model.ASTModel astDispatch, null, null
+            ASTViewer.View.view model.ASTModel astDispatch,
+            ASTViewer.View.settings model.ASTModel astDispatch,
+            ASTViewer.View.commands astDispatch
         | FantomasTab _ ->
             let fantomasDispatch fMsg = dispatch (FantomasMsg fMsg)
             FantomasOnline.View.view model.SourceCode model.FantomasModel fantomasDispatch, null, null

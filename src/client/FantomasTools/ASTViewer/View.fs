@@ -3,6 +3,7 @@ module FantomasTools.Client.ASTViewer.View
 open Fable.Core.JsInterop
 open Fable.React
 open Fable.React.Props
+open FantomasTools.Client
 open FantomasTools.Client.ASTViewer.Model
 open FantomasTools.Client.Editor
 open Reactstrap
@@ -161,52 +162,38 @@ let private results model dispatch =
               EditorProp.Value errors ]
     | Ok None -> str ""
 
-
-let private settings model dispatch =
-    let toggleButton msg active label =
-        let className =
-            if active then "rounded-0 text-white" else "rounded-0"
-
-        Button.button
-            [ Button.Custom
-                [ ClassName className
-                  OnClick(fun _ -> dispatch msg) ]
-              Button.Outline(not active) ] [ str label ]
-
-    div [ Id "ast-settings" ]
-        [ div [ ClassName "setting-row" ]
-              [ Input.input
-                  [ Input.Custom
-                      [ Placeholder "Enter your defines separated with a space"
-                        Props.OnChange(fun ev -> ev.Value |> DefinesUpdated |> dispatch)
-                        DefaultValue model.Defines ] ]
-                ButtonGroup.buttonGroup [ ButtonGroup.Custom [ ClassName "btn-group-toggle rounded-0" ] ]
-                    [ toggleButton (SetFsiFile false) (not model.IsFsi) "*.fs"
-                      toggleButton (SetFsiFile true) model.IsFsi "*.fsi" ] ]
-          div [ ClassName "setting-row" ]
-              [ ButtonGroup.buttonGroup [ ButtonGroup.Custom [ ClassName "btn-group-toggle rounded-0" ] ]
-                    [ toggleButton ShowJsonViewer (isJsonView model.View) "Show JsonViewer"
-                      toggleButton ShowEditor (isEditorView model.View) "Show editor"
-                      toggleButton ShowRaw (isRawView model.View) "Show raw"
-                      toggleButton ShowGraph (isGraph model.View) "Show graph" ] ]
-          div [ ClassName "setting-row" ]
-              [ ButtonGroup.buttonGroup [ ButtonGroup.Custom [ ClassName "btn-group-toggle rounded-0" ] ]
-                    [ Button.button
-                        [ Button.Color Primary
-                          Button.Custom [ OnClick(fun _ -> dispatch DoParse) ] ] [ str "Show Untyped AST" ]
-                      Button.button
-                          [ Button.Color Primary
-                            Button.Custom [ OnClick(fun _ -> dispatch DoTypeCheck) ] ] [ str "Show Typed AST" ] ] ] ]
-
 let view model dispatch =
-    let inner =
-        if model.IsLoading
-        then FantomasTools.Client.Loader.loader
-        else results model dispatch
+    if model.IsLoading then
+        FantomasTools.Client.Loader.loader
+    else
+        results model dispatch
 
+let commands dispatch =
     fragment []
-        [ inner
-          div [] [
-             FantomasTools.Client.VersionBar.versionBar (sprintf "FSC - %s" model.Version)
-             settings model dispatch
-          ] ]
+        [ Button.button
+            [ Button.Color Primary
+              Button.Custom [ OnClick(fun _ -> dispatch DoParse) ] ] [ str "Show Untyped AST" ]
+          Button.button
+              [ Button.Color Primary
+                Button.Custom [ OnClick(fun _ -> dispatch DoTypeCheck) ] ] [ str "Show Typed AST" ] ]
+
+let settings model dispatch =
+    fragment []
+        [ FantomasTools.Client.VersionBar.versionBar (sprintf "FSC - %s" model.Version)
+          SettingControls.input (DefinesUpdated >> dispatch) "Defines" "Enter your defines separated with a space"
+              model.Defines
+          SettingControls.toggleButton (fun _ -> dispatch (SetFsiFile false)) (fun _ -> dispatch (SetFsiFile true))
+              "*.fsi" "*.fs" "File extension" model.IsFsi
+          SettingControls.multiButton "Mode"
+              [ { IsActive = (isJsonView model.View)
+                  Label = "JsonViewer"
+                  OnClick = (fun _ -> dispatch ShowJsonViewer) }
+                { IsActive = (isEditorView model.View)
+                  Label = "Editor"
+                  OnClick = (fun _ -> dispatch ShowEditor) }
+                { IsActive = (isRawView model.View)
+                  Label = "Raw"
+                  OnClick = (fun _ -> dispatch ShowRaw) }
+                { IsActive = (isGraph model.View)
+                  Label = "Graph"
+                  OnClick = (fun _ -> dispatch ShowGraph) } ] ]
