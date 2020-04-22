@@ -16,6 +16,7 @@
     <Compile Include="Loader.fs" />
     <Compile Include="UrlTools.fs" />
     <Compile Include="SettingControls.fs" />
+    <Compile Include="Http.fs" />
 
     <Compile Include="Trivia\Model.fs" />
     <Compile Include="Trivia\Encoders.fs" />

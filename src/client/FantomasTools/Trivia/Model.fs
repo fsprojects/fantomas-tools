@@ -10,7 +10,7 @@ type Model =
     { ActiveTab: ActiveTab
       Trivia: Trivia list
       TriviaNodes: TriviaNode list
-      Exception: exn option
+      Error: string option
       IsLoading: bool
       ActiveByTriviaNodeIndex: int
       ActiveByTriviaIndex: int
@@ -28,4 +28,4 @@ type Msg =
     | DefinesUpdated of string
     | FSCVersionReceived of string
     | SetFsiFile of bool
-    | NetworkError of exn
+    | Error of string

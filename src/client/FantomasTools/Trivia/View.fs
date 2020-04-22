@@ -1,5 +1,6 @@
 module FantomasTools.Client.Trivia.View
 
+open FantomasTools.Client.Editor
 open Fable.Core.JsInterop
 open Fable.React
 open Fable.React.Props
@@ -59,7 +60,14 @@ let private results model dispatch =
 let view model dispatch =
     if model.IsLoading
     then FantomasTools.Client.Loader.loader
-    else results model dispatch
+    else
+        match model.Error with
+        | None -> results model dispatch
+        | Some errors ->
+            FantomasTools.Client.Editor.editorInTab
+                [ EditorProp.Language "fsharp"
+                  EditorProp.IsReadOnly true
+                  EditorProp.Value errors ]
 
 let commands dispatch =
     Button.button

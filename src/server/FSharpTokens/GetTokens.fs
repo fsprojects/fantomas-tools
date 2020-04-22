@@ -42,10 +42,8 @@ module GetTokens =
             let version = assembly.GetName().Version
             sprintf "%i.%i.%i" version.Major version.Minor version.Revision
 
-        let json = Encode.string version |> Encode.toString 4
-
         new HttpResponseMessage(HttpStatusCode.OK,
-                                Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json"))
+                                Content = new StringContent(version, System.Text.Encoding.UTF8, "application/text"))
 
     let notFound () =
         let json = Encode.string "Not found" |> Encode.toString 4

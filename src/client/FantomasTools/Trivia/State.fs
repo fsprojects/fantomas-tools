@@ -2,9 +2,7 @@ module FantomasTools.Client.Trivia.State
 
 open System
 open Fable.Core
-open Fable.Core.JsInterop
 open FantomasTools.Client
-open Fetch
 open Elmish
 open TriviaViewer.Shared
 open FantomasTools.Client.Trivia.Model
@@ -15,28 +13,25 @@ open Thoth.Json
 [<Emit("process.env.TRIVIA_BACKEND")>]
 let private backend: string = jsNative
 
-// let private backend: string = "http://localhost:7896"
-
-let private fetchTrivia (payload: ParseRequest) =
+let private fetchTrivia (payload: ParseRequest) dispatch =
     let url = sprintf "%s/api/get-trivia" backend
     let json = encodeParseRequest payload
-    Fetch.fetch url
-        [ RequestProperties.Body(!^json)
-          RequestProperties.Method HttpMethod.POST ]
-    |> Promise.bind (fun res -> res.text ())
-    |> Promise.map (fun json ->
-        match decodeResult json with
-        | Ok r -> r
-        | Error err -> failwithf "failed to decode result: %A" err)
+    Http.postJson url json
+    |> Promise.iter(fun (status, body) ->
+        match status with
+        | 200 ->
+            match decodeResult body with
+            | Ok r -> TriviaReceived r
+            | Result.Error err -> Error (sprintf "failed to decode response: %A" err)
+        | 400 -> Error body
+        | 413 -> Error "the input was too large to process"
+        | _ -> Error body
+        |> dispatch
+    )
 
 let private fetchFSCVersion () =
-    let url = sprintf "%s/api/version" backend
-    Fetch.fetch url []
-    |> Promise.bind (fun response -> response.text ())
-    |> Promise.map (fun json ->
-        match decodeVersion json with
-        | Ok v -> v
-        | Error err -> failwithf "failed to decode version: %A" err)
+    sprintf "%s/api/version" backend
+    |> Http.getText
 
 let private initialModel: Model =
     { ActiveTab = ByTriviaNodes
@@ -47,7 +42,7 @@ let private initialModel: Model =
       Defines = ""
       Version = "???"
       IsFsi = false
-      Exception = None
+      Error = None
       IsLoading = true }
 
 let private splitDefines (value: string) =
@@ -66,7 +61,7 @@ let init isActive =
         else initialModel
 
     let cmd =
-        Cmd.OfPromise.either fetchFSCVersion () FSCVersionReceived NetworkError
+        Cmd.OfPromise.either fetchFSCVersion () FSCVersionReceived (fun ex -> Error ex.Message)
 
     model, cmd
 
@@ -83,7 +78,7 @@ let update code msg model =
 
         let cmd =
             Cmd.batch
-                [ Cmd.OfPromise.either fetchTrivia parseRequest TriviaReceived NetworkError
+                [ Cmd.ofSub (fetchTrivia parseRequest)
                   Cmd.ofSub (updateUrl code model) ]
 
         { model with IsLoading = true }, cmd
@@ -95,10 +90,8 @@ let update code msg model =
               ActiveByTriviaIndex = 0
               ActiveByTriviaNodeIndex = 0 },
         Cmd.none
-    | NetworkError err ->
-        { initialModel with
-              Exception = Some err },
-        Cmd.none
+    | Error err ->
+        { initialModel with Error = Some err; IsLoading = false }, Cmd.none
     | ActiveItemChange (tab, index) ->
         let model, range =
             match tab with

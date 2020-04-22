@@ -29,8 +29,7 @@ type Msg =
     | SetSourceText of string
     | DoParse
     | DoTypeCheck
-    | Parsed of Dto
-    | TypeChecked of Dto
+    | ASTParsed of Dto
     | Error of string
     | ShowJsonViewer
     | ShowEditor

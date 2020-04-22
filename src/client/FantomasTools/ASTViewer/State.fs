@@ -3,7 +3,6 @@ module FantomasTools.Client.ASTViewer.State
 open System
 open Elmish
 open Thoth.Json
-open Fetch
 open Fable.Core
 open Fable.Core.JsInterop
 open ASTViewer
@@ -16,32 +15,31 @@ open FantomasTools.Client.ASTViewer.Encoders
 let private backend: string = jsNative
 
 let private getVersion () =
-    let url = sprintf "%s/%s" backend "api/version"
-    Fetch.fetch url []
-    |> Promise.bind (fun res -> res.text ())
-    |> Promise.map (fun (json: string) ->
-        match Decode.fromString Decode.string json with
-        | Ok v -> v
-        | Result.Error e -> failwithf "%A" e)
+    sprintf "%s/%s" backend "api/version"
+    |> Http.getText
 
-let private fetchNodeRequest url (payload: Shared.Input) =
+let private fetchNodeRequest url (payload: Shared.Input) dispatch =
     let json = encodeInput payload
-    Fetch.fetch url
-        [ RequestProperties.Body(!^json)
-          RequestProperties.Method HttpMethod.POST ]
-    |> Promise.bind (fun res -> res.text ())
-    |> Promise.map (fun json ->
-        match decodeResult json with
-        | Ok r -> r
-        | Result.Error err -> failwithf "failed to decode result: %A" err)
+    Http.postJson url json
+    |> Promise.iter(fun (status, body) ->
+        match status with
+        | 200 ->
+            match decodeResult body with
+            | Ok r -> ASTParsed r
+            | Result.Error err -> Error (sprintf "failed to decode response: %A" err)
+        | 400 -> Error body
+        | 413 -> Error "the input was too large to process"
+        | _ -> Error body
+        |> dispatch
+    )
 
-let private fetchUntypedAST (payload: Shared.Input) =
+let private fetchUntypedAST (payload: Shared.Input) dispatch =
     let url = sprintf "%s/api/untyped-ast" backend
-    fetchNodeRequest url payload
+    fetchNodeRequest url payload dispatch
 
-let private fetchTypedAst (payload: Shared.Input) =
+let private fetchTypedAst (payload: Shared.Input) dispatch =
     let url = sprintf "%s/api/typed-ast" backend
-    fetchNodeRequest url payload
+    fetchNodeRequest url payload dispatch
 
 let initialGraphModel: Graph.Model =
     { RootsPath = []
@@ -96,14 +94,7 @@ let update code (msg: Msg) (model: Model): Model * Cmd<Msg> =
     | SetSourceText x ->
         let nextModel = { model with Source = x }
         nextModel, Cmd.none
-    | Parsed x ->
-        let nextModel =
-            { model with
-                  IsLoading = false
-                  Parsed = Ok(Some x) }
-
-        nextModel, Cmd.none
-    | TypeChecked x ->
+    | ASTParsed x ->
         let nextModel =
             { model with
                   IsLoading = false
@@ -122,7 +113,7 @@ let update code (msg: Msg) (model: Model): Model * Cmd<Msg> =
 
         let cmd =
             Cmd.batch
-                [ Cmd.OfPromise.either fetchUntypedAST parseRequest Parsed getMessageFromError
+                [ Cmd.ofSub (fetchUntypedAST parseRequest)
                   Cmd.ofSub (updateUrl code model) ]
 
         { model with IsLoading = true }, cmd
@@ -131,7 +122,7 @@ let update code (msg: Msg) (model: Model): Model * Cmd<Msg> =
 
         let cmd =
             Cmd.batch
-                [ Cmd.OfPromise.either fetchTypedAst parseRequest Parsed getMessageFromError
+                [ Cmd.ofSub (fetchTypedAst parseRequest)
                   Cmd.ofSub (updateUrl code model) ]
 
         { model with IsLoading = true }, cmd

@@ -27,6 +27,9 @@ module GetTrivia =
         new HttpResponseMessage(HttpStatusCode.InternalServerError,
                                 Content = new StringContent(err, System.Text.Encoding.UTF8, "application/text"))
 
+    let private sendBadRequest error =
+        new HttpResponseMessage(HttpStatusCode.BadRequest, Content = new StringContent(error, System.Text.Encoding.UTF8, "application/text"))
+
     let private getProjectOptionsFromScript file source defines (checker: FSharpChecker) =
         async {
             let otherFlags =
@@ -54,12 +57,19 @@ module GetTrivia =
 
             let! ast = checker.ParseFile(fileName, sourceText, parsingOptions)
 
-            match ast.ParseTree with
-            | Some tree -> return (Result.Ok tree)
-            | None ->
-                log.LogError
-                    (sprintf "Error file getting project options:\nSource:\n%s\n\nErrors:\n%A" source ast.Errors)
+            if ast.ParseHadErrors then
+                let errors =
+                    ast.Errors
+                    |> Array.filter (fun e -> e.Severity = FSharpErrorSeverity.Error)
+
+                if not <| Array.isEmpty errors
+                then log.LogError(sprintf "Parsing failed with errors: %A\nAnd options: %A" errors checkOptions)
+
                 return Error ast.Errors
+            else
+                match ast.ParseTree with
+                | Some tree -> return Result.Ok tree
+                | _ -> return Error Array.empty // Not sure this branch can be reached.
         }
 
     let private getVersion () =
@@ -70,10 +80,7 @@ module GetTrivia =
             let version = assembly.GetName().Version
             sprintf "%i.%i.%i" version.Major version.Minor version.Revision
 
-        let json = Encode.string version |> Encode.toString 4
-
-        new HttpResponseMessage(HttpStatusCode.OK,
-                                Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json"))
+        sendText version
 
     let private notFound () =
         let json = Encode.string "Not found" |> Encode.toString 4
@@ -102,8 +109,8 @@ module GetTrivia =
                     let json = Encoders.encodeParseResult trivias triviaNodes
 
                     return sendJson json
-                | Error err -> return sendInternalError (sprintf "%A" err)
-            | Error err -> return sendInternalError (sprintf "%A" err)
+                | Error err -> return sendBadRequest (sprintf "%A" err)
+            | Error err -> return sendBadRequest (sprintf "%A" err)
         }
 
     [<FunctionName("GetTrivia")>]

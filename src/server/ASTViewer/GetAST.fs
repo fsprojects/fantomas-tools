@@ -93,6 +93,9 @@ module GetAST =
                                                       System.Text.Encoding.UTF8,
                                                       "application/text"))
 
+    let private sendBadRequest error =
+        new HttpResponseMessage(HttpStatusCode.BadRequest, Content = new StringContent(error, System.Text.Encoding.UTF8, "application/text"))
+
     let private notFound () =
         let json = Encode.string "Not found" |> Encode.toString 4
 
@@ -122,10 +125,7 @@ module GetAST =
             let version = assembly.GetName().Version
             sprintf "%i.%i.%i" version.Major version.Minor version.Revision
 
-        let json = Encode.string version |> Encode.toString 4
-
-        new HttpResponseMessage(HttpStatusCode.OK,
-                                Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json"))
+        sendText version
 
     let parseAST (log: ILogger) ({ SourceCode = source; Defines = defines; IsFsi = isFsi }) =
         let fileName = if isFsi then "tmp.fsi" else "tmp.fsx"
@@ -189,7 +189,7 @@ module GetAST =
 
                     return sendJson responseJson
 
-                | Error error -> return sendInternalError (sprintf "%A" error)
+                | Error error -> return sendBadRequest (sprintf "%A" error)
 
             | Result.Ok _ -> return sendTooLargeError ()
 

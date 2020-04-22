@@ -26,13 +26,8 @@ let private getTokens (request: FSharpTokens.Shared.GetTokensRequest): JS.Promis
     |> Promise.bind (fun res -> res.text ())
 
 let private getVersion () =
-    let url = sprintf "%s/%s" backend "api/version"
-    Fetch.fetch url []
-    |> Promise.bind (fun res -> res.text ())
-    |> Promise.map (fun (json: string) ->
-        match Decode.fromString Decode.string json with
-        | Ok v -> v
-        | Error e -> failwithf "%A" e)
+    sprintf "%s/%s" backend "api/version"
+    |> Http.getText
 
 let private initialModel =
     { Defines = ""

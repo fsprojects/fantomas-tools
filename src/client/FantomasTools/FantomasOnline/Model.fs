@@ -10,8 +10,7 @@ type FantomasMode =
 type Msg =
     | VersionReceived of string
     | OptionsReceived of FantomasOption list
-    | FormatException of exn
-    | NetworkError of exn
+    | FormatException of string
     | Format
     | FormattedReceived of string
     | UpdateOption of (string * FantomasOption)

@@ -37,6 +37,9 @@ let private sendText text =
     new HttpResponseMessage(HttpStatusCode.OK,
                             Content = new StringContent(text, System.Text.Encoding.UTF8, "application/text"))
 
+let private sendBadRequest error =
+        new HttpResponseMessage(HttpStatusCode.BadRequest, Content = new StringContent(error, System.Text.Encoding.UTF8, "application/text"))
+
 let private sendJson json =
     new HttpResponseMessage(HttpStatusCode.OK,
                             Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json"))
@@ -46,9 +49,7 @@ let private sendInternalError err =
                             Content = new StringContent(err, System.Text.Encoding.UTF8, "application/text"))
 
 let private getVersionResponse version =
-    let json = Encode.string version |> Encode.toString 4
-
-    sendJson json |> Async.lift
+    sendText version |> Async.lift
 
 let private mapFantomasOptionsToRecord<'t> options =
     let newValues =
@@ -73,8 +74,12 @@ let private formatResponse<'options> (format: string -> string -> 'options -> As
         match configResult with
         | Ok ({ SourceCode = code; IsFsi = isFsi }, config) ->
             let fileName = if isFsi then "tmp.fsi" else "tmp.fsx"
-            let! formatted = format fileName code config
-            return sendText formatted
+            try
+                let! formatted = format fileName code config
+                return sendText formatted
+            with
+            | exn ->
+                return sendBadRequest (sprintf "%A" exn)
         | Error err -> return sendInternalError (err)
     }
 
