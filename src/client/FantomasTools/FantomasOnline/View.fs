@@ -1,5 +1,6 @@
 module FantomasTools.Client.FantomasOnline.View
 
+open System.Text.RegularExpressions
 open Fable.React
 open Fable.React.Props
 open FantomasOnline.Shared
@@ -11,13 +12,19 @@ let private mapToOption dispatch (key, fantomasOption) =
     let editor =
         match fantomasOption with
         | FantomasOption.BoolOption (o, _, v) ->
-            SettingControls.toggleButton (fun _ -> UpdateOption(key, BoolOption(o, key, v)) |> dispatch) (fun _ ->
-                UpdateOption(key, BoolOption(o, key, not v)) |> dispatch) "true" "false" key v
+            SettingControls.toggleButton
+                    (fun _ -> UpdateOption(key, BoolOption(o, key, true)) |> dispatch)
+                    (fun _ -> UpdateOption(key, BoolOption(o, key, false)) |> dispatch)
+                    "true"
+                    "false"
+                    key
+                    v
 
         | FantomasOption.IntOption (o, _, v) ->
             let onChange (nv: string) =
-                let v = nv |> (int)
-                UpdateOption(key, IntOption(o, key, v)) |> dispatch
+                if Regex.IsMatch(nv, "\\d+") then
+                    let v = nv |> (int)
+                    UpdateOption(key, IntOption(o, key, v)) |> dispatch
             SettingControls.input onChange key "integer" v
 
     div
@@ -121,23 +128,38 @@ let view model =
                 [ Editor.Value error
                   Editor.IsReadOnly true ] ]
 
+let private userChangedSettings (model: Model) =
+    model.SettingsChangedByTheUser
+    |> List.isEmpty
+    |> not
 
 let commands code model dispatch =
     let formatButton =
         Button.button
             [ Button.Color Primary
-              Button.Custom
-                  [ OnClick(fun _ -> dispatch Msg.Format) ] ] [ str "Format" ]
+              Button.Custom [ OnClick(fun _ -> dispatch Msg.Format) ] ] [ str "Format" ]
+
+    let copySettingButton =
+        if userChangedSettings model then
+            Button.button
+                [ Button.Color Secondary
+                  Button.Custom [ ClassName "text-white" ; OnClick(fun _ -> dispatch CopySettings) ] ] [ str "Copy settings" ]
+            |> Some
+        else
+            None
 
     match model.State with
-    | EditorState.LoadingOptions -> null
-    | EditorState.LoadingFormatRequest -> formatButton
+    | EditorState.LoadingOptions -> []
+    | EditorState.LoadingFormatRequest ->
+        [ formatButton
+          ofOption copySettingButton ]
     | EditorState.OptionsLoaded
     | EditorState.FormatResult _
     | EditorState.FormatError _ ->
-        fragment []
-            [ createGitHubIssue code model
-              formatButton ]
+        [ createGitHubIssue code model
+          formatButton
+          ofOption copySettingButton ]
+    |> fragment []
 
 let settings model dispatch =
     match model.State with
@@ -165,4 +187,3 @@ let settings model dispatch =
               fileExtension
               hr []
               options ]
-

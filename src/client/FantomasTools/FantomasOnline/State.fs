@@ -118,6 +118,18 @@ let private restoreUserOptionsFromUrl (defaultOptions: FantomasOption list) =
 
     reconstructedOptions, isFsi
 
+[<Emit("navigator.clipboard.writeText($0)")>]
+let private writeText text : JS.Promise<unit> = jsNative
+
+let private showSuccess _message = import "showSuccess" "../../js/notifications"
+let private showError _message = import "showSuccess" "../../js/notifications"
+
+let private copySettings (model: Model) _ =
+    let json = Encoders.encodeUserSettingToConfiguration model.SettingsChangedByTheUser
+    writeText json
+    |> Promise.catch (fun err -> showError "Something went wrong while copying settings to the clipboard."; printfn "%A" err)
+    |> Promise.iter (fun () -> showSuccess "Copied fantomas-config settings to clipboard!")
+
 let update isActiveTab code msg model =
     match msg with
     | VersionReceived version -> { model with Version = version }, Cmd.none
@@ -170,3 +182,6 @@ let update isActiveTab code msg model =
     | ChangeMode _ -> model, Cmd.none // handle in upper update function
 
     | SetFsiFile isFsi -> { model with IsFsi = isFsi }, Cmd.none
+
+    | CopySettings ->
+        model, Cmd.ofSub (copySettings model)

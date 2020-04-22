@@ -17,6 +17,7 @@ type Msg =
     | UpdateOption of (string * FantomasOption)
     | ChangeMode of FantomasMode
     | SetFsiFile of bool
+    | CopySettings
 
 type EditorState =
     | LoadingOptions
@@ -32,3 +33,15 @@ type Model =
       UserOptions: Map<string, FantomasOption>
       Mode: FantomasMode
       State: EditorState }
+
+    member this.SettingsChangedByTheUser =
+        let defaultValues = this.DefaultOptions |> List.sortBy sortByOption
+
+        let userValues =
+            this.UserOptions
+            |> Map.toList
+            |> List.map snd
+            |> List.sortBy sortByOption
+        List.zip defaultValues userValues
+        |> List.filter (fun (dv, uv) -> dv <> uv)
+        |> List.map snd

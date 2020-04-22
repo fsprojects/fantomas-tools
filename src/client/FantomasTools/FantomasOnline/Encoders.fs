@@ -33,3 +33,14 @@ let encodeUrlModel code model =
         [ "code", Encode.string code
           "settings", encodeUserSettings model
           "isFsi", Encode.bool model.IsFsi ]
+
+let encodeUserSettingToConfiguration options =
+    let encodeValue option =
+        match option with
+        | IntOption (_,_, v) -> Encode.int v
+        | BoolOption (_,_,v) -> Encode.bool v
+
+    options
+    |> List.map (fun option -> getOptionKey option, encodeValue option)
+    |> Encode.object
+    |> Encode.toString 4

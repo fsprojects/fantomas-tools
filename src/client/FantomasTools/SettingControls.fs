@@ -20,6 +20,7 @@ let private toggleButton_ onClick active label =
     Button.button
         [ Button.Custom
             [ ClassName className
+              Key label
               OnClick onClick ]
           Button.Outline(not active) ] [ str label ]
 

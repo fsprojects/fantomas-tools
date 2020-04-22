@@ -13,9 +13,9 @@ open Elmish.HMR
 Fable.Core.JsInterop.importSideEffects "../styles/style.sass"
 
 Program.mkProgram State.init State.update View.view
-#if DEBUG
-|> Program.withConsoleTrace
-#endif
+//#if DEBUG
+//|> Program.withConsoleTrace
+//#endif
 |> Program.toNavigable FantomasTools.Client.Navigation.parser FantomasTools.Client.Navigation.urlUpdate
 |> Program.withReactBatched "elmish-app"
 |> Program.run
