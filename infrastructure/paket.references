@@ -2,3 +2,4 @@ group Infrastructure
 
 FSharp.Core
 Pulumi.Azure
+Pulumi.FSharp

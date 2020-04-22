@@ -6,7 +6,6 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="paket.references" />
-    <Compile Include="PulumiFSharp.fs" />
     <Compile Include="Program.fs" />
     <Content Include="Pulumi.main.yaml" />
   </ItemGroup>

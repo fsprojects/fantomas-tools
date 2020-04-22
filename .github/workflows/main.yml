@@ -40,9 +40,9 @@ jobs:
         publish_dir: ./src/client/output
 
     - name: Deploy Functions
-      uses: docker://pulumi/actions:v1.14.1
+      uses: docker://pulumi/actions:v2.0.0
       with:
-        args: up
+        args: up --yes
       env:
         ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
         ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
