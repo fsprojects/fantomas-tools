@@ -42,11 +42,9 @@ module GetTrivia =
 
     let private collectAST (log: ILogger) fileName defines source =
         async {
-            let sourceText =
-                FSharp.Compiler.Text.SourceText.ofString (source)
+            let sourceText = FSharp.Compiler.Text.SourceText.ofString (source)
 
-            let checker =
-                FSharpChecker.Create(keepAssemblyContents = false)
+            let checker = FSharpChecker.Create(keepAssemblyContents = false)
 
             let! checkOptions = getProjectOptionsFromScript fileName sourceText defines checker
 
@@ -72,15 +70,13 @@ module GetTrivia =
             let version = assembly.GetName().Version
             sprintf "%i.%i.%i" version.Major version.Minor version.Revision
 
-        let json =
-            Encode.string version |> Encode.toString 4
+        let json = Encode.string version |> Encode.toString 4
 
         new HttpResponseMessage(HttpStatusCode.OK,
                                 Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json"))
 
     let private notFound () =
-        let json =
-            Encode.string "Not found" |> Encode.toString 4
+        let json = Encode.string "Not found" |> Encode.toString 4
 
         new HttpResponseMessage(HttpStatusCode.NotFound,
                                 Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json"))
@@ -99,14 +95,11 @@ module GetTrivia =
 
                 match astResult with
                 | Result.Ok ast ->
-                    let trivias =
-                        TokenParser.getTriviaFromTokens tokens lineCount
+                    let trivias = TokenParser.getTriviaFromTokens tokens lineCount
 
-                    let triviaNodes =
-                        Trivia.collectTrivia tokens lineCount ast
+                    let triviaNodes = Trivia.collectTrivia tokens lineCount ast
 
-                    let json =
-                        Encoders.encodeParseResult trivias triviaNodes
+                    let json = Encoders.encodeParseResult trivias triviaNodes
 
                     return sendJson json
                 | Error err -> return sendInternalError (sprintf "%A" err)

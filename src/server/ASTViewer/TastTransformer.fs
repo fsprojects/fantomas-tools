@@ -59,7 +59,8 @@ module private Tast =
                         yield "memberOrFunc"
                               ==> fsharpMemberToProps memberOrFunc ]
               Childs =
-                  [ if objExprOpt.IsSome then yield visitExpr objExprOpt.Value
+                  [ if objExprOpt.IsSome
+                    then yield visitExpr objExprOpt.Value
                     yield! argExprs |> List.map visitExpr ]
               FsAstNode = box e }
         | BasicPatterns.Coerce (targetType, inpExpr) ->
@@ -94,7 +95,9 @@ module private Tast =
                   p
                       [ yield "fieldType" ==> fsharpTypeToProps fieldType
                         yield "fieldName" ==> fieldName ]
-              Childs = [ if objExprOpt.IsSome then yield visitExpr objExprOpt.Value ]
+              Childs =
+                  [ if objExprOpt.IsSome
+                    then yield visitExpr objExprOpt.Value ]
               FsAstNode = box e }
         | BasicPatterns.ILFieldSet (objExprOpt, fieldType, fieldName, valueExpr) ->
             { Type = "BasicPatterns.ILFieldGet"
@@ -104,7 +107,8 @@ module private Tast =
                       [ yield "fieldType" ==> fsharpTypeToProps fieldType
                         yield "fieldName" ==> fieldName ]
               Childs =
-                  [ if objExprOpt.IsSome then yield visitExpr objExprOpt.Value
+                  [ if objExprOpt.IsSome
+                    then yield visitExpr objExprOpt.Value
                     yield visitExpr valueExpr ]
               FsAstNode = box e }
         | BasicPatterns.IfThenElse (guardExpr, thenExpr, elseExpr) ->
@@ -198,7 +202,9 @@ module private Tast =
                       [ "recordOrClassType"
                         ==> fsharpTypeToProps recordOrClassType
                         "fieldInfo" ==> fsharpFieldToProps fieldInfo ]
-              Childs = [ if objExprOpt.IsSome then yield visitExpr objExprOpt.Value ]
+              Childs =
+                  [ if objExprOpt.IsSome
+                    then yield visitExpr objExprOpt.Value ]
               FsAstNode = box e }
         | BasicPatterns.FSharpFieldSet (objExprOpt, recordOrClassType, fieldInfo, argExpr) ->
             { Type = "BasicPatterns.FSharpFieldSet"
@@ -209,7 +215,8 @@ module private Tast =
                         ==> fsharpTypeToProps recordOrClassType
                         "fieldInfo" ==> fsharpFieldToProps fieldInfo ]
               Childs =
-                  [ if objExprOpt.IsSome then yield visitExpr objExprOpt.Value
+                  [ if objExprOpt.IsSome
+                    then yield visitExpr objExprOpt.Value
                     yield visitExpr argExpr ]
               FsAstNode = box e }
         | BasicPatterns.Sequential (firstExpr, secondExpr) ->
@@ -427,8 +434,7 @@ module private Tast =
         | _ -> None
 
 let tastToNode tast: Fantomas.AstTransformer.Node =
-    let child =
-        tast |> List.choose Tast.visitDeclaration
+    let child = tast |> List.choose Tast.visitDeclaration
 
     { Type = "File"
       Range = None

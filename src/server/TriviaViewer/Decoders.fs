@@ -9,5 +9,4 @@ let private parseRequestDecoder: Decoder<ParseRequest> =
           Defines = get.Required.Field "defines" (Decode.list Decode.string)
           FileName = get.Required.Field "fileName" Decode.string })
 
-let decodeParseRequest value =
-    Decode.fromString parseRequestDecoder value
+let decodeParseRequest value = Decode.fromString parseRequestDecoder value

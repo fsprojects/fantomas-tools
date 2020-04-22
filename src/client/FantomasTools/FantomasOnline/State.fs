@@ -119,15 +119,19 @@ let private restoreUserOptionsFromUrl (defaultOptions: FantomasOption list) =
     reconstructedOptions, isFsi
 
 [<Emit("navigator.clipboard.writeText($0)")>]
-let private writeText text : JS.Promise<unit> = jsNative
+let private writeText _text: JS.Promise<unit> = jsNative
 
 let private showSuccess _message = import "showSuccess" "../../js/notifications"
 let private showError _message = import "showSuccess" "../../js/notifications"
 
 let private copySettings (model: Model) _ =
-    let json = Encoders.encodeUserSettingToConfiguration model.SettingsChangedByTheUser
+    let json =
+        Encoders.encodeUserSettingToConfiguration model.SettingsChangedByTheUser
+
     writeText json
-    |> Promise.catch (fun err -> showError "Something went wrong while copying settings to the clipboard."; printfn "%A" err)
+    |> Promise.catch (fun err ->
+        showError "Something went wrong while copying settings to the clipboard."
+        printfn "%A" err)
     |> Promise.iter (fun () -> showSuccess "Copied fantomas-config settings to clipboard!")
 
 let update isActiveTab code msg model =
@@ -135,10 +139,9 @@ let update isActiveTab code msg model =
     | VersionReceived version -> { model with Version = version }, Cmd.none
     | OptionsReceived options ->
         let userOptions, isFsi =
-            if isActiveTab then
-                restoreUserOptionsFromUrl options
-            else
-                optionsListToMap options, model.IsFsi
+            if isActiveTab
+            then restoreUserOptionsFromUrl options
+            else optionsListToMap options, model.IsFsi
 
         let cmd =
             if not (System.String.IsNullOrWhiteSpace code)
@@ -183,5 +186,4 @@ let update isActiveTab code msg model =
 
     | SetFsiFile isFsi -> { model with IsFsi = isFsi }, Cmd.none
 
-    | CopySettings ->
-        model, Cmd.ofSub (copySettings model)
+    | CopySettings -> model, Cmd.ofSub (copySettings model)

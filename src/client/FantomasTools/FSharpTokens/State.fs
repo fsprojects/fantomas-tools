@@ -18,8 +18,7 @@ let private backend: string = jsNative
 let private getTokens (request: FSharpTokens.Shared.GetTokensRequest): JS.Promise<string> =
     let url = sprintf "%s/%s" backend "api/get-tokens"
 
-    let json =
-        Encode.toString 4 (encodeGetTokensRequest request)
+    let json = Encode.toString 4 (encodeGetTokensRequest request)
 
     fetch url
         [ RequestProperties.Body(!^json)
@@ -60,8 +59,7 @@ let private modelToParseRequest sourceCode (model: Model): FSharpTokens.Shared.G
       SourceCode = sourceCode }
 
 let private updateUrl code (model: Model) _ =
-    let json =
-        Encode.toString 2 (encodeUrlModel code model)
+    let json = Encode.toString 2 (encodeUrlModel code model)
 
     UrlTools.updateUrlWithData json
 
@@ -91,7 +89,9 @@ let update code msg model =
         match Decoders.decodeTokens tokensText with
         | Ok tokens ->
             let cmd =
-                if (Array.length tokens) = 1 then Cmd.OfFunc.result (LineSelected 1) else Cmd.none
+                if (Array.length tokens) = 1
+                then Cmd.OfFunc.result (LineSelected 1)
+                else Cmd.none
 
             { model with
                   Tokens = tokens
@@ -124,8 +124,7 @@ let update code msg model =
                 Cmd.ofSub (FantomasTools.Client.Editor.selectRange range))
             |> Option.defaultValue Cmd.none
 
-        let scrollCmd =
-            Cmd.OfFunc.result (PlayScroll tokenIndex)
+        let scrollCmd = Cmd.OfFunc.result (PlayScroll tokenIndex)
 
         { model with
               ActiveTokenIndex = Some tokenIndex },

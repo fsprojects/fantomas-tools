@@ -94,8 +94,7 @@ module GetAST =
                                                       "application/text"))
 
     let private notFound () =
-        let json =
-            Encode.string "Not found" |> Encode.toString 4
+        let json = Encode.string "Not found" |> Encode.toString 4
 
         new HttpResponseMessage(HttpStatusCode.NotFound,
                                 Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json"))
@@ -123,8 +122,7 @@ module GetAST =
             let version = assembly.GetName().Version
             sprintf "%i.%i.%i" version.Major version.Minor version.Revision
 
-        let json =
-            Encode.string version |> Encode.toString 4
+        let json = Encode.string version |> Encode.toString 4
 
         new HttpResponseMessage(HttpStatusCode.OK,
                                 Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json"))
@@ -132,8 +130,7 @@ module GetAST =
     let parseAST (log: ILogger) ({ SourceCode = source; Defines = defines; IsFsi = isFsi }) =
         let fileName = if isFsi then "tmp.fsi" else "tmp.fsx"
         // create ISourceText
-        let sourceText =
-            FSharp.Compiler.Text.SourceText.ofString (source)
+        let sourceText = FSharp.Compiler.Text.SourceText.ofString (source)
         // Create an interactive checker instance (ignore notifications)
         let checker = sharedChecker.Value
 
@@ -202,8 +199,7 @@ module GetAST =
     let private parseTypedAST (log: ILogger) ({ SourceCode = source; Defines = defines; IsFsi = isFsi }) =
         let fileName = if isFsi then "tmp.fsi" else "tmp.fsx"
 
-        let sourceText =
-            FSharp.Compiler.Text.SourceText.ofString (source)
+        let sourceText = FSharp.Compiler.Text.SourceText.ofString (source)
 
         let checker = sharedChecker.Value
         async {

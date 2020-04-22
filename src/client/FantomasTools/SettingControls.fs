@@ -38,7 +38,9 @@ type MultiButtonSettings =
       IsActive: bool }
 
 let multiButton labelValue (options: MultiButtonSettings list) =
-    let buttons = options |> List.map (fun { Label = l; OnClick = o; IsActive = i } -> toggleButton_ o i l)
+    let buttons =
+        options
+        |> List.map (fun { Label = l; OnClick = o; IsActive = i } -> toggleButton_ o i l)
 
     FormGroup.formGroup []
         [ label [] [ str labelValue ]

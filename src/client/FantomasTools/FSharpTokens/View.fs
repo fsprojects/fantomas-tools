@@ -6,7 +6,8 @@ open FantomasTools.Client
 open FantomasTools.Client.FSharpTokens.Model
 open Reactstrap
 
-let private tokenNameClass token = sprintf "is-%s" (token.TokenInfo.TokenName.ToLower())
+let private tokenNameClass token =
+    sprintf "is-%s" (token.TokenInfo.TokenName.ToLower())
 
 let private lineToken dispatch index (token: Token) =
     div
@@ -16,7 +17,9 @@ let private lineToken dispatch index (token: Token) =
         [ span [ ClassName(sprintf "tag %s" (tokenNameClass token)) ] [ str token.TokenInfo.TokenName ] ]
 
 let private line dispatch activeLine (lineNumber, tokens) =
-    let tokens = tokens |> Array.mapi (fun idx token -> lineToken dispatch idx token)
+    let tokens =
+        tokens
+        |> Array.mapi (fun idx token -> lineToken dispatch idx token)
 
     let className =
         match activeLine with

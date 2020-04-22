@@ -63,8 +63,7 @@ let buildGraph (opts: Graph.Options) (root: TreeNode<_>) =
 
     let allNodes = getNodes root
 
-    let nodesToId =
-        allNodes |> List.mapi (fun i (n, _) -> n, float i)
+    let nodesToId = allNodes |> List.mapi (fun i (n, _) -> n, float i)
 
     let nodesToIdMap =
         nodesToId
@@ -140,8 +139,7 @@ type GraphView(props: Props<obj> list, ctx) =
         view
 
     override __.componentWillUpdate(prevProps, _) =
-        let getProp f =
-            (prevProps :?> Props<'a> list) |> List.tryPick f
+        let getProp f = (prevProps :?> Props<'a> list) |> List.tryPick f
 
         let tree =
             getProp (function
@@ -170,8 +168,7 @@ type GraphView(props: Props<obj> list, ctx) =
                 | _ -> None)
             |> Option.defaultValue (FantomasTools.Client.ASTViewer.State.initialGraphModel.Options)
 
-        let container =
-            Browser.Dom.document.getElementById ("graph")
+        let container = Browser.Dom.document.getElementById ("graph")
 
         let options =
             jsOptions<Vis.Options> (fun o ->
@@ -203,8 +200,7 @@ type GraphView(props: Props<obj> list, ctx) =
 
         let (graph, idToNode) = buildGraph opts tree
 
-        let network =
-            visLib.Network.Create(container, graph, options)
+        let network = visLib.Network.Create(container, graph, options)
 
         onHover
         |> Option.iter (fun f ->

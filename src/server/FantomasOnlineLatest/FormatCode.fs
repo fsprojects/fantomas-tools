@@ -10,8 +10,7 @@ open System.Net
 
 module FormatCode =
     let private format filename code config =
-        let checker =
-            Fantomas.FakeHelpers.sharedChecker.Force()
+        let checker = Fantomas.FakeHelpers.sharedChecker.Force()
 
         let options =
             Fantomas.FakeHelpers.createParsingOptionsFromFile filename

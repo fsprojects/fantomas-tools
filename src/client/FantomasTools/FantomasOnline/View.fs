@@ -12,19 +12,19 @@ let private mapToOption dispatch (key, fantomasOption) =
     let editor =
         match fantomasOption with
         | FantomasOption.BoolOption (o, _, v) ->
-            SettingControls.toggleButton
-                    (fun _ -> UpdateOption(key, BoolOption(o, key, true)) |> dispatch)
-                    (fun _ -> UpdateOption(key, BoolOption(o, key, false)) |> dispatch)
-                    "true"
-                    "false"
-                    key
-                    v
+            SettingControls.toggleButton (fun _ ->
+                UpdateOption(key, BoolOption(o, key, true))
+                |> dispatch) (fun _ ->
+                UpdateOption(key, BoolOption(o, key, false))
+                |> dispatch) "true" "false" key v
 
         | FantomasOption.IntOption (o, _, v) ->
             let onChange (nv: string) =
                 if Regex.IsMatch(nv, "\\d+") then
                     let v = nv |> (int)
-                    UpdateOption(key, IntOption(o, key, v)) |> dispatch
+                    UpdateOption(key, IntOption(o, key, v))
+                    |> dispatch
+
             SettingControls.input onChange key "integer" v
 
     div
@@ -33,6 +33,7 @@ let private mapToOption dispatch (key, fantomasOption) =
 
 let options model dispatch =
     let optionList = Map.toList model.UserOptions |> List.sortBy fst
+
     optionList
     |> List.map (mapToOption dispatch)
     |> ofList
@@ -46,7 +47,9 @@ let githubIssueUri code (model: Model) =
         |> List.map snd
         |> List.sortBy FantomasOnline.Shared.sortByOption
 
-    let defaultValues = model.DefaultOptions |> List.sortBy FantomasOnline.Shared.sortByOption
+    let defaultValues =
+        model.DefaultOptions
+        |> List.sortBy FantomasOnline.Shared.sortByOption
 
     let options =
         Seq.zip config defaultValues
@@ -78,7 +81,7 @@ let githubIssueUri code (model: Model) =
     let code = left + "" + right
 
     let body =
-        sprintf """
+        (sprintf """
 Issue created from [fantomas-online](%s)
 
 Please describe here fantomas problem you encountered
@@ -91,7 +94,7 @@ Fantomas %s
 | Name | Value |
 | ---- | ----- |
 %s
-        """ location.href left right model.Version options
+        """ location.href left right model.Version options)
         |> System.Uri.EscapeDataString
 
     let uri =
@@ -143,7 +146,9 @@ let commands code model dispatch =
         if userChangedSettings model then
             Button.button
                 [ Button.Color Secondary
-                  Button.Custom [ ClassName "text-white" ; OnClick(fun _ -> dispatch CopySettings) ] ] [ str "Copy settings" ]
+                  Button.Custom
+                      [ ClassName "text-white"
+                        OnClick(fun _ -> dispatch CopySettings) ] ] [ str "Copy settings" ]
             |> Some
         else
             None
@@ -176,8 +181,8 @@ let settings model dispatch =
             |> SettingControls.multiButton "Mode"
 
         let fileExtension =
-            SettingControls.toggleButton (fun _ -> SetFsiFile true |> dispatch)
-                (fun _ -> SetFsiFile false |> dispatch) "*.fsi" "*.fs" "File extension" model.IsFsi
+            SettingControls.toggleButton (fun _ -> SetFsiFile true |> dispatch) (fun _ -> SetFsiFile false |> dispatch)
+                "*.fsi" "*.fs" "File extension" model.IsFsi
 
         let options = options model dispatch
 

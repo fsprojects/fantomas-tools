@@ -54,6 +54,7 @@ let clientDir = __SOURCE_DIRECTORY__ </> "src" </> "client"
 let setClientDir = (fun (opt: Yarn.YarnParams) -> { opt with WorkingDirectory = clientDir })
 let serverDir = __SOURCE_DIRECTORY__ </> "src" </> "server"
 let artifactDir = __SOURCE_DIRECTORY__ </> "artifacts"
+let fantomasConfigPath = Shell.pwd() </> "fantomas-config.json"
 
 Target.create "Fantomas-Git" (fun _ ->
     let targetDir = ".deps" @@ "fantomas"
@@ -135,13 +136,13 @@ Target.create "BundleFrontend" (fun _ ->
 )
 
 Target.create "Format" (fun _ ->
-    DotNet.exec id "run" "-p .deps/fantomas/src/Fantomas.CoreGlobalTool/Fantomas.CoreGlobalTool.fsproj -c Release -- --recurse ./src"
+    DotNet.exec id "run" (sprintf "-p .deps/fantomas/src/Fantomas.CoreGlobalTool/Fantomas.CoreGlobalTool.fsproj -c Release -- --recurse --config \"%s\" ./src" fantomasConfigPath)
     |> fun result ->
         if result.OK then result.Messages else result.Errors
         |> List.iter (printfn "%s"))
 
 Target.create "CheckFormat" (fun _ ->
-    DotNet.exec id "run" "-p .deps/fantomas/src/Fantomas.CoreGlobalTool/Fantomas.CoreGlobalTool.fsproj -c Release -- --check --recurse ./src"
+    DotNet.exec id "run" (sprintf "-p .deps/fantomas/src/Fantomas.CoreGlobalTool/Fantomas.CoreGlobalTool.fsproj -c Release -- --check --config \"%s\" --recurse ./src" fantomasConfigPath)
     |> fun result ->
         if result.OK then result.Messages else result.Errors
         |> List.iter (printfn "%s")

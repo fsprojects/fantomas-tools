@@ -27,17 +27,13 @@ let private navigation dispatch =
                 Button.button
                     [ Button.Custom
                         [ ClassName "ml-2 pointer"
-                          OnClick(fun _ ->
-                              printfn "click"
-                              dispatch ToggleSettings) ] ] [ i [ ClassName "fas fa-sliders-h" ] [] ] ] ]
+                          OnClick(fun _ -> dispatch ToggleSettings) ] ] [ i [ ClassName "fas fa-sliders-h" ] [] ] ] ]
 
 let private editor model dispatch =
     Col.col
         [ Col.Xs(Col.mkCol !^5)
           Col.Custom [ ClassName "border-right h-100 d-flex flex-column" ] ]
-        [ div
-            [ Id "source"
-              ClassName "flex-grow-1" ]
+        [ div [ Id "source"; ClassName "flex-grow-1" ]
               [ Editor.editor
                   [ Editor.OnChange(UpdateSourceCode >> dispatch)
                     Editor.Value model.SourceCode ] ] ]
@@ -51,7 +47,9 @@ let private homeTab =
                   "if you plan on using these tools extensively, consider cloning the repository and run everything locally." ] ]
 
 let private settings model dispatch inner =
-    let className = sprintf "settings %s" (if model.SettingsOpen then "open" else "")
+    let className =
+        sprintf "settings %s" (if model.SettingsOpen then "open" else "")
+
     div [ ClassName className ]
         [ div [ ClassName "inner" ]
               [ h1 [ ClassName "text-center" ]
@@ -117,10 +115,9 @@ let private tabs model dispatch =
           Nav.nav
               [ Nav.Tabs true
                 Nav.Custom [ ClassName "" ] ] [ ofList navItems ]
-          div [ Id "tab-content" ] [
-              activeTab
-              div [ Id "commands" ] [ commands ]
-          ] ]
+          div [ Id "tab-content" ]
+              [ activeTab
+                div [ Id "commands" ] [ commands ] ] ]
 
 let view model dispatch =
     div [ ClassName "d-flex flex-column h-100" ]

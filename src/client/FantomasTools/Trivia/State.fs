@@ -71,8 +71,7 @@ let init isActive =
     model, cmd
 
 let private updateUrl code (model: Model) _ =
-    let json =
-        Encode.toString 2 (encodeUrlModel code model)
+    let json = Encode.toString 2 (encodeUrlModel code model)
 
     UrlTools.updateUrlWithData json
 

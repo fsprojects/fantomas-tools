@@ -36,8 +36,7 @@ let private mapToTriviaContent (tc: TriviaContent) =
 let private triviaContentEncoder =
     Encode.Auto.generateEncoder<Shared.TriviaContent> ()
 
-let private encodeTriviaContent =
-    mapToTriviaContent >> triviaContentEncoder
+let private encodeTriviaContent = mapToTriviaContent >> triviaContentEncoder
 
 let private encodeRange (range: range) =
     Encode.object

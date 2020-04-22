@@ -42,6 +42,7 @@ type Model =
             |> Map.toList
             |> List.map snd
             |> List.sortBy sortByOption
+
         List.zip defaultValues userValues
         |> List.filter (fun (dv, uv) -> dv <> uv)
         |> List.map snd

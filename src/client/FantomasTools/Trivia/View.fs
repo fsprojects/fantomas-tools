@@ -24,9 +24,11 @@ let private tab activeTab tabType tabContent =
         [ TabPane.TabId(!^(tabToId tabType))
           TabPane.Custom [ ClassName tabClassName ] ] [ tabContent ]
 
-let private byTriviaNodes model dispatch = tab model.ActiveTab ByTriviaNodes (ByTriviaNodes.view model dispatch)
+let private byTriviaNodes model dispatch =
+    tab model.ActiveTab ByTriviaNodes (ByTriviaNodes.view model dispatch)
 
-let private byTrivia model dispatch = tab model.ActiveTab ByTrivia (ByTrivia.view model dispatch)
+let private byTrivia model dispatch =
+    tab model.ActiveTab ByTrivia (ByTrivia.view model dispatch)
 
 let private results model dispatch =
     let tabHeader label tabType =
@@ -55,7 +57,9 @@ let private results model dispatch =
                 byTrivia model dispatch ] ]
 
 let view model dispatch =
-    if model.IsLoading then FantomasTools.Client.Loader.loader else results model dispatch
+    if model.IsLoading
+    then FantomasTools.Client.Loader.loader
+    else results model dispatch
 
 let commands dispatch =
     Button.button

@@ -84,8 +84,7 @@ let private modelToParseRequest sourceCode (model: Model): Shared.Input =
       IsFsi = model.IsFsi }
 
 let private updateUrl code (model: Model) _ =
-    let json =
-        Encode.toString 2 (encodeUrlModel code model)
+    let json = Encode.toString 2 (encodeUrlModel code model)
 
     UrlTools.updateUrlWithData json
 

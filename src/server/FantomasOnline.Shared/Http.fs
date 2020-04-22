@@ -27,8 +27,7 @@ module Reflection =
         Seq.zip names values |> Seq.toArray
 
 let private notFound () =
-    let json =
-        Encode.string "Not found" |> Encode.toString 4
+    let json = Encode.string "Not found" |> Encode.toString 4
 
     new HttpResponseMessage(HttpStatusCode.NotFound,
                             Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json"))
@@ -47,8 +46,7 @@ let private sendInternalError err =
                             Content = new StringContent(err, System.Text.Encoding.UTF8, "application/text"))
 
 let private getVersionResponse version =
-    let json =
-        Encode.string version |> Encode.toString 4
+    let json = Encode.string version |> Encode.toString 4
 
     sendJson json |> Async.lift
 

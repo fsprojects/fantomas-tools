@@ -163,10 +163,9 @@ let private results model dispatch =
     | Ok None -> str ""
 
 let view model dispatch =
-    if model.IsLoading then
-        FantomasTools.Client.Loader.loader
-    else
-        results model dispatch
+    if model.IsLoading
+    then FantomasTools.Client.Loader.loader
+    else results model dispatch
 
 let commands dispatch =
     fragment []

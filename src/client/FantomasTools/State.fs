@@ -19,14 +19,11 @@ let init _ =
         | Some tab -> tab, Cmd.none
         | None -> ActiveTab.HomeTab, Elmish.Navigation.Navigation.modifyUrl (Navigation.toHash ActiveTab.HomeTab)
 
-    let (triviaModel, triviaCmd) =
-        Trivia.State.init (currentTab = TriviaTab)
+    let (triviaModel, triviaCmd) = Trivia.State.init (currentTab = TriviaTab)
 
-    let (fsharpTokensModel, fsharpTokensCmd) =
-        FSharpTokens.State.init (currentTab = TokensTab)
+    let (fsharpTokensModel, fsharpTokensCmd) = FSharpTokens.State.init (currentTab = TokensTab)
 
-    let (astModel, astCmd) =
-        ASTViewer.State.init (currentTab = ASTTab)
+    let (astModel, astCmd) = ASTViewer.State.init (currentTab = ASTTab)
 
     let (fantomasModel, fantomasCmd) =
         FantomasOnline.State.init (FantomasTools.Client.FantomasOnline.Model.Preview)
@@ -40,8 +37,7 @@ let init _ =
           ASTModel = astModel
           FantomasModel = fantomasModel }
 
-    let initialCmd =
-        Navigation.cmdForCurrentTab currentTab model
+    let initialCmd = Navigation.cmdForCurrentTab currentTab model
 
     let cmd =
         Cmd.batch
@@ -66,7 +62,7 @@ let private reload model =
         | TriviaTab ->
             Cmd.ofMsg (FantomasTools.Client.Trivia.Model.GetTrivia)
             |> Cmd.map TriviaMsg
-        | FantomasTab(_) ->
+        | FantomasTab (_) ->
             Cmd.ofMsg (FantomasTools.Client.FantomasOnline.Model.Format)
             |> Cmd.map FantomasMsg
         | _ -> Cmd.none
@@ -78,7 +74,10 @@ let update msg model =
     | SelectTab tab -> model, Navigation.Navigation.newUrl (Navigation.toHash tab)
     | UpdateSourceCode code -> { model with SourceCode = code }, Cmd.none
     | ToggleSettings ->
-        let m = { model with SettingsOpen = not model.SettingsOpen }
+        let m =
+            { model with
+                  SettingsOpen = not model.SettingsOpen }
+
         m, reload m
     | TriviaMsg tMsg ->
         let (tModel, tCmd) =
