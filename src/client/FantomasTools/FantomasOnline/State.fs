@@ -122,7 +122,11 @@ let update isActiveTab code msg model =
     match msg with
     | VersionReceived version -> { model with Version = version }, Cmd.none
     | OptionsReceived options ->
-        let userOptions, isFsi = restoreUserOptionsFromUrl options
+        let userOptions, isFsi =
+            if isActiveTab then
+                restoreUserOptionsFromUrl options
+            else
+                optionsListToMap options, model.IsFsi
 
         let cmd =
             if not (System.String.IsNullOrWhiteSpace code)
