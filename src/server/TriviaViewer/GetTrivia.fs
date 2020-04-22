@@ -28,7 +28,8 @@ module GetTrivia =
                                 Content = new StringContent(err, System.Text.Encoding.UTF8, "application/text"))
 
     let private sendBadRequest error =
-        new HttpResponseMessage(HttpStatusCode.BadRequest, Content = new StringContent(error, System.Text.Encoding.UTF8, "application/text"))
+        new HttpResponseMessage(HttpStatusCode.BadRequest,
+                                Content = new StringContent(error, System.Text.Encoding.UTF8, "application/text"))
 
     let private getProjectOptionsFromScript file source defines (checker: FSharpChecker) =
         async {

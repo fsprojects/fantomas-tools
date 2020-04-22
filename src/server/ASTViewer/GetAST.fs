@@ -35,9 +35,6 @@ module Reflection =
         FSharpValue.MakeRecord(typeof<'t>, values) :?> 't
 
 module GetAST =
-
-    open Microsoft.AspNetCore.Http
-
     let private assemblies =
         [| "System.Collections.dll"
            "System.Core.dll"
@@ -94,7 +91,8 @@ module GetAST =
                                                       "application/text"))
 
     let private sendBadRequest error =
-        new HttpResponseMessage(HttpStatusCode.BadRequest, Content = new StringContent(error, System.Text.Encoding.UTF8, "application/text"))
+        new HttpResponseMessage(HttpStatusCode.BadRequest,
+                                Content = new StringContent(error, System.Text.Encoding.UTF8, "application/text"))
 
     let private notFound () =
         let json = Encode.string "Not found" |> Encode.toString 4
@@ -196,7 +194,7 @@ module GetAST =
             | Error err -> return sendInternalError (sprintf "%A" err)
         }
 
-    let private parseTypedAST (log: ILogger) ({ SourceCode = source; Defines = defines; IsFsi = isFsi }) =
+    let private parseTypedAST ({ SourceCode = source; Defines = defines; IsFsi = isFsi }) =
         let fileName = if isFsi then "tmp.fsi" else "tmp.fsx"
 
         let sourceText = FSharp.Compiler.Text.SourceText.ofString (source)
@@ -219,7 +217,7 @@ module GetAST =
         }
 
 
-    let private getTypedAST log (req: HttpRequest) =
+    let private getTypedAST (req: HttpRequest) =
         async {
             use stream = new StreamReader(req.Body)
             let! json = stream.ReadToEndAsync() |> Async.AwaitTask
@@ -227,7 +225,7 @@ module GetAST =
 
             match parseRequest with
             | Result.Ok input when (input.SourceCode.Length < Const.sourceSizeLimit) ->
-                let! tastResult = parseTypedAST log input
+                let! tastResult = parseTypedAST input
                 match tastResult with
                 | Result.Ok tast ->
                     let node =
@@ -261,7 +259,7 @@ module GetAST =
             match method, path with
             | "GET", "/api/version" -> return getVersion ()
             | "POST", "/api/untyped-ast" -> return! getAST log req
-            | "POST", "/api/typed-ast" -> return! getTypedAST log req
+            | "POST", "/api/typed-ast" -> return! getTypedAST req
             | _ -> return notFound ()
         }
         |> Async.StartAsTask

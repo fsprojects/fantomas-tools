@@ -4,7 +4,6 @@ open System
 open Elmish
 open Thoth.Json
 open Fable.Core
-open Fable.Core.JsInterop
 open ASTViewer
 open FantomasTools.Client.ASTViewer.Model
 open FantomasTools.Client
@@ -21,17 +20,16 @@ let private getVersion () =
 let private fetchNodeRequest url (payload: Shared.Input) dispatch =
     let json = encodeInput payload
     Http.postJson url json
-    |> Promise.iter(fun (status, body) ->
+    |> Promise.iter (fun (status, body) ->
         match status with
         | 200 ->
             match decodeResult body with
             | Ok r -> ASTParsed r
-            | Result.Error err -> Error (sprintf "failed to decode response: %A" err)
+            | Result.Error err -> Error(sprintf "failed to decode response: %A" err)
         | 400 -> Error body
         | 413 -> Error "the input was too large to process"
         | _ -> Error body
-        |> dispatch
-    )
+        |> dispatch)
 
 let private fetchUntypedAST (payload: Shared.Input) dispatch =
     let url = sprintf "%s/api/untyped-ast" backend

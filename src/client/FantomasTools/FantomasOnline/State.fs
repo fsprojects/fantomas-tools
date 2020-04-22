@@ -30,7 +30,8 @@ let private getVersion mode =
     |> Http.getText
 
 let private getOptions mode =
-    let url = sprintf "%s/%s" (Map.find mode backend) "api/options"
+    let url =
+        sprintf "%s/%s" (Map.find mode backend) "api/options"
 
     fetch url [ RequestProperties.Method HttpMethod.GET ]
     |> Promise.bind (fun res -> res.text ())
@@ -40,18 +41,19 @@ let private getOptions mode =
         | Error e -> failwithf "%A" e)
 
 let private getFormattedCode code model dispatch =
-    let url = sprintf "%s/%s" (Map.find model.Mode backend) "api/format"
+    let url =
+        sprintf "%s/%s" (Map.find model.Mode backend) "api/format"
+
     let json = Encoders.encodeRequest code model
 
     Http.postJson url json
-    |> Promise.iter(fun (status, body) ->
+    |> Promise.iter (fun (status, body) ->
         match status with
         | 200 -> Msg.FormattedReceived body
         | 400 -> Msg.FormatException body
         | 413 -> Msg.FormatException "the input was too large to process"
         | _ -> Msg.FormatException body
-        |> dispatch
-    )
+        |> dispatch)
 
 let private updateUrl code model _ =
     let json =
@@ -162,8 +164,7 @@ let update isActiveTab code msg model =
               State = LoadingFormatRequest },
         cmd
 
-    | FormatException error ->
-        { model with State = FormatError error }, Cmd.none
+    | FormatException error -> { model with State = FormatError error }, Cmd.none
 
     | FormattedReceived result ->
         { model with

@@ -3,8 +3,6 @@ module FantomasOnline.Server.Shared.Http
 open FantomasOnline.Server.Shared
 open FantomasOnline.Shared
 open Microsoft.AspNetCore.Http
-open Microsoft.Azure.WebJobs
-open Microsoft.Azure.WebJobs.Extensions.Http
 open Microsoft.Extensions.Logging
 
 open System.IO
@@ -38,7 +36,8 @@ let private sendText text =
                             Content = new StringContent(text, System.Text.Encoding.UTF8, "application/text"))
 
 let private sendBadRequest error =
-        new HttpResponseMessage(HttpStatusCode.BadRequest, Content = new StringContent(error, System.Text.Encoding.UTF8, "application/text"))
+    new HttpResponseMessage(HttpStatusCode.BadRequest,
+                            Content = new StringContent(error, System.Text.Encoding.UTF8, "application/text"))
 
 let private sendJson json =
     new HttpResponseMessage(HttpStatusCode.OK,
@@ -48,8 +47,7 @@ let private sendInternalError err =
     new HttpResponseMessage(HttpStatusCode.InternalServerError,
                             Content = new StringContent(err, System.Text.Encoding.UTF8, "application/text"))
 
-let private getVersionResponse version =
-    sendText version |> Async.lift
+let private getVersionResponse version = sendText version |> Async.lift
 
 let private mapFantomasOptionsToRecord<'t> options =
     let newValues =
@@ -77,9 +75,7 @@ let private formatResponse<'options> (format: string -> string -> 'options -> As
             try
                 let! formatted = format fileName code config
                 return sendText formatted
-            with
-            | exn ->
-                return sendBadRequest (sprintf "%A" exn)
+            with exn -> return sendBadRequest (sprintf "%A" exn)
         | Error err -> return sendInternalError (err)
     }
 

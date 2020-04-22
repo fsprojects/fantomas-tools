@@ -58,8 +58,8 @@ let private results model dispatch =
                 byTrivia model dispatch ] ]
 
 let view model dispatch =
-    if model.IsLoading
-    then FantomasTools.Client.Loader.loader
+    if model.IsLoading then
+        FantomasTools.Client.Loader.loader
     else
         match model.Error with
         | None -> results model dispatch

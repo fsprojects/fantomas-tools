@@ -1,7 +1,5 @@
 module FSharpTokens.Server.Decoders
 
-open FSharp.Compiler.SourceCodeServices
-
 open Thoth.Json.Net
 open FSharpTokens.Shared
 

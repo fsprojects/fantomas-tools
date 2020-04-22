@@ -2,9 +2,7 @@ module FantomasTools.Client.State
 
 open FantomasTools.Client
 open Browser
-open Fable.Core
 open Elmish
-open FantomasTools.Client.FantomasOnline.Model
 open FantomasTools.Client.Model
 open Thoth.Json
 

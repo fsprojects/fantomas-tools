@@ -46,7 +46,7 @@ let private splitDefines (value: string) =
     value.Split([| ' '; ';' |], StringSplitOptions.RemoveEmptyEntries)
     |> List.ofArray
 
-let private scrollTo (index: int): unit = import "scrollTo" "../../js/scrollTo.js"
+let private scrollTo (_index: int): unit = import "scrollTo" "../../js/scrollTo.js"
 
 let private modelToParseRequest sourceCode (model: Model): FSharpTokens.Shared.GetTokensRequest =
     let defines = splitDefines model.Defines

@@ -78,8 +78,6 @@ let githubIssueUri code (model: Model) =
         | FormatResult result -> codeTemplate "Code" code, codeTemplate "Result" result
         | _ -> codeTemplate "Code" code, ""
 
-    let code = left + "" + right
-
     let body =
         (sprintf """
 Issue created from [fantomas-online](%s)

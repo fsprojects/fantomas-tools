@@ -17,21 +17,18 @@ let private fetchTrivia (payload: ParseRequest) dispatch =
     let url = sprintf "%s/api/get-trivia" backend
     let json = encodeParseRequest payload
     Http.postJson url json
-    |> Promise.iter(fun (status, body) ->
+    |> Promise.iter (fun (status, body) ->
         match status with
         | 200 ->
             match decodeResult body with
             | Ok r -> TriviaReceived r
-            | Result.Error err -> Error (sprintf "failed to decode response: %A" err)
+            | Result.Error err -> Error(sprintf "failed to decode response: %A" err)
         | 400 -> Error body
         | 413 -> Error "the input was too large to process"
         | _ -> Error body
-        |> dispatch
-    )
+        |> dispatch)
 
-let private fetchFSCVersion () =
-    sprintf "%s/api/version" backend
-    |> Http.getText
+let private fetchFSCVersion () = sprintf "%s/api/version" backend |> Http.getText
 
 let private initialModel: Model =
     { ActiveTab = ByTriviaNodes
@@ -91,7 +88,10 @@ let update code msg model =
               ActiveByTriviaNodeIndex = 0 },
         Cmd.none
     | Error err ->
-        { initialModel with Error = Some err; IsLoading = false }, Cmd.none
+        { initialModel with
+              Error = Some err
+              IsLoading = false },
+        Cmd.none
     | ActiveItemChange (tab, index) ->
         let model, range =
             match tab with
