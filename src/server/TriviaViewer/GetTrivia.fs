@@ -9,7 +9,6 @@ open FSharp.Compiler.SourceCodeServices
 open System.Net
 open System.Net.Http
 open Fantomas
-open Fantomas.FormatConfig
 open Thoth.Json.Net
 open TriviaViewer.Shared
 open TriviaViewer.Server
