@@ -60,7 +60,7 @@ let githubIssueUri code (model: Model) =
                 (optionValue userV))
         |> String.concat "\n"
 
-    let title = "Bug report from fantomas-online"
+    let title = "<Insert meaningful title>"
     let label = "bug"
 
     let codeTemplate header code =
@@ -82,7 +82,7 @@ let githubIssueUri code (model: Model) =
         (sprintf """
 Issue created from [fantomas-online](%s)
 
-Please describe here fantomas problem you encountered
+**Please describe here fantomas problem you encountered**
 %s
 %s
 #### Options
