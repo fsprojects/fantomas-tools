@@ -53,7 +53,7 @@ let infra () =
             (FunctionAppSiteConfigArgs
                 (Http2Enabled = input true,
                  Cors = input
-                            (FunctionAppSiteConfigCorsArgs(AllowedOrigins = inputList [ input "https://nojaf.com" ]))))
+                            (FunctionAppSiteConfigCorsArgs(AllowedOrigins = inputList [ input "https://fsprojects.github.io" ]))))
 
     let artifactsFolder = Path.Combine(Directory.GetCurrentDirectory(), "..", "artifacts")
 

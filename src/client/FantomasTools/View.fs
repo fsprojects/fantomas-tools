@@ -18,7 +18,7 @@ let private navigation dispatch =
           div [ ClassName "navbar-text py1" ]
               [ Button.button
                   [ Button.Custom
-                      [ Href "https://github.com/nojaf/fantomas-tools"
+                      [ Href "https://github.com/fsprojects/fantomas-tools"
                         Target "_blank"
                         ClassName "text-white" ]
                     Button.Color Dark ]
