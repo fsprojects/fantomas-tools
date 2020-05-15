@@ -166,7 +166,7 @@ let commands code model dispatch =
 
 let settings model dispatch =
     match model.State with
-    | EditorState.LoadingOptions -> FantomasTools.Client.Loader.loader
+    | EditorState.LoadingOptions -> Spinner.spinner [ Spinner.Color Primary ] []
     | _ ->
         let fantomasMode =
             [ FantomasMode.Previous, "2.9.1"

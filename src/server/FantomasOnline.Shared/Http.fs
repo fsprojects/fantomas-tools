@@ -60,7 +60,11 @@ let private mapFantomasOptionsToRecord<'t> options =
     let formatConfigType = typeof<'t>
     Microsoft.FSharp.Reflection.FSharpValue.MakeRecord(formatConfigType, newValues) :?> 't
 
-let private formatResponse<'options> (format: string -> string -> 'options -> Async<string>) (req: HttpRequest) =
+let private formatResponse<'options>
+    (format: string -> string -> 'options -> Async<string>)
+    (validateResult: string -> string -> Async<bool>)
+    (req: HttpRequest)
+    =
     async {
         use stream = new StreamReader(req.Body)
         let! json = stream.ReadToEndAsync() |> Async.AwaitTask
@@ -74,7 +78,19 @@ let private formatResponse<'options> (format: string -> string -> 'options -> As
             let fileName = if isFsi then "tmp.fsi" else "tmp.fsx"
             try
                 let! formatted = format fileName code config
-                return sendText formatted
+                let! isValid = validateResult fileName formatted
+                if isValid then
+                    return sendText formatted
+                else
+                    let content =
+                        sprintf """Fantomas was able to format the code but the result appears to be invalid F# code.
+Please open an issue.
+
+Formatted result:
+
+%O"""                    formatted
+
+                    return sendBadRequest content
             with exn -> return sendBadRequest (sprintf "%A" exn)
         | Error err -> return sendInternalError (err)
     }
@@ -95,6 +111,7 @@ let private getOptions defaultInstance =
 let main
     (getVersion: unit -> string)
     (format: string -> string -> 'options -> Async<string>)
+    (validate: string -> string -> Async<bool>)
     (defaultInstance: 't)
     (log: ILogger)
     (req: HttpRequest)
@@ -106,7 +123,7 @@ let main
     log.LogInformation(sprintf "Running request for %s, version: %s" path version)
 
     match method, path with
-    | "POST", "/api/format" -> formatResponse format req
+    | "POST", "/api/format" -> formatResponse format validate req
     | "GET", "/api/options" -> getOptions defaultInstance
     | "GET", "/api/version" -> getVersionResponse version
     | _ -> notFound ()

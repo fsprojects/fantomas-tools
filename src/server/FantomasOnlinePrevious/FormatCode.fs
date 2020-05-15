@@ -9,6 +9,7 @@ open Microsoft.Extensions.Logging
 open System.Net
 
 module FormatCode =
+    let private checker = Fantomas.CodeFormatterImpl.sharedChecker.Value
 
     let version () =
         let assembly =
@@ -20,10 +21,17 @@ module FormatCode =
     let format fileName code config =
         async { return CodeFormatter.FormatDocument(fileName, code, config) }
 
+    let private validate fileName code =
+        let options =
+            { Microsoft.FSharp.Compiler.SourceCodeServices.FSharpParsingOptions.Default with
+                  SourceFiles = [| fileName |] }
+
+        CodeFormatter.IsValidFSharpCodeAsync(fileName, code, options, checker)
+
     [<FunctionName("FormatCode")>]
     let run
         ([<HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "{*any}")>] req: HttpRequest)
         (log: ILogger)
         =
-        Http.main version format FormatConfig.FormatConfig.Default log req
+        Http.main version format validate FormatConfig.FormatConfig.Default log req
         |> Async.StartAsTask

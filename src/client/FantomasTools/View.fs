@@ -50,10 +50,11 @@ let private settings model dispatch inner =
     let className =
         sprintf "settings %s" (if model.SettingsOpen then "open" else "")
 
-    div [ ClassName className
-          OnClick (fun ev ->
-              if ev.target?className = "settings open" then
-                  dispatch ToggleSettings )]
+    div
+        [ ClassName className
+          OnClick(fun ev ->
+              if ev.target?className = "settings open"
+              then dispatch ToggleSettings) ]
         [ div [ ClassName "inner" ]
               [ h1 [ ClassName "text-center" ]
                     [ i
