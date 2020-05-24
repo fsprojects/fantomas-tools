@@ -3,3 +3,4 @@ group Infrastructure
 FSharp.Core
 Pulumi.Azure
 Pulumi.FSharp
+Thoth.Json.Net

@@ -903,6 +903,8 @@ STORAGE: NONE
 RESTRICTION: == netcoreapp3.1
 NUGET
   remote: https://api.nuget.org/v3/index.json
+    Fable.Core (3.1.5)
+      FSharp.Core (>= 4.7)
     FSharp.Core (4.7.1)
     Google.Protobuf (3.11.4)
       System.Memory (>= 4.5.2)
@@ -917,6 +919,7 @@ NUGET
     Microsoft.NETCore.Targets (3.1)
     NETStandard.Library (2.0.3)
       Microsoft.NETCore.Platforms (>= 1.1)
+    Newtonsoft.Json (12.0.3)
     OneOf (2.1.151)
       NETStandard.Library (>= 1.6.1)
     Pulumi (2.0)
@@ -1039,6 +1042,10 @@ NUGET
       Microsoft.NETCore.Platforms (>= 1.1)
       Microsoft.NETCore.Targets (>= 1.1)
       System.Runtime (>= 4.3)
+    Thoth.Json.Net (4.1)
+      Fable.Core (>= 3.0 < 4.0)
+      FSharp.Core (>= 4.6.2)
+      Newtonsoft.Json (>= 11.0.2)
 
 GROUP Latest
 STORAGE: NONE

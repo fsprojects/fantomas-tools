@@ -7,9 +7,9 @@
     <RootNamespace>FantomasOnlinePreview.Server</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <None Update="host.json">
+    <Content Include="host.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </Content>
     <None Update="local.settings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>Never</CopyToPublishDirectory>

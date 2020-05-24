@@ -29,6 +29,7 @@ framework: netcoreapp3.1
 nuget FSharp.Core 4.7.1
 nuget Pulumi.FSharp 2.0.0
 nuget Pulumi.Azure 3.1.0
+nuget Thoth.Json.Net
 
 group Server
 
