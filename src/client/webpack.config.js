@@ -93,7 +93,7 @@ module.exports = {
   //      - HotModuleReplacementPlugin: Enables hot reloading when code changes without refreshing
   plugins: isProduction
     ? commonPlugins.concat([
-        new CopyWebpackPlugin([{ from: resolve("./public") }])
+        new CopyWebpackPlugin({patterns:[{ from: resolve("./public") }]})
       ])
     : commonPlugins.concat([new webpack.HotModuleReplacementPlugin()]),
   // Configuration for webpack-dev-server
