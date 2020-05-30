@@ -64,6 +64,11 @@ let infra () =
                      (ResourceGroupName = io resourceGroup.Name, Name = input (sprintf "storfantomas%s" stackName),
                       AccountReplicationType = input "LRS", AccountTier = input "Standard"))
 
+        // Table Storage for Benchmarks
+        let benchmarkTable =
+            Table("benchmarks", TableArgs(StorageAccountName = io storageAccount.Name,
+                                          Name = input "FantomasBenchmarks"))
+
         // container for zips
         let zipContainer =
             Container
@@ -126,8 +131,8 @@ let infra () =
               "trivia-viewer" ]
             |> List.map (fun funcName ->
                 let path = Path.Combine(artifactsFolder, (toPascalCase funcName))
-                printfn "PATH: %s" path
                 let archive: AssetOrArchive = FileArchive(path) :> AssetOrArchive
+
                 let blob =
                     Blob
                         (sprintf "%s-zip" funcName,
