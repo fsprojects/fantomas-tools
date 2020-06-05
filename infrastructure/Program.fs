@@ -162,9 +162,7 @@ let infra () =
 
                 (sprintf "%s-app-host-name" funcName, funcApp.DefaultHostname :> obj))
 
-        return dict
-                    [ yield ("connectionString", storageAccount.PrimaryConnectionString :> obj)
-                      yield! functionHostNames ]
+        return dict [ yield! functionHostNames ]
     }
 
 [<EntryPoint>]
