@@ -110,7 +110,8 @@ let private createGitHubIssue code model =
               Button.Custom
                   [ githubIssueUri code model
                     ClassName "rounded-0" ] ] [ str "Looks wrong? Create an issue!" ]
-    | _ -> null
+    | _ ->
+        span [ClassName "text-muted mr-2"] [str "Looks wrong? Try using the preview version!"]
 
 let view model =
     match model.State with
