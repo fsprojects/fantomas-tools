@@ -3,7 +3,7 @@ source https://api.nuget.org/v3/index.json
 storage: none
 framework: netstandard2.0
 # for the local Fantomas build
-nuget FSharp.Compiler.Service 35.0.0
+nuget FSharp.Compiler.Service 36.0.1
 
 group Build
 
@@ -41,7 +41,7 @@ nuget FSharp.Core
 nuget Microsoft.NET.Sdk.Functions
 # workaround for https://github.com/Azure/azure-functions-host/issues/5786
 nuget Microsoft.Azure.WebJobs.Script.ExtensionsMetadataGenerator 1.1.5
-nuget FSharp.Compiler.Service 35.0.0
+nuget FSharp.Compiler.Service 36.0.1
 nuget Thoth.Json.Net
 
 group Latest
@@ -87,3 +87,14 @@ nuget Fable.Reactstrap
 nuget Thoth.Json
 nuget Fable.Fetch
 nuget Fable.Elmish.Browser
+
+group Benchmark
+
+source https://api.nuget.org/v3/index.json
+storage: none
+framework: netcore3.1
+
+nuget FSharp.Core
+nuget Microsoft.NET.Sdk.Functions
+nuget Thoth.Json.Net
+nuget FSharp.Azure.StorageTypeProvider
