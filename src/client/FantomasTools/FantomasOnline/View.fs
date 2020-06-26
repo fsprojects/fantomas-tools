@@ -27,9 +27,10 @@ let private mapToOption dispatch (key, fantomasOption) =
 
             SettingControls.input onChange key "integer" v
 
-    div
-        [ Key key
-          ClassName "fantomas-setting" ] [ editor ]
+    div [ Key key
+          ClassName "fantomas-setting" ] [
+        editor
+    ]
 
 let options model dispatch =
     let optionList = Map.toList model.UserOptions |> List.sortBy fst
@@ -104,14 +105,16 @@ Fantomas %s
 let private createGitHubIssue code model =
     match model.Mode with
     | Preview when (not (System.String.IsNullOrWhiteSpace(code))) ->
-        Button.button
-            [ Button.Color Danger
-              Button.Outline true
-              Button.Custom
-                  [ githubIssueUri code model
-                    ClassName "rounded-0" ] ] [ str "Looks wrong? Create an issue!" ]
+        Button.button [ Button.Color Danger
+                        Button.Outline true
+                        Button.Custom [ githubIssueUri code model
+                                        ClassName "rounded-0" ] ] [
+            str "Looks wrong? Create an issue!"
+        ]
     | _ ->
-        span [ClassName "text-muted mr-2"] [str "Looks wrong? Try using the preview version!"]
+        span [ ClassName "text-muted mr-2" ] [
+            str "Looks wrong? Try using the preview version!"
+        ]
 
 let view model =
     match model.State with
@@ -119,16 +122,16 @@ let view model =
     | EditorState.LoadingOptions -> FantomasTools.Client.Loader.loader
     | EditorState.OptionsLoaded -> null
     | EditorState.FormatResult result ->
-        div [ ClassName "tab-result" ]
-            [ Editor.editorInTab
-                [ Editor.Value result
-                  Editor.IsReadOnly true ] ]
+        div [ ClassName "tab-result" ] [
+            Editor.editorInTab [ Editor.Value result
+                                 Editor.IsReadOnly true ]
+        ]
 
     | EditorState.FormatError error ->
-        div [ ClassName "tab-result" ]
-            [ Editor.editorInTab
-                [ Editor.Value error
-                  Editor.IsReadOnly true ] ]
+        div [ ClassName "tab-result" ] [
+            Editor.editorInTab [ Editor.Value error
+                                 Editor.IsReadOnly true ]
+        ]
 
 let private userChangedSettings (model: Model) =
     model.SettingsChangedByTheUser
@@ -137,17 +140,18 @@ let private userChangedSettings (model: Model) =
 
 let commands code model dispatch =
     let formatButton =
-        Button.button
-            [ Button.Color Primary
-              Button.Custom [ OnClick(fun _ -> dispatch Msg.Format) ] ] [ str "Format" ]
+        Button.button [ Button.Color Primary
+                        Button.Custom [ OnClick(fun _ -> dispatch Msg.Format) ] ] [
+            str "Format"
+        ]
 
     let copySettingButton =
         if userChangedSettings model then
-            Button.button
-                [ Button.Color Secondary
-                  Button.Custom
-                      [ ClassName "text-white"
-                        OnClick(fun _ -> dispatch CopySettings) ] ] [ str "Copy settings" ]
+            Button.button [ Button.Color Secondary
+                            Button.Custom [ ClassName "text-white"
+                                            OnClick(fun _ -> dispatch CopySettings) ] ] [
+                str "Copy settings"
+            ]
             |> Some
         else
             None
@@ -185,9 +189,10 @@ let settings model dispatch =
 
         let options = options model dispatch
 
-        fragment []
-            [ FantomasTools.Client.VersionBar.versionBar (sprintf "Version: %s" model.Version)
-              fantomasMode
-              fileExtension
-              hr []
-              options ]
+        fragment [] [
+            FantomasTools.Client.VersionBar.versionBar (sprintf "Version: %s" model.Version)
+            fantomasMode
+            fileExtension
+            hr []
+            options
+        ]

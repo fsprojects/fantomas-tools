@@ -33,33 +33,34 @@ let private results model dispatch =
     | Ok (Some parsed) ->
         match model.View with
         | Raw ->
-            FantomasTools.Client.Editor.editorInTab
-                [ EditorProp.Language "fsharp"
-                  EditorProp.IsReadOnly true
-                  EditorProp.Value parsed.String ]
+            FantomasTools.Client.Editor.editorInTab [ EditorProp.Language "fsharp"
+                                                      EditorProp.IsReadOnly true
+                                                      EditorProp.Value parsed.String ]
         | Editor ->
-            FantomasTools.Client.Editor.editorInTab
-                [ EditorProp.Language "fsharp"
-                  EditorProp.IsReadOnly true
-                  EditorProp.Value(Fable.Core.JS.JSON.stringify (parsed.Node, space = 4)) ]
+            FantomasTools.Client.Editor.editorInTab [ EditorProp.Language "fsharp"
+                                                      EditorProp.IsReadOnly true
+                                                      EditorProp.Value
+                                                          (Fable.Core.JS.JSON.stringify (parsed.Node, space = 4)) ]
         | JsonViewer ->
-            ReactJsonView.viewer
-                [ ReactJsonView.Src(parsed.Node)
-                  ReactJsonView.Name null
-                  ReactJsonView.DisplayDataTypes false
-                  ReactJsonView.DisplayObjectSize false
-                  ReactJsonView.IndentWidth 2
-                  ReactJsonView.OnLookup(fun o ->
-                      let range: FantomasTools.Client.Editor.HighLightRange =
-                          { StartLine = !!(o.value?StartLine)
-                            StartColumn = !!(o.value?StartCol)
-                            EndLine = !!(o.value?EndLine)
-                            EndColumn = !!(o.value?EndCol) }
+            ReactJsonView.viewer [ ReactJsonView.Src(parsed.Node)
+                                   ReactJsonView.Name null
+                                   ReactJsonView.DisplayDataTypes false
+                                   ReactJsonView.DisplayObjectSize false
+                                   ReactJsonView.IndentWidth 2
+                                   ReactJsonView.OnLookup(fun o ->
+                                       let range: FantomasTools.Client.Editor.HighLightRange =
+                                           { StartLine = !!(o.value?StartLine)
+                                             StartColumn = !!(o.value?StartCol)
+                                             EndLine = !!(o.value?EndLine)
+                                             EndColumn = !!(o.value?EndCol) }
 
-                      dispatch (HighLight range))
-                  ReactJsonView.ShouldLookup(fun o -> o.key = "Range")
-                  ReactJsonView.ShouldCollapse(fun x -> x?name = "Range") ]
-        | Graph -> div [] [ str "graph view has not been ported yet" ]
+                                       dispatch (HighLight range))
+                                   ReactJsonView.ShouldLookup(fun o -> o.key = "Range")
+                                   ReactJsonView.ShouldCollapse(fun x -> x?name = "Range") ]
+        | Graph ->
+            div [] [
+                str "graph view has not been ported yet"
+            ]
     // Please extract this to its own file
 
     //           let node = parsed.Node
@@ -156,10 +157,9 @@ let private results model dispatch =
     //                   GraphView.Props.Options model.Graph.Options
     //                   ] ]
     | Result.Error errors ->
-        FantomasTools.Client.Editor.editorInTab
-            [ EditorProp.Language "fsharp"
-              EditorProp.IsReadOnly true
-              EditorProp.Value errors ]
+        FantomasTools.Client.Editor.editorInTab [ EditorProp.Language "fsharp"
+                                                  EditorProp.IsReadOnly true
+                                                  EditorProp.Value errors ]
     | Ok None -> str ""
 
 let view model dispatch =
@@ -168,31 +168,35 @@ let view model dispatch =
     else results model dispatch
 
 let commands dispatch =
-    fragment []
-        [ Button.button
-            [ Button.Color Primary
-              Button.Custom [ OnClick(fun _ -> dispatch DoParse) ] ] [ str "Show Untyped AST" ]
-          Button.button
-              [ Button.Color Primary
-                Button.Custom [ OnClick(fun _ -> dispatch DoTypeCheck) ] ] [ str "Show Typed AST" ] ]
+    fragment [] [
+        Button.button [ Button.Color Primary
+                        Button.Custom [ OnClick(fun _ -> dispatch DoParse) ] ] [
+            str "Show Untyped AST"
+        ]
+        Button.button [ Button.Color Primary
+                        Button.Custom [ OnClick(fun _ -> dispatch DoTypeCheck) ] ] [
+            str "Show Typed AST"
+        ]
+    ]
 
 let settings model dispatch =
-    fragment []
-        [ FantomasTools.Client.VersionBar.versionBar (sprintf "FSC - %s" model.Version)
-          SettingControls.input (DefinesUpdated >> dispatch) "Defines" "Enter your defines separated with a space"
-              model.Defines
-          SettingControls.toggleButton (fun _ -> dispatch (SetFsiFile true)) (fun _ -> dispatch (SetFsiFile false))
-              "*.fsi" "*.fs" "File extension" model.IsFsi
-          SettingControls.multiButton "Mode"
-              [ { IsActive = (isJsonView model.View)
-                  Label = "JsonViewer"
-                  OnClick = (fun _ -> dispatch ShowJsonViewer) }
-                { IsActive = (isEditorView model.View)
-                  Label = "Editor"
-                  OnClick = (fun _ -> dispatch ShowEditor) }
-                { IsActive = (isRawView model.View)
-                  Label = "Raw"
-                  OnClick = (fun _ -> dispatch ShowRaw) }
-                { IsActive = (isGraph model.View)
-                  Label = "Graph"
-                  OnClick = (fun _ -> dispatch ShowGraph) } ] ]
+    fragment [] [
+        FantomasTools.Client.VersionBar.versionBar (sprintf "FSC - %s" model.Version)
+        SettingControls.input (DefinesUpdated >> dispatch) "Defines" "Enter your defines separated with a space"
+            model.Defines
+        SettingControls.toggleButton (fun _ -> dispatch (SetFsiFile true)) (fun _ -> dispatch (SetFsiFile false))
+            "*.fsi" "*.fs" "File extension" model.IsFsi
+        SettingControls.multiButton "Mode"
+            [ { IsActive = (isJsonView model.View)
+                Label = "JsonViewer"
+                OnClick = (fun _ -> dispatch ShowJsonViewer) }
+              { IsActive = (isEditorView model.View)
+                Label = "Editor"
+                OnClick = (fun _ -> dispatch ShowEditor) }
+              { IsActive = (isRawView model.View)
+                Label = "Raw"
+                OnClick = (fun _ -> dispatch ShowRaw) }
+              { IsActive = (isGraph model.View)
+                Label = "Graph"
+                OnClick = (fun _ -> dispatch ShowGraph) } ]
+    ]

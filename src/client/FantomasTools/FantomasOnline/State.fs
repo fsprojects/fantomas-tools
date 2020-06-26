@@ -20,10 +20,9 @@ let private latestBackend: string = jsNative
 let private previewBackend: string = jsNative
 
 let private backend =
-    Map.ofList
-        [ (FantomasMode.Previous, previousBackend)
-          (FantomasMode.Latest, latestBackend)
-          (FantomasMode.Preview, previewBackend) ]
+    Map.ofList [ (FantomasMode.Previous, previousBackend)
+                 (FantomasMode.Latest, latestBackend)
+                 (FantomasMode.Preview, previewBackend) ]
 
 let private getVersion mode =
     sprintf "%s/%s" (Map.find mode backend) "api/version"
@@ -156,9 +155,8 @@ let update isActiveTab code msg model =
         cmd
     | Format ->
         let cmd =
-            Cmd.batch
-                [ Cmd.ofSub (getFormattedCode code model)
-                  Cmd.ofSub (updateUrl code model) ]
+            Cmd.batch [ Cmd.ofSub (getFormattedCode code model)
+                        Cmd.ofSub (updateUrl code model) ]
 
         { model with
               State = LoadingFormatRequest },

@@ -29,12 +29,14 @@ module FormatCode =
     let getFantomasVersion () =
         let date =
             let lastCommitInfo =
-                sprintf "%s - %s" (System.Environment.GetEnvironmentVariable("LAST_COMMIT_TIMESTAMP")) (System.Environment.GetEnvironmentVariable("LAST_COMMIT_SHA"))
+                sprintf "%s - %s" (System.Environment.GetEnvironmentVariable("LAST_COMMIT_TIMESTAMP"))
+                    (System.Environment.GetEnvironmentVariable("LAST_COMMIT_SHA"))
 
             if lastCommitInfo.Trim() <> "-" then
                 lastCommitInfo
             else
-                let assembly = typeof<Fantomas.FormatConfig.FormatConfig>.Assembly
+                let assembly =
+                    typeof<Fantomas.FormatConfig.FormatConfig>.Assembly
 
                 System.IO.FileInfo assembly.Location
                 |> fun f -> f.LastWriteTime.ToShortDateString()

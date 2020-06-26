@@ -21,9 +21,10 @@ let private tab activeTab tabType tabContent =
         | _ -> System.String.Empty
         |> sprintf "fade h-100 %s"
 
-    TabPane.tabPane
-        [ TabPane.TabId(!^(tabToId tabType))
-          TabPane.Custom [ ClassName tabClassName ] ] [ tabContent ]
+    TabPane.tabPane [ TabPane.TabId(!^(tabToId tabType))
+                      TabPane.Custom [ ClassName tabClassName ] ] [
+        tabContent
+    ]
 
 let private byTriviaNodes model dispatch =
     tab model.ActiveTab ByTriviaNodes (ByTriviaNodes.view model dispatch)
@@ -34,28 +35,28 @@ let private byTrivia model dispatch =
 let private results model dispatch =
     let tabHeader label tabType =
         let isActive = tabType = model.ActiveTab
-        NavItem.navItem
-            [ NavItem.Custom
-                [ OnClick(fun _ -> dispatch (Msg.SelectTab tabType))
-                  ClassName "pointer" ] ]
-            [ NavLink.navLink
-                [ NavLink.Active isActive
-                  NavLink.Custom [ ClassName "rounded-0" ] ] [ str label ] ]
+        NavItem.navItem [ NavItem.Custom [ OnClick(fun _ -> dispatch (Msg.SelectTab tabType))
+                                           ClassName "pointer" ] ] [
+            NavLink.navLink [ NavLink.Active isActive
+                              NavLink.Custom [ ClassName "rounded-0" ] ] [
+                str label
+            ]
+        ]
 
-    div
-        [ ClassName "h-100 d-flex flex-column"
-          Id "results" ]
-        [ Nav.nav
-            [ Nav.Tabs true
-              Nav.Pills true
-              Nav.Custom [ ClassName "border-bottom border-primary" ] ]
-              [ tabHeader "By trivia nodes" ByTriviaNodes
-                tabHeader "By trivia" ByTrivia ]
-          TabContent.tabContent
-              [ TabContent.Custom [ ClassName "flex-grow-1" ]
-                TabContent.ActiveTab(!^(tabToId model.ActiveTab)) ]
-              [ byTriviaNodes model dispatch
-                byTrivia model dispatch ] ]
+    div [ ClassName "h-100 d-flex flex-column"
+          Id "results" ] [
+        Nav.nav [ Nav.Tabs true
+                  Nav.Pills true
+                  Nav.Custom [ ClassName "border-bottom border-primary" ] ] [
+            tabHeader "By trivia nodes" ByTriviaNodes
+            tabHeader "By trivia" ByTrivia
+        ]
+        TabContent.tabContent [ TabContent.Custom [ ClassName "flex-grow-1" ]
+                                TabContent.ActiveTab(!^(tabToId model.ActiveTab)) ] [
+            byTriviaNodes model dispatch
+            byTrivia model dispatch
+        ]
+    ]
 
 let view model dispatch =
     if model.IsLoading then
@@ -64,22 +65,21 @@ let view model dispatch =
         match model.Error with
         | None -> results model dispatch
         | Some errors ->
-            FantomasTools.Client.Editor.editorInTab
-                [ EditorProp.Language "fsharp"
-                  EditorProp.IsReadOnly true
-                  EditorProp.Value errors ]
+            FantomasTools.Client.Editor.editorInTab [ EditorProp.Language "fsharp"
+                                                      EditorProp.IsReadOnly true
+                                                      EditorProp.Value errors ]
 
 let commands dispatch =
-    Button.button
-        [ Button.Color Primary
-          Button.Custom
-              [ ClassName "rounded-0"
-                OnClick(fun _ -> dispatch GetTrivia) ] ]
-        [ i [ ClassName "fas fa-code mr-1" ] []
-          str "Get trivia" ]
+    Button.button [ Button.Color Primary
+                    Button.Custom [ ClassName "rounded-0"
+                                    OnClick(fun _ -> dispatch GetTrivia) ] ] [
+        i [ ClassName "fas fa-code mr-1" ] []
+        str "Get trivia"
+    ]
 
 let settings (model: Model) dispatch =
-    fragment []
-        [ FantomasTools.Client.VersionBar.versionBar (sprintf "FSC - %s" model.Version)
-          SettingControls.input (DefinesUpdated >> dispatch) "Defines" "Enter your defines separated with a space"
-              model.Defines ]
+    fragment [] [
+        FantomasTools.Client.VersionBar.versionBar (sprintf "FSC - %s" model.Version)
+        SettingControls.input (DefinesUpdated >> dispatch) "Defines" "Enter your defines separated with a space"
+            model.Defines
+    ]

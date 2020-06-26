@@ -40,6 +40,7 @@ module GetTrivia =
 
             let! (opts, _) =
                 checker.GetProjectOptionsFromScript(file, source, otherFlags = otherFlags, assumeDotNetFramework = true)
+
             return opts
         }
 

@@ -8,14 +8,13 @@ open FantomasTools.Client.FantomasOnline.Model
 open FantomasTools.Client.Model
 
 let private route: Parser<ActiveTab -> _, _> =
-    UrlParser.oneOf
-        [ map ActiveTab.HomeTab (s "")
-          map ActiveTab.TriviaTab (s "trivia")
-          map ActiveTab.TokensTab (s "tokens")
-          map ActiveTab.ASTTab (s "ast")
-          map (ActiveTab.FantomasTab(Previous)) (s "fantomas" </> s "previous")
-          map (ActiveTab.FantomasTab(Latest)) (s "fantomas" </> s "latest")
-          map (ActiveTab.FantomasTab(Preview)) (s "fantomas" </> s "preview") ]
+    UrlParser.oneOf [ map ActiveTab.HomeTab (s "")
+                      map ActiveTab.TriviaTab (s "trivia")
+                      map ActiveTab.TokensTab (s "tokens")
+                      map ActiveTab.ASTTab (s "ast")
+                      map (ActiveTab.FantomasTab(Previous)) (s "fantomas" </> s "previous")
+                      map (ActiveTab.FantomasTab(Latest)) (s "fantomas" </> s "latest")
+                      map (ActiveTab.FantomasTab(Preview)) (s "fantomas" </> s "preview") ]
 
 let parser: Browser.Types.Location -> ActiveTab option = parseHash route
 
@@ -52,7 +51,8 @@ let urlUpdate (result: Option<ActiveTab>) model =
         { model with
               ActiveTab = tab
               FantomasModel = fantomasModel },
-        Cmd.batch [ cmd; Cmd.map FantomasMsg fantomasCmd ]
+        Cmd.batch [ cmd
+                    Cmd.map FantomasMsg fantomasCmd ]
     | None -> ({ model with ActiveTab = HomeTab }, Navigation.modifyUrl "#") // no matching route - go home
 
 let toHash =

@@ -51,13 +51,12 @@ module private Tast =
             { Type = "BasicPatterns.Call"
               Range = r e.Range
               Properties =
-                  p
-                      [ yield! typeArgs1
-                               |> List.map (fun n -> "typeArg" ==> fsharpTypeToProps n)
-                        yield! typeArgs2
-                               |> List.map (fun n -> "typeArg2" ==> fsharpTypeToProps n)
-                        yield "memberOrFunc"
-                              ==> fsharpMemberToProps memberOrFunc ]
+                  p [ yield! typeArgs1
+                             |> List.map (fun n -> "typeArg" ==> fsharpTypeToProps n)
+                      yield! typeArgs2
+                             |> List.map (fun n -> "typeArg2" ==> fsharpTypeToProps n)
+                      yield "memberOrFunc"
+                            ==> fsharpMemberToProps memberOrFunc ]
               Childs =
                   [ if objExprOpt.IsSome
                     then yield visitExpr objExprOpt.Value
@@ -82,19 +81,17 @@ module private Tast =
             { Type = "BasicPatterns.ILAsm"
               Range = r e.Range
               Properties =
-                  p
-                      [ yield "asmCode" ==> asmCode
-                        yield! typeArgs
-                               |> List.map (fun n -> "typeArg" ==> fsharpTypeToProps n) ]
+                  p [ yield "asmCode" ==> asmCode
+                      yield! typeArgs
+                             |> List.map (fun n -> "typeArg" ==> fsharpTypeToProps n) ]
               Childs = [ yield! argExprs |> List.map visitExpr ]
               FsAstNode = box e }
         | BasicPatterns.ILFieldGet (objExprOpt, fieldType, fieldName) ->
             { Type = "BasicPatterns.ILFieldGet"
               Range = r e.Range
               Properties =
-                  p
-                      [ yield "fieldType" ==> fsharpTypeToProps fieldType
-                        yield "fieldName" ==> fieldName ]
+                  p [ yield "fieldType" ==> fsharpTypeToProps fieldType
+                      yield "fieldName" ==> fieldName ]
               Childs =
                   [ if objExprOpt.IsSome
                     then yield visitExpr objExprOpt.Value ]
@@ -103,9 +100,8 @@ module private Tast =
             { Type = "BasicPatterns.ILFieldGet"
               Range = r e.Range
               Properties =
-                  p
-                      [ yield "fieldType" ==> fsharpTypeToProps fieldType
-                        yield "fieldName" ==> fieldName ]
+                  p [ yield "fieldType" ==> fsharpTypeToProps fieldType
+                      yield "fieldName" ==> fieldName ]
               Childs =
                   [ if objExprOpt.IsSome
                     then yield visitExpr objExprOpt.Value
@@ -162,9 +158,8 @@ module private Tast =
             { Type = "BasicPatterns.NewObject"
               Range = r e.Range
               Properties =
-                  p
-                      [ "objType" ==> fsharpMemberToProps objType
-                        "typeArgs" ==> List.map fsharpTypeToProps typeArgs ]
+                  p [ "objType" ==> fsharpMemberToProps objType
+                      "typeArgs" ==> List.map fsharpTypeToProps typeArgs ]
               Childs = [ yield! List.map visitExpr argExprs ]
               FsAstNode = box e }
         | BasicPatterns.NewRecord (recordType, argExprs) ->
@@ -183,9 +178,8 @@ module private Tast =
             { Type = "BasicPatterns.NewUnionCase"
               Range = r e.Range
               Properties =
-                  p
-                      [ "unionType" ==> fsharpTypeToProps unionType
-                        "unionCase" ==> fsharpUnionCaseToProps unionCase ]
+                  p [ "unionType" ==> fsharpTypeToProps unionType
+                      "unionCase" ==> fsharpUnionCaseToProps unionCase ]
               Childs = [ yield! List.map visitExpr argExprs ]
               FsAstNode = box e }
         | BasicPatterns.Quote (quotedExpr) ->
@@ -198,10 +192,9 @@ module private Tast =
             { Type = "BasicPatterns.FSharpFieldGet"
               Range = r e.Range
               Properties =
-                  p
-                      [ "recordOrClassType"
-                        ==> fsharpTypeToProps recordOrClassType
-                        "fieldInfo" ==> fsharpFieldToProps fieldInfo ]
+                  p [ "recordOrClassType"
+                      ==> fsharpTypeToProps recordOrClassType
+                      "fieldInfo" ==> fsharpFieldToProps fieldInfo ]
               Childs =
                   [ if objExprOpt.IsSome
                     then yield visitExpr objExprOpt.Value ]
@@ -210,10 +203,9 @@ module private Tast =
             { Type = "BasicPatterns.FSharpFieldSet"
               Range = r e.Range
               Properties =
-                  p
-                      [ "recordOrClassType"
-                        ==> fsharpTypeToProps recordOrClassType
-                        "fieldInfo" ==> fsharpFieldToProps fieldInfo ]
+                  p [ "recordOrClassType"
+                      ==> fsharpTypeToProps recordOrClassType
+                      "fieldInfo" ==> fsharpFieldToProps fieldInfo ]
               Childs =
                   [ if objExprOpt.IsSome
                     then yield visitExpr objExprOpt.Value
@@ -247,9 +239,8 @@ module private Tast =
             { Type = "BasicPatterns.TupleGet"
               Range = r e.Range
               Properties =
-                  p
-                      [ "tupleType" ==> fsharpTypeToProps tupleType
-                        "tupleElemIndex" ==> tupleElemIndex ]
+                  p [ "tupleType" ==> fsharpTypeToProps tupleType
+                      "tupleElemIndex" ==> tupleElemIndex ]
               Childs = [ visitExpr tupleExpr ]
               FsAstNode = box e }
         | BasicPatterns.DecisionTree (decisionExpr, decisionTargets) ->
@@ -288,11 +279,10 @@ module private Tast =
             { Type = "BasicPatterns.UnionCaseSet"
               Range = r e.Range
               Properties =
-                  p
-                      [ "unionType" ==> fsharpTypeToProps unionType
-                        "unionCase" ==> fsharpUnionCaseToProps unionCase
-                        "unionCaseField"
-                        ==> fsharpFieldToProps unionCaseField ]
+                  p [ "unionType" ==> fsharpTypeToProps unionType
+                      "unionCase" ==> fsharpUnionCaseToProps unionCase
+                      "unionCaseField"
+                      ==> fsharpFieldToProps unionCaseField ]
               Childs =
                   [ visitExpr unionExpr
                     visitExpr valueExpr ]
@@ -301,20 +291,18 @@ module private Tast =
             { Type = "BasicPatterns.UnionCaseGet"
               Range = r e.Range
               Properties =
-                  p
-                      [ "unionType" ==> fsharpTypeToProps unionType
-                        "unionCase" ==> fsharpUnionCaseToProps unionCase
-                        "unionCaseField"
-                        ==> fsharpFieldToProps unionCaseField ]
+                  p [ "unionType" ==> fsharpTypeToProps unionType
+                      "unionCase" ==> fsharpUnionCaseToProps unionCase
+                      "unionCaseField"
+                      ==> fsharpFieldToProps unionCaseField ]
               Childs = [ visitExpr unionExpr ]
               FsAstNode = box e }
         | BasicPatterns.UnionCaseTest (unionExpr, unionType, unionCase) ->
             { Type = "BasicPatterns.UnionCaseTest"
               Range = r e.Range
               Properties =
-                  p
-                      [ "unionType" ==> fsharpTypeToProps unionType
-                        "unionCase" ==> fsharpUnionCaseToProps unionCase ]
+                  p [ "unionType" ==> fsharpTypeToProps unionType
+                      "unionCase" ==> fsharpUnionCaseToProps unionCase ]
               Childs = [ visitExpr unionExpr ]
               FsAstNode = box e }
         | BasicPatterns.UnionCaseTag (unionExpr, unionType) ->
@@ -327,27 +315,25 @@ module private Tast =
             { Type = "BasicPatterns.ObjectExpr"
               Range = r e.Range
               Properties =
-                  p
-                      [ "objType" ==> fsharpTypeToProps objType
-                        "overrides"
-                        ==> (List.map fsharpObjectExprOverrideToProps overrides)
-                        "interfaceImplementations"
-                        ==> (List.map (fun (n, s) -> (fsharpTypeToProps n, List.map fsharpObjectExprOverrideToProps s))
-                                 interfaceImplementations) ]
+                  p [ "objType" ==> fsharpTypeToProps objType
+                      "overrides"
+                      ==> (List.map fsharpObjectExprOverrideToProps overrides)
+                      "interfaceImplementations"
+                      ==> (List.map (fun (n, s) -> (fsharpTypeToProps n, List.map fsharpObjectExprOverrideToProps s))
+                               interfaceImplementations) ]
               Childs = [ yield visitExpr baseCallExpr ]
               FsAstNode = box e }
         | BasicPatterns.TraitCall (sourceTypes, traitName, _, typeInstantiation, argTypes, argExprs) ->
             { Type = "BasicPatterns.TraitCall"
               Range = r e.Range
               Properties =
-                  p
-                      [ "sourceTypes"
-                        ==> List.map (fsharpTypeToProps) sourceTypes
-                        "traitName" ==> traitName
-                        "typeInstantiation"
-                        ==> List.map (fsharpTypeToProps) typeInstantiation
-                        "argTypes"
-                        ==> List.map (fsharpTypeToProps) argTypes ]
+                  p [ "sourceTypes"
+                      ==> List.map (fsharpTypeToProps) sourceTypes
+                      "traitName" ==> traitName
+                      "typeInstantiation"
+                      ==> List.map (fsharpTypeToProps) typeInstantiation
+                      "argTypes"
+                      ==> List.map (fsharpTypeToProps) argTypes ]
               Childs = [ yield! List.map visitExpr argExprs ]
               FsAstNode = box e }
         | BasicPatterns.ValueSet (valToSet, valueExpr) ->
@@ -386,9 +372,8 @@ module private Tast =
             { Type = "BasicPatterns.Const"
               Range = r e.Range
               Properties =
-                  p
-                      [ "constValueObj" ==> constValueObj
-                        "constType" ==> fsharpTypeToProps constType ]
+                  p [ "constValueObj" ==> constValueObj
+                      "constType" ==> fsharpTypeToProps constType ]
               Childs = []
               FsAstNode = box e }
         | BasicPatterns.Value (valueToGet) ->
@@ -418,10 +403,9 @@ module private Tast =
                 { Type = "FSharpImplementationFileDeclaration.MemberOrFunctionOrValue"
                   Range = r e.Range
                   Properties =
-                      p
-                          [ "v" ==> fsharpMemberToProps v
-                            "vs"
-                            ==> (List.map (List.map fsharpMemberToProps) vs) ]
+                      p [ "v" ==> fsharpMemberToProps v
+                          "vs"
+                          ==> (List.map (List.map fsharpMemberToProps) vs) ]
                   Childs = [ visitExpr e ]
                   FsAstNode = box d }
         | FSharpImplementationFileDeclaration.InitAction (e) ->

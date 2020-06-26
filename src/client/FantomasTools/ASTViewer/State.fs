@@ -110,18 +110,16 @@ let update code (msg: Msg) (model: Model): Model * Cmd<Msg> =
         let parseRequest = modelToParseRequest code model
 
         let cmd =
-            Cmd.batch
-                [ Cmd.ofSub (fetchUntypedAST parseRequest)
-                  Cmd.ofSub (updateUrl code model) ]
+            Cmd.batch [ Cmd.ofSub (fetchUntypedAST parseRequest)
+                        Cmd.ofSub (updateUrl code model) ]
 
         { model with IsLoading = true }, cmd
     | DoTypeCheck ->
         let parseRequest = modelToParseRequest code model
 
         let cmd =
-            Cmd.batch
-                [ Cmd.ofSub (fetchTypedAst parseRequest)
-                  Cmd.ofSub (updateUrl code model) ]
+            Cmd.batch [ Cmd.ofSub (fetchTypedAst parseRequest)
+                        Cmd.ofSub (updateUrl code model) ]
 
         { model with IsLoading = true }, cmd
 

@@ -79,6 +79,7 @@ let private formatResponse<'options>
             try
                 let! formatted = format fileName code config
                 let! isValid = validateResult fileName formatted
+
                 if isValid then
                     return sendText formatted
                 else

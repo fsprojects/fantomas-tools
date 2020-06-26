@@ -1,4 +1,5 @@
 {
   "MaxIfThenElseShortWidth": 25,
-  "MaxLetBindingWidth": 50
+  "MaxValueBindingWidth": 50,
+  "MaxFunctionBindingWidth": 50
 }

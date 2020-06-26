@@ -23,9 +23,10 @@ let private rangeToText (r: Range) =
     sprintf "(%i,%i - %i,%i)" r.StartLine r.StartColumn r.EndLine r.EndColumn
 
 let private rangeToBadge (r: Range) =
-    Badge.badge
-        [ Badge.Color Dark
-          Badge.Custom [ ClassName "px-2 py-1 ml-auto" ] ] [ (rangeToText r |> str) ]
+    Badge.badge [ Badge.Color Dark
+                  Badge.Custom [ ClassName "px-2 py-1 ml-auto" ] ] [
+        (rangeToText r |> str)
+    ]
 
 let private isNotAnEmptyList = List.isEmpty >> not
 
@@ -45,10 +46,11 @@ let private triviaContentToDetail tc =
         | LineCommentOnSingleLine (lc) -> (wrap "LineCommentOnSingleLine" lc)
         | LineCommentAfterSourceCode (lc) -> (wrap "LineCommentAfterSourceCode" lc)
         |> fun inner ->
-            fragment []
-                [ str "Comment("
-                  yield! inner
-                  str ")" ]
+            fragment [] [
+                str "Comment("
+                yield! inner
+                str ")"
+            ]
     | Directive d -> fragment [] (wrap "Directive" d)
     | IdentOperatorAsWord ioaw -> fragment [] (wrap "IdentOperatorAsWord" ioaw)
     | IdentBetweenTicks ibt -> fragment [] (wrap "IdentBetweenTicks" ibt)
@@ -66,19 +68,26 @@ let private activeTriviaNode tn =
         if (isNotAnEmptyList items) then
             let listItems =
                 items
-                |> List.mapi (fun idx item -> li [ Key !!idx ] [ triviaContentToDetail item ])
+                |> List.mapi (fun idx item ->
+                    li [ Key !!idx ] [
+                        triviaContentToDetail item
+                    ])
 
-            fragment []
-                [ h4 [] [ str title ]
-                  ul [ ClassName "list-unstyled" ] [ ofList listItems ] ]
+            fragment [] [
+                h4 [] [ str title ]
+                ul [ ClassName "list-unstyled" ] [
+                    ofList listItems
+                ]
+            ]
         else
             ofOption None
 
-    div [ ClassName "tab-pane active" ]
-        [ h2 [ ClassName "mb-4" ] [ str title ]
-          contentInfo "Content before" tn.ContentBefore
-          contentInfo "Content itself" (Option.toList tn.ContentItself)
-          contentInfo "Content after" tn.ContentAfter ]
+    div [ ClassName "tab-pane active" ] [
+        h2 [ ClassName "mb-4" ] [ str title ]
+        contentInfo "Content before" tn.ContentBefore
+        contentInfo "Content itself" (Option.toList tn.ContentItself)
+        contentInfo "Content after" tn.ContentAfter
+    ]
 
 let view (model: Model) dispatch =
     let navItems =
@@ -101,6 +110,9 @@ let view (model: Model) dispatch =
         List.tryItem model.ActiveByTriviaNodeIndex model.TriviaNodes
         |> Option.map activeTriviaNode
 
-    div [ ClassName "d-flex h-100" ]
-        [ menu onClick model.ActiveByTriviaNodeIndex navItems
-          div [ ClassName "bg-light flex-grow-1 py-2 px-4 tab-content overflow-auto" ] [ ofOption activeNode ] ]
+    div [ ClassName "d-flex h-100" ] [
+        menu onClick model.ActiveByTriviaNodeIndex navItems
+        div [ ClassName "bg-light flex-grow-1 py-2 px-4 tab-content overflow-auto" ] [
+            ofOption activeNode
+        ]
+    ]

@@ -10,9 +10,10 @@ let rangeToText (r: Range) =
     sprintf "(%i,%i - %i,%i)" r.StartLine r.StartColumn r.EndLine r.EndColumn
 
 let private rangeToBadge (r: Range) =
-    Badge.badge
-        [ Badge.Color Dark
-          Badge.Custom [ ClassName "px-2 py-1 ml-auto" ] ] [ (rangeToText r |> str) ]
+    Badge.badge [ Badge.Color Dark
+                  Badge.Custom [ ClassName "px-2 py-1 ml-auto" ] ] [
+        (rangeToText r |> str)
+    ]
 
 let private triviaContentToDetail tc =
     let wrap outer inner =
@@ -30,10 +31,11 @@ let private triviaContentToDetail tc =
         | LineCommentOnSingleLine (lc) -> (wrap "LineCommentOnSingleLine" lc)
         | LineCommentAfterSourceCode (lc) -> (wrap "LineCommentAfterSourceCode" lc)
         |> fun inner ->
-            fragment []
-                [ str "Comment("
-                  yield! inner
-                  str ")" ]
+            fragment [] [
+                str "Comment("
+                yield! inner
+                str ")"
+            ]
     | Directive d -> fragment [] (wrap "Directive" d)
     | IdentOperatorAsWord ioaw -> fragment [] (wrap "IdentOperatorAsWord" ioaw)
     | IdentBetweenTicks ibt -> fragment [] (wrap "IdentBetweenTicks" ibt)
@@ -55,17 +57,21 @@ let menu onItemClick activeIndex items =
                 mi.ClassName
                 |> sprintf "d-flex %s %s" (if idx = activeIndex then "active" else "")
 
-            NavItem.navItem
-                [ NavItem.Custom
-                    [ Key !!idx
-                      Title mi.Title
-                      OnClick(fun ev ->
-                          ev.preventDefault ()
-                          onItemClick idx) ] ]
-                [ NavLink.navLink [ NavLink.Custom [ Href "#"; ClassName className ] ]
-                      [ span [ ClassName "mr-4" ] [ str mi.Label ]
-                        rangeToBadge mi.Range ] ])
+            NavItem.navItem [ NavItem.Custom [ Key !!idx
+                                               Title mi.Title
+                                               OnClick(fun ev ->
+                                                   ev.preventDefault ()
+                                                   onItemClick idx) ] ] [
+                NavLink.navLink [ NavLink.Custom [ Href "#"
+                                                   ClassName className ] ] [
+                    span [ ClassName "mr-4" ] [
+                        str mi.Label
+                    ]
+                    rangeToBadge mi.Range
+                ]
+            ])
 
-    Nav.nav
-        [ Nav.Pills true
-          Nav.Custom [ ClassName "flex-column" ] ] [ ofList navItems ]
+    Nav.nav [ Nav.Pills true
+              Nav.Custom [ ClassName "flex-column" ] ] [
+        ofList navItems
+    ]

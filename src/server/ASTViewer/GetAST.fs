@@ -110,6 +110,7 @@ module GetAST =
             let! (opts, errors) =
                 checker.GetProjectOptionsFromScript
                     (file, source, otherFlags = otherFlags, assumeDotNetFramework = false, useSdkRefs = true)
+
             match errors with
             | [] -> return opts
             | errs -> return failwithf "Errors getting project options: %A" errs
@@ -170,6 +171,7 @@ module GetAST =
             match parseRequest with
             | Result.Ok input when (input.SourceCode.Length < Const.sourceSizeLimit) ->
                 let! astResult = parseAST log input
+
                 match astResult with
                 | Result.Ok ast ->
                     let node =
@@ -204,7 +206,9 @@ module GetAST =
             let! options =
                 checker
                 |> getProjectOptionsFromScript fileName sourceText defines
+
             let! (parseRes, typedRes) = checker.ParseAndCheckFileInProject(fileName, 1, sourceText, options)
+
             match typedRes with
             | FSharpCheckFileAnswer.Aborted ->
                 return Error
@@ -226,6 +230,7 @@ module GetAST =
             match parseRequest with
             | Result.Ok input when (input.SourceCode.Length < Const.sourceSizeLimit) ->
                 let! tastResult = parseTypedAST input
+
                 match tastResult with
                 | Result.Ok tast ->
                     let node =
