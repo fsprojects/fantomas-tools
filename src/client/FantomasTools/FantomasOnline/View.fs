@@ -83,9 +83,18 @@ let githubIssueUri code (model: Model) =
         (sprintf """
 Issue created from [fantomas-online](%s)
 
-**Please describe here fantomas problem you encountered**
 %s
 %s
+#### Problem description
+
+Please describe here fantomas problem you encountered.
+
+#### Extra information
+
+- [ ] The formatted result breaks by code.
+- [ ] The formatted result gives compiler warnings.
+- [ ] I or my company would be willing to help fix this.
+
 #### Options
 
 Fantomas %s
