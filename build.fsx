@@ -148,6 +148,7 @@ Target.create "CheckFormat" (fun _ ->
         if result.ExitCode <> 0 then failwith "No everything was formatted")
 
 Target.create "CI" ignore
+Target.create "PR" ignore
 
 open Fake.Core.TargetOperators
 
@@ -156,5 +157,7 @@ open Fake.Core.TargetOperators
 "YarnInstall" ==> "BundleFrontend"
 
 "Fantomas-Git" ==> "Clean" ==> "DeployFunctions" ==> "BundleFrontend" ==> "CI"
+
+"Fantomas-Git" ==> "Clean" ==> "Build" ==> "BundleFrontend" ==> "PR"
 
 Target.runOrDefault "Build"
