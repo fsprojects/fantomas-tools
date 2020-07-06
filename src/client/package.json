@@ -4,13 +4,13 @@
   "main": "index.js",
   "license": "MIT",
   "devDependencies": {
-    "@babel/core": "7.10.3",
+    "@babel/core": "7.10.4",
     "@babel/plugin-proposal-class-properties": "7.10.1",
     "@babel/preset-env": "7.10.3",
     "@babel/preset-react": "7.10.1",
     "babel-loader": "8.1.0",
     "css-loader": "3.6.0",
-    "copy-webpack-plugin": "6.0.2",
+    "copy-webpack-plugin": "6.0.3",
     "fable-compiler": "2.10.1",
     "fable-loader": "2.1.9",
     "file-loader": "6.0.0",
@@ -20,7 +20,7 @@
     "node-sass": "4.14.1",
     "prettier": "2.0.5",
     "prop-types": "15.7.2",
-    "sass-loader": "8.0.2",
+    "sass-loader": "9.0.1",
     "style-loader": "1.2.1",
     "terser-webpack-plugin": "3.0.6",
     "webpack": "4.43.0",
@@ -28,7 +28,7 @@
     "webpack-dev-server": "3.11.0"
   },
   "dependencies": {
-    "@monaco-editor/react": "3.3.2",
+    "@monaco-editor/react": "3.4.1",
     "bootstrap": "4.5.0",
     "lz-string": "1.4.4",
     "monaco-editor": "0.20.0",
