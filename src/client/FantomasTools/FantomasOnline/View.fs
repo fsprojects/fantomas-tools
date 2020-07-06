@@ -57,7 +57,9 @@ let githubIssueUri code (model: Model) =
         |> Seq.toArray
         |> Seq.map (fun (userV, defV) ->
 
-            sprintf (if userV <> defV then "| **`%s`** | **`%s`** |" else "| `%s` | `%s` |") (getOptionKey userV)
+            sprintf
+                (if userV <> defV then "| **`%s`** | **`%s`** |" else "| `%s` | `%s` |")
+                (getOptionKey userV)
                 (optionValue userV))
         |> String.concat "\n"
 

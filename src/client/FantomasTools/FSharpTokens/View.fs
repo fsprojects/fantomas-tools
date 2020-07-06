@@ -79,7 +79,8 @@ let private tokenDetail dispatch index token =
                 tokenDetailRow "ColorClass" (str colorClass)
                 tokenDetailRow "CharClass" (str charClass)
                 tokenDetailRow "Tag" (ofInt tag)
-                tokenDetailRow "FullMatchedLength"
+                tokenDetailRow
+                    "FullMatchedLength"
                     (span [ ClassName "has-text-weight-semibold" ] [
                         ofInt fullMatchedLength
                      ])
@@ -126,6 +127,9 @@ let commands dispatch =
 let settings model dispatch =
     fragment [] [
         FantomasTools.Client.VersionBar.versionBar (sprintf "FSC - %s" model.Version)
-        SettingControls.input (DefinesUpdated >> dispatch) "Defines" "Enter your defines separated with a space"
+        SettingControls.input
+            (DefinesUpdated >> dispatch)
+            "Defines"
+            "Enter your defines separated with a space"
             model.Defines
     ]

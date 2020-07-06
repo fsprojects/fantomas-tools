@@ -110,7 +110,11 @@ let buildGraph (opts: Graph.Options) (root: TreeNode<_>) =
     let nodes =
         nodesToId
         |> Seq.map (fun (n, i) ->
-            createNode i n.Label n.Color n.Tooltip
+            createNode
+                i
+                n.Label
+                n.Color
+                n.Tooltip
                 (nodeLevel
                  |> Map.tryFind i
                  |> Option.defaultValue 0))

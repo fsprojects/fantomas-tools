@@ -29,7 +29,9 @@ module FormatCode =
     let getFantomasVersion () =
         let date =
             let lastCommitInfo =
-                sprintf "%s - %s" (System.Environment.GetEnvironmentVariable("LAST_COMMIT_TIMESTAMP"))
+                sprintf
+                    "%s - %s"
+                    (System.Environment.GetEnvironmentVariable("LAST_COMMIT_TIMESTAMP"))
                     (System.Environment.GetEnvironmentVariable("LAST_COMMIT_SHA"))
 
             if lastCommitInfo.Trim() <> "-" then

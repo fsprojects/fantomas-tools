@@ -182,11 +182,15 @@ let commands dispatch =
 let settings model dispatch =
     fragment [] [
         FantomasTools.Client.VersionBar.versionBar (sprintf "FSC - %s" model.Version)
-        SettingControls.input (DefinesUpdated >> dispatch) "Defines" "Enter your defines separated with a space"
+        SettingControls.input
+            (DefinesUpdated >> dispatch)
+            "Defines"
+            "Enter your defines separated with a space"
             model.Defines
         SettingControls.toggleButton (fun _ -> dispatch (SetFsiFile true)) (fun _ -> dispatch (SetFsiFile false))
             "*.fsi" "*.fs" "File extension" model.IsFsi
-        SettingControls.multiButton "Mode"
+        SettingControls.multiButton
+            "Mode"
             [ { IsActive = (isJsonView model.View)
                 Label = "JsonViewer"
                 OnClick = (fun _ -> dispatch ShowJsonViewer) }

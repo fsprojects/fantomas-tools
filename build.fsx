@@ -44,7 +44,7 @@ let astPort = 7412
 let triviaPort = 9856
 let fantomasPreviewPort = 10707
 let fantomasPreviousPort = 2568
-let fantomasLatestPort = 9091
+let fantomasLatestPort = 9007
 
 let localhostBackend port = sprintf "http://localhost:%i" port
 
@@ -52,7 +52,6 @@ let clientDir = __SOURCE_DIRECTORY__ </> "src" </> "client"
 let setClientDir = (fun (opt: Yarn.YarnParams) -> { opt with WorkingDirectory = clientDir })
 let serverDir = __SOURCE_DIRECTORY__ </> "src" </> "server"
 let artifactDir = __SOURCE_DIRECTORY__ </> "artifacts"
-let fantomasConfigPath = Shell.pwd() </> "fantomas-config.json"
 
 Target.create "Fantomas-Git" (fun _ ->
     let targetDir = ".deps" @@ "fantomas"
@@ -134,18 +133,18 @@ Target.create "BundleFrontend" (fun _ ->
 )
 
 Target.create "Format" (fun _ ->
-    DotNet.exec id "run" (sprintf "-p .deps/fantomas/src/Fantomas.CoreGlobalTool/Fantomas.CoreGlobalTool.fsproj -c Release -- --recurse --config \"%s\" ./src" fantomasConfigPath)
+    DotNet.exec id "run" "-p .deps/fantomas/src/Fantomas.CoreGlobalTool/Fantomas.CoreGlobalTool.fsproj -c Release -- --recurse ./src"
     |> fun result ->
         if result.OK then result.Messages else result.Errors
         |> List.iter (printfn "%s"))
 
 Target.create "CheckFormat" (fun _ ->
-    DotNet.exec id "run" (sprintf "-p .deps/fantomas/src/Fantomas.CoreGlobalTool/Fantomas.CoreGlobalTool.fsproj -c Release -- --check --config \"%s\" --recurse ./src" fantomasConfigPath)
+    DotNet.exec id "run" "-p .deps/fantomas/src/Fantomas.CoreGlobalTool/Fantomas.CoreGlobalTool.fsproj -c Release -- --check --recurse ./src"
     |> fun result ->
         if result.OK then result.Messages else result.Errors
         |> List.iter (printfn "%s")
 
-        if result.ExitCode <> 0 then failwith "No everything was formatted")
+        if result.ExitCode <> 0 then failwithf "Not everything was formatted")
 
 Target.create "CI" ignore
 Target.create "PR" ignore

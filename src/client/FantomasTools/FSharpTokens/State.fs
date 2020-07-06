@@ -20,7 +20,8 @@ let private getTokens (request: FSharpTokens.Shared.GetTokensRequest): JS.Promis
 
     let json = Encode.toString 4 (encodeGetTokensRequest request)
 
-    fetch url
+    fetch
+        url
         [ RequestProperties.Body(!^json)
           RequestProperties.Method HttpMethod.POST ]
     |> Promise.bind (fun res -> res.text ())
