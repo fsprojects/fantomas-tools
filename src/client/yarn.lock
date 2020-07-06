@@ -961,10 +961,10 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@monaco-editor/react@3.4.0":
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/@monaco-editor/react/-/react-3.4.0.tgz#0bbb534b78fd5a021d417bc424bc8a4fc008fd4f"
-  integrity sha512-oJ/yMEN+QlfHl6aHont3z90cOzsUFU07DYSNaJ1yI+eF5pLjcWUiAbt9ZK2tFEzCNqLo3lIG1hy2Sx9fupflxQ==
+"@monaco-editor/react@3.4.1":
+  version "3.4.1"
+  resolved "https://registry.yarnpkg.com/@monaco-editor/react/-/react-3.4.1.tgz#2a37dc29340657569048762ae6b7ebf82b46a152"
+  integrity sha512-72W+Lv2UVgv8oNTyJKurSSCYf9WIw0Kg9/ZZ4b7E8HPNMge7Fj0SLiCtaEbyaCq2zfy/sWzA5JWkDq5jIOJtsQ==
 
 "@nodelib/fs.scandir@2.1.3":
   version "2.1.3"
