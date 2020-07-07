@@ -122,10 +122,31 @@ let private showSuccess _message = import "showSuccess" "../../js/notifications"
 let private showError _message = import "showSuccess" "../../js/notifications"
 
 let private copySettings (model: Model) _ =
-    let json =
-        Encoders.encodeUserSettingToConfiguration model.SettingsChangedByTheUser
+    let supportedProperties = [ "max_line_length"; "indent_size" ]
 
-    writeText json
+    let toEditorConfigName value =
+        value
+        |> Seq.map (fun c ->
+            if System.Char.IsUpper(c)
+            then sprintf "_%s" (c.ToString().ToLower())
+            else c.ToString())
+        |> String.concat ""
+        |> fun s -> s.TrimStart([| '_' |])
+        |> fun name ->
+            if List.contains name supportedProperties
+            then name
+            else sprintf "fsharp_%s" name
+
+    let editorconfig =
+        model.SettingsChangedByTheUser
+        |> List.map (function
+            | FantomasOption.BoolOption (_, k, v) when v -> toEditorConfigName k |> sprintf "%s=true"
+            | FantomasOption.BoolOption (_, k, v) when (not v) -> toEditorConfigName k |> sprintf "%s=false"
+            | FantomasOption.IntOption (_, k, v) -> sprintf "%s=%i" (toEditorConfigName k) v)
+        |> String.concat "\n"
+        |> sprintf "[*.fs]\n%s"
+
+    writeText editorconfig
     |> Promise.catch (fun err ->
         showError "Something went wrong while copying settings to the clipboard."
         printfn "%A" err)
