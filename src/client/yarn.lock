@@ -4644,10 +4644,10 @@ normalize-url@1.9.1, normalize-url@^1.0.0:
     query-string "^4.1.0"
     sort-keys "^1.0.0"
 
-notyf@3.7.0:
-  version "3.7.0"
-  resolved "https://registry.yarnpkg.com/notyf/-/notyf-3.7.0.tgz#adeaab5482fa25259c3682d2aaf5bf3d37cb0421"
-  integrity sha512-YLku5YhncldCrSK/KeRAa3b+G6ylEjSbAWqZcF2NccWNUYhOk9bEvxyKgrZ04bBCmzNKEn6fOKYreYkRfNFYzA==
+notyf@3.8.0:
+  version "3.8.0"
+  resolved "https://registry.yarnpkg.com/notyf/-/notyf-3.8.0.tgz#a496731f985a298884f1923cb40ac45f10ad392e"
+  integrity sha512-lah2kFwhvPjORpJKf+I7OvH5Eytw18ULthvjeeQ0Lpo8ZYjPrHZ0qkD7W33eVToiRTQm7jeS3+iDxLm2qR1TWQ==
 
 npm-run-path@^2.0.0:
   version "2.0.2"
