@@ -4643,10 +4643,10 @@ normalize-url@1.9.1, normalize-url@^1.0.0:
     query-string "^4.1.0"
     sort-keys "^1.0.0"
 
-notyf@3.8.0:
-  version "3.8.0"
-  resolved "https://registry.yarnpkg.com/notyf/-/notyf-3.8.0.tgz#a496731f985a298884f1923cb40ac45f10ad392e"
-  integrity sha512-lah2kFwhvPjORpJKf+I7OvH5Eytw18ULthvjeeQ0Lpo8ZYjPrHZ0qkD7W33eVToiRTQm7jeS3+iDxLm2qR1TWQ==
+notyf@3.9.0:
+  version "3.9.0"
+  resolved "https://registry.yarnpkg.com/notyf/-/notyf-3.9.0.tgz#012a83d989a5017c9a37c23372ee20f78d8b33ba"
+  integrity sha512-3zqV/AuP8w5OpPhUElsLte1BFfL42tswMZM5Ya24w7GozMsQTJRYsQQgqmA9oylDL3t5TE7F4rP3ZGM6JfaKOQ==
 
 npm-run-path@^2.0.0:
   version "2.0.2"
