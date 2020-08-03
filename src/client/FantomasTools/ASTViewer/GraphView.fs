@@ -210,7 +210,8 @@ type GraphView(props: Props<obj> list, ctx) =
                 (Vis.NetworkEvents.HoverNode,
                  (fun o ->
                      //log("hoverNode Event", o)
-                     idToNode !!((o?node)) |> fun n -> n.Original |> f)))
+                     idToNode !!((o?node))
+                     |> fun n -> n.Original |> f)))
         onSelect
         |> Option.iter (fun f ->
             network.on
