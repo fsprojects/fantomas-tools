@@ -5,7 +5,7 @@ open Thoth.Json.Net
 let private rangeEncoder (range: FSharp.Compiler.Range.range) =
     Encode.object [ "startLine", Encode.int range.StartLine
                     "startCol", Encode.int range.StartColumn
-                    "endLine", Encode.int range.StartLine
+                    "endLine", Encode.int range.EndLine
                     "endCol", Encode.int range.EndColumn ]
 
 let private idEncoder (id: Fantomas.AstTransformer.Id) =
