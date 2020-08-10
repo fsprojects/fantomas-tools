@@ -934,10 +934,10 @@
     lodash "^4.17.19"
     to-fast-properties "^2.0.0"
 
-"@monaco-editor/react@3.5.6":
-  version "3.5.6"
-  resolved "https://registry.yarnpkg.com/@monaco-editor/react/-/react-3.5.6.tgz#724614b3f4aa97b9b96b8171a8b8620ac2f4fcc1"
-  integrity sha512-zUIutt2OEiKOP9DaS42vhkuDp2NTscntf462tgVGvkPjY02uZIgbiR+6tCCcGHig7CdfT8FzI/WQ7XBZ0o+3yg==
+"@monaco-editor/react@3.5.7":
+  version "3.5.7"
+  resolved "https://registry.yarnpkg.com/@monaco-editor/react/-/react-3.5.7.tgz#1c36488d2fb98d3ad11732d98a696288dea4b814"
+  integrity sha512-2EPbjpV48OwKGI2gTUDR6PyqEKFkhtXfhKt+7Ih4X52xQr5jUO1ha/oDvDn0aOlTP9/J4j1yGOiRj2Zw1UEqpA==
   dependencies:
     "@babel/runtime" "^7.11.0"
     state-local "^1.0.1"
