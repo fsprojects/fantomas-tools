@@ -28,8 +28,8 @@
     "webpack-dev-server": "3.11.0"
   },
   "dependencies": {
+    "bootstrap": "4.5.2",
     "@monaco-editor/react": "3.5.7",
-    "bootstrap": "4.5.1",
     "lz-string": "1.4.4",
     "monaco-editor": "0.20.0",
     "notyf": "3.9.0",
