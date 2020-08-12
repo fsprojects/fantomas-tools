@@ -6,12 +6,16 @@ open Microsoft.Azure.WebJobs.Extensions.Http
 open Microsoft.Extensions.Logging
 open System.IO
 open FSharp.Compiler.SourceCodeServices
+open FSharp.Compiler.SyntaxTree
 open System.Net
 open System.Net.Http
 open Fantomas
+open Fantomas.AstTransformer
+open Fantomas.TriviaTypes
 open Thoth.Json.Net
 open TriviaViewer.Shared
 open TriviaViewer.Server
+
 
 module GetTrivia =
 
@@ -90,6 +94,41 @@ module GetTrivia =
         new HttpResponseMessage(HttpStatusCode.NotFound,
                                 Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json"))
 
+    let private collectTriviaCandidates tokens ast =
+        let node =
+            match ast with
+            | ParsedInput.ImplFile (ParsedImplFileInput.ParsedImplFileInput(_, _, _, _, hds, mns, _)) ->
+                Fantomas.AstTransformer.astToNode hds mns
+
+            | ParsedInput.SigFile (ParsedSigFileInput.ParsedSigFileInput(_, _, _ , _, mns)) ->
+                Fantomas.AstTransformer.sigAstToNode mns
+
+        let rec flattenNodeToList (node: Node) =
+            [ yield node
+              yield! (node.Childs |> List.map flattenNodeToList |> List.collect id) ]
+
+        let mapNodeToTriviaNode (node: Node) =
+            node.Range
+            |> Option.map (fun range ->
+                let attributeParent =
+                    Map.tryFind "linesBetweenParent" node.Properties
+                    |> Option.bind (fun v ->
+                        match v with
+                        | :? int as i when (i > 0) -> Some i
+                        | _ -> None)
+
+                match attributeParent with
+                | Some i -> TriviaNodeAssigner(Fantomas.TriviaTypes.MainNode(node.Type), range, i)
+                | None -> TriviaNodeAssigner(Fantomas.TriviaTypes.MainNode(node.Type), range))
+
+        let triviaNodesFromAST =
+            flattenNodeToList node
+            |> Trivia.filterNodes
+            |> List.choose mapNodeToTriviaNode
+
+        let triviaNodesFromTokens = TokenParser.getTriviaNodesFromTokens tokens
+        triviaNodesFromAST @ triviaNodesFromTokens |> List.sortBy (fun n -> n.Range.Start.Line, n.Range.Start.Column)
+
     let private getTrivia (log: ILogger) (req: HttpRequest) =
         async {
             use stream = new StreamReader(req.Body)
@@ -105,10 +144,10 @@ module GetTrivia =
                 match astResult with
                 | Result.Ok ast ->
                     let trivias = TokenParser.getTriviaFromTokens tokens lineCount
-
+                    let triviaCandidates = collectTriviaCandidates tokens ast
                     let triviaNodes = Trivia.collectTrivia tokens lineCount ast
 
-                    let json = Encoders.encodeParseResult trivias triviaNodes
+                    let json = Encoders.encodeParseResult trivias triviaNodes triviaCandidates
 
                     return sendJson json
                 | Error err -> return sendBadRequest (sprintf "%A" err)
