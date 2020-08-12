@@ -2,13 +2,16 @@ module FantomasTools.Client.Trivia.Model
 
 open TriviaViewer.Shared
 
+
 type ActiveTab =
     | ByTriviaNodes
     | ByTrivia
+    | ByTriviaNodeCandidates
 
 type Model =
     { ActiveTab: ActiveTab
       Trivia: Trivia list
+      TriviaNodeCandidates: TriviaNodeCandidate list
       TriviaNodes: TriviaNode list
       Error: string option
       IsLoading: bool

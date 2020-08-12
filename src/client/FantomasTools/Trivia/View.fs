@@ -13,6 +13,7 @@ let private tabToId tab =
     match tab with
     | ByTriviaNodes -> "trivia-nodes"
     | ByTrivia -> "trivia"
+    | ByTriviaNodeCandidates -> "trivia-nodes-candidates"
 
 let private tab activeTab tabType tabContent =
     let tabClassName =
@@ -28,6 +29,9 @@ let private tab activeTab tabType tabContent =
 
 let private byTriviaNodes model dispatch =
     tab model.ActiveTab ByTriviaNodes (ByTriviaNodes.view model dispatch)
+
+let private byTriviaNodeCandidates model dispatch =
+    tab model.ActiveTab ByTriviaNodeCandidates (ByTriviaNodeCandidates.view model dispatch)
 
 let private byTrivia model dispatch =
     tab model.ActiveTab ByTrivia (ByTrivia.view model dispatch)
@@ -48,12 +52,14 @@ let private results model dispatch =
         Nav.nav [ Nav.Tabs true
                   Nav.Pills true
                   Nav.Custom [ ClassName "border-bottom border-primary" ] ] [
-            tabHeader "By trivia nodes" ByTriviaNodes
-            tabHeader "By trivia" ByTrivia
+            tabHeader "Trivia nodes" ByTriviaNodes
+            tabHeader "Trivia node candidates" ByTriviaNodeCandidates
+            tabHeader "Trivia" ByTrivia
         ]
         TabContent.tabContent [ TabContent.Custom [ ClassName "flex-grow-1" ]
                                 TabContent.ActiveTab(!^(tabToId model.ActiveTab)) ] [
             byTriviaNodes model dispatch
+            byTriviaNodeCandidates model dispatch
             byTrivia model dispatch
         ]
     ]

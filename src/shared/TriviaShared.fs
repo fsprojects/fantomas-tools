@@ -34,10 +34,16 @@ type TriviaNode =
       ContentAfter: TriviaContent list
       Range: Range }
 
+type TriviaNodeCandidate =
+    { Type: string
+      Name: string
+      Range: Range }
+
 type Trivia = { Item: TriviaContent; Range: Range }
 
 type ParseResult =
     { Trivia: Trivia list
+      TriviaNodeCandidates: TriviaNodeCandidate list
       TriviaNodes: TriviaNode list }
 
 type ParseRequest =

@@ -33,6 +33,7 @@ let private fetchFSCVersion () = sprintf "%s/api/version" backend |> Http.getTex
 let private initialModel: Model =
     { ActiveTab = ByTriviaNodes
       Trivia = []
+      TriviaNodeCandidates = []
       TriviaNodes = []
       ActiveByTriviaIndex = 0
       ActiveByTriviaNodeIndex = 0
@@ -82,6 +83,7 @@ let update code msg model =
         { model with
               IsLoading = false
               Trivia = result.Trivia
+              TriviaNodeCandidates = result.TriviaNodeCandidates
               TriviaNodes = result.TriviaNodes
               ActiveByTriviaIndex = 0
               ActiveByTriviaNodeIndex = 0 },

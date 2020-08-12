@@ -64,8 +64,8 @@ let private encodeTrivia (t: Trivia) =
 let private encodeTriviaNodeAssigner (t: TriviaNodeAssigner) =
     let typeName, name =
         match t.Type with
-        | MainNode mn -> "ASTNode", mn
-        | Token t -> "Token", t.TokenInfo.TokenName
+        | MainNode mn -> "main-node", mn
+        | Token t -> "token-node", t.TokenInfo.TokenName
 
     Encode.object [
         "type", Encode.string typeName
@@ -78,5 +78,5 @@ let internal encodeParseResult trivia triviaNodes triviaCandidates =
                     "triviaNodes",
                     List.map encodeTriviaNode triviaNodes
                     |> Encode.list
-                    "triviaCandidates", List.map encodeTriviaNodeAssigner triviaCandidates |> Encode.list ]
+                    "triviaNodeCandidates", List.map encodeTriviaNodeAssigner triviaCandidates |> Encode.list ]
     |> Encode.toString 4

@@ -60,7 +60,7 @@ let private triviaContentToDetail tc =
 
 
 
-let private activeTriviaNode tn =
+let private activeTriviaNode (tn: TriviaNode) =
     let title =
         sprintf "%s %s" (typeName tn.Type) (rangeToText tn.Range)
 

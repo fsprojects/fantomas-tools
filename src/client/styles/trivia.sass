@@ -37,6 +37,22 @@ $token-node: #a2ded0
 .nav-link-token
   @include custom-nav-link($token-node)
 
+tr.trivia-candidate-main-node
+  color: white
+  td:first-child
+    background-color: $main-node
+  td:not(:first-child)
+    color: $dark
+    background-color: transparentize($main-node, 0.95)
+
+tr.trivia-candidate-token-node
+  color: white
+  td:first-child
+    background-color: $token-node
+  td:not(:first-child)
+    color: $dark
+    background-color: transparentize($token-node, 0.95)
+
 $newline: #51BCD6
 .nav-link-newline
   @include custom-nav-link($newline)

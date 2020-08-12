@@ -30,9 +30,16 @@ let private decodeTriviaNode: Decoder<TriviaNode> =
           ContentAfter = get.Required.Field "contentAfter" (Decode.list decodeTriviaContent)
           Range = get.Required.Field "range" decodeRange })
 
+let private decodeTriviaNodeCandidate: Decoder<TriviaNodeCandidate> =
+    Decode.object (fun get ->
+        { Type = get.Required.Field "type" Decode.string
+          Name = get.Required.Field "name" Decode.string
+          Range = get.Required.Field "range" decodeRange })
+
 let private decodeParseResult: Decoder<ParseResult> =
     Decode.object (fun get ->
         { Trivia = get.Required.Field "trivia" (Decode.list decodeTrivia)
+          TriviaNodeCandidates = get.Required.Field "triviaNodeCandidates" (Decode.list decodeTriviaNodeCandidate)
           TriviaNodes = get.Required.Field "triviaNodes" (Decode.list decodeTriviaNode) })
 
 let decodeResult json = Decode.fromString decodeParseResult json
