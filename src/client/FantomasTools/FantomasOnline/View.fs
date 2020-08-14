@@ -53,15 +53,22 @@ let githubIssueUri code (model: Model) =
         |> List.sortBy FantomasOnline.Shared.sortByOption
 
     let options =
-        Seq.zip config defaultValues
-        |> Seq.toArray
-        |> Seq.map (fun (userV, defV) ->
+        let changedOptions =
+            Seq.zip config defaultValues
+            |> Seq.toArray
+            |> Seq.choose (fun (userV, defV) -> if userV <> defV then Some userV else None)
+            |> Seq.toList
 
-            sprintf
-                (if userV <> defV then "| **`%s`** | **`%s`** |" else "| `%s` | `%s` |")
-                (getOptionKey userV)
-                (optionValue userV))
-        |> String.concat "\n"
+        if List.isEmpty changedOptions then
+            "Default Fantomas configuration"
+        else
+            changedOptions
+            |> Seq.map (fun opt -> sprintf "                %s = %s" (getOptionKey opt) (optionValue opt))
+            |> String.concat "\n"
+            |> sprintf """```fsharp
+    { config with
+%s }
+```"""
 
     let title = "<Insert meaningful title>"
     let label = "bug"
@@ -101,8 +108,6 @@ Please describe here fantomas problem you encountered.
 
 Fantomas %s
 
-| Name | Value |
-| ---- | ----- |
 %s
         """ location.href left right model.Version options)
         |> System.Uri.EscapeDataString

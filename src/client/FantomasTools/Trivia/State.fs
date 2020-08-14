@@ -96,6 +96,7 @@ let update code msg model =
     | ActiveItemChange (tab, index) ->
         let model, range =
             match tab with
+            | ByTriviaNodeCandidates -> model, None
             | ByTriviaNodes ->
                 let range =
                     List.tryItem index model.TriviaNodes
@@ -116,13 +117,13 @@ let update code msg model =
         let cmd =
             range
             |> Option.map (fun r ->
-                let highLightRange: FantomasTools.Client.Editor.HighLightRange =
+                let highLightRange: Editor.HighLightRange =
                     { StartLine = r.StartLine
                       StartColumn = r.StartColumn
                       EndLine = r.EndLine
                       EndColumn = r.EndColumn }
 
-                Cmd.ofSub (FantomasTools.Client.Editor.selectRange highLightRange))
+                Cmd.ofSub (Editor.selectRange highLightRange))
             |> Option.defaultValue Cmd.none
 
         model, cmd
