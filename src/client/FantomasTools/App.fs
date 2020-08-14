@@ -16,6 +16,6 @@ Program.mkProgram State.init State.update View.view
 //#if DEBUG
 //|> Program.withConsoleTrace
 //#endif
-|> Program.toNavigable FantomasTools.Client.Navigation.parser FantomasTools.Client.Navigation.urlUpdate
+|> Program.toNavigable Navigation.parser Navigation.urlUpdate
 |> Program.withReactBatched "elmish-app"
 |> Program.run

@@ -38,7 +38,7 @@ module FormatCode =
                 lastCommitInfo
             else
                 let assembly =
-                    typeof<Fantomas.FormatConfig.FormatConfig>.Assembly
+                    typeof<FormatConfig.FormatConfig>.Assembly
 
                 System.IO.FileInfo assembly.Location
                 |> fun f -> f.LastWriteTime.ToShortDateString()

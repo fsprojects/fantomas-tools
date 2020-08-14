@@ -20,7 +20,7 @@ module private Tast =
 
     let fsharpEntityToProps (t: FSharpEntity) = sprintf "%A" t
 
-    let rec visitExpr (e: FSharpExpr): Fantomas.AstTransformer.Node =
+    let rec visitExpr (e: FSharpExpr): Node =
         match e with
         | BasicPatterns.AddressOf (lvalueExpr) ->
             { Type = "BasicPatterns.AddressOf"
@@ -389,7 +389,7 @@ module private Tast =
               Childs = []
               FsAstNode = box e }
 
-    let rec visitDeclaration d: Fantomas.AstTransformer.Node option =
+    let rec visitDeclaration d: Node option =
         match d with
         | FSharpImplementationFileDeclaration.Entity (e, subDecls) ->
             Some
@@ -417,7 +417,7 @@ module private Tast =
                   FsAstNode = box d }
         | _ -> None
 
-let tastToNode tast: Fantomas.AstTransformer.Node =
+let tastToNode tast: Node =
     let child = tast |> List.choose Tast.visitDeclaration
 
     { Type = "File"

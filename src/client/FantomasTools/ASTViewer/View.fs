@@ -33,14 +33,14 @@ let private results model dispatch =
     | Ok (Some parsed) ->
         match model.View with
         | Raw ->
-            FantomasTools.Client.Editor.editorInTab [ EditorProp.Language "fsharp"
-                                                      EditorProp.IsReadOnly true
-                                                      EditorProp.Value parsed.String ]
+            editorInTab [ EditorProp.Language "fsharp"
+                          EditorProp.IsReadOnly true
+                          EditorProp.Value parsed.String ]
         | Editor ->
-            FantomasTools.Client.Editor.editorInTab [ EditorProp.Language "fsharp"
-                                                      EditorProp.IsReadOnly true
-                                                      EditorProp.Value
-                                                          (Fable.Core.JS.JSON.stringify (parsed.Node, space = 4)) ]
+            editorInTab [ EditorProp.Language "fsharp"
+                          EditorProp.IsReadOnly true
+                          EditorProp.Value
+                              (Fable.Core.JS.JSON.stringify (parsed.Node, space = 4)) ]
         | JsonViewer ->
             ReactJsonView.viewer [ ReactJsonView.Src(parsed.Node)
                                    ReactJsonView.Name null
@@ -48,7 +48,7 @@ let private results model dispatch =
                                    ReactJsonView.DisplayObjectSize false
                                    ReactJsonView.IndentWidth 2
                                    ReactJsonView.OnLookup(fun o ->
-                                       let range: FantomasTools.Client.Editor.HighLightRange =
+                                       let range: HighLightRange =
                                            { StartLine = !!(o.value?StartLine)
                                              StartColumn = !!(o.value?StartCol)
                                              EndLine = !!(o.value?EndLine)
@@ -157,14 +157,14 @@ let private results model dispatch =
     //                   GraphView.Props.Options model.Graph.Options
     //                   ] ]
     | Result.Error errors ->
-        FantomasTools.Client.Editor.editorInTab [ EditorProp.Language "fsharp"
-                                                  EditorProp.IsReadOnly true
-                                                  EditorProp.Value errors ]
+        editorInTab [ EditorProp.Language "fsharp"
+                      EditorProp.IsReadOnly true
+                      EditorProp.Value errors ]
     | Ok None -> str ""
 
 let view model dispatch =
     if model.IsLoading
-    then FantomasTools.Client.Loader.loader
+    then Loader.loader
     else results model dispatch
 
 let commands dispatch =
@@ -181,7 +181,7 @@ let commands dispatch =
 
 let settings model dispatch =
     fragment [] [
-        FantomasTools.Client.VersionBar.versionBar (sprintf "FSC - %s" model.Version)
+        VersionBar.versionBar (sprintf "FSC - %s" model.Version)
         SettingControls.input
             (DefinesUpdated >> dispatch)
             "Defines"

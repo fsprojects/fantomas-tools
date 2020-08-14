@@ -170,7 +170,7 @@ type GraphView(props: Props<obj> list, ctx) =
             getProp (function
                 | Options o -> Some o
                 | _ -> None)
-            |> Option.defaultValue (FantomasTools.Client.ASTViewer.State.initialGraphModel.Options)
+            |> Option.defaultValue (State.initialGraphModel.Options)
 
         let container = Browser.Dom.document.getElementById ("graph")
 

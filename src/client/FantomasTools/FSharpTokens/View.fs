@@ -111,7 +111,7 @@ let private details model dispatch =
 
 let view model dispatch =
     if model.IsLoading then
-        FantomasTools.Client.Loader.loader
+        Loader.loader
     else
         div [ ClassName "tab-result" ] [
             tokens model dispatch
@@ -126,7 +126,7 @@ let commands dispatch =
 
 let settings model dispatch =
     fragment [] [
-        FantomasTools.Client.VersionBar.versionBar (sprintf "FSC - %s" model.Version)
+        VersionBar.versionBar (sprintf "FSC - %s" model.Version)
         SettingControls.input
             (DefinesUpdated >> dispatch)
             "Defines"

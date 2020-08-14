@@ -119,7 +119,7 @@ module GetAST =
     let private getVersion () =
         let version =
             let assembly =
-                typeof<FSharp.Compiler.SourceCodeServices.FSharpChecker>.Assembly
+                typeof<FSharpChecker>.Assembly
 
             let version = assembly.GetName().Version
             sprintf "%i.%i.%i" version.Major version.Minor version.Revision
@@ -185,7 +185,7 @@ module GetAST =
 
                     let responseJson =
                         Encoders.encodeResponse node (sprintf "%A" ast)
-                        |> Thoth.Json.Net.Encode.toString 2
+                        |> Encode.toString 2
 
                     return sendJson responseJson
 
@@ -239,7 +239,7 @@ module GetAST =
 
                     let responseJson =
                         Encoders.encodeResponse node (sprintf "%A" tast)
-                        |> Thoth.Json.Net.Encode.toString 2
+                        |> Encode.toString 2
 
                     return sendJson responseJson
 

@@ -9,18 +9,18 @@ open Microsoft.Extensions.Logging
 open System.Net
 
 module FormatCode =
-    let private checker = Fantomas.FakeHelpers.sharedChecker.Force()
+    let private checker = FakeHelpers.sharedChecker.Force()
 
     let private format fileName code config =
         let options =
-            Fantomas.FakeHelpers.createParsingOptionsFromFile fileName
+            FakeHelpers.createParsingOptionsFromFile fileName
 
         let source = SourceOrigin.SourceString code
         CodeFormatter.FormatDocumentAsync(fileName, source, config, options, checker)
 
     let private validate fileName code =
         let options =
-            Fantomas.FakeHelpers.createParsingOptionsFromFile fileName
+            FakeHelpers.createParsingOptionsFromFile fileName
 
         let source = SourceOrigin.SourceString code
         CodeFormatter.IsValidFSharpCodeAsync(fileName, source, options, checker)

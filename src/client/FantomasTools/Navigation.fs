@@ -8,13 +8,13 @@ open FantomasTools.Client.FantomasOnline.Model
 open FantomasTools.Client.Model
 
 let private route: Parser<ActiveTab -> _, _> =
-    UrlParser.oneOf [ map ActiveTab.HomeTab (s "")
-                      map ActiveTab.TriviaTab (s "trivia")
-                      map ActiveTab.TokensTab (s "tokens")
-                      map ActiveTab.ASTTab (s "ast")
-                      map (ActiveTab.FantomasTab(Previous)) (s "fantomas" </> s "previous")
-                      map (ActiveTab.FantomasTab(Latest)) (s "fantomas" </> s "latest")
-                      map (ActiveTab.FantomasTab(Preview)) (s "fantomas" </> s "preview") ]
+    oneOf [ map ActiveTab.HomeTab (s "")
+            map ActiveTab.TriviaTab (s "trivia")
+            map ActiveTab.TokensTab (s "tokens")
+            map ActiveTab.ASTTab (s "ast")
+            map (ActiveTab.FantomasTab(Previous)) (s "fantomas" </> s "previous")
+            map (ActiveTab.FantomasTab(Latest)) (s "fantomas" </> s "latest")
+            map (ActiveTab.FantomasTab(Preview)) (s "fantomas" </> s "preview") ]
 
 let parser: Browser.Types.Location -> ActiveTab option = parseHash route
 
@@ -32,7 +32,7 @@ let cmdForCurrentTab tab model =
             Cmd.ofMsg (Trivia.Model.GetTrivia)
             |> Cmd.map Msg.TriviaMsg
         | FantomasTab (_) when (not (List.isEmpty model.FantomasModel.DefaultOptions)) ->
-            Cmd.ofMsg (FantomasOnline.Model.Format)
+            Cmd.ofMsg (Format)
             |> Cmd.map Msg.FantomasMsg
         | FantomasTab _ -> Cmd.none
     else

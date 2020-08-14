@@ -1,15 +1,11 @@
 module FantomasTools.Client.Trivia.ByTriviaNodeCandidates
 
 open FantomasTools.Client.Trivia.Model
-open Fable.Core.JsInterop
 open Fable.React
 open Fable.React.Props
-open Reactstrap
 open TriviaViewer.Shared
-open FantomasTools.Client.Trivia.Menu
 
-
-let view (model: Model) dispatch =
+let view (model: Model) _dispatch =
     let nodes =
         model.TriviaNodeCandidates
         |> List.mapi (fun idx node ->

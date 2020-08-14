@@ -50,7 +50,7 @@ let private getLastCommit () =
 
 let infra () =
     async {
-        let stackName = Pulumi.Deployment.Instance.StackName
+        let stackName = Deployment.Instance.StackName
 
         // Create an Azure Resource Group
         let resourceGroupArgs = ResourceGroupArgs(Name = input (sprintf "rg-fantomas-%s" stackName))
@@ -65,7 +65,7 @@ let infra () =
                       AccountReplicationType = input "LRS", AccountTier = input "Standard"))
 
         // Table Storage for Benchmarks
-        let benchmarkTable =
+        let _benchmarkTable =
             Table("benchmarks", TableArgs(StorageAccountName = io storageAccount.Name,
                                           Name = input "FantomasBenchmarks"))
 

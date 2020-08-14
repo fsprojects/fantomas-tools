@@ -82,7 +82,7 @@ let update code msg model =
 
         { model with IsLoading = true }, cmd
     | TokenReceived (tokensText) ->
-        match Decoders.decodeTokens tokensText with
+        match decodeTokens tokensText with
         | Ok tokens ->
             let cmd =
                 if (Array.length tokens) = 1
@@ -111,13 +111,13 @@ let update code msg model =
                     |> Array.item tokenIndex
                     |> fun t -> t.TokenInfo
 
-                let range: FantomasTools.Client.Editor.HighLightRange =
+                let range: Editor.HighLightRange =
                     { StartLine = activeLine
                       StartColumn = token.LeftColumn
                       EndLine = activeLine
                       EndColumn = token.RightColumn }
 
-                Cmd.ofSub (FantomasTools.Client.Editor.selectRange range))
+                Cmd.ofSub (Editor.selectRange range))
             |> Option.defaultValue Cmd.none
 
         let scrollCmd = Cmd.OfFunc.result (PlayScroll tokenIndex)

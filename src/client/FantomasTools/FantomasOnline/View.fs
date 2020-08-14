@@ -46,11 +46,11 @@ let githubIssueUri code (model: Model) =
         model.UserOptions
         |> Map.toList
         |> List.map snd
-        |> List.sortBy FantomasOnline.Shared.sortByOption
+        |> List.sortBy sortByOption
 
     let defaultValues =
         model.DefaultOptions
-        |> List.sortBy FantomasOnline.Shared.sortByOption
+        |> List.sortBy sortByOption
 
     let options =
         let changedOptions =
@@ -135,7 +135,7 @@ let private createGitHubIssue code model =
 let view model =
     match model.State with
     | EditorState.LoadingFormatRequest
-    | EditorState.LoadingOptions -> FantomasTools.Client.Loader.loader
+    | EditorState.LoadingOptions -> Loader.loader
     | EditorState.OptionsLoaded -> null
     | EditorState.FormatResult result ->
         div [ ClassName "tab-result" ] [
@@ -206,7 +206,7 @@ let settings model dispatch =
         let options = options model dispatch
 
         fragment [] [
-            FantomasTools.Client.VersionBar.versionBar (sprintf "Version: %s" model.Version)
+            VersionBar.versionBar (sprintf "Version: %s" model.Version)
             fantomasMode
             fileExtension
             hr []

@@ -9,11 +9,11 @@ open Microsoft.Extensions.Logging
 open System.Net
 
 module FormatCode =
-    let private checker = Fantomas.CodeFormatterImpl.sharedChecker.Value
+    let private checker = CodeFormatterImpl.sharedChecker.Value
 
     let version () =
         let assembly =
-            typeof<Fantomas.FormatConfig.FormatConfig>.Assembly
+            typeof<FormatConfig.FormatConfig>.Assembly
 
         let version = assembly.GetName().Version
         sprintf "%i.%i.%i" version.Major version.Minor version.Build

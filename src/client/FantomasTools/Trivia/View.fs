@@ -66,14 +66,14 @@ let private results model dispatch =
 
 let view model dispatch =
     if model.IsLoading then
-        FantomasTools.Client.Loader.loader
+        Loader.loader
     else
         match model.Error with
         | None -> results model dispatch
         | Some errors ->
-            FantomasTools.Client.Editor.editorInTab [ EditorProp.Language "fsharp"
-                                                      EditorProp.IsReadOnly true
-                                                      EditorProp.Value errors ]
+            editorInTab [ EditorProp.Language "fsharp"
+                          EditorProp.IsReadOnly true
+                          EditorProp.Value errors ]
 
 let commands dispatch =
     Button.button [ Button.Color Primary
@@ -85,7 +85,7 @@ let commands dispatch =
 
 let settings (model: Model) dispatch =
     fragment [] [
-        FantomasTools.Client.VersionBar.versionBar (sprintf "FSC - %s" model.Version)
+        VersionBar.versionBar (sprintf "FSC - %s" model.Version)
         SettingControls.input
             (DefinesUpdated >> dispatch)
             "Defines"
