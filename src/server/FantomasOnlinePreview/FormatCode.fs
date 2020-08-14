@@ -37,8 +37,7 @@ module FormatCode =
             if lastCommitInfo.Trim() <> "-" then
                 lastCommitInfo
             else
-                let assembly =
-                    typeof<FormatConfig.FormatConfig>.Assembly
+                let assembly = typeof<FormatConfig.FormatConfig>.Assembly
 
                 System.IO.FileInfo assembly.Location
                 |> fun f -> f.LastWriteTime.ToShortDateString()

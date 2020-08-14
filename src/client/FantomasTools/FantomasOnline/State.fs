@@ -141,10 +141,9 @@ let private copySettings (model: Model) _ =
         model.SettingsChangedByTheUser
         |> List.map (function
             | FantomasOption.BoolOption (_, k, v) ->
-                if v then
-                    toEditorConfigName k |> sprintf "%s=true"
-                else
-                    toEditorConfigName k |> sprintf "%s=false"
+                if v
+                then toEditorConfigName k |> sprintf "%s=true"
+                else toEditorConfigName k |> sprintf "%s=false"
             | FantomasOption.IntOption (_, k, v) -> sprintf "%s=%i" (toEditorConfigName k) v)
         |> String.concat "\n"
         |> sprintf "[*.fs]\n%s"

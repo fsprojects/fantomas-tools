@@ -118,8 +118,7 @@ module GetAST =
 
     let private getVersion () =
         let version =
-            let assembly =
-                typeof<FSharpChecker>.Assembly
+            let assembly = typeof<FSharpChecker>.Assembly
 
             let version = assembly.GetName().Version
             sprintf "%i.%i.%i" version.Major version.Minor version.Revision

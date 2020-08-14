@@ -12,8 +12,7 @@ module FormatCode =
     let private checker = CodeFormatterImpl.sharedChecker.Value
 
     let version () =
-        let assembly =
-            typeof<FormatConfig.FormatConfig>.Assembly
+        let assembly = typeof<FormatConfig.FormatConfig>.Assembly
 
         let version = assembly.GetName().Version
         sprintf "%i.%i.%i" version.Major version.Minor version.Build

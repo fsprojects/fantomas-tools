@@ -12,15 +12,13 @@ module FormatCode =
     let private checker = FakeHelpers.sharedChecker.Force()
 
     let private format fileName code config =
-        let options =
-            FakeHelpers.createParsingOptionsFromFile fileName
+        let options = FakeHelpers.createParsingOptionsFromFile fileName
 
         let source = SourceOrigin.SourceString code
         CodeFormatter.FormatDocumentAsync(fileName, source, config, options, checker)
 
     let private validate fileName code =
-        let options =
-            FakeHelpers.createParsingOptionsFromFile fileName
+        let options = FakeHelpers.createParsingOptionsFromFile fileName
 
         let source = SourceOrigin.SourceString code
         CodeFormatter.IsValidFSharpCodeAsync(fileName, source, options, checker)

@@ -48,9 +48,7 @@ let githubIssueUri code (model: Model) =
         |> List.map snd
         |> List.sortBy sortByOption
 
-    let defaultValues =
-        model.DefaultOptions
-        |> List.sortBy sortByOption
+    let defaultValues = model.DefaultOptions |> List.sortBy sortByOption
 
     let options =
         let changedOptions =

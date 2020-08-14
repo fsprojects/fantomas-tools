@@ -97,15 +97,17 @@ module GetTrivia =
     let private collectTriviaCandidates tokens ast =
         let node =
             match ast with
-            | ParsedInput.ImplFile (ParsedImplFileInput.ParsedImplFileInput(_, _, _, _, hds, mns, _)) ->
+            | ParsedInput.ImplFile (ParsedImplFileInput.ParsedImplFileInput (_, _, _, _, hds, mns, _)) ->
                 Fantomas.AstTransformer.astToNode hds mns
 
-            | ParsedInput.SigFile (ParsedSigFileInput.ParsedSigFileInput(_, _, _ , _, mns)) ->
+            | ParsedInput.SigFile (ParsedSigFileInput.ParsedSigFileInput (_, _, _, _, mns)) ->
                 Fantomas.AstTransformer.sigAstToNode mns
 
         let rec flattenNodeToList (node: Node) =
             [ yield node
-              yield! (node.Childs |> List.map flattenNodeToList |> List.collect id) ]
+              yield! (node.Childs
+                      |> List.map flattenNodeToList
+                      |> List.collect id) ]
 
         let mapNodeToTriviaNode (node: Node) =
             node.Range
@@ -127,7 +129,9 @@ module GetTrivia =
             |> List.choose mapNodeToTriviaNode
 
         let triviaNodesFromTokens = TokenParser.getTriviaNodesFromTokens tokens
-        triviaNodesFromAST @ triviaNodesFromTokens |> List.sortBy (fun n -> n.Range.Start.Line, n.Range.Start.Column)
+        triviaNodesFromAST
+        @ triviaNodesFromTokens
+        |> List.sortBy (fun n -> n.Range.Start.Line, n.Range.Start.Column)
 
     let private getTrivia (log: ILogger) (req: HttpRequest) =
         async {
@@ -147,7 +151,8 @@ module GetTrivia =
                     let triviaCandidates = collectTriviaCandidates tokens ast
                     let triviaNodes = Trivia.collectTrivia tokens lineCount ast
 
-                    let json = Encoders.encodeParseResult trivias triviaNodes triviaCandidates
+                    let json =
+                        Encoders.encodeParseResult trivias triviaNodes triviaCandidates
 
                     return sendJson json
                 | Error err -> return sendBadRequest (sprintf "%A" err)

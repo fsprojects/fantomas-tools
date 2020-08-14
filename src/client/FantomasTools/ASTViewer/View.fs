@@ -39,8 +39,7 @@ let private results model dispatch =
         | Editor ->
             editorInTab [ EditorProp.Language "fsharp"
                           EditorProp.IsReadOnly true
-                          EditorProp.Value
-                              (Fable.Core.JS.JSON.stringify (parsed.Node, space = 4)) ]
+                          EditorProp.Value(Fable.Core.JS.JSON.stringify (parsed.Node, space = 4)) ]
         | JsonViewer ->
             ReactJsonView.viewer [ ReactJsonView.Src(parsed.Node)
                                    ReactJsonView.Name null
@@ -163,9 +162,7 @@ let private results model dispatch =
     | Ok None -> str ""
 
 let view model dispatch =
-    if model.IsLoading
-    then Loader.loader
-    else results model dispatch
+    if model.IsLoading then Loader.loader else results model dispatch
 
 let commands dispatch =
     fragment [] [
