@@ -3,7 +3,8 @@ source https://api.nuget.org/v3/index.json
 storage: none
 framework: netstandard2.0
 # for the local Fantomas build
-nuget FSharp.Compiler.Service 36.0.1
+nuget FSharp.Compiler.Service 37.0.0
+nuget editorconfig
 
 group Build
 
@@ -26,7 +27,7 @@ source https://api.nuget.org/v3/index.json
 storage: none
 framework: netcoreapp3.1
 
-nuget FSharp.Core 4.7.1
+nuget FSharp.Core 4.7.1wa
 nuget Pulumi.FSharp 2.0.0
 nuget Pulumi.Azure 3.1.0
 nuget Thoth.Json.Net
@@ -41,7 +42,7 @@ nuget FSharp.Core
 nuget Microsoft.NET.Sdk.Functions
 # workaround for https://github.com/Azure/azure-functions-host/issues/5786
 nuget Microsoft.Azure.WebJobs.Script.ExtensionsMetadataGenerator 1.1.5
-nuget FSharp.Compiler.Service 36.0.1
+nuget FSharp.Compiler.Service 37.0.0
 nuget Thoth.Json.Net
 
 group Latest
