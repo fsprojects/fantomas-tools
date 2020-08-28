@@ -142,14 +142,14 @@ module GetTrivia =
             match parseRequest with
             | Ok pr ->
                 let { SourceCode = content; Defines = defines; FileName = fileName } = pr
-                let (tokens, lineCount) = TokenParser.tokenize defines content
+                let tokens = TokenParser.tokenize defines content
                 let! astResult = collectAST log fileName defines content
 
                 match astResult with
                 | Result.Ok ast ->
-                    let trivias = TokenParser.getTriviaFromTokens tokens lineCount
+                    let trivias = TokenParser.getTriviaFromTokens tokens
                     let triviaCandidates = collectTriviaCandidates tokens ast
-                    let triviaNodes = Trivia.collectTrivia tokens lineCount ast
+                    let triviaNodes = Trivia.collectTrivia tokens ast
 
                     let json =
                         Encoders.encodeParseResult trivias triviaNodes triviaCandidates

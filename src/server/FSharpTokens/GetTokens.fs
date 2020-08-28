@@ -24,7 +24,6 @@ module GetTokens =
         | Ok model ->
             let json =
                 TokenParser.tokenize model.Defines model.SourceCode
-                |> fst
                 |> toJson
 
             new HttpResponseMessage(HttpStatusCode.OK,

@@ -1,10 +1,26 @@
 module ASTViewer.Server.TastTransformer
 
 open FSharp.Compiler.SourceCodeServices
-open Fantomas.AstTransformer
+open FSharp.Compiler.Range
 
-module private Tast =
+module Helpers =
+    let r (r: range): range option = Some r
+
+    let p = Map.ofList
+    let inline (==>) a b = (a, box b)
+
+    let noRange = None
+
+module Tast =
     open Helpers
+    type FsAstNode = obj
+    type Node =
+        { Type: string
+          Range: range option
+          Properties: Map<string, obj>
+          Childs: Node list
+          FsAstNode: FsAstNode }
+
 
     let fsharpTypeToProps (t: FSharpType) = sprintf "%A" t
 
@@ -417,7 +433,7 @@ module private Tast =
                   FsAstNode = box d }
         | _ -> None
 
-let tastToNode tast: Node =
+let tastToNode tast: Tast.Node =
     let child = tast |> List.choose Tast.visitDeclaration
 
     { Type = "File"

@@ -180,7 +180,7 @@ module GetAST =
 
                         | ParsedInput.SigFile (ParsedSigFileInput.ParsedSigFileInput (_, _, _, _, mns)) ->
                             Fantomas.AstTransformer.sigAstToNode mns
-                        |> Encoders.nodeEncoder
+                        |> Encoders.astNodeEncoder
 
                     let responseJson =
                         Encoders.encodeResponse node (sprintf "%A" ast)
@@ -234,7 +234,7 @@ module GetAST =
                 | Result.Ok tast ->
                     let node =
                         TastTransformer.tastToNode tast
-                        |> Encoders.nodeEncoder
+                        |> Encoders.tastNodeEncoder
 
                     let responseJson =
                         Encoders.encodeResponse node (sprintf "%A" tast)

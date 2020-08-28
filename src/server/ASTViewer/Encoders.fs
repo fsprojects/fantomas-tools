@@ -51,7 +51,18 @@ let private encodeKeyValue (k, v: obj) =
     encodeValue v
     |> fun ev -> (k, ev)
 
-let rec nodeEncoder (node: Fantomas.AstTransformer.Node) =
+let rec astNodeEncoder (node: Fantomas.AstTransformer.Node) =
+    let properties =
+        Map.toList node.Properties
+        |> List.map encodeKeyValue
+        |> Encode.object
+
+    Encode.object [ "type", Encode.string (node.Type.ToString())
+                    "range", Encode.option rangeEncoder node.Range
+                    "properties", properties
+                    "childs", Encode.array (Array.map astNodeEncoder (Array.ofList node.Childs)) ]
+
+let rec tastNodeEncoder (node: TastTransformer.Tast.Node) =
     let properties =
         Map.toList node.Properties
         |> List.map encodeKeyValue
@@ -60,7 +71,7 @@ let rec nodeEncoder (node: Fantomas.AstTransformer.Node) =
     Encode.object [ "type", Encode.string node.Type
                     "range", Encode.option rangeEncoder node.Range
                     "properties", properties
-                    "childs", Encode.array (Array.map nodeEncoder (Array.ofList node.Childs)) ]
+                    "childs", Encode.array (Array.map tastNodeEncoder (Array.ofList node.Childs)) ]
 
 let rec encodeResponse nodeJson string =
     Encode.object [ "node", nodeJson
