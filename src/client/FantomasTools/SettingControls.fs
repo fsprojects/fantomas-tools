@@ -7,10 +7,9 @@ open Reactstrap
 let input onChange labelValue placeholder value =
     FormGroup.formGroup [] [
         label [] [ str labelValue ]
-        Input.input
-            [ Input.Custom [ Placeholder placeholder
-                             OnChange(fun ev -> ev.Value |> onChange)
-                             DefaultValue value ] ]
+        Input.input [ Input.Custom [ Placeholder placeholder
+                                     OnChange(fun ev -> ev.Value |> onChange)
+                                     DefaultValue value ] ]
     ]
 
 let private toggleButton_ onClick active label =

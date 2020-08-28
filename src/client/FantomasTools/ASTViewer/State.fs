@@ -129,8 +129,11 @@ let update code (msg: Msg) (model: Model): Model * Cmd<Msg> =
     | ShowRaw -> { model with View = Raw }, Cmd.none
     | ShowGraph ->
         { model with View = Graph },
-        Cmd.OfAsync.either (fun _ -> Async.Sleep 100) () (fun _ -> Msg.Graph <| SetOptions model.Graph.Options) (fun _ ->
-            Error "")
+        Cmd.OfAsync.either
+            (fun _ -> Async.Sleep 100)
+            ()
+            (fun _ -> Msg.Graph <| SetOptions model.Graph.Options)
+            (fun _ -> Error "")
     | Msg.Graph (GraphMsg.SetRoot node) ->
         { model with
               Graph =

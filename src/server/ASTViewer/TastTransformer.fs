@@ -14,6 +14,7 @@ module Helpers =
 module Tast =
     open Helpers
     type FsAstNode = obj
+
     type Node =
         { Type: string
           Range: range option
@@ -56,9 +57,9 @@ module Tast =
             { Type = "BasicPatterns.Application"
               Range = r e.Range
               Properties =
-                  p
-                      [ yield! typeArgs
-                               |> List.map (fun n -> "typeArg" ==> fsharpTypeToProps n) ]
+                  p [ yield!
+                          typeArgs
+                          |> List.map (fun n -> "typeArg" ==> fsharpTypeToProps n) ]
               Childs =
                   [ yield visitExpr funcExpr
                     yield! argExprs |> List.map visitExpr ]
@@ -67,12 +68,15 @@ module Tast =
             { Type = "BasicPatterns.Call"
               Range = r e.Range
               Properties =
-                  p [ yield! typeArgs1
-                             |> List.map (fun n -> "typeArg" ==> fsharpTypeToProps n)
-                      yield! typeArgs2
-                             |> List.map (fun n -> "typeArg2" ==> fsharpTypeToProps n)
-                      yield "memberOrFunc"
-                            ==> fsharpMemberToProps memberOrFunc ]
+                  p [ yield!
+                          typeArgs1
+                          |> List.map (fun n -> "typeArg" ==> fsharpTypeToProps n)
+                      yield!
+                          typeArgs2
+                          |> List.map (fun n -> "typeArg2" ==> fsharpTypeToProps n)
+                      yield
+                          "memberOrFunc"
+                          ==> fsharpMemberToProps memberOrFunc ]
               Childs =
                   [ if objExprOpt.IsSome
                     then yield visitExpr objExprOpt.Value
@@ -98,8 +102,9 @@ module Tast =
               Range = r e.Range
               Properties =
                   p [ yield "asmCode" ==> asmCode
-                      yield! typeArgs
-                             |> List.map (fun n -> "typeArg" ==> fsharpTypeToProps n) ]
+                      yield!
+                          typeArgs
+                          |> List.map (fun n -> "typeArg" ==> fsharpTypeToProps n) ]
               Childs = [ yield! argExprs |> List.map visitExpr ]
               FsAstNode = box e }
         | BasicPatterns.ILFieldGet (objExprOpt, fieldType, fieldName) ->
@@ -150,10 +155,9 @@ module Tast =
             { Type = "BasicPatterns.LetRec"
               Range = r e.Range
               Properties =
-                  p
-                      [ "recursiveBindings"
-                        ==> (recursiveBindings
-                             |> List.map (fst >> fsharpMemberToProps)) ]
+                  p [ "recursiveBindings"
+                      ==> (recursiveBindings
+                           |> List.map (fst >> fsharpMemberToProps)) ]
               Childs =
                   [ yield! recursiveBindings |> List.map (snd >> visitExpr)
                     yield visitExpr bodyExpr ]
@@ -263,9 +267,8 @@ module Tast =
             { Type = "BasicPatterns.DecisionTree"
               Range = r e.Range
               Properties =
-                  p
-                      [ "decisionTargets"
-                        ==> (List.map (fst >> List.map fsharpMemberToProps) decisionTargets) ]
+                  p [ "decisionTargets"
+                      ==> (List.map (fst >> List.map fsharpMemberToProps) decisionTargets) ]
               Childs =
                   [ yield visitExpr decisionExpr
                     yield! List.map (snd >> visitExpr) decisionTargets ]
@@ -280,9 +283,8 @@ module Tast =
             { Type = "BasicPatterns.TypeLambda"
               Range = r e.Range
               Properties =
-                  p
-                      [ "genericParam"
-                        ==> (List.map fsharpGenericParameterToProps genericParam) ]
+                  p [ "genericParam"
+                      ==> (List.map fsharpGenericParameterToProps genericParam) ]
               Childs = [ visitExpr bodyExpr ]
               FsAstNode = box e }
         | BasicPatterns.TypeTest (ty, inpExpr) ->

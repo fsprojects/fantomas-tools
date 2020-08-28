@@ -105,9 +105,10 @@ module GetTrivia =
 
         let rec flattenNodeToList (node: Node) =
             [ yield node
-              yield! (node.Childs
-                      |> List.map flattenNodeToList
-                      |> List.collect id) ]
+              yield!
+                  (node.Childs
+                   |> List.map flattenNodeToList
+                   |> List.collect id) ]
 
         let mapNodeToTriviaNode (node: Node) =
             node.Range

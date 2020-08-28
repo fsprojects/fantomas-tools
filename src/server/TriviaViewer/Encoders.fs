@@ -7,8 +7,8 @@ open TriviaViewer
 
 let private mapToSharedType (tnt: TriviaNodeType) =
     match tnt with
-    | MainNode mn -> Shared.MainNode (mn.ToString())
-    | Token (_,t) -> Shared.Token t.TokenInfo.TokenName
+    | MainNode mn -> Shared.MainNode(mn.ToString())
+    | Token (_, t) -> Shared.Token t.TokenInfo.TokenName
 
 let private typeEncoder =
     Encode.Auto.generateEncoder<Shared.TriviaNodeType> ()
@@ -65,7 +65,7 @@ let private encodeTriviaNodeAssigner (t: TriviaNodeAssigner) =
     let typeName, name =
         match t.Type with
         | MainNode mn -> "main-node", mn.ToString()
-        | Token (_,t) -> "token-node", t.TokenInfo.TokenName
+        | Token (_, t) -> "token-node", t.TokenInfo.TokenName
 
     Encode.object [ "type", Encode.string typeName
                     "name", Encode.string name
