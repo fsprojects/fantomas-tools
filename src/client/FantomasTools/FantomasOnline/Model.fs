@@ -3,8 +3,9 @@ module FantomasTools.Client.FantomasOnline.Model
 open FantomasOnline.Shared
 
 type FantomasMode =
-    | Previous // Fantomas 2.x
-    | Latest // Latest stable on NuGet
+    | V2
+    | V3
+    | V4
     | Preview // master branch
 
 type Msg =

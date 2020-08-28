@@ -60,8 +60,9 @@ const commonPlugins = [
     "FSHARP_TOKENS_BACKEND",
     "AST_BACKEND",
     "TRIVIA_BACKEND",
-    "FANTOMAS_PREVIOUS",
-    "FANTOMAS_LATEST",
+    "FANTOMAS_V2",
+    "FANTOMAS_V4",
+    "FANTOMAS_V3",
     "FANTOMAS_PREVIEW"
   ])
 ];

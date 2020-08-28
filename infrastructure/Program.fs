@@ -123,8 +123,9 @@ let infra () =
             | None -> []
 
         let functionHostNames =
-            [ "fantomas-online-latest"
-              "fantomas-online-previous"
+            [ "fantomas-online-v2"
+              "fantomas-online-v3"
+              "fantomas-online-v4"
               "fantomas-online-preview"
               "ast-viewer"
               "fsharp-tokens"

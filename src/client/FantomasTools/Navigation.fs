@@ -12,8 +12,9 @@ let private route: Parser<ActiveTab -> _, _> =
             map ActiveTab.TriviaTab (s "trivia")
             map ActiveTab.TokensTab (s "tokens")
             map ActiveTab.ASTTab (s "ast")
-            map (ActiveTab.FantomasTab(Previous)) (s "fantomas" </> s "previous")
-            map (ActiveTab.FantomasTab(Latest)) (s "fantomas" </> s "latest")
+            map (ActiveTab.FantomasTab(V2)) (s "fantomas" </> s "v2")
+            map (ActiveTab.FantomasTab(V3)) (s "fantomas" </> s "v3")
+            map (ActiveTab.FantomasTab(V4)) (s "fantomas" </> s "v4")
             map (ActiveTab.FantomasTab(Preview)) (s "fantomas" </> s "preview") ]
 
 let parser: Browser.Types.Location -> ActiveTab option = parseHash route
@@ -60,6 +61,7 @@ let toHash =
     | TriviaTab -> "#/trivia"
     | TokensTab -> "#/tokens"
     | ASTTab -> "#/ast"
-    | FantomasTab (Previous) -> "#/fantomas/previous"
-    | FantomasTab (Latest) -> "#/fantomas/latest"
+    | FantomasTab (V2) -> "#/fantomas/v2"
+    | FantomasTab (V3) -> "#/fantomas/v3"
+    | FantomasTab (V4) -> "#/fantomas/v4"
     | FantomasTab (Preview) -> "#/fantomas/preview"

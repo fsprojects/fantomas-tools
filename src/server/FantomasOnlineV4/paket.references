@@ -1,0 +1,7 @@
+group V4
+FSharp.Compiler.Service
+Fantomas
+Fantomas.Extras
+Microsoft.NET.Sdk.Functions
+FSharp.Core
+Thoth.Json.Net

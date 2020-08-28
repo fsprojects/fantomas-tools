@@ -10,18 +10,22 @@ open FantomasTools.Client.FantomasOnline.Model
 open Fetch
 open Thoth.Json
 
-[<Emit("process.env.FANTOMAS_PREVIOUS")>]
-let private previousBackend: string = jsNative
+[<Emit("process.env.FANTOMAS_V2")>]
+let private v2Backend: string = jsNative
 
-[<Emit("process.env.FANTOMAS_LATEST")>]
-let private latestBackend: string = jsNative
+[<Emit("process.env.FANTOMAS_V3")>]
+let private v3Backend: string = jsNative
+
+[<Emit("process.env.FANTOMAS_V4")>]
+let private v4Backend: string = jsNative
 
 [<Emit("process.env.FANTOMAS_PREVIEW")>]
 let private previewBackend: string = jsNative
 
 let private backend =
-    Map.ofList [ (FantomasMode.Previous, previousBackend)
-                 (FantomasMode.Latest, latestBackend)
+    Map.ofList [ (FantomasMode.V2, v2Backend)
+                 (FantomasMode.V3, v3Backend)
+                 (FantomasMode.V4, v4Backend)
                  (FantomasMode.Preview, previewBackend) ]
 
 let private getVersion mode =

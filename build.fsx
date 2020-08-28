@@ -42,9 +42,10 @@ let fablePort = 9060
 let fsharpTokensPort = 7899
 let astPort = 7412
 let triviaPort = 9856
-let fantomasPreviewPort = 10707
-let fantomasPreviousPort = 2568
-let fantomasLatestPort = 9007
+let fantomasPreviewPort = 11084
+let fantomasV2Port = 2568
+let fantomasV3Port = 9007
+let fantomasV4Port = 10707
 
 let localhostBackend port = sprintf "http://localhost:%i" port
 
@@ -69,7 +70,7 @@ Target.create "Clean" (fun _ ->
     !!(serverDir + "/*/obj") |> Seq.iter Shell.rm_rf)
 
 Target.create "Build" (fun _ ->
-    [ "FSharpTokens"; "ASTViewer"; "TriviaViewer"; "FantomasOnlinePrevious"; "FantomasOnlineLatest"; "FantomasOnlinePreview" ]
+    [ "FSharpTokens"; "ASTViewer"; "TriviaViewer"; "FantomasOnlineV2"; "FantomasOnlineV3"; "FantomasOnlineV4"; "FantomasOnlinePreview" ]
     |> List.iter (fun project ->
         DotNet.build (fun config -> { config with Configuration = DotNet.BuildConfiguration.Release })
             (sprintf "%s/%s/%s.fsproj" serverDir project project)))
@@ -79,8 +80,9 @@ Target.create "Watch" (fun _ ->
     Environment.setEnvironVar "FSHARP_TOKENS_BACKEND" (localhostBackend fsharpTokensPort)
     Environment.setEnvironVar "AST_BACKEND" (localhostBackend astPort)
     Environment.setEnvironVar "TRIVIA_BACKEND" (localhostBackend triviaPort)
-    Environment.setEnvironVar "FANTOMAS_PREVIOUS" (localhostBackend fantomasPreviousPort)
-    Environment.setEnvironVar "FANTOMAS_LATEST" (localhostBackend fantomasLatestPort)
+    Environment.setEnvironVar "FANTOMAS_V2" (localhostBackend fantomasV2Port)
+    Environment.setEnvironVar "FANTOMAS_V3" (localhostBackend fantomasV3Port)
+    Environment.setEnvironVar "FANTOMAS_V4" (localhostBackend fantomasV4Port)
     Environment.setEnvironVar "FANTOMAS_PREVIEW" (localhostBackend fantomasPreviewPort)
     Environment.setEnvironVar "FRONTEND_PORT" (fablePort.ToString())
 
@@ -99,16 +101,17 @@ Target.create "Watch" (fun _ ->
     let fsharpTokens = hostAzureFunction "FSharpTokens" fsharpTokensPort
     let astViewer = hostAzureFunction "ASTViewer" astPort
     let triviaViewer = hostAzureFunction "TriviaViewer" triviaPort
-    let fantomasPrevious = hostAzureFunction "FantomasOnlinePrevious" fantomasPreviousPort
-    let fantomasLatest = hostAzureFunction "FantomasOnlineLatest" fantomasLatestPort
+    let fantomasV2 = hostAzureFunction "FantomasOnlineV2" fantomasV2Port
+    let fantomasV3 = hostAzureFunction "FantomasOnlineV3" fantomasV3Port
+    let fantomasV4 = hostAzureFunction "FantomasOnlineV4" fantomasV4Port
     let fantomasPreview = hostAzureFunction "FantomasOnlinePreview" fantomasPreviewPort
 
-    Async.Parallel [ fable; fsharpTokens; astViewer; triviaViewer; fantomasPrevious; fantomasLatest; fantomasPreview ]
+    Async.Parallel [ fable; fsharpTokens; astViewer; triviaViewer; fantomasV2; fantomasV3; fantomasV4; fantomasPreview ]
     |> Async.Ignore
     |> Async.RunSynchronously)
 
 Target.create "DeployFunctions" (fun _ ->
-    ["FantomasOnlineLatest"; "FantomasOnlinePrevious"; "FantomasOnlinePreview"; "ASTViewer"; "FSharpTokens"; "TriviaViewer"]
+    ["FantomasOnlineV2"; "FantomasOnlineV3"; "FantomasOnlineV4"; "FantomasOnlinePreview"; "ASTViewer"; "FSharpTokens"; "TriviaViewer"]
     |> List.iter (fun project ->
         let output = artifactDir </> project
         DotNet.publish
@@ -125,8 +128,9 @@ Target.create "BundleFrontend" (fun _ ->
     Environment.setEnvironVar "FSHARP_TOKENS_BACKEND" "https://azfun-fsharp-tokens-main.azurewebsites.net"
     Environment.setEnvironVar "AST_BACKEND" "https://azfun-ast-viewer-main.azurewebsites.net"
     Environment.setEnvironVar "TRIVIA_BACKEND" "https://azfun-trivia-viewer-main.azurewebsites.net"
-    Environment.setEnvironVar "FANTOMAS_PREVIOUS" "https://azfun-fantomas-online-previous-main.azurewebsites.net"
-    Environment.setEnvironVar "FANTOMAS_LATEST" "https://azfun-fantomas-online-latest-main.azurewebsites.net"
+    Environment.setEnvironVar "FANTOMAS_V2" "https://azfun-fantomas-online-v2-main.azurewebsites.net"
+    Environment.setEnvironVar "FANTOMAS_V3" "https://azfun-fantomas-online-v3-main.azurewebsites.net"
+    Environment.setEnvironVar "FANTOMAS_V4" "https://azfun-fantomas-online-v4-main.azurewebsites.net"
     Environment.setEnvironVar "FANTOMAS_PREVIEW" "https://azfun-fantomas-online-preview-main.azurewebsites.net"
 
     Yarn.exec "build" setClientDir

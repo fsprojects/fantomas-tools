@@ -1,4 +1,4 @@
-group Latest
+group V3
 FSharp.Compiler.Service
 Fantomas
 Microsoft.NET.Sdk.Functions
