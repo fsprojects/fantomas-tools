@@ -15,7 +15,7 @@
     "fable-loader": "2.1.9",
     "file-loader": "6.0.0",
     "gh-pages": "3.1.0",
-    "html-webpack-plugin": "4.3.0",
+    "html-webpack-plugin": "4.4.1",
     "mini-css-extract-plugin": "^0.11.0",
     "node-sass": "4.14.1",
     "prettier": "2.1.1",
