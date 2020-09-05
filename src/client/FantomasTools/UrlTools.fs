@@ -19,6 +19,7 @@ let private (|KeyValuesFromHash|_|) hash =
         None
     else
         let search = hash.Split('?')
+
         if Seq.length search > 1 then
             search.[1].Split('&')
             |> Array.map (fun kv -> kv.Split('=').[0], kv.Split('=').[1])
@@ -32,6 +33,7 @@ let restoreModelFromUrl decoder defaultValue =
     | KeyValuesFromHash (v) ->
         let json = JS.decodeURIComponent (v) |> decodeUrl
         let modelResult = Decode.fromString decoder json
+
         match modelResult with
         | Result.Ok m -> m
         | Error err ->

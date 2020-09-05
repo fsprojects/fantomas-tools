@@ -16,6 +16,7 @@ let private backend: string = jsNative
 let private fetchTrivia (payload: ParseRequest) dispatch =
     let url = sprintf "%s/api/get-trivia" backend
     let json = encodeParseRequest payload
+
     Http.postJson url json
     |> Promise.iter (fun (status, body) ->
         match status with

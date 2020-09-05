@@ -187,20 +187,16 @@ module GetAST =
                         |> Encode.toString 2
 
                     return sendJson responseJson
-
                 | Error error -> return sendBadRequest (sprintf "%A" error)
-
             | Result.Ok _ -> return sendTooLargeError ()
-
             | Error err -> return sendInternalError (sprintf "%A" err)
         }
 
     let private parseTypedAST ({ SourceCode = source; Defines = defines; IsFsi = isFsi }) =
         let fileName = if isFsi then "tmp.fsi" else "tmp.fsx"
-
         let sourceText = FSharp.Compiler.Text.SourceText.ofString (source)
-
         let checker = sharedChecker.Value
+
         async {
             let! options =
                 checker
@@ -210,9 +206,10 @@ module GetAST =
 
             match typedRes with
             | FSharpCheckFileAnswer.Aborted ->
-                return Error
-                           (sprintf "Type checking aborted. With Parse errors:\n%A\n And with options: \n%A"
-                                parseRes.Errors options)
+                return
+                    Error
+                        (sprintf "Type checking aborted. With Parse errors:\n%A\n And with options: \n%A"
+                             parseRes.Errors options)
             | FSharpCheckFileAnswer.Succeeded res ->
                 match res.ImplementationFile with
                 | None -> return Error(sprintf "%A" res.Errors)
@@ -256,7 +253,6 @@ module GetAST =
         =
         async {
             log.LogInformation("F# HTTP trigger function processed a request.")
-
             let path = req.Path.Value.ToLower()
             let method = req.Method.ToUpper()
 

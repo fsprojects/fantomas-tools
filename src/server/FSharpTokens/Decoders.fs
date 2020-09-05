@@ -10,6 +10,7 @@ let decodeTokenRequest: Decoder<GetTokensRequest> =
 
 let private decodeEnum<'t> (path: string) (token: JsonValue) =
     let v = token.Value<string>()
+
     match System.Enum.Parse(typeof<'t>, v, true) with
     | :? 't as t -> Ok t
     | _ ->

@@ -19,6 +19,7 @@ let private getVersion () =
 
 let private fetchNodeRequest url (payload: Shared.Input) dispatch =
     let json = encodeInput payload
+
     Http.postJson url json
     |> Promise.iter (fun (status, body) ->
         match status with

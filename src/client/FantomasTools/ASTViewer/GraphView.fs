@@ -30,12 +30,14 @@ let createNode id label color tooltip level =
     jsOptions<Vis.Node> (fun o ->
         o.id <- Some !^id
         o.label <- Some label
+
         color
         |> Option.iter (fun c ->
             o.color <-
                 Some
                     (U2.Case2
                      <| jsOptions<Vis.Color> (fun o -> o.background <- Some c)))
+
         o.title <- Some tooltip
         o.size <- Some 100.
         o.level <- Some(float level))
@@ -91,12 +93,14 @@ let buildGraph (opts: Graph.Options) (root: TreeNode<_>) =
 
     let nodeLevel =
         let maxInRow = opts.MaxNodesInRow
+
         idToDepth
         |> List.groupBy snd
         |> List.sortBy fst
         |> List.map (fun (_, g) ->
             let n = List.length g
             let k = n / maxInRow + 1
+
             g
             |> List.mapi (fun i (x, _) -> x, i % k)
             |> List.groupBy snd
@@ -178,12 +182,16 @@ type GraphView(props: Props<obj> list, ctx) =
             jsOptions<Vis.Options> (fun o ->
                 o.autoResize <- Some true
                 o.edges <- Some(jsOptions<Vis.EdgeOptions> (fun e -> e.arrows <- Some <| U2.Case1 "to"))
+
                 o.interaction <-
                     Some
                         (createObj [ "hover" ==> true
                                      "zoomView" ==> true
                                      "hoverConnectedEdges" ==> false ])
+
                 o.layout <- Some(createObj [ "randomSeed" ==> 0 ])
+
+
 
                 let hierOpts dir =
                     createObj [ "enabled" ==> true
@@ -212,6 +220,7 @@ type GraphView(props: Props<obj> list, ctx) =
                      //log("hoverNode Event", o)
                      idToNode !!((o?node))
                      |> fun n -> n.Original |> f)))
+
         onSelect
         |> Option.iter (fun f ->
             network.on
@@ -220,6 +229,7 @@ type GraphView(props: Props<obj> list, ctx) =
                      //log("selectNode Event", o)
                      idToNode (!!(o?nodes) |> Array.head)
                      |> fun n -> n.Original |> f)))
+
         ()
 
 let inline graph props = ofType<GraphView, _, _> props []

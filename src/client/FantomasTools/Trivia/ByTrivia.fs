@@ -71,6 +71,7 @@ let view (model: Model) dispatch =
         |> List.map (fun t ->
             let className = contentToClassName t.Item
             let label = typeName t.Item
+
             { Label = label
               ClassName = className
               Title = label

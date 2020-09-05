@@ -130,6 +130,7 @@ module GetTrivia =
             |> List.choose mapNodeToTriviaNode
 
         let triviaNodesFromTokens = TokenParser.getTriviaNodesFromTokens tokens
+
         triviaNodesFromAST
         @ triviaNodesFromTokens
         |> List.sortBy (fun n -> n.Range.Start.Line, n.Range.Start.Column)

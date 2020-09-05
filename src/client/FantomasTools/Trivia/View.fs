@@ -39,6 +39,7 @@ let private byTrivia model dispatch =
 let private results model dispatch =
     let tabHeader label tabType =
         let isActive = tabType = model.ActiveTab
+
         NavItem.navItem [ NavItem.Custom [ OnClick(fun _ -> dispatch (Msg.SelectTab tabType))
                                            ClassName "pointer" ] ] [
             NavLink.navLink [ NavLink.Active isActive

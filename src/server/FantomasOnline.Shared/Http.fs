@@ -76,6 +76,7 @@ let private formatResponse<'options>
         match configResult with
         | Ok ({ SourceCode = code; IsFsi = isFsi }, config) ->
             let fileName = if isFsi then "tmp.fsi" else "tmp.fsx"
+
             try
                 let! formatted = format fileName code config
                 let! isValid = validateResult fileName formatted

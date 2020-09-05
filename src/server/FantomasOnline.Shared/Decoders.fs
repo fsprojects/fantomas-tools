@@ -6,6 +6,7 @@ open Thoth.Json.Net
 let optionDecoder: Decoder<FantomasOption> =
     Decode.object (fun get ->
         let t = get.Required.Field "$type" Decode.string
+
         if t = "int" then
             get.Required.Field "$value" (Decode.tuple3 Decode.int Decode.string Decode.int)
             |> FantomasOption.IntOption

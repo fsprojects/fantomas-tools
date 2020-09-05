@@ -51,6 +51,7 @@ let private scrollTo (_index: int): unit = import "scrollTo" "../../js/scrollTo.
 
 let private modelToParseRequest sourceCode (model: Model): FSharpTokens.Shared.GetTokensRequest =
     let defines = splitDefines model.Defines
+
     { Defines = defines
       SourceCode = sourceCode }
 

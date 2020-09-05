@@ -78,21 +78,25 @@ let private tabs model dispatch =
         | HomeTab -> homeTab, null, null
         | TriviaTab ->
             let triviaDispatch tMsg = dispatch (TriviaMsg tMsg)
+
             Trivia.View.view model.TriviaModel triviaDispatch,
             Trivia.View.settings model.TriviaModel triviaDispatch,
             Trivia.View.commands triviaDispatch
         | TokensTab ->
             let tokensDispatch tMsg = dispatch (FSharpTokensMsg tMsg)
+
             FSharpTokens.View.view model.FSharpTokensModel tokensDispatch,
             FSharpTokens.View.settings model.FSharpTokensModel tokensDispatch,
             FSharpTokens.View.commands tokensDispatch
         | ASTTab ->
             let astDispatch aMsg = dispatch (ASTMsg aMsg)
+
             ASTViewer.View.view model.ASTModel astDispatch,
             ASTViewer.View.settings model.ASTModel astDispatch,
             ASTViewer.View.commands astDispatch
         | FantomasTab _ ->
             let fantomasDispatch fMsg = dispatch (FantomasMsg fMsg)
+
             FantomasOnline.View.view model.FantomasModel,
             FantomasOnline.View.settings model.FantomasModel fantomasDispatch,
             FantomasOnline.View.commands model.SourceCode model.FantomasModel fantomasDispatch

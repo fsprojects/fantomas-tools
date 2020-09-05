@@ -753,8 +753,11 @@ type Graph2dSetDataData =
 [<AllowNullLiteral>]
 type Graph2dStatic =
     [<Emit "new $0($1...)">]
-    abstract Create: container:HTMLElement * items:DataItemCollectionType * groups:DataGroupCollectionType * ?options:Graph2dOptions
-     -> Graph2d
+    abstract Create: container:HTMLElement
+                     * items:DataItemCollectionType
+                     * groups:DataGroupCollectionType
+                     * ?options:Graph2dOptions
+                     -> Graph2d
 
     [<Emit "new $0($1...)">]
     abstract Create: container:HTMLElement * items:DataItemCollectionType * ?options:Graph2dOptions -> Graph2d
@@ -830,8 +833,11 @@ type Timeline =
     /// <param name="end">If the parameter value of end is null, the parameter will be left unchanged.</param>
     /// <param name="options">Timeline animation options. See {@link TimelineAnimationOptions}</param>
     /// <param name="callback">The callback function</param>
-    abstract setWindow: start:DateType * ``end``:DateType * ?options:TimelineAnimationOptions * ?callback:(unit -> unit)
-     -> unit
+    abstract setWindow: start:DateType
+                        * ``end``:DateType
+                        * ?options:TimelineAnimationOptions
+                        * ?callback:(unit -> unit)
+                        -> unit
     /// Toggle rollingMode.
     abstract toggleRollingMode: unit -> unit
     /// <summary>Zoom in the current visible window.</summary>
@@ -871,8 +877,11 @@ type TimelineSetSelectionOptions =
 [<AllowNullLiteral>]
 type TimelineStatic =
     [<Emit "new $0($1...)">]
-    abstract Create: container:HTMLElement * items:DataItemCollectionType * groups:DataGroupCollectionType * ?options:TimelineOptions
-     -> Timeline
+    abstract Create: container:HTMLElement
+                     * items:DataItemCollectionType
+                     * groups:DataGroupCollectionType
+                     * ?options:TimelineOptions
+                     -> Timeline
 
     [<Emit "new $0($1...)">]
     abstract Create: container:HTMLElement * items:DataItemCollectionType * ?options:TimelineOptions -> Timeline
@@ -1151,8 +1160,9 @@ type Network =
     /// If you supply an edgeId, vis will first match the id to nodes.
     /// If no match is found, it will search in the edgelist and return an array: [fromId, toId].</summary>
     /// <param name="nodeOrEdgeId">a node or edge id</param>
-    abstract getConnectedNodes: nodeOrEdgeId:IdType * ?direction:DirectionType
-     -> U2<ResizeArray<IdType>, Array<NetworkGetConnectedNodesArray>>
+    abstract getConnectedNodes: nodeOrEdgeId:IdType
+                                * ?direction:DirectionType
+                                -> U2<ResizeArray<IdType>, Array<NetworkGetConnectedNodesArray>>
     /// <summary>Returns an array of edgeIds of the edges connected to this node.</summary>
     /// <param name="nodeId">the node id</param>
     abstract getConnectedEdges: nodeId:IdType -> ResizeArray<IdType>
@@ -1341,8 +1351,10 @@ type ClusterOptions =
     /// supplied by you (clusterNodeProperties), all contained nodes and all contained edges.
     /// You can use this to update the properties of the cluster based on which items it contains.
     /// The function should return the properties to create the cluster node.
-    abstract processProperties: clusterOptions:obj option * childNodesOptions:ResizeArray<obj option> * childEdgesOptions:ResizeArray<obj option>
-     -> obj option
+    abstract processProperties: clusterOptions:obj option
+                                * childNodesOptions:ResizeArray<obj option>
+                                * childEdgesOptions:ResizeArray<obj option>
+                                -> obj option
     /// Optional.
     /// This is an object containing the options for the cluster node.
     /// All options described in the nodes module are allowed.
@@ -1371,8 +1383,9 @@ type OpenClusterOptions =
     /// For all nodeIds not listed in this returned object,
     /// we will position them at the location of the cluster.
     /// This is also the default behaviour when no releaseFunction is defined.
-    abstract releaseFunction: clusterPosition:Position * containedNodesPositions:OpenClusterOptionsReleaseFunctionContainedNodesPositions
-     -> OpenClusterOptionsReleaseFunctionReturn
+    abstract releaseFunction: clusterPosition:Position
+                              * containedNodesPositions:OpenClusterOptionsReleaseFunctionContainedNodesPositions
+                              -> OpenClusterOptionsReleaseFunctionReturn
 
 [<AllowNullLiteral>]
 type OpenClusterOptionsReleaseFunctionContainedNodesPositions =

@@ -22,6 +22,7 @@ let private mapToOption dispatch (key, fantomasOption) =
             let onChange (nv: string) =
                 if Regex.IsMatch(nv, "\\d+") then
                     let v = nv |> (int)
+
                     UpdateOption(key, IntOption(o, key, v))
                     |> dispatch
 
