@@ -354,3 +354,4 @@ MigrationBackup/
 .ionide
 src/client/output
 watch.ps1
+sync.ps1
