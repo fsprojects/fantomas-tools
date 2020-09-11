@@ -89,6 +89,13 @@ let githubIssueUri code (model: Model) =
 
     let body =
         (sprintf """
+<!--
+
+    Please only use this to create issues.
+    If you wish to suggest a feature,
+    please fill in the feature request template at https://github.com/fsprojects/fantomas/issues/new/choose
+
+-->
 Issue created from [fantomas-online](%s)
 
 %s
