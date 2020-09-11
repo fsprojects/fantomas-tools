@@ -189,9 +189,9 @@ let settings model dispatch =
     | EditorState.LoadingOptions -> Spinner.spinner [ Spinner.Color Primary ] []
     | _ ->
         let fantomasMode =
-            [ FantomasMode.V2, "2.9.1"
-              FantomasMode.V3, "3.3.0"
-              FantomasMode.V4, "4.0.0"
+            [ FantomasMode.V2, "2.x"
+              FantomasMode.V3, "3.x"
+              FantomasMode.V4, "4.x"
               FantomasMode.Preview, "Preview" ]
             |> List.map (fun (m, l) ->
                 { IsActive = model.Mode = m

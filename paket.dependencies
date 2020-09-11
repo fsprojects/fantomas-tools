@@ -5,6 +5,7 @@ framework: netstandard2.0
 # for the local Fantomas build
 nuget FSharp.Compiler.Service 37.0.0
 nuget editorconfig
+nuget MAB.DotIgnore
 
 group Build
 
@@ -57,8 +58,8 @@ nuget Microsoft.NET.Sdk.Functions
 nuget Microsoft.Azure.WebJobs.Script.ExtensionsMetadataGenerator 1.1.5
 nuget FSharp.Compiler.Service 37.0.0
 nuget Thoth.Json.Net
-nuget Fantomas 4.0.0
-nuget Fantomas.Extras 4.0.0
+nuget Fantomas 4.1.0
+nuget Fantomas.Extras 4.1.0
 
 group V3
 
