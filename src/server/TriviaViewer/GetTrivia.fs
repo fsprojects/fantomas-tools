@@ -81,7 +81,8 @@ module GetTrivia =
     let private getVersion () =
         let version =
             let assembly =
-                typeof<FSharp.Compiler.SourceCodeServices.FSharpChecker>.Assembly
+                typeof<FSharpChecker>
+                    .Assembly
 
             let version = assembly.GetName().Version
             sprintf "%i.%i.%i" version.Major version.Minor version.Revision
@@ -131,8 +132,7 @@ module GetTrivia =
 
         let triviaNodesFromTokens = TokenParser.getTriviaNodesFromTokens tokens
 
-        triviaNodesFromAST
-        @ triviaNodesFromTokens
+        triviaNodesFromAST @ triviaNodesFromTokens
         |> List.sortBy (fun n -> n.Range.Start.Line, n.Range.Start.Column)
 
     let private getTrivia (log: ILogger) (req: HttpRequest) =

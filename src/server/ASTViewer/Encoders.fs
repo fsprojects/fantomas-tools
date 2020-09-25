@@ -49,8 +49,7 @@ let private encodeKeyValue (k, v: obj) =
             printfn "unsupported typeof %A" (meh.GetType())
             Encode.nil
 
-    encodeValue v
-    |> fun ev -> (k, ev)
+    encodeValue v |> fun ev -> (k, ev)
 
 let rec astNodeEncoder (node: Fantomas.AstTransformer.Node) =
     let properties =
