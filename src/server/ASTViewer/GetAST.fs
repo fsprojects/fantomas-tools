@@ -85,9 +85,10 @@ module GetAST =
 
     let private sendTooLargeError () =
         new HttpResponseMessage(HttpStatusCode.RequestEntityTooLarge,
-                                Content = new StringContent("File was too large",
-                                                            System.Text.Encoding.UTF8,
-                                                            "application/text"))
+                                Content =
+                                    new StringContent("File was too large",
+                                                      System.Text.Encoding.UTF8,
+                                                      "application/text"))
 
     let private sendBadRequest error =
         new HttpResponseMessage(HttpStatusCode.BadRequest,
