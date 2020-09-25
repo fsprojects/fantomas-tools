@@ -19,9 +19,7 @@ let private lineToken dispatch index (token: Token) =
     ]
 
 let private line dispatch activeLine (lineNumber, tokens) =
-    let tokens =
-        tokens
-        |> Array.mapi (fun idx token -> lineToken dispatch idx token)
+    let tokens = tokens |> Array.mapi (lineToken dispatch)
 
     let className =
         match activeLine with

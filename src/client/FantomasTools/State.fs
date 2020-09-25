@@ -59,7 +59,7 @@ let private reload model =
         | TriviaTab ->
             Cmd.ofMsg (FantomasTools.Client.Trivia.Model.GetTrivia)
             |> Cmd.map TriviaMsg
-        | FantomasTab (_) ->
+        | FantomasTab _ ->
             Cmd.ofMsg (FantomasTools.Client.FantomasOnline.Model.Format)
             |> Cmd.map FantomasMsg
         | _ -> Cmd.none

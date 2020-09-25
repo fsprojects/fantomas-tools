@@ -39,7 +39,7 @@ module GetTrivia =
         async {
             let otherFlags =
                 defines
-                |> Seq.map (fun d -> sprintf "-d:%s" d)
+                |> Seq.map (sprintf "-d:%s")
                 |> Seq.toArray
 
             let! (opts, _) =
@@ -96,10 +96,9 @@ module GetTrivia =
         let node =
             match ast with
             | ParsedInput.ImplFile (ParsedImplFileInput.ParsedImplFileInput (_, _, _, _, hds, mns, _)) ->
-                Fantomas.AstTransformer.astToNode hds mns
+                astToNode hds mns
 
-            | ParsedInput.SigFile (ParsedSigFileInput.ParsedSigFileInput (_, _, _, _, mns)) ->
-                Fantomas.AstTransformer.sigAstToNode mns
+            | ParsedInput.SigFile (ParsedSigFileInput.ParsedSigFileInput (_, _, _, _, mns)) -> sigAstToNode mns
 
         let rec flattenNodeToList (node: Node) =
             [ yield node
@@ -119,8 +118,8 @@ module GetTrivia =
                         | _ -> None)
 
                 match attributeParent with
-                | Some i -> TriviaNodeAssigner(Fantomas.TriviaTypes.MainNode(node.Type), range, i)
-                | None -> TriviaNodeAssigner(Fantomas.TriviaTypes.MainNode(node.Type), range))
+                | Some i -> TriviaNodeAssigner(TriviaTypes.MainNode(node.Type), range, i)
+                | None -> TriviaNodeAssigner(TriviaTypes.MainNode(node.Type), range))
 
         let triviaNodesFromAST =
             flattenNodeToList node

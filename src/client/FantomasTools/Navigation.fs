@@ -32,7 +32,7 @@ let cmdForCurrentTab tab model =
         | TriviaTab ->
             Cmd.ofMsg (Trivia.Model.GetTrivia)
             |> Cmd.map Msg.TriviaMsg
-        | FantomasTab (_) when (not (List.isEmpty model.FantomasModel.DefaultOptions)) ->
+        | FantomasTab _ when (not (List.isEmpty model.FantomasModel.DefaultOptions)) ->
             Cmd.ofMsg (Format) |> Cmd.map Msg.FantomasMsg
         | FantomasTab _ -> Cmd.none
     else

@@ -104,7 +104,7 @@ module GetAST =
         async {
             let otherFlags =
                 defines
-                |> Array.map (fun d -> sprintf "-d:%s" d)
+                |> Array.map (sprintf "-d:%s")
                 |> Array.append additionalRefs
 
             let! (opts, errors) =
