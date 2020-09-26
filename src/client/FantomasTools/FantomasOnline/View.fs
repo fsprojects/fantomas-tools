@@ -12,11 +12,17 @@ let private mapToOption dispatch (key, fantomasOption) =
     let editor =
         match fantomasOption with
         | FantomasOption.BoolOption (o, _, v) ->
-            SettingControls.toggleButton (fun _ ->
-                UpdateOption(key, BoolOption(o, key, true))
-                |> dispatch) (fun _ ->
-                UpdateOption(key, BoolOption(o, key, false))
-                |> dispatch) "true" "false" key v
+            SettingControls.toggleButton
+                (fun _ ->
+                    UpdateOption(key, BoolOption(o, key, true))
+                    |> dispatch)
+                (fun _ ->
+                    UpdateOption(key, BoolOption(o, key, false))
+                    |> dispatch)
+                "true"
+                "false"
+                key
+                v
 
         | FantomasOption.IntOption (o, _, v) ->
             let onChange (nv: string) =
@@ -28,11 +34,17 @@ let private mapToOption dispatch (key, fantomasOption) =
 
             SettingControls.input onChange key "integer" v
         | FantomasOption.MultilineFormatterTypeOption (o, _, v) ->
-            SettingControls.toggleButton (fun _ ->
-                UpdateOption(key, MultilineFormatterTypeOption(o, key, "character_width"))
-                |> dispatch) (fun _ ->
-                UpdateOption(key, MultilineFormatterTypeOption(o, key, "number_of_items"))
-                |> dispatch) "CharacterWidth" "NumberOfItems" key (v = "character_width")
+            SettingControls.toggleButton
+                (fun _ ->
+                    UpdateOption(key, MultilineFormatterTypeOption(o, key, "character_width"))
+                    |> dispatch)
+                (fun _ ->
+                    UpdateOption(key, MultilineFormatterTypeOption(o, key, "number_of_items"))
+                    |> dispatch)
+                "CharacterWidth"
+                "NumberOfItems"
+                key
+                (v = "character_width")
 
     div [ Key key
           ClassName "fantomas-setting" ] [
@@ -213,8 +225,13 @@ let settings model dispatch =
             |> SettingControls.multiButton "Mode"
 
         let fileExtension =
-            SettingControls.toggleButton (fun _ -> SetFsiFile true |> dispatch) (fun _ -> SetFsiFile false |> dispatch)
-                "*.fsi" "*.fs" "File extension" model.IsFsi
+            SettingControls.toggleButton
+                (fun _ -> SetFsiFile true |> dispatch)
+                (fun _ -> SetFsiFile false |> dispatch)
+                "*.fsi"
+                "*.fs"
+                "File extension"
+                model.IsFsi
 
         let options = options model dispatch
 

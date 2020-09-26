@@ -184,8 +184,13 @@ let settings model dispatch =
             "Defines"
             "Enter your defines separated with a space"
             model.Defines
-        SettingControls.toggleButton (fun _ -> dispatch (SetFsiFile true)) (fun _ -> dispatch (SetFsiFile false))
-            "*.fsi" "*.fs" "File extension" model.IsFsi
+        SettingControls.toggleButton
+            (fun _ -> dispatch (SetFsiFile true))
+            (fun _ -> dispatch (SetFsiFile false))
+            "*.fsi"
+            "*.fs"
+            "File extension"
+            model.IsFsi
         SettingControls.multiButton
             "Mode"
             [ { IsActive = (isJsonView model.View)
