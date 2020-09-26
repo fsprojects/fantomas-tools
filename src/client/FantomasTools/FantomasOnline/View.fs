@@ -27,6 +27,12 @@ let private mapToOption dispatch (key, fantomasOption) =
                     |> dispatch
 
             SettingControls.input onChange key "integer" v
+        | FantomasOption.MultilineFormatterTypeOption (o, _, v) ->
+            SettingControls.toggleButton (fun _ ->
+                UpdateOption(key, MultilineFormatterTypeOption(o, key, "character_width"))
+                |> dispatch) (fun _ ->
+                UpdateOption(key, MultilineFormatterTypeOption(o, key, "number_of_items"))
+                |> dispatch) "CharacterWidth" "NumberOfItems" key (v = "character_width")
 
     div [ Key key
           ClassName "fantomas-setting" ] [

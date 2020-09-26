@@ -13,6 +13,9 @@ let encodeOptions options =
                             "$value", Encode.tuple3 Encode.int Encode.string Encode.int (o, k, i) ]
         | BoolOption (o, k, b) ->
             Encode.object [ "$type", Encode.string "bool"
-                            "$value", Encode.tuple3 Encode.int Encode.string Encode.bool (o, k, b) ])
+                            "$value", Encode.tuple3 Encode.int Encode.string Encode.bool (o, k, b) ]
+        | MultilineFormatterTypeOption (o, k, v) ->
+            Encode.object [ "$type", Encode.string "multilineFormatterType"
+                            "$value", Encode.tuple3 Encode.int Encode.string Encode.string (o, k, v) ])
     |> Encode.array
     |> Encode.toString 4

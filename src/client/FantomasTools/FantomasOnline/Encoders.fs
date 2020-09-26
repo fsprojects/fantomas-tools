@@ -9,6 +9,8 @@ let private encodeOption fantomasOption =
         match fantomasOption with
         | IntOption (o, k, v) -> "int", Encode.tuple3 Encode.int Encode.string Encode.int (o, k, v)
         | BoolOption (o, k, v) -> "bool", Encode.tuple3 Encode.int Encode.string Encode.bool (o, k, v)
+        | MultilineFormatterTypeOption (o, k, v) ->
+            "multilineFormatterType", Encode.tuple3 Encode.int Encode.string Encode.string (o, k, v)
 
     Encode.object [ "$type", Encode.string key
                     "$value", value ]
@@ -36,6 +38,7 @@ let encodeUserSettingToConfiguration options =
         match option with
         | IntOption (_, _, v) -> Encode.int v
         | BoolOption (_, _, v) -> Encode.bool v
+        | MultilineFormatterTypeOption (_, _, v) -> Encode.string v
 
     options
     |> List.map (fun option -> getOptionKey option, encodeValue option)

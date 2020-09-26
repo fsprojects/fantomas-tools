@@ -4,7 +4,6 @@ open FantomasOnline.Server.Shared
 open FantomasOnline.Shared
 open Microsoft.AspNetCore.Http
 open Microsoft.Extensions.Logging
-
 open System.IO
 open System.Net
 open System.Net.Http
@@ -16,7 +15,7 @@ module Async =
 module Reflection =
     open FSharp.Reflection
 
-    let inline getRecordFields x =
+    let getRecordFields x =
         let names =
             FSharpType.GetRecordFields(x.GetType())
             |> Seq.map (fun x -> x.Name)
@@ -49,18 +48,8 @@ let private sendInternalError err =
 
 let private getVersionResponse version = sendText version |> Async.lift
 
-let private mapFantomasOptionsToRecord<'t> options =
-    let newValues =
-        options
-        |> Seq.map (function
-            | BoolOption (_, _, v) -> box v
-            | IntOption (_, _, v) -> box v)
-        |> Seq.toArray
-
-    let formatConfigType = typeof<'t>
-    Microsoft.FSharp.Reflection.FSharpValue.MakeRecord(formatConfigType, newValues) :?> 't
-
 let private formatResponse<'options>
+    (mapFantomasOptionsToRecord: FantomasOption list -> 'options)
     (format: string -> string -> 'options -> Async<string>)
     (validateResult: string -> string -> Async<bool>)
     (req: HttpRequest)
@@ -97,24 +86,18 @@ Formatted result:
         | Error err -> return sendInternalError (err)
     }
 
-let private getOptions defaultInstance =
-    Reflection.getRecordFields defaultInstance
-    |> Seq.indexed
-    |> Seq.choose (fun (idx, (k: string, v: obj)) ->
-        match v with
-        | :? int as i -> FantomasOption.IntOption(idx, k, i) |> Some
-        | :? bool as b -> FantomasOption.BoolOption(idx, k, b) |> Some
-        | _ -> None)
-    |> Seq.toList
+let private mapOptionsToResponse (options: FantomasOption list) =
+    options
     |> Encoders.encodeOptions
     |> sendJson
     |> Async.lift
 
 let main
     (getVersion: unit -> string)
+    (getOptions: unit -> FantomasOption list)
+    (mapFantomasOptionsToRecord: FantomasOption list -> 'options)
     (format: string -> string -> 'options -> Async<string>)
     (validate: string -> string -> Async<bool>)
-    (defaultInstance: 't)
     (log: ILogger)
     (req: HttpRequest)
     =
@@ -125,7 +108,7 @@ let main
     log.LogInformation(sprintf "Running request for %s, version: %s" path version)
 
     match method, path with
-    | "POST", "/api/format" -> formatResponse format validate req
-    | "GET", "/api/options" -> getOptions defaultInstance
+    | "POST", "/api/format" -> formatResponse mapFantomasOptionsToRecord format validate req
+    | "GET", "/api/options" -> getOptions () |> mapOptionsToResponse
     | "GET", "/api/version" -> getVersionResponse version
     | _ -> notFound ()

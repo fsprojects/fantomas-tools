@@ -87,7 +87,8 @@ let optionsListToMap options =
     options
     |> List.map (function
         | FantomasOption.BoolOption (_, k, _) as fo -> k, fo
-        | FantomasOption.IntOption (_, k, _) as fo -> k, fo)
+        | FantomasOption.IntOption (_, k, _) as fo -> k, fo
+        | FantomasOption.MultilineFormatterTypeOption (_, k, _) as fo -> k, fo)
     |> Map.ofList
 
 let private updateOptionValue defaultOption userOption =
@@ -148,7 +149,8 @@ let private copySettings (model: Model) _ =
                 if v
                 then toEditorConfigName k |> sprintf "%s=true"
                 else toEditorConfigName k |> sprintf "%s=false"
-            | FantomasOption.IntOption (_, k, v) -> sprintf "%s=%i" (toEditorConfigName k) v)
+            | FantomasOption.IntOption (_, k, v) -> sprintf "%s=%i" (toEditorConfigName k) v
+            | FantomasOption.MultilineFormatterTypeOption (_, k, v) -> sprintf "%s=%s" (toEditorConfigName k) v)
         |> String.concat "\n"
         |> sprintf "[*.fs]\n%s"
 

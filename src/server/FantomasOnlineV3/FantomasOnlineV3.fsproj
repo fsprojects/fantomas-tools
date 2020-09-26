@@ -3,8 +3,6 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AzureFunctionsVersion>v3</AzureFunctionsVersion>
-    <AssemblyName>FantomasOnlineLatest.Server</AssemblyName>
-    <RootNamespace>FantomasOnlineLatest.Server</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="host.json">

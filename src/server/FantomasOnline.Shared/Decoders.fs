@@ -10,9 +10,12 @@ let optionDecoder: Decoder<FantomasOption> =
         if t = "int" then
             get.Required.Field "$value" (Decode.tuple3 Decode.int Decode.string Decode.int)
             |> FantomasOption.IntOption
-        else
+        elif t = "bool" then
             get.Required.Field "$value" (Decode.tuple3 Decode.int Decode.string Decode.bool)
-            |> FantomasOption.BoolOption)
+            |> FantomasOption.BoolOption
+        else
+            get.Required.Field "$value" (Decode.tuple3 Decode.int Decode.string Decode.string)
+            |> FantomasOption.MultilineFormatterTypeOption)
 
 let requestDecoder: Decoder<FormatRequest> =
     Decode.object (fun get ->

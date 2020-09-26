@@ -10,9 +10,12 @@ let private optionDecoder: Decoder<FantomasOption> =
         if t = "int" then
             get.Required.Field "$value" (Decode.tuple3 Decode.int Decode.string Decode.int)
             |> FantomasOption.IntOption
-        else
+        elif t = "bool" then
             get.Required.Field "$value" (Decode.tuple3 Decode.int Decode.string Decode.bool)
-            |> FantomasOption.BoolOption)
+            |> FantomasOption.BoolOption
+        else
+            get.Required.Field "$value" (Decode.tuple3 Decode.int Decode.string Decode.string)
+            |> FantomasOption.MultilineFormatterTypeOption)
 
 let decodeOptions json =
     Decode.fromString (Decode.array optionDecoder) json
