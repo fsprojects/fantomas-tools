@@ -10,7 +10,7 @@
     "@babel/preset-react": "7.10.4",
     "babel-loader": "8.1.0",
     "copy-webpack-plugin": "6.2.1",
-    "css-loader": "4.3.0",
+    "css-loader": "5.0.0",
     "fable-compiler": "2.13.0",
     "fable-loader": "2.1.9",
     "file-loader": "6.1.1",
@@ -23,12 +23,12 @@
     "sass-loader": "10.0.3",
     "style-loader": "2.0.0",
     "terser-webpack-plugin": "4.2.3",
-    "webpack": "4.44.2",
+    "webpack": "5.1.2",
     "webpack-cli": "4.0.0",
     "webpack-dev-server": "3.11.0"
   },
   "dependencies": {
-    "bootstrap": "4.5.2",
+    "bootstrap": "4.5.3",
     "@monaco-editor/react": "3.6.3",
     "lz-string": "1.4.4",
     "monaco-editor": "0.20.0",
