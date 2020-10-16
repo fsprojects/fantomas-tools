@@ -28,8 +28,8 @@
     "webpack-dev-server": "3.11.0"
   },
   "dependencies": {
-    "bootstrap": "4.5.3",
     "@monaco-editor/react": "3.6.3",
+    "bootstrap": "4.5.3",
     "lz-string": "1.4.4",
     "monaco-editor": "0.20.0",
     "notyf": "3.9.0",
@@ -39,7 +39,7 @@
     "reactstrap": "8.6.0"
   },
   "scripts": {
-    "start": "webpack-dev-server",
+    "start": "webpack serve",
     "build": "webpack -p",
     "predeploy": "yarn build",
     "deploy": "gh-pages -d ./output"
