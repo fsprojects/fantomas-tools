@@ -39,8 +39,8 @@
     "reactstrap": "8.6.0"
   },
   "scripts": {
-    "start": "webpack serve",
-    "build": "webpack -p",
+    "start": "webpack serve --env development",
+    "build": "webpack",
     "predeploy": "yarn build",
     "deploy": "gh-pages -d ./output"
   },

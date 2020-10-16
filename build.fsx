@@ -77,6 +77,7 @@ Target.create "Build" (fun _ ->
 
 Target.create "Watch" (fun _ ->
 
+    Environment.setEnvironVar "NODE_ENV" "development"
     Environment.setEnvironVar "FSHARP_TOKENS_BACKEND" (localhostBackend fsharpTokensPort)
     Environment.setEnvironVar "AST_BACKEND" (localhostBackend astPort)
     Environment.setEnvironVar "TRIVIA_BACKEND" (localhostBackend triviaPort)
@@ -125,6 +126,7 @@ Target.create "DeployFunctions" (fun _ ->
 Target.create "YarnInstall" (fun _ -> Yarn.install setClientDir)
 
 Target.create "BundleFrontend" (fun _ ->
+    Environment.setEnvironVar "NODE_ENV" "production"
     Environment.setEnvironVar "FSHARP_TOKENS_BACKEND" "https://azfun-fsharp-tokens-main.azurewebsites.net"
     Environment.setEnvironVar "AST_BACKEND" "https://azfun-ast-viewer-main.azurewebsites.net"
     Environment.setEnvironVar "TRIVIA_BACKEND" "https://azfun-trivia-viewer-main.azurewebsites.net"

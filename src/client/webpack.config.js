@@ -36,7 +36,7 @@ const CONFIG = {
   }
 };
 
-const isProduction = process.argv.indexOf("-p") >= 0;
+const isProduction = process.env.NODE_ENV === 'production'
 console.log(
   "Bundling for " + (isProduction ? "production" : "development") + "..."
 );
