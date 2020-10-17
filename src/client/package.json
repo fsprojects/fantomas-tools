@@ -34,7 +34,7 @@
     "monaco-editor": "0.20.0",
     "notyf": "3.9.0",
     "react": "16.14.0",
-    "react-dom": "16.13.1",
+    "react-dom": "16.14.0",
     "react-json-view": "https://github.com/Krzysztof-Cieslak/react-json-view#built",
     "reactstrap": "8.6.0"
   },
