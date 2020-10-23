@@ -120,7 +120,8 @@ Issue created from [fantomas-online](%s)
 %s
 #### Problem description
 
-Please describe here fantomas problem you encountered.
+Please describe here the Fantomas problem you encountered.
+Check out our [Contribution Guidelines](https://github.com/fsprojects/fantomas/blob/master/CONTRIBUTING.md#bug-reports).
 
 #### Extra information
 
