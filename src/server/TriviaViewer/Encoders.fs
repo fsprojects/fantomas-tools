@@ -39,27 +39,30 @@ let private triviaContentEncoder =
 let private encodeTriviaContent = mapToTriviaContent >> triviaContentEncoder
 
 let private encodeRange (range: range) =
-    Encode.object [ "startLine", Encode.int range.Start.Line
-                    "startColumn", Encode.int range.Start.Column
-                    "endLine", Encode.int range.End.Line
-                    "endColumn", Encode.int range.End.Column ]
+    Encode.object
+        [ "startLine", Encode.int range.Start.Line
+          "startColumn", Encode.int range.Start.Column
+          "endLine", Encode.int range.End.Line
+          "endColumn", Encode.int range.End.Column ]
 
 let private encodeTriviaNode (tn: TriviaNode) =
-    Encode.object [ "type", encodeTriviaNodeType tn.Type
-                    "contentBefore",
-                    List.map encodeTriviaContent tn.ContentBefore
-                    |> Encode.list
-                    "contentItself",
-                    Option.map mapToTriviaContent tn.ContentItself
-                    |> Encode.option triviaContentEncoder
-                    "contentAfter",
-                    List.map encodeTriviaContent tn.ContentAfter
-                    |> Encode.list
-                    "range", encodeRange tn.Range ]
+    Encode.object
+        [ "type", encodeTriviaNodeType tn.Type
+          "contentBefore",
+          List.map encodeTriviaContent tn.ContentBefore
+          |> Encode.list
+          "contentItself",
+          Option.map mapToTriviaContent tn.ContentItself
+          |> Encode.option triviaContentEncoder
+          "contentAfter",
+          List.map encodeTriviaContent tn.ContentAfter
+          |> Encode.list
+          "range", encodeRange tn.Range ]
 
 let private encodeTrivia (t: Trivia) =
-    Encode.object [ "item", encodeTriviaContent t.Item
-                    "range", encodeRange t.Range ]
+    Encode.object
+        [ "item", encodeTriviaContent t.Item
+          "range", encodeRange t.Range ]
 
 let private encodeTriviaNodeAssigner (t: TriviaNodeAssigner) =
     let typeName, name =
@@ -67,16 +70,18 @@ let private encodeTriviaNodeAssigner (t: TriviaNodeAssigner) =
         | MainNode mn -> "main-node", mn.ToString()
         | Token (_, t) -> "token-node", t.TokenInfo.TokenName
 
-    Encode.object [ "type", Encode.string typeName
-                    "name", Encode.string name
-                    "range", encodeRange t.Range ]
+    Encode.object
+        [ "type", Encode.string typeName
+          "name", Encode.string name
+          "range", encodeRange t.Range ]
 
 let internal encodeParseResult trivia triviaNodes triviaCandidates =
-    Encode.object [ "trivia", List.map encodeTrivia trivia |> Encode.list
-                    "triviaNodes",
-                    List.map encodeTriviaNode triviaNodes
-                    |> Encode.list
-                    "triviaNodeCandidates",
-                    List.map encodeTriviaNodeAssigner triviaCandidates
-                    |> Encode.list ]
+    Encode.object
+        [ "trivia", List.map encodeTrivia trivia |> Encode.list
+          "triviaNodes",
+          List.map encodeTriviaNode triviaNodes
+          |> Encode.list
+          "triviaNodeCandidates",
+          List.map encodeTriviaNodeAssigner triviaCandidates
+          |> Encode.list ]
     |> Encode.toString 4

@@ -12,8 +12,9 @@ let private encodeOption fantomasOption =
         | MultilineFormatterTypeOption (o, k, v) ->
             "multilineFormatterType", Encode.tuple3 Encode.int Encode.string Encode.string (o, k, v)
 
-    Encode.object [ "$type", Encode.string key
-                    "$value", value ]
+    Encode.object
+        [ "$type", Encode.string key
+          "$value", value ]
 
 let private encodeUserSettings model =
     model.UserOptions
@@ -23,15 +24,17 @@ let private encodeUserSettings model =
     |> Encode.list
 
 let encodeRequest code (model: Model) =
-    Encode.object [ "sourceCode", Encode.string code
-                    "options", encodeUserSettings model
-                    "isFsi", Encode.bool model.IsFsi ]
+    Encode.object
+        [ "sourceCode", Encode.string code
+          "options", encodeUserSettings model
+          "isFsi", Encode.bool model.IsFsi ]
     |> Encode.toString 2
 
 let encodeUrlModel code model =
-    Encode.object [ "code", Encode.string code
-                    "settings", encodeUserSettings model
-                    "isFsi", Encode.bool model.IsFsi ]
+    Encode.object
+        [ "code", Encode.string code
+          "settings", encodeUserSettings model
+          "isFsi", Encode.bool model.IsFsi ]
 
 let encodeUserSettingToConfiguration options =
     let encodeValue option =

@@ -3,14 +3,16 @@ module ASTViewer.Server.Encoders
 open Thoth.Json.Net
 
 let private rangeEncoder (range: FSharp.Compiler.Range.range) =
-    Encode.object [ "startLine", Encode.int range.StartLine
-                    "startCol", Encode.int range.StartColumn
-                    "endLine", Encode.int range.EndLine
-                    "endCol", Encode.int range.EndColumn ]
+    Encode.object
+        [ "startLine", Encode.int range.StartLine
+          "startCol", Encode.int range.StartColumn
+          "endLine", Encode.int range.EndLine
+          "endCol", Encode.int range.EndColumn ]
 
 let private idEncoder (id: Fantomas.AstTransformer.Id) =
-    Encode.object [ "Ident", Encode.string id.Ident
-                    "Range", Encode.option rangeEncoder id.Range ]
+    Encode.object
+        [ "Ident", Encode.string id.Ident
+          "Range", Encode.option rangeEncoder id.Range ]
 
 let private encodeKeyValue (k, v: obj) =
     let (|IsList|_|) (candidate: obj) =
@@ -57,10 +59,11 @@ let rec astNodeEncoder (node: Fantomas.AstTransformer.Node) =
         |> List.map encodeKeyValue
         |> Encode.object
 
-    Encode.object [ "type", Encode.string (node.Type.ToString())
-                    "range", Encode.option rangeEncoder node.Range
-                    "properties", properties
-                    "childs", Encode.array (Array.map astNodeEncoder (Array.ofList node.Childs)) ]
+    Encode.object
+        [ "type", Encode.string (node.Type.ToString())
+          "range", Encode.option rangeEncoder node.Range
+          "properties", properties
+          "childs", Encode.array (Array.map astNodeEncoder (Array.ofList node.Childs)) ]
 
 let rec tastNodeEncoder (node: TastTransformer.Tast.Node) =
     let properties =
@@ -68,11 +71,13 @@ let rec tastNodeEncoder (node: TastTransformer.Tast.Node) =
         |> List.map encodeKeyValue
         |> Encode.object
 
-    Encode.object [ "type", Encode.string node.Type
-                    "range", Encode.option rangeEncoder node.Range
-                    "properties", properties
-                    "childs", Encode.array (Array.map tastNodeEncoder (Array.ofList node.Childs)) ]
+    Encode.object
+        [ "type", Encode.string node.Type
+          "range", Encode.option rangeEncoder node.Range
+          "properties", properties
+          "childs", Encode.array (Array.map tastNodeEncoder (Array.ofList node.Childs)) ]
 
 let rec encodeResponse nodeJson string =
-    Encode.object [ "node", nodeJson
-                    "string", Encode.string string ]
+    Encode.object
+        [ "node", nodeJson
+          "string", Encode.string string ]

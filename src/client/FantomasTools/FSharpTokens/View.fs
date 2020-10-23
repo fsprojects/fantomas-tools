@@ -56,8 +56,13 @@ let private tokenDetailRow label content =
 let private tokenDetail dispatch index token =
     let className = tokenNameClass token |> sprintf "tag is-large %s"
 
-    let { TokenName = tokenName; LeftColumn = leftColumn; RightColumn = rightColumn; ColorClass = colorClass;
-          CharClass = charClass; Tag = tag; FullMatchedLength = fullMatchedLength }
+    let { TokenName = tokenName
+          LeftColumn = leftColumn
+          RightColumn = rightColumn
+          ColorClass = colorClass
+          CharClass = charClass
+          Tag = tag
+          FullMatchedLength = fullMatchedLength }
         =
         token.TokenInfo
 

@@ -125,7 +125,12 @@ module GetAST =
 
         sendText version
 
-    let parseAST (log: ILogger) ({ SourceCode = source; Defines = defines; IsFsi = isFsi }) =
+    let parseAST
+        (log: ILogger)
+        ({ SourceCode = source
+           Defines = defines
+           IsFsi = isFsi })
+        =
         let fileName = if isFsi then "tmp.fsi" else "tmp.fsx"
         // create ISourceText
         let sourceText = FSharp.Compiler.Text.SourceText.ofString (source)
@@ -192,7 +197,10 @@ module GetAST =
             | Error err -> return sendInternalError (sprintf "%A" err)
         }
 
-    let private parseTypedAST ({ SourceCode = source; Defines = defines; IsFsi = isFsi }) =
+    let private parseTypedAST ({ SourceCode = source
+                                 Defines = defines
+                                 IsFsi = isFsi })
+        =
         let fileName = if isFsi then "tmp.fsi" else "tmp.fsx"
         let sourceText = FSharp.Compiler.Text.SourceText.ofString (source)
         let checker = sharedChecker.Value

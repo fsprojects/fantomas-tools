@@ -139,7 +139,12 @@ module GetTrivia =
 
             match parseRequest with
             | Ok pr ->
-                let { SourceCode = content; Defines = defines; FileName = fileName } = pr
+                let { SourceCode = content
+                      Defines = defines
+                      FileName = fileName }
+                    =
+                    pr
+
                 let tokens = TokenParser.tokenize defines content
                 let! astResult = collectAST log fileName defines content
 
