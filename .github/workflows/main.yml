@@ -40,7 +40,7 @@ jobs:
         publish_dir: ./src/client/output
 
     - name: Deploy Functions
-      uses: docker://pulumi/actions:v2.0.0
+      uses: docker://pulumi/actions:v2.11.2
       with:
         args: up --yes
       env:
