@@ -43,8 +43,8 @@ console.log(
 
 const commonPlugins = [
   new MiniCssExtractPlugin({
-    filename: isProduction ? "[name].[hash].css" : "[name].css",
-    chunkFilename: isProduction ? "[name].[hash].css" : "[name].css"
+    filename: isProduction ? "[name].[fullhash].css" : "[name].css",
+    chunkFilename: isProduction ? "[name].[fullhash].css" : "[name].css"
   }),
   new HtmlWebpackPlugin({
     filename: resolve("./output/index.html"),
@@ -71,7 +71,7 @@ module.exports = {
   entry: CONFIG.fsharpEntry,
   output: {
     path: resolve("./output"),
-    filename: isProduction ? "[name].[hash].js" : "[name].js",
+    filename: isProduction ? "[name].[fullhash].js" : "[name].js",
     publicPath: isProduction ? "/fantomas-tools/" : "/"
   },
   mode: isProduction ? "production" : "development",
