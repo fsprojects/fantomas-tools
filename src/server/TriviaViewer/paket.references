@@ -3,3 +3,4 @@ Microsoft.NET.Sdk.Functions
 FSharp.Compiler.Service
 FSharp.Core
 Thoth.Json.Net
+Microsoft.Build.Utilities.Core

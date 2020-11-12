@@ -39,9 +39,10 @@ let private initialModel =
       Version = "??" }
 
 let private decodeGetTokensRequest: Decoder<FSharpTokens.Shared.GetTokensRequest> =
-    Decode.object (fun get ->
-        { Defines = get.Required.Field "defines" (Decode.list Decode.string)
-          SourceCode = get.Required.Field "sourceCode" Decode.string })
+    Decode.object
+        (fun get ->
+            { Defines = get.Required.Field "defines" (Decode.list Decode.string)
+              SourceCode = get.Required.Field "sourceCode" Decode.string })
 
 let private splitDefines (value: string) =
     value.Split([| ' '; ';' |], StringSplitOptions.RemoveEmptyEntries)
@@ -105,20 +106,21 @@ let update code msg model =
     | TokenSelected tokenIndex ->
         let highlightCmd =
             model.ActiveLine
-            |> Option.map (fun activeLine ->
-                let token =
-                    model.Tokens
-                    |> Array.filter (fun t -> t.LineNumber = activeLine)
-                    |> Array.item tokenIndex
-                    |> fun t -> t.TokenInfo
+            |> Option.map
+                (fun activeLine ->
+                    let token =
+                        model.Tokens
+                        |> Array.filter (fun t -> t.LineNumber = activeLine)
+                        |> Array.item tokenIndex
+                        |> fun t -> t.TokenInfo
 
-                let range: Editor.HighLightRange =
-                    { StartLine = activeLine
-                      StartColumn = token.LeftColumn
-                      EndLine = activeLine
-                      EndColumn = token.RightColumn }
+                    let range: Editor.HighLightRange =
+                        { StartLine = activeLine
+                          StartColumn = token.LeftColumn
+                          EndLine = activeLine
+                          EndColumn = token.RightColumn }
 
-                Cmd.ofSub (Editor.selectRange range))
+                    Cmd.ofSub (Editor.selectRange range))
             |> Option.defaultValue Cmd.none
 
         let scrollCmd = Cmd.OfFunc.result (PlayScroll tokenIndex)

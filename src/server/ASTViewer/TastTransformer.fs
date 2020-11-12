@@ -337,7 +337,8 @@ module Tast =
                       "overrides"
                       ==> (List.map fsharpObjectExprOverrideToProps overrides)
                       "interfaceImplementations"
-                      ==> (List.map (fun (n, s) -> (fsharpTypeToProps n, List.map fsharpObjectExprOverrideToProps s))
+                      ==> (List.map
+                               (fun (n, s) -> (fsharpTypeToProps n, List.map fsharpObjectExprOverrideToProps s))
                                interfaceImplementations) ]
               Childs = [ yield visitExpr baseCallExpr ]
               FsAstNode = box e }

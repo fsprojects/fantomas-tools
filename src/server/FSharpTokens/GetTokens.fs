@@ -22,8 +22,9 @@ module GetTokens =
 
         match model with
         | Ok model ->
+            let _, defineHashTokens = TokenParser.getDefines content
             let json =
-                TokenParser.tokenize model.Defines model.SourceCode
+                TokenParser.tokenize model.Defines defineHashTokens model.SourceCode
                 |> toJson
 
             new HttpResponseMessage(HttpStatusCode.OK,

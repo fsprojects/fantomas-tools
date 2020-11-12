@@ -27,31 +27,35 @@ let visLib: Vis.IExports = jsNative
 
 // Helper to make the code easier to read
 let createNode id label color tooltip level =
-    jsOptions<Vis.Node> (fun o ->
-        o.id <- Some !^id
-        o.label <- Some label
+    jsOptions<Vis.Node>
+        (fun o ->
+            o.id <- Some !^id
+            o.label <- Some label
 
-        color
-        |> Option.iter (fun c ->
-            o.color <-
-                Some
-                    (U2.Case2
-                     <| jsOptions<Vis.Color> (fun o -> o.background <- Some c)))
+            color
+            |> Option.iter
+                (fun c ->
+                    o.color <-
+                        Some
+                            (U2.Case2
+                             <| jsOptions<Vis.Color> (fun o -> o.background <- Some c)))
 
-        o.title <- Some tooltip
-        o.size <- Some 100.
-        o.level <- Some(float level))
+            o.title <- Some tooltip
+            o.size <- Some 100.
+            o.level <- Some(float level))
 
 // Helper to make the code easier to read
 let createEdge from ``to`` =
-    jsOptions<Vis.Edge> (fun o ->
-        o.from <- Some !^from
-        o.``to`` <- Some !^``to``)
+    jsOptions<Vis.Edge>
+        (fun o ->
+            o.from <- Some !^from
+            o.``to`` <- Some !^``to``)
 
 let createGraph nodes edges =
-    jsOptions<Vis.Data> (fun o ->
-        o.nodes <- Some(U2.Case2 nodes)
-        o.edges <- Some(U2.Case2 edges))
+    jsOptions<Vis.Data>
+        (fun o ->
+            o.nodes <- Some(U2.Case2 nodes)
+            o.edges <- Some(U2.Case2 edges))
 
 let inline stringify (x: TreeNode<Shared.Node>) = Thoth.Json.Encode.Auto.toString (0, x)
 
@@ -97,15 +101,16 @@ let buildGraph (opts: Graph.Options) (root: TreeNode<_>) =
         idToDepth
         |> List.groupBy snd
         |> List.sortBy fst
-        |> List.map (fun (_, g) ->
-            let n = List.length g
-            let k = n / maxInRow + 1
+        |> List.map
+            (fun (_, g) ->
+                let n = List.length g
+                let k = n / maxInRow + 1
 
-            g
-            |> List.mapi (fun i (x, _) -> x, i % k)
-            |> List.groupBy snd
-            |> List.sortBy fst
-            |> List.map (snd >> List.map fst))
+                g
+                |> List.mapi (fun i (x, _) -> x, i % k)
+                |> List.groupBy snd
+                |> List.sortBy fst
+                |> List.map (snd >> List.map fst))
         |> List.collect id
         |> List.mapi (fun i xs -> xs |> List.map (fun x -> x, i))
         |> List.collect id
@@ -113,15 +118,16 @@ let buildGraph (opts: Graph.Options) (root: TreeNode<_>) =
 
     let nodes =
         nodesToId
-        |> Seq.map (fun (n, i) ->
-            createNode
-                i
-                n.Label
-                n.Color
-                n.Tooltip
-                (nodeLevel
-                 |> Map.tryFind i
-                 |> Option.defaultValue 0))
+        |> Seq.map
+            (fun (n, i) ->
+                createNode
+                    i
+                    n.Label
+                    n.Color
+                    n.Tooltip
+                    (nodeLevel
+                     |> Map.tryFind i
+                     |> Option.defaultValue 0))
         |> ResizeArray
         |> visLib.DataSet.Create
 
@@ -150,7 +156,8 @@ type GraphView(props: Props<obj> list, ctx) =
         let getProp f = (prevProps :?> Props<'a> list) |> List.tryPick f
 
         let tree =
-            getProp (function
+            getProp
+                (function
                 | Tree t -> Some t
                 | _ -> None)
             |> Option.defaultValue
@@ -161,17 +168,20 @@ type GraphView(props: Props<obj> list, ctx) =
                   Original = Unchecked.defaultof<_> }
 
         let onHover =
-            getProp (function
+            getProp
+                (function
                 | OnHover f -> Some f
                 | _ -> None)
 
         let onSelect =
-            getProp (function
+            getProp
+                (function
                 | OnSelect f -> Some f
                 | _ -> None)
 
         let opts =
-            getProp (function
+            getProp
+                (function
                 | Options o -> Some o
                 | _ -> None)
             |> Option.defaultValue (State.initialGraphModel.Options)
@@ -179,55 +189,58 @@ type GraphView(props: Props<obj> list, ctx) =
         let container = Browser.Dom.document.getElementById ("graph")
 
         let options =
-            jsOptions<Vis.Options> (fun o ->
-                o.autoResize <- Some true
-                o.edges <- Some(jsOptions<Vis.EdgeOptions> (fun e -> e.arrows <- Some <| U2.Case1 "to"))
+            jsOptions<Vis.Options>
+                (fun o ->
+                    o.autoResize <- Some true
+                    o.edges <- Some(jsOptions<Vis.EdgeOptions> (fun e -> e.arrows <- Some <| U2.Case1 "to"))
 
-                o.interaction <-
-                    Some
-                        (createObj [ "hover" ==> true
-                                     "zoomView" ==> true
-                                     "hoverConnectedEdges" ==> false ])
+                    o.interaction <-
+                        Some
+                            (createObj [ "hover" ==> true
+                                         "zoomView" ==> true
+                                         "hoverConnectedEdges" ==> false ])
 
-                o.layout <- Some(createObj [ "randomSeed" ==> 0 ])
+                    o.layout <- Some(createObj [ "randomSeed" ==> 0 ])
 
 
 
-                let hierOpts dir =
-                    createObj [ "enabled" ==> true
-                                "levelSeparation" ==> 170
-                                "nodeSpacing" ==> 100
-                                "treeSpacing" ==> 100
-                                "direction" ==> dir ]
+                    let hierOpts dir =
+                        createObj [ "enabled" ==> true
+                                    "levelSeparation" ==> 170
+                                    "nodeSpacing" ==> 100
+                                    "treeSpacing" ==> 100
+                                    "direction" ==> dir ]
 
-                let layout =
-                    match opts.Layout with
-                    | Graph.Free -> createObj []
-                    | Graph.HierarchicalLeftRight -> createObj [ "hierarchical" ==> hierOpts "LR" ]
-                    | Graph.HierarchicalUpDown -> createObj [ "hierarchical" ==> hierOpts "UD" ]
+                    let layout =
+                        match opts.Layout with
+                        | Graph.Free -> createObj []
+                        | Graph.HierarchicalLeftRight -> createObj [ "hierarchical" ==> hierOpts "LR" ]
+                        | Graph.HierarchicalUpDown -> createObj [ "hierarchical" ==> hierOpts "UD" ]
 
-                o.layout <- Some layout)
+                    o.layout <- Some layout)
 
         let (graph, idToNode) = buildGraph opts tree
 
         let network = visLib.Network.Create(container, graph, options)
 
         onHover
-        |> Option.iter (fun f ->
-            network.on
-                (Vis.NetworkEvents.HoverNode,
-                 (fun o ->
-                     //log("hoverNode Event", o)
-                     idToNode !!((o?node)) |> fun n -> n.Original |> f)))
+        |> Option.iter
+            (fun f ->
+                network.on
+                    (Vis.NetworkEvents.HoverNode,
+                     (fun o ->
+                         //log("hoverNode Event", o)
+                         idToNode !!((o?node)) |> fun n -> n.Original |> f)))
 
         onSelect
-        |> Option.iter (fun f ->
-            network.on
-                (Vis.NetworkEvents.SelectNode,
-                 (fun o ->
-                     //log("selectNode Event", o)
-                     idToNode (!!(o?nodes) |> Array.head)
-                     |> fun n -> n.Original |> f)))
+        |> Option.iter
+            (fun f ->
+                network.on
+                    (Vis.NetworkEvents.SelectNode,
+                     (fun o ->
+                         //log("selectNode Event", o)
+                         idToNode (!!(o?nodes) |> Array.head)
+                         |> fun n -> n.Original |> f)))
 
         ()
 

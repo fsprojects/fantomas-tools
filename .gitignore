@@ -355,3 +355,6 @@ MigrationBackup/
 src/client/output
 watch.ps1
 sync.ps1
+src/client-old/
+snowpack.crt
+snowpack.key
