@@ -10,7 +10,7 @@ open FantomasTools.Client.Trivia.Encoders
 open FantomasTools.Client.Trivia.Decoders
 open Thoth.Json
 
-[<Emit("process.env.TRIVIA_BACKEND")>]
+[<Emit("import.meta.env.SNOWPACK_PUBLIC_TRIVIA_BACKEND")>]
 let private backend: string = jsNative
 
 let private fetchTrivia (payload: ParseRequest) dispatch =

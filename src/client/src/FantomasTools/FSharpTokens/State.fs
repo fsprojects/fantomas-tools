@@ -11,7 +11,7 @@ open FantomasTools.Client.FSharpTokens.Decoders
 open FantomasTools.Client.FSharpTokens.Encoders
 open FantomasTools.Client
 
-[<Emit("process.env.FSHARP_TOKENS_BACKEND")>]
+[<Emit("import.meta.env.SNOWPACK_PUBLIC_FSHARP_TOKENS_BACKEND")>]
 let private backend: string = jsNative
 
 

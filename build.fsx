@@ -78,16 +78,16 @@ Target.create "Build" (fun _ ->
 Target.create "Watch" (fun _ ->
 
     Environment.setEnvironVar "NODE_ENV" "development"
-    Environment.setEnvironVar "FSHARP_TOKENS_BACKEND" (localhostBackend fsharpTokensPort)
-    Environment.setEnvironVar "AST_BACKEND" (localhostBackend astPort)
-    Environment.setEnvironVar "TRIVIA_BACKEND" (localhostBackend triviaPort)
-    Environment.setEnvironVar "FANTOMAS_V2" (localhostBackend fantomasV2Port)
-    Environment.setEnvironVar "FANTOMAS_V3" (localhostBackend fantomasV3Port)
-    Environment.setEnvironVar "FANTOMAS_V4" (localhostBackend fantomasV4Port)
-    Environment.setEnvironVar "FANTOMAS_PREVIEW" (localhostBackend fantomasPreviewPort)
-    Environment.setEnvironVar "FRONTEND_PORT" (fablePort.ToString())
+    Environment.setEnvironVar "SNOWPACK_PUBLIC_FSHARP_TOKENS_BACKEND" (localhostBackend fsharpTokensPort)
+    Environment.setEnvironVar "SNOWPACK_PUBLIC_AST_BACKEND" (localhostBackend astPort)
+    Environment.setEnvironVar "SNOWPACK_PUBLIC_TRIVIA_BACKEND" (localhostBackend triviaPort)
+    Environment.setEnvironVar "SNOWPACK_PUBLIC_FANTOMAS_V2" (localhostBackend fantomasV2Port)
+    Environment.setEnvironVar "SNOWPACK_PUBLIC_FANTOMAS_V3" (localhostBackend fantomasV3Port)
+    Environment.setEnvironVar "SNOWPACK_PUBLIC_FANTOMAS_V4" (localhostBackend fantomasV4Port)
+    Environment.setEnvironVar "SNOWPACK_PUBLIC_FANTOMAS_PREVIEW" (localhostBackend fantomasPreviewPort)
+    Environment.setEnvironVar "SNOWPACK_PUBLIC_FRONTEND_PORT" (fablePort.ToString())
 
-    let fable = async { Yarn.exec "start" setClientDir }
+    let fable = async { Yarn.exec "start" (setClientDir) }
 
     let cors = localhostBackend fablePort
 
@@ -99,15 +99,16 @@ Target.create "Watch" (fun _ ->
                   WorkingDirectory = serverDir </> name }
         }
 
-    let fsharpTokens = hostAzureFunction "FSharpTokens" fsharpTokensPort
-    let astViewer = hostAzureFunction "ASTViewer" astPort
-    let triviaViewer = hostAzureFunction "TriviaViewer" triviaPort
-    let fantomasV2 = hostAzureFunction "FantomasOnlineV2" fantomasV2Port
-    let fantomasV3 = hostAzureFunction "FantomasOnlineV3" fantomasV3Port
-    let fantomasV4 = hostAzureFunction "FantomasOnlineV4" fantomasV4Port
+//    let fsharpTokens = hostAzureFunction "FSharpTokens" fsharpTokensPort
+//    let astViewer = hostAzureFunction "ASTViewer" astPort
+//    let triviaViewer = hostAzureFunction "TriviaViewer" triviaPort
+//    let fantomasV2 = hostAzureFunction "FantomasOnlineV2" fantomasV2Port
+//    let fantomasV3 = hostAzureFunction "FantomasOnlineV3" fantomasV3Port
+//    let fantomasV4 = hostAzureFunction "FantomasOnlineV4" fantomasV4Port
     let fantomasPreview = hostAzureFunction "FantomasOnlinePreview" fantomasPreviewPort
 
-    Async.Parallel [ fable; fsharpTokens; astViewer; triviaViewer; fantomasV2; fantomasV3; fantomasV4; fantomasPreview ]
+//    Async.Parallel [ fable; fsharpTokens; astViewer; triviaViewer; fantomasV2; fantomasV3; fantomasV4; fantomasPreview ]
+    Async.Parallel [ fable; fantomasPreview ]
     |> Async.Ignore
     |> Async.RunSynchronously)
 

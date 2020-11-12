@@ -18,10 +18,10 @@ type EditorProp =
     | GetEditor of (obj -> unit)
 
 let inline editor (props: EditorProp list): ReactElement =
-    ofImport "default" "../js/Editor.js" (keyValueList CaseRules.LowerFirst props) []
+    ofImport "default" "../js/Editor.jsx" (keyValueList CaseRules.LowerFirst props) []
 
 let inline editorInTab (props: EditorProp list): ReactElement =
-    ofImport "default" "../../js/Editor.js" (keyValueList CaseRules.LowerFirst props) []
+    ofImport "default" "../../js/Editor.jsx" (keyValueList CaseRules.LowerFirst props) []
 
 type HighLightRange =
     { StartLine: int

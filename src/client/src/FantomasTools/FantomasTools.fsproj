@@ -7,10 +7,10 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="paket.references" />
-    <Compile Include="../../shared/TriviaShared.fs" />
-    <Compile Include="../../shared/FSharpTokensShared.fs" />
-    <Compile Include="../../shared/ASTViewerShared.fs" />
-    <Compile Include="../../shared/FantomasOnlineShared.fs" />
+    <Compile Include="../../../shared/TriviaShared.fs" />
+    <Compile Include="../../../shared/FSharpTokensShared.fs" />
+    <Compile Include="../../../shared/ASTViewerShared.fs" />
+    <Compile Include="../../../shared/FantomasOnlineShared.fs" />
     <Compile Include="Editor.fs" />
     <Compile Include="VersionBar.fs" />
     <Compile Include="Loader.fs" />
@@ -45,8 +45,8 @@
     <Compile Include="ASTViewer\Encoders.fs" />
     <Compile Include="ASTViewer\Decoders.fs" />
     <Compile Include="ASTViewer\State.fs" />
-    <Compile Include="ASTViewer\vis.fs" />
-    <Compile Include="ASTViewer\GraphView.fs" />
+<!--    <Compile Include="ASTViewer\vis.fs" />-->
+<!--    <Compile Include="ASTViewer\GraphView.fs" />-->
     <Compile Include="ASTViewer\ReactJsonView.fs" />
     <Compile Include="ASTViewer\View.fs" />
     
@@ -57,5 +57,5 @@
     <Compile Include="App.fs" />
     
   </ItemGroup>
-  <Import Project="..\..\..\.paket\Paket.Restore.targets" />
+  <Import Project="..\..\..\..\.paket\Paket.Restore.targets" />
 </Project>
