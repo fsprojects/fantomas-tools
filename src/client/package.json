@@ -9,7 +9,7 @@
     "@babel/preset-react": "7.12.5",
     "@babel/preset-env": "7.12.1",
     "babel-loader": "8.1.0",
-    "copy-webpack-plugin": "6.3.0",
+    "copy-webpack-plugin": "6.3.1",
     "css-loader": "5.0.1",
     "fable-compiler": "2.13.0",
     "fable-loader": "2.1.9",
