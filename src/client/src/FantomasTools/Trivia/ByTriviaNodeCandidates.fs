@@ -8,23 +8,24 @@ open TriviaViewer.Shared
 let view (model: Model) _dispatch =
     let nodes =
         model.TriviaNodeCandidates
-        |> List.mapi (fun idx node ->
-            tr [ Key(sprintf "node_%d" idx)
-                 ClassName(sprintf "trivia-candidate-%s" node.Type) ] [
-                td [] [ str node.Name ]
-                td [ ClassName "text-center" ] [
-                    ofInt node.Range.StartLine
-                ]
-                td [ ClassName "text-center" ] [
-                    ofInt node.Range.StartColumn
-                ]
-                td [ ClassName "text-center" ] [
-                    ofInt node.Range.EndLine
-                ]
-                td [ ClassName "text-center" ] [
-                    ofInt node.Range.EndColumn
-                ]
-            ])
+        |> List.mapi
+            (fun idx node ->
+                tr [ Key(sprintf "node_%d" idx)
+                     ClassName(sprintf "trivia-candidate-%s" node.Type) ] [
+                    td [] [ str node.Name ]
+                    td [ ClassName "text-center" ] [
+                        ofInt node.Range.StartLine
+                    ]
+                    td [ ClassName "text-center" ] [
+                        ofInt node.Range.StartColumn
+                    ]
+                    td [ ClassName "text-center" ] [
+                        ofInt node.Range.EndLine
+                    ]
+                    td [ ClassName "text-center" ] [
+                        ofInt node.Range.EndColumn
+                    ]
+                ])
 
     div [ ClassName "d-flex h-100" ] [
         table [ ClassName "table table-bordered" ] [

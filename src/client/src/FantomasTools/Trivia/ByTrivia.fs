@@ -68,14 +68,15 @@ let private activeTrivia trivia =
 let view (model: Model) dispatch =
     let navItems =
         model.Trivia
-        |> List.map (fun t ->
-            let className = contentToClassName t.Item
-            let label = typeName t.Item
+        |> List.map
+            (fun t ->
+                let className = contentToClassName t.Item
+                let label = typeName t.Item
 
-            { Label = label
-              ClassName = className
-              Title = label
-              Range = t.Range })
+                { Label = label
+                  ClassName = className
+                  Title = label
+                  Range = t.Range })
 
     let onClick idx =
         dispatch (Msg.ActiveItemChange(ActiveTab.ByTrivia, idx))

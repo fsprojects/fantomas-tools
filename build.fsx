@@ -89,7 +89,7 @@ Target.create "Watch" (fun _ ->
 
     let fable = async { Yarn.exec "start" (setClientDir) }
 
-    let cors = localhostBackend fablePort
+    let cors = sprintf "https://localhost:%i" fablePort
 
     let hostAzureFunction name port =
         async {
@@ -99,16 +99,16 @@ Target.create "Watch" (fun _ ->
                   WorkingDirectory = serverDir </> name }
         }
 
-//    let fsharpTokens = hostAzureFunction "FSharpTokens" fsharpTokensPort
-//    let astViewer = hostAzureFunction "ASTViewer" astPort
-//    let triviaViewer = hostAzureFunction "TriviaViewer" triviaPort
-//    let fantomasV2 = hostAzureFunction "FantomasOnlineV2" fantomasV2Port
-//    let fantomasV3 = hostAzureFunction "FantomasOnlineV3" fantomasV3Port
-//    let fantomasV4 = hostAzureFunction "FantomasOnlineV4" fantomasV4Port
+    let fsharpTokens = hostAzureFunction "FSharpTokens" fsharpTokensPort
+    let astViewer = hostAzureFunction "ASTViewer" astPort
+    let triviaViewer = hostAzureFunction "TriviaViewer" triviaPort
+    let fantomasV2 = hostAzureFunction "FantomasOnlineV2" fantomasV2Port
+    let fantomasV3 = hostAzureFunction "FantomasOnlineV3" fantomasV3Port
+    let fantomasV4 = hostAzureFunction "FantomasOnlineV4" fantomasV4Port
     let fantomasPreview = hostAzureFunction "FantomasOnlinePreview" fantomasPreviewPort
 
-//    Async.Parallel [ fable; fsharpTokens; astViewer; triviaViewer; fantomasV2; fantomasV3; fantomasV4; fantomasPreview ]
-    Async.Parallel [ fable; fantomasPreview ]
+    Async.Parallel [ fable; fsharpTokens; astViewer; triviaViewer; fantomasV2; fantomasV3; fantomasV4; fantomasPreview ]
+    //Async.Parallel [ fantomasPreview ]
     |> Async.Ignore
     |> Async.RunSynchronously)
 

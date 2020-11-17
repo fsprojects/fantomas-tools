@@ -13,7 +13,8 @@
     "reactstrap": "8.7.1",
     "bootstrap": "4.5.3",
     "lz-string": "1.4.4",
-    "notyf": "3.9.0"
+    "notyf": "3.9.0",
+    "@monaco-editor/react": "3.7.0"
   },
   "devDependencies": {
     "@snowpack/plugin-dotenv": "^2.0.4",

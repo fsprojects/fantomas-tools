@@ -164,7 +164,7 @@
     core-js-pure "^3.0.0"
     regenerator-runtime "^0.13.4"
 
-"@babel/runtime@^7.1.2", "@babel/runtime@^7.10.2", "@babel/runtime@^7.12.1", "@babel/runtime@^7.12.5", "@babel/runtime@^7.2.0":
+"@babel/runtime@^7.1.2", "@babel/runtime@^7.10.2", "@babel/runtime@^7.11.0", "@babel/runtime@^7.12.1", "@babel/runtime@^7.12.5", "@babel/runtime@^7.2.0":
   version "7.12.5"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.12.5.tgz#410e7e487441e1b360c29be715d870d9b985882e"
   integrity sha512-plcc+hbExy3McchJCEQG3knOsuh3HH+Prx1P6cLIkET/0dLuQDEnrT+s27Axgc9bqfsmNUNHfscgMUdBpC9xfg==
@@ -221,6 +221,14 @@
   integrity sha512-JTosoRJrq5E8QYLwPfqB22zZxyBzUEx+1ooOPMcrFYgWplOeS8K8B6VD3WHD+9XV+R1X5vimruSL9ALYuxfD+A==
   dependencies:
     extend "3.0.2"
+
+"@monaco-editor/react@3.7.0":
+  version "3.7.0"
+  resolved "https://registry.yarnpkg.com/@monaco-editor/react/-/react-3.7.0.tgz#687ddb7e650f6c4e713ffdeb4044d3a250654bf2"
+  integrity sha512-Os/LLdEaoA1kBl0Cr3ssynmrpXpxh0Ddda6I/EHqfRETXUkv4A1YCTxWoF3MdodBrHWKguZIhVHR0tPFE1CswA==
+  dependencies:
+    "@babel/runtime" "^7.11.0"
+    state-local "^1.0.1"
 
 "@nodelib/fs.scandir@2.1.3":
   version "2.1.3"
@@ -4541,6 +4549,11 @@ ssri@^8.0.0:
   integrity sha512-aq/pz989nxVYwn16Tsbj1TqFpD5LLrQxHf5zaHuieFV+R0Bbr4y8qUsOA45hXT/N4/9UNXTarBjnjVmjSOVaAA==
   dependencies:
     minipass "^3.1.1"
+
+state-local@^1.0.1:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/state-local/-/state-local-1.0.4.tgz#aaa6a39d00728fa5ab8d3f3b7e52dd0527f1c926"
+  integrity sha512-ea0qFgZAlqjuwyUnIEST/sDxKhbW3CEcZJVR6ay3hCCXFPDfONsXjslPjHzhhtM/PFlIv0FTpteg3H5wFTNDyw==
 
 "statuses@>= 1.4.0 < 2", "statuses@>= 1.5.0 < 2", statuses@^1.5.0:
   version "1.5.0"

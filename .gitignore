@@ -355,6 +355,8 @@ MigrationBackup/
 src/client/output
 watch.ps1
 sync.ps1
-client-old/
 src/client/src/bin/
 *.fs.js
+src/client-old/
+snowpack.crt
+snowpack.key

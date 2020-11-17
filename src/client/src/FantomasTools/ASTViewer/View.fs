@@ -46,14 +46,15 @@ let private results model dispatch =
                                    ReactJsonView.DisplayDataTypes false
                                    ReactJsonView.DisplayObjectSize false
                                    ReactJsonView.IndentWidth 2
-                                   ReactJsonView.OnLookup(fun o ->
-                                       let range: HighLightRange =
-                                           { StartLine = !!(o.value?StartLine)
-                                             StartColumn = !!(o.value?StartCol)
-                                             EndLine = !!(o.value?EndLine)
-                                             EndColumn = !!(o.value?EndCol) }
+                                   ReactJsonView.OnLookup
+                                       (fun o ->
+                                           let range: HighLightRange =
+                                               { StartLine = !!(o.value?StartLine)
+                                                 StartColumn = !!(o.value?StartCol)
+                                                 EndLine = !!(o.value?EndLine)
+                                                 EndColumn = !!(o.value?EndCol) }
 
-                                       dispatch (HighLight range))
+                                           dispatch (HighLight range))
                                    ReactJsonView.ShouldLookup(fun o -> o.key = "Range")
                                    ReactJsonView.ShouldCollapse(fun x -> x?name = "Range") ]
         | Graph ->

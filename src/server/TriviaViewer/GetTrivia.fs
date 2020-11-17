@@ -109,17 +109,19 @@ module GetTrivia =
 
         let mapNodeToTriviaNode (node: Node) =
             node.Range
-            |> Option.map (fun range ->
-                let attributeParent =
-                    Map.tryFind "linesBetweenParent" node.Properties
-                    |> Option.bind (fun v ->
-                        match v with
-                        | :? int as i when (i > 0) -> Some i
-                        | _ -> None)
+            |> Option.map
+                (fun range ->
+                    let attributeParent =
+                        Map.tryFind "linesBetweenParent" node.Properties
+                        |> Option.bind
+                            (fun v ->
+                                match v with
+                                | :? int as i when (i > 0) -> Some i
+                                | _ -> None)
 
-                match attributeParent with
-                | Some i -> TriviaNodeAssigner(TriviaTypes.MainNode(node.Type), range, i)
-                | None -> TriviaNodeAssigner(TriviaTypes.MainNode(node.Type), range))
+                    match attributeParent with
+                    | Some i -> TriviaNodeAssigner(TriviaTypes.MainNode(node.Type), range, i)
+                    | None -> TriviaNodeAssigner(TriviaTypes.MainNode(node.Type), range))
 
         let triviaNodesFromAST =
             flattenNodeToList node
@@ -141,11 +143,14 @@ module GetTrivia =
             | Ok pr ->
                 let { SourceCode = content
                       Defines = defines
-                      FileName = fileName }
-                    =
+                      FileName = fileName } =
                     pr
 
-                let tokens = TokenParser.tokenize defines content
+                let _, defineHashTokens = TokenParser.getDefines content
+
+                let tokens =
+                    TokenParser.tokenize defines defineHashTokens content
+
                 let! astResult = collectAST log fileName defines content
 
                 match astResult with

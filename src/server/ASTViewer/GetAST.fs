@@ -142,9 +142,10 @@ module GetAST =
             let! checkOptions =
                 checker
                 |> getProjectOptionsFromScript fileName sourceText defines
-                |> Async.map (fun projOpts ->
-                    checker.GetParsingOptionsFromProjectOptions projOpts
-                    |> fst)
+                |> Async.map
+                    (fun projOpts ->
+                        checker.GetParsingOptionsFromProjectOptions projOpts
+                        |> fst)
 
             // Run the first phase (untyped parsing) of the compiler
             let untypedRes =
@@ -197,9 +198,10 @@ module GetAST =
             | Error err -> return sendInternalError (sprintf "%A" err)
         }
 
-    let private parseTypedAST ({ SourceCode = source
-                                 Defines = defines
-                                 IsFsi = isFsi })
+    let private parseTypedAST
+        ({ SourceCode = source
+           Defines = defines
+           IsFsi = isFsi })
         =
         let fileName = if isFsi then "tmp.fsi" else "tmp.fsx"
         let sourceText = FSharp.Compiler.Text.SourceText.ofString (source)
@@ -217,7 +219,8 @@ module GetAST =
                 return
                     Error
                         (sprintf "Type checking aborted. With Parse errors:\n%A\n And with options: \n%A"
-                             parseRes.Errors options)
+                            parseRes.Errors
+                            options)
             | FSharpCheckFileAnswer.Succeeded res ->
                 match res.ImplementationFile with
                 | None -> return Error(sprintf "%A" res.Errors)

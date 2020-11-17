@@ -38,10 +38,11 @@ let private getOptions mode =
 
     fetch url [ RequestProperties.Method HttpMethod.GET ]
     |> Promise.bind (fun res -> res.text ())
-    |> Promise.map (fun (json: string) ->
-        match Decoders.decodeOptions json with
-        | Ok v -> v
-        | Error e -> failwithf "%A" e)
+    |> Promise.map
+        (fun (json: string) ->
+            match Decoders.decodeOptions json with
+            | Ok v -> v
+            | Error e -> failwithf "%A" e)
 
 let private getFormattedCode code model dispatch =
     let url =
@@ -50,13 +51,14 @@ let private getFormattedCode code model dispatch =
     let json = Encoders.encodeRequest code model
 
     Http.postJson url json
-    |> Promise.iter (fun (status, body) ->
-        match status with
-        | 200 -> Msg.FormattedReceived body
-        | 400 -> Msg.FormatException body
-        | 413 -> Msg.FormatException "the input was too large to process"
-        | _ -> Msg.FormatException body
-        |> dispatch)
+    |> Promise.iter
+        (fun (status, body) ->
+            match status with
+            | 200 -> Msg.FormattedReceived body
+            | 400 -> Msg.FormatException body
+            | 413 -> Msg.FormatException "the input was too large to process"
+            | _ -> Msg.FormatException body
+            |> dispatch)
 
 let private updateUrl code model _ =
     let json =
@@ -85,7 +87,8 @@ let init (mode: FantomasMode) =
 
 let optionsListToMap options =
     options
-    |> List.map (function
+    |> List.map
+        (function
         | FantomasOption.BoolOption (_, k, _) as fo -> k, fo
         | FantomasOption.IntOption (_, k, _) as fo -> k, fo
         | FantomasOption.MultilineFormatterTypeOption (_, k, _) as fo -> k, fo)
@@ -106,16 +109,17 @@ let private restoreUserOptionsFromUrl (defaultOptions: FantomasOption list) =
         | [] -> optionsListToMap defaultOptions
         | uo ->
             defaultOptions
-            |> List.map (fun defOpt ->
-                // map the value from the url if found
-                let key = getOptionKey defOpt
+            |> List.map
+                (fun defOpt ->
+                    // map the value from the url if found
+                    let key = getOptionKey defOpt
 
-                let matchingUserOption =
-                    List.tryFind (fun uOpt -> (getOptionKey uOpt) = key) uo
+                    let matchingUserOption =
+                        List.tryFind (fun uOpt -> (getOptionKey uOpt) = key) uo
 
-                match matchingUserOption with
-                | Some muo -> updateOptionValue defOpt muo
-                | None -> defOpt)
+                    match matchingUserOption with
+                    | Some muo -> updateOptionValue defOpt muo
+                    | None -> defOpt)
             |> optionsListToMap
 
     reconstructedOptions, isFsi
@@ -131,10 +135,11 @@ let private copySettings (model: Model) _ =
 
     let toEditorConfigName value =
         value
-        |> Seq.map (fun c ->
-            if System.Char.IsUpper(c)
-            then sprintf "_%s" (c.ToString().ToLower())
-            else c.ToString())
+        |> Seq.map
+            (fun c ->
+                if System.Char.IsUpper(c)
+                then sprintf "_%s" (c.ToString().ToLower())
+                else c.ToString())
         |> String.concat ""
         |> fun s -> s.TrimStart([| '_' |])
         |> fun name ->
@@ -144,7 +149,8 @@ let private copySettings (model: Model) _ =
 
     let editorconfig =
         model.SettingsChangedByTheUser
-        |> List.map (function
+        |> List.map
+            (function
             | FantomasOption.BoolOption (_, k, v) ->
                 if v
                 then toEditorConfigName k |> sprintf "%s=true"
@@ -155,9 +161,10 @@ let private copySettings (model: Model) _ =
         |> sprintf "[*.fs]\n%s"
 
     writeText editorconfig
-    |> Promise.catch (fun err ->
-        showError "Something went wrong while copying settings to the clipboard."
-        printfn "%A" err)
+    |> Promise.catch
+        (fun err ->
+            showError "Something went wrong while copying settings to the clipboard."
+            printfn "%A" err)
     |> Promise.iter (fun () -> showSuccess "Copied fantomas-config settings to clipboard!")
 
 let update isActiveTab code msg model =

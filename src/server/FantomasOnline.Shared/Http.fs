@@ -79,7 +79,8 @@ Please open an issue.
 
 Formatted result:
 
-%O"""                    formatted
+%O"""
+                            formatted
 
                     return sendBadRequest content
             with exn -> return sendBadRequest (sprintf "%A" exn)

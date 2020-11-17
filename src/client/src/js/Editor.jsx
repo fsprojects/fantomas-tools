@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from "react";
-import { ControlledEditor as MonacoEditor } from "https://cdn.skypack.dev/@monaco-editor/react";
+// import MonacoEditor from "https://cdn.skypack.dev/pin/@monaco-editor/react@v3.7.0-s61OrFzSUFvXdpx6TX43/@monaco-editor/react.js";
+import MonacoEditor from "@monaco-editor/react";
 import PropTypes from "prop-types";
 
 const useEventListener = (target, type, listener, ...options) => {

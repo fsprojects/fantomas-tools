@@ -97,7 +97,9 @@ let githubIssueUri code (model: Model) =
 ```fsharp
 %s
 ```
-            """ header code
+            """
+            header
+            code
 
     let (left, right) =
         match model.State with
@@ -134,7 +136,12 @@ Check out our [Contribution Guidelines](https://github.com/fsprojects/fantomas/b
 Fantomas %s
 
 %s
-        """ location.href left right model.Version options)
+        """
+            location.href
+            left
+            right
+            model.Version
+            options)
         |> System.Uri.EscapeDataString
 
     let uri =
@@ -219,10 +226,11 @@ let settings model dispatch =
               FantomasMode.V3, "3.x"
               FantomasMode.V4, "4.x"
               FantomasMode.Preview, "Preview" ]
-            |> List.map (fun (m, l) ->
-                { IsActive = model.Mode = m
-                  Label = l
-                  OnClick = (fun _ -> ChangeMode m |> dispatch) }: SettingControls.MultiButtonSettings)
+            |> List.map
+                (fun (m, l) ->
+                    { IsActive = model.Mode = m
+                      Label = l
+                      OnClick = (fun _ -> ChangeMode m |> dispatch) }: SettingControls.MultiButtonSettings)
             |> SettingControls.multiButton "Mode"
 
         let fileExtension =
