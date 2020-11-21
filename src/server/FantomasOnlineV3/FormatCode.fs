@@ -30,7 +30,7 @@ module FormatCode =
                 (function
                 | BoolOption (_, _, v) -> box v
                 | IntOption (_, _, v) -> box v
-                | MultilineFormatterTypeOption _ -> failwith "option not supported in this version")
+                | _ -> failwith "option not supported in this version")
             |> Seq.toArray
 
         let formatConfigType = typeof<FormatConfig.FormatConfig>

@@ -8,6 +8,8 @@ open Fake.IO.FileSystemOperators
 open Fake.IO.Globbing.Operators
 open Fake.JavaScript
 open Fake.Tools
+open Fantomas
+open Fantomas.Extras.FakeHelpers
 
 module Azure =
     let az parameters =
@@ -61,14 +63,16 @@ Target.create "Fantomas-Git" (fun _ ->
     DotNet.exec (fun opt -> { opt with WorkingDirectory = targetDir }) "tool" "restore" |> ignore
     DotNet.build (fun opt -> { opt with Configuration = DotNet.BuildConfiguration.Release })
         "./.deps/fantomas/src/Fantomas/Fantomas.fsproj"
-    //DotNet.build (fun opt -> { opt with Configuration = DotNet.BuildConfiguration.Release })
-    //  "./.deps/fantomas/src/Fantomas.CoreGlobalTool/Fantomas.CoreGlobalTool.fsproj"
 )
 
 Target.create "Clean" (fun _ ->
     Shell.rm_rf artifactDir
-    !!(serverDir + "/*/bin") |> Seq.iter Shell.rm_rf
-    !!(serverDir + "/*/obj") |> Seq.iter Shell.rm_rf)
+    !!(serverDir + "/*/bin")
+    ++(serverDir + "/*/obj") 
+    ++(clientDir + "/src/bin")
+    ++(clientDir + "/build")
+    |> Seq.iter Shell.rm_rf
+)
 
 Target.create "Build" (fun _ ->
     [ "FSharpTokens"; "ASTViewer"; "TriviaViewer"; "FantomasOnlineV2"; "FantomasOnlineV3"; "FantomasOnlineV4"; "FantomasOnlinePreview" ]
@@ -139,18 +143,43 @@ Target.create "BundleFrontend" (fun _ ->
 )
 
 Target.create "Format" (fun _ ->
-    DotNet.exec id "run" "-p .deps/fantomas/src/Fantomas.CoreGlobalTool/Fantomas.CoreGlobalTool.fsproj -c Release -- --recurse ./src"
-    |> fun result ->
-        if result.OK then result.Messages else result.Errors
-        |> List.iter (printfn "%s"))
+    !! "src/client/src/FantomasTools/**/*.fs"
+    ++ "src/server/**/*.fs"
+    -- "src/**/obj/**/*.fs"
+    |> formatCode
+    |> Async.RunSynchronously
+    |> printfn "Formatted files: %A")
+
+Target.create "FormatChanged" (fun _ ->
+    Fake.Tools.Git.FileStatus.getChangedFilesInWorkingCopy "." "HEAD"
+    |> Seq.choose (fun (_, file) ->
+        let ext = System.IO.Path.GetExtension(file)
+
+        if file.StartsWith("src")
+           && (ext = ".fs" || ext = ".fsi") then
+            Some file
+        else
+            None)
+    |> formatCode
+    |> Async.RunSynchronously
+    |> printfn "Formatted files: %A")
 
 Target.create "CheckFormat" (fun _ ->
-    DotNet.exec id "run" "-p .deps/fantomas/src/Fantomas.CoreGlobalTool/Fantomas.CoreGlobalTool.fsproj -c Release -- --check --recurse ./src"
-    |> fun result ->
-        if result.OK then result.Messages else result.Errors
-        |> List.iter (printfn "%s")
+    let result =
+        !! "src/client/src/FantomasTools/**/*.fs"
+        ++ "src/server/**/*.fs"
+        -- "src/**/obj/**/*.fs"
+        |> checkCode
+        |> Async.RunSynchronously
 
-        if result.ExitCode <> 0 then failwithf "Not everything was formatted")
+    if result.IsValid then
+        Trace.log "No files need formatting"
+    elif result.NeedsFormatting then
+        Trace.log "The following files need formatting:"
+        List.iter Trace.log result.Formatted
+        failwith "Some files need formatting, check output for more info"
+    else
+        Trace.logf "Errors while formatting: %A" result.Errors)
 
 Target.create "CI" ignore
 Target.create "PR" ignore
@@ -161,8 +190,10 @@ open Fake.Core.TargetOperators
 
 "YarnInstall" ==> "BundleFrontend"
 
-"Fantomas-Git" ==> "Clean" ==> "DeployFunctions" ==> "BundleFrontend" ==> "CI"
+"CI"
+    <== [ "BundleFrontend"; "DeployFunctions"; "Clean"; "Fantomas-Git"; "CheckFormat" ]
 
-"Fantomas-Git" ==> "Clean" ==> "Build" ==> "BundleFrontend" ==> "PR"
+"PR" 
+    <== [ "BundleFrontend"; "Build"; "Clean"; "Fantomas-Git"; "CheckFormat" ]
 
 Target.runOrDefault "Build"

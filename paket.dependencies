@@ -20,6 +20,7 @@ nuget Fake.JavaScript.Yarn
 nuget Fake.DotNet.Cli
 nuget Fake.IO.Zip
 nuget Fake.Tools.Git
+nuget Fantomas.Extras 4.3.0-alpha-007
 
 group Infrastructure
 
@@ -27,7 +28,7 @@ source https://api.nuget.org/v3/index.json
 storage: none
 framework: netcoreapp3.1
 
-nuget FSharp.Core 4.7.1
+nuget FSharp.Core
 nuget Pulumi.FSharp 2.0.0
 nuget Pulumi.Azure 3.1.0
 nuget Thoth.Json.Net
