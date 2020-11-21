@@ -2,9 +2,11 @@
   "scripts": {
     "start": "snowpack dev --secure",
     "build": "snowpack build",
+    "postbuild": "node postbuild.mjs",
     "test": "web-test-runner \"src/**/*.test.jsx\"",
     "format": "prettier --write \"src/**/*.{js,jsx}\"",
-    "lint": "prettier --check \"src/**/*.{js,jsx}\""
+    "lint": "prettier --check \"src/**/*.{js,jsx}\"",
+    "deploy": "gh-pages -d ./build --dotfiles"
   },
   "dependencies": {
     "react": "17.0.1",

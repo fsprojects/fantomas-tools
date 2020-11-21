@@ -9,7 +9,11 @@ module.exports = {
     plugins: [
         "@snowpack/plugin-react-refresh",
         "@snowpack/plugin-dotenv",
-        "@snowpack/plugin-sass"
+        "@snowpack/plugin-sass",
+        ["@snowpack/plugin-run-script", {
+            "cmd": "dotnet fable ./src/FantomasTools/FantomasTools.fsproj --outDir ./src/bin",
+            "watch": "dotnet fable watch ./src/FantomasTools/FantomasTools.fsproj --outDir ./src/bin"
+        }]
     ],
     install: [
         "reactstrap"
@@ -22,6 +26,8 @@ module.exports = {
     },
     buildOptions: {
         /* ... */
+        baseUrl: "/fantomas-tools",
+        clean: true
     },
     proxy: {
         /* ... */

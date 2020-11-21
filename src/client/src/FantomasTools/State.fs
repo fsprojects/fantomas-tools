@@ -1,7 +1,6 @@
 module FantomasTools.Client.State
 
 open FantomasTools.Client
-open Browser
 open Elmish
 open FantomasTools.Client.Model
 open Thoth.Json
@@ -12,11 +11,6 @@ let private getCodeFromUrl () =
 
 let init _ =
     let sourceCode = getCodeFromUrl ()
-
-    //    let currentTab, redirectCmd =
-//        match Navigation.parseUrl (Router.currentUrl()) with
-//        | Some tab -> tab, Cmd.none
-//        | None -> ActiveTab.HomeTab, Elmish.Navigation.Navigation.modifyUrl (Navigation.toHash ActiveTab.HomeTab)
     let currentTab = Navigation.parseUrl (Router.currentUrl ())
 
     let (triviaModel, triviaCmd) = Trivia.State.init (currentTab = TriviaTab)
@@ -83,18 +77,6 @@ let update msg model =
                       FantomasModel = { model.FantomasModel with Mode = ft } }
             | _ -> { model with ActiveTab = tab }
 
-        // model, Navigation.Navigation.newUrl (Navigation.toHash tab)
-//        let cmd =
-//            match tab with
-//            | ActiveTab.HomeTab -> Cmd.navigate("")
-//            | ActiveTab.TokensTab -> Cmd.navigate("tokens")
-//            | ActiveTab.ASTTab -> Cmd.navigate("ast")
-//            | ActiveTab.TriviaTab -> Cmd.navigate("trivia")
-//            | ActiveTab.FantomasTab (FantomasTools.Client.FantomasOnline.Model.V2) -> Cmd.navigate("fantomas", "v2")
-//            | ActiveTab.FantomasTab (FantomasTools.Client.FantomasOnline.Model.V3) -> Cmd.navigate("fantomas", "v3")
-//            | ActiveTab.FantomasTab (FantomasTools.Client.FantomasOnline.Model.V4) -> Cmd.navigate("fantomas", "v4")
-//            | ActiveTab.FantomasTab (FantomasTools.Client.FantomasOnline.Model.Preview) -> Cmd.navigate("fantomas", "preview")
-
         let cmd = Navigation.cmdForCurrentTab tab model
 
         nextModel, cmd
@@ -124,26 +106,6 @@ let update msg model =
         { model with ASTModel = aModel }, Cmd.map ASTMsg aCmd
     | FantomasMsg (FantomasOnline.Model.ChangeMode mode) ->
         let cmd =
-            //            let version =
-//                match mode with
-//                | FantomasOnline.Model.V2 -> "v2"
-//                | FantomasOnline.Model.V3 -> "v3"
-//                | FantomasOnline.Model.V4 -> "v4"
-//                | FantomasOnline.Model.Preview -> "preview"
-//
-//            // preserve options from hash
-//            let queryString =
-//                let parts = window.location.hash.Split('?')
-//                if Seq.length parts = 2 then
-//                    parts.[1].Split('&')
-//                    |> Seq.map(fun (kv:string) ->
-//                        let pieces = kv.Split('=')
-//                        pieces.[0], pieces.[1])
-//                    |> Seq.toList
-//                else
-//                    []
-//
-//            Cmd.navigate("fantomas", version, queryString)
             let changeVersion (hashWithoutQuery: string) =
                 let version m =
                     match m with

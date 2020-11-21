@@ -87,8 +87,7 @@ Target.create "Watch" (fun _ ->
     Environment.setEnvironVar "SNOWPACK_PUBLIC_FANTOMAS_PREVIEW" (localhostBackend fantomasPreviewPort)
     Environment.setEnvironVar "SNOWPACK_PUBLIC_FRONTEND_PORT" (fablePort.ToString())
 
-    let fable = async { () } // async { Yarn.exec "start" (setClientDir) }
-
+    let fable = async { Yarn.exec "start" (setClientDir) }
     let cors = sprintf "https://localhost:%i" fablePort
 
     let hostAzureFunction name port =
@@ -108,7 +107,6 @@ Target.create "Watch" (fun _ ->
     let fantomasPreview = hostAzureFunction "FantomasOnlinePreview" fantomasPreviewPort
 
     Async.Parallel [ fable; fsharpTokens; astViewer; triviaViewer; fantomasV2; fantomasV3; fantomasV4; fantomasPreview ]
-    //Async.Parallel [ fantomasPreview ]
     |> Async.Ignore
     |> Async.RunSynchronously)
 
@@ -128,13 +126,13 @@ Target.create "YarnInstall" (fun _ -> Yarn.install setClientDir)
 
 Target.create "BundleFrontend" (fun _ ->
     Environment.setEnvironVar "NODE_ENV" "production"
-    Environment.setEnvironVar "FSHARP_TOKENS_BACKEND" "https://azfun-fsharp-tokens-main.azurewebsites.net"
-    Environment.setEnvironVar "AST_BACKEND" "https://azfun-ast-viewer-main.azurewebsites.net"
-    Environment.setEnvironVar "TRIVIA_BACKEND" "https://azfun-trivia-viewer-main.azurewebsites.net"
-    Environment.setEnvironVar "FANTOMAS_V2" "https://azfun-fantomas-online-v2-main.azurewebsites.net"
-    Environment.setEnvironVar "FANTOMAS_V3" "https://azfun-fantomas-online-v3-main.azurewebsites.net"
-    Environment.setEnvironVar "FANTOMAS_V4" "https://azfun-fantomas-online-v4-main.azurewebsites.net"
-    Environment.setEnvironVar "FANTOMAS_PREVIEW" "https://azfun-fantomas-online-preview-main.azurewebsites.net"
+    Environment.setEnvironVar "SNOWPACK_PUBLIC_FSHARP_TOKENS_BACKEND" "https://azfun-fsharp-tokens-main.azurewebsites.net"
+    Environment.setEnvironVar "SNOWPACK_PUBLIC_AST_BACKEND" "https://azfun-ast-viewer-main.azurewebsites.net"
+    Environment.setEnvironVar "SNOWPACK_PUBLIC_TRIVIA_BACKEND" "https://azfun-trivia-viewer-main.azurewebsites.net"
+    Environment.setEnvironVar "SNOWPACK_PUBLIC_FANTOMAS_V2" "https://azfun-fantomas-online-v2-main.azurewebsites.net"
+    Environment.setEnvironVar "SNOWPACK_PUBLIC_FANTOMAS_V3" "https://azfun-fantomas-online-v3-main.azurewebsites.net"
+    Environment.setEnvironVar "SNOWPACK_PUBLIC_FANTOMAS_V4" "https://azfun-fantomas-online-v4-main.azurewebsites.net"
+    Environment.setEnvironVar "SNOWPACK_PUBLIC_FANTOMAS_PREVIEW" "https://azfun-fantomas-online-preview-main.azurewebsites.net"
 
     Yarn.exec "build" setClientDir
 )

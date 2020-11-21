@@ -37,7 +37,7 @@ jobs:
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./src/client/output
+        publish_dir: ./src/client/build
 
     - name: Deploy Functions
       uses: docker://pulumi/actions:v2.11.2

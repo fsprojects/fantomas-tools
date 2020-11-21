@@ -95,7 +95,7 @@ storage: none
 framework: netstandard2.0
 
 nuget FSharp.Core
-nuget Fable.Reactstrap
+nuget Fable.Reactstrap 0.5.1
 nuget Thoth.Json
 nuget Fable.Fetch
 nuget Feliz.Router 3.2.0

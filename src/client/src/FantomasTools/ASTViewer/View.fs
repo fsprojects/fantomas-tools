@@ -1,6 +1,5 @@
 module FantomasTools.Client.ASTViewer.View
 
-open Fable.Core.JsInterop
 open Fable.React
 open Fable.React.Props
 open FantomasTools.Client

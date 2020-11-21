@@ -19,9 +19,6 @@ let App () =
         dispatch (Model.Msg.SelectTab activeTab)
 
     let routes = View.tabs model dispatch
-    //        match model.ActiveTab with
-//        | Model.ActiveTab.HomeTab -> Html.h1 "home"
-//        | _ -> Html.h1 "Not found"
 
     fragment [] [
         View.navigation dispatch
