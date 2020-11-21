@@ -1,0 +1,45 @@
+.settings {
+  position: fixed;
+  height: 100vh;
+  width: 100vw;
+  top: 0;
+  left: 0;
+  z-index: -10;
+}
+.settings .inner {
+  position: fixed;
+  width: 400px;
+  z-index: 10;
+  height: 100vh;
+  top: 0;
+  right: -400px;
+  background-color: #FFF;
+  padding: 1rem;
+  transition: 0.4s all;
+  max-height: 100%;
+  overflow-y: auto;
+}
+.settings .inner h1 {
+  margin-bottom: 2rem;
+}
+.settings .inner .close {
+  cursor: pointer;
+}
+.settings.open {
+  z-index: 15;
+  background-color: rgba(33, 20, 38, 0.5);
+}
+.settings.open .inner {
+  right: 0;
+}
+
+#commands {
+  position: fixed;
+  z-index: 10;
+  bottom: 1.5rem;
+  right: 1.5rem;
+}
+#commands .btn {
+  border-radius: 0;
+  margin-right: 0.5rem;
+}
