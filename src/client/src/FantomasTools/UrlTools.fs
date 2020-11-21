@@ -12,7 +12,7 @@ let private encodeUrl (_x: string): string =
 let private decodeUrl (_x: string): string =
     import "decompressFromEncodedURIComponent" "../js/urlUtils.js"
 
-let updateUrlBy (_mapFn: string -> string) : unit = import "updateUrlBy" "../js/urlUtils.js"
+let updateUrlBy (_mapFn: string -> string): unit = import "updateUrlBy" "../js/urlUtils.js"
 
 let updateUrlWithData json = setGetParam (encodeUrl json)
 

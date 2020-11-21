@@ -38,9 +38,9 @@ let cmdForCurrentTab tab model =
             |> Cmd.map Msg.TriviaMsg
         | FantomasTab mode when (mode <> model.FantomasModel.Mode) ->
             Cmd.map FantomasMsg (FantomasOnline.State.getOptionsCmd mode)
-//        | FantomasTab  when (not (List.isEmpty model.FantomasModel.DefaultOptions)) ->
+        //        | FantomasTab  when (not (List.isEmpty model.FantomasModel.DefaultOptions)) ->
 //            Cmd.ofMsg (Format) |> Cmd.map Msg.FantomasMsg
-        | FantomasTab _ -> Cmd.ofMsg (FantomasMsg (FantomasOnline.Model.Msg.Format))
+        | FantomasTab _ -> Cmd.ofMsg (FantomasMsg(FantomasOnline.Model.Msg.Format))
     else
         Cmd.none
 //
@@ -76,17 +76,21 @@ let toHash =
 let parseUrl segments =
     match segments with
     | [ "tokens" ]
-    | [ "tokens"; Route.Query ["data", _ ] ] -> ActiveTab.TokensTab
+    | [ "tokens"; Route.Query [ "data", _ ] ] -> ActiveTab.TokensTab
     | [ "ast" ]
-    | [ "ast"; Route.Query ["data", _ ] ] -> ActiveTab.ASTTab
+    | [ "ast"; Route.Query [ "data", _ ] ] -> ActiveTab.ASTTab
     | [ "trivia" ]
-    | [ "trivia"; Route.Query ["data", _ ] ] -> ActiveTab.TriviaTab
+    | [ "trivia"; Route.Query [ "data", _ ] ] -> ActiveTab.TriviaTab
     | [ "fantomas"; "v2" ]
-    | [ "fantomas"; "v2" ; Route.Query ["data", _ ]] -> ActiveTab.FantomasTab(FantomasTools.Client.FantomasOnline.Model.V2)
+    | [ "fantomas"; "v2"; Route.Query [ "data", _ ] ] ->
+        ActiveTab.FantomasTab(FantomasTools.Client.FantomasOnline.Model.V2)
     | [ "fantomas"; "v3" ]
-    | [ "fantomas"; "v3" ; Route.Query ["data", _ ]] ->  ActiveTab.FantomasTab(FantomasTools.Client.FantomasOnline.Model.V3)
+    | [ "fantomas"; "v3"; Route.Query [ "data", _ ] ] ->
+        ActiveTab.FantomasTab(FantomasTools.Client.FantomasOnline.Model.V3)
     | [ "fantomas"; "v4" ]
-    | [ "fantomas"; "v4" ; Route.Query ["data", _ ]] -> ActiveTab.FantomasTab(FantomasTools.Client.FantomasOnline.Model.V4)
+    | [ "fantomas"; "v4"; Route.Query [ "data", _ ] ] ->
+        ActiveTab.FantomasTab(FantomasTools.Client.FantomasOnline.Model.V4)
     | [ "fantomas"; "preview" ]
-    | [ "fantomas"; "preview" ; Route.Query ["data", _ ]] -> ActiveTab.FantomasTab(FantomasTools.Client.FantomasOnline.Model.Preview)
+    | [ "fantomas"; "preview"; Route.Query [ "data", _ ] ] ->
+        ActiveTab.FantomasTab(FantomasTools.Client.FantomasOnline.Model.Preview)
     | _ -> ActiveTab.HomeTab

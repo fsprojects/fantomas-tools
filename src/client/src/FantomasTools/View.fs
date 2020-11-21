@@ -109,16 +109,17 @@ let tabs (model: Model) dispatch =
     let navItem tab label isActive =
         let href =
             let page = Navigation.toHash tab
+
             let query =
                 let hash = Browser.Dom.window.location.hash
-                if hash.Contains("?") then
-                    sprintf "?%s" (hash.Split('?').[1])
-                else
-                    ""
+
+                if hash.Contains("?")
+                then sprintf "?%s" (hash.Split('?').[1])
+                else ""
 
             sprintf "%s%s" page query
-        NavItem.navItem [ NavItem.Custom [ (* OnClick(onNavItemClick tab) *)
-                                           Key label ] ] [
+
+        NavItem.navItem [ NavItem.Custom [ Key label ] ] [
             NavLink.navLink [ NavLink.Custom [ Href href ]
                               NavLink.Active isActive ] [
                 str label

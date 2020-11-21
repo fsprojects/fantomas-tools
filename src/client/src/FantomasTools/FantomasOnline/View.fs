@@ -95,7 +95,8 @@ let githubIssueUri code (model: Model) =
             changedOptions
             |> Seq.map (fun opt -> sprintf "                %s = %s" (getOptionKey opt) (optionValue opt))
             |> String.concat "\n"
-            |> sprintf """```fsharp
+            |> sprintf
+                """```fsharp
     { config with
 %s }
 ```"""
@@ -104,7 +105,8 @@ let githubIssueUri code (model: Model) =
     let label = "bug"
 
     let codeTemplate header code =
-        sprintf """
+        sprintf
+            """
 #### %s
 
 ```fsharp
@@ -121,7 +123,8 @@ let githubIssueUri code (model: Model) =
         | _ -> codeTemplate "Code" code, ""
 
     let body =
-        (sprintf """
+        (sprintf
+            """
 <!--
 
     Please only use this to create issues.

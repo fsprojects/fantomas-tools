@@ -13,11 +13,11 @@ let private getCodeFromUrl () =
 let init _ =
     let sourceCode = getCodeFromUrl ()
 
-//    let currentTab, redirectCmd =
+    //    let currentTab, redirectCmd =
 //        match Navigation.parseUrl (Router.currentUrl()) with
 //        | Some tab -> tab, Cmd.none
 //        | None -> ActiveTab.HomeTab, Elmish.Navigation.Navigation.modifyUrl (Navigation.toHash ActiveTab.HomeTab)
-    let currentTab = Navigation.parseUrl (Router.currentUrl())
+    let currentTab = Navigation.parseUrl (Router.currentUrl ())
 
     let (triviaModel, triviaCmd) = Trivia.State.init (currentTab = TriviaTab)
 
@@ -43,10 +43,9 @@ let init _ =
           FantomasModel = fantomasModel }
 
     let initialCmd = Navigation.cmdForCurrentTab currentTab model
-//
+    //
     let cmd =
-        Cmd.batch [ (* redirectCmd *)
-                    Cmd.map TriviaMsg triviaCmd
+        Cmd.batch [ Cmd.map TriviaMsg triviaCmd
                     Cmd.map FSharpTokensMsg fsharpTokensCmd
                     Cmd.map ASTMsg astCmd
                     Cmd.map FantomasMsg fantomasCmd
@@ -80,8 +79,8 @@ let update msg model =
             match tab with
             | ActiveTab.FantomasTab ft when (ft <> model.FantomasModel.Mode) ->
                 { model with
-                    ActiveTab = tab
-                    FantomasModel = { model.FantomasModel with Mode = ft } }
+                      ActiveTab = tab
+                      FantomasModel = { model.FantomasModel with Mode = ft } }
             | _ -> { model with ActiveTab = tab }
 
         // model, Navigation.Navigation.newUrl (Navigation.toHash tab)
@@ -96,8 +95,7 @@ let update msg model =
 //            | ActiveTab.FantomasTab (FantomasTools.Client.FantomasOnline.Model.V4) -> Cmd.navigate("fantomas", "v4")
 //            | ActiveTab.FantomasTab (FantomasTools.Client.FantomasOnline.Model.Preview) -> Cmd.navigate("fantomas", "preview")
 
-        let cmd =
-            Navigation.cmdForCurrentTab tab model
+        let cmd = Navigation.cmdForCurrentTab tab model
 
         nextModel, cmd
     | UpdateSourceCode code -> { model with SourceCode = code }, Cmd.none
@@ -126,7 +124,7 @@ let update msg model =
         { model with ASTModel = aModel }, Cmd.map ASTMsg aCmd
     | FantomasMsg (FantomasOnline.Model.ChangeMode mode) ->
         let cmd =
-//            let version =
+            //            let version =
 //                match mode with
 //                | FantomasOnline.Model.V2 -> "v2"
 //                | FantomasOnline.Model.V3 -> "v3"
@@ -158,9 +156,10 @@ let update msg model =
                 let newVersion = version mode
                 hashWithoutQuery.Replace(oldVersion, newVersion)
 
-            Cmd.ofSub (fun dispatch ->
-                UrlTools.updateUrlBy changeVersion
-                dispatch (SelectTab (ActiveTab.FantomasTab(mode))))
+            Cmd.ofSub
+                (fun dispatch ->
+                    UrlTools.updateUrlBy changeVersion
+                    dispatch (SelectTab(ActiveTab.FantomasTab(mode))))
 
         model, cmd
     | FantomasMsg fMsg ->

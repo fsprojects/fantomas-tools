@@ -19,8 +19,7 @@ let private optionDecoder: Decoder<FantomasOption> =
                 |> FantomasOption.MultilineFormatterTypeOption
             else
                 get.Required.Field "$value" (Decode.tuple3 Decode.int Decode.string Decode.string)
-                |> FantomasOption.EndOfLineStyleOption
-        )
+                |> FantomasOption.EndOfLineStyleOption)
 
 let decodeOptions json =
     Decode.fromString (Decode.array optionDecoder) json

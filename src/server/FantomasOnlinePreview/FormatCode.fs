@@ -41,11 +41,10 @@ module FormatCode =
                 | MultilineFormatterTypeOption (_, _, v) ->
                     MultilineFormatterType.OfConfigString(v)
                     |> Option.defaultValue (box CharacterWidth)
-                | EndOfLineStyleOption (_,_,v) ->
+                | EndOfLineStyleOption (_, _, v) ->
                     EndOfLineStyle.OfConfigString(v)
                     |> Option.defaultValue EndOfLineStyle.CRLF
-                    |> box
-                )
+                    |> box)
             |> Seq.toArray
 
         let formatConfigType = typeof<FormatConfig.FormatConfig>

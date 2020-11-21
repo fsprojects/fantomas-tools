@@ -11,21 +11,21 @@ let sortByOption =
     | IntOption (o, _, _)
     | BoolOption (o, _, _)
     | MultilineFormatterTypeOption (o, _, _)
-    | EndOfLineStyleOption (o,_,_) -> o
+    | EndOfLineStyleOption (o, _, _) -> o
 
 let getOptionKey =
     function
     | IntOption (_, k, _)
     | BoolOption (_, k, _)
     | MultilineFormatterTypeOption (_, k, _)
-    | EndOfLineStyleOption(_,k,_) -> k
+    | EndOfLineStyleOption (_, k, _) -> k
 
 let optionValue =
     function
     | IntOption (_, _, i) -> i.ToString()
     | BoolOption (_, _, b) -> b.ToString()
     | MultilineFormatterTypeOption (_, _, v)
-    | EndOfLineStyleOption (_,_, v) -> v
+    | EndOfLineStyleOption (_, _, v) -> v
 
 type FormatRequest =
     { SourceCode: string
