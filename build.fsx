@@ -61,8 +61,9 @@ Target.create "Fantomas-Git" (fun _ ->
     DotNet.exec (fun opt -> { opt with WorkingDirectory = targetDir }) "tool" "restore" |> ignore
     DotNet.build (fun opt -> { opt with Configuration = DotNet.BuildConfiguration.Release })
         "./.deps/fantomas/src/Fantomas/Fantomas.fsproj"
-    DotNet.build (fun opt -> { opt with Configuration = DotNet.BuildConfiguration.Release })
-        "./.deps/fantomas/src/Fantomas.CoreGlobalTool/Fantomas.CoreGlobalTool.fsproj")
+    //DotNet.build (fun opt -> { opt with Configuration = DotNet.BuildConfiguration.Release })
+    //  "./.deps/fantomas/src/Fantomas.CoreGlobalTool/Fantomas.CoreGlobalTool.fsproj"
+)
 
 Target.create "Clean" (fun _ ->
     Shell.rm_rf artifactDir
