@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <RestoreSuccess Condition=" '$(RestoreSuccess)' == '' ">True</RestoreSuccess>
+    <RestoreTool Condition=" '$(RestoreTool)' == '' ">NuGet</RestoreTool>
+    <ProjectAssetsFile Condition=" '$(ProjectAssetsFile)' == '' ">$(MSBuildThisFileDirectory)project.assets.json</ProjectAssetsFile>
+    <NuGetPackageRoot Condition=" '$(NuGetPackageRoot)' == '' ">$(UserProfile)\.nuget\packages\</NuGetPackageRoot>
+    <NuGetPackageFolders Condition=" '$(NuGetPackageFolders)' == '' ">C:\Users\nojaf\.nuget\packages\;C:\Program Files\dotnet\sdk\NuGetFallbackFolder</NuGetPackageFolders>
+    <NuGetProjectStyle Condition=" '$(NuGetProjectStyle)' == '' ">PackageReference</NuGetProjectStyle>
+    <NuGetToolVersion Condition=" '$(NuGetToolVersion)' == '' ">5.8.0</NuGetToolVersion>
+  </PropertyGroup>
+  <ItemGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <SourceRoot Include="$([MSBuild]::EnsureTrailingSlash($(NuGetPackageFolders)))" />
+  </ItemGroup>
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <PkgFSharp_Core Condition=" '$(PkgFSharp_Core)' == '' ">C:\Users\nojaf\.nuget\packages\fsharp.core\5.0.0</PkgFSharp_Core>
+    <PkgFable_Core Condition=" '$(PkgFable_Core)' == '' ">C:\Users\nojaf\.nuget\packages\fable.core\3.1.6</PkgFable_Core>
+    <PkgThoth_Json Condition=" '$(PkgThoth_Json)' == '' ">C:\Users\nojaf\.nuget\packages\thoth.json\5.0.0</PkgThoth_Json>
+    <PkgNETStandard_Library Condition=" '$(PkgNETStandard_Library)' == '' ">C:\Users\nojaf\.nuget\packages\netstandard.library\2.0.3</PkgNETStandard_Library>
+    <PkgFable_AST Condition=" '$(PkgFable_AST)' == '' ">C:\Users\nojaf\.nuget\packages\fable.ast\3.0.0-nagareyama-beta-002</PkgFable_AST>
+    <PkgFeliz_CompilerPlugins Condition=" '$(PkgFeliz_CompilerPlugins)' == '' ">C:\Users\nojaf\.nuget\packages\feliz.compilerplugins\0.4.0</PkgFeliz_CompilerPlugins>
+    <PkgFable_Browser_Event Condition=" '$(PkgFable_Browser_Event)' == '' ">C:\Users\nojaf\.nuget\packages\fable.browser.event\1.2.1</PkgFable_Browser_Event>
+    <PkgFable_Browser_WebStorage Condition=" '$(PkgFable_Browser_WebStorage)' == '' ">C:\Users\nojaf\.nuget\packages\fable.browser.webstorage\1.0.0</PkgFable_Browser_WebStorage>
+    <PkgFable_Browser_Blob Condition=" '$(PkgFable_Browser_Blob)' == '' ">C:\Users\nojaf\.nuget\packages\fable.browser.blob\1.1.0</PkgFable_Browser_Blob>
+    <PkgFable_Browser_Dom Condition=" '$(PkgFable_Browser_Dom)' == '' ">C:\Users\nojaf\.nuget\packages\fable.browser.dom\2.1.0</PkgFable_Browser_Dom>
+    <PkgFable_React Condition=" '$(PkgFable_React)' == '' ">C:\Users\nojaf\.nuget\packages\fable.react\7.0.1</PkgFable_React>
+    <PkgFeliz Condition=" '$(PkgFeliz)' == '' ">C:\Users\nojaf\.nuget\packages\feliz\1.17.0</PkgFeliz>
+    <PkgFeliz_UseListener Condition=" '$(PkgFeliz_UseListener)' == '' ">C:\Users\nojaf\.nuget\packages\feliz.uselistener\0.6.3</PkgFeliz_UseListener>
+    <PkgFable_Promise Condition=" '$(PkgFable_Promise)' == '' ">C:\Users\nojaf\.nuget\packages\fable.promise\2.1.0</PkgFable_Promise>
+    <PkgFable_Elmish Condition=" '$(PkgFable_Elmish)' == '' ">C:\Users\nojaf\.nuget\packages\fable.elmish\3.1.0</PkgFable_Elmish>
+    <PkgFeliz_UseElmish Condition=" '$(PkgFeliz_UseElmish)' == '' ">C:\Users\nojaf\.nuget\packages\feliz.useelmish\1.5.0</PkgFeliz_UseElmish>
+    <PkgFeliz_Router Condition=" '$(PkgFeliz_Router)' == '' ">C:\Users\nojaf\.nuget\packages\feliz.router\3.2.0</PkgFeliz_Router>
+    <PkgFable_Reactstrap Condition=" '$(PkgFable_Reactstrap)' == '' ">C:\Users\nojaf\.nuget\packages\fable.reactstrap\0.5.1</PkgFable_Reactstrap>
+    <PkgFable_Fetch Condition=" '$(PkgFable_Fetch)' == '' ">C:\Users\nojaf\.nuget\packages\fable.fetch\2.2.0</PkgFable_Fetch>
+  </PropertyGroup>
+</Project>
