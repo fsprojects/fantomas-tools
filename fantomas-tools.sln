@@ -9,7 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{936EDA2F-5FB
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "client", "client", "{868126FD-EDF5-44BC-98BE-3CD532C26E5A}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FantomasTools", "src\client\FantomasTools\FantomasTools.fsproj", "{9B7C3CC9-00A7-43EB-8B5E-7134AFE7DC88}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FantomasTools", "src\client\src\FantomasTools\FantomasTools.fsproj", "{9B7C3CC9-00A7-43EB-8B5E-7134AFE7DC88}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "server", "server", "{74A7F40B-83EB-443C-9981-72A9911C3284}"
 EndProject

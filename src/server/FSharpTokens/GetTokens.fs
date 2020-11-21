@@ -23,17 +23,22 @@ module GetTokens =
         match model with
         | Ok model ->
             let _, defineHashTokens = TokenParser.getDefines content
+
             let json =
                 TokenParser.tokenize model.Defines defineHashTokens model.SourceCode
                 |> toJson
 
-            new HttpResponseMessage(HttpStatusCode.OK,
-                                    Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json"))
+            new HttpResponseMessage(
+                HttpStatusCode.OK,
+                Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json")
+            )
         | Error err ->
             printfn "Failed to decode: %A" err
 
-            new HttpResponseMessage(HttpStatusCode.BadRequest,
-                                    Content = new StringContent(err, System.Text.Encoding.UTF8, "text/plain"))
+            new HttpResponseMessage(
+                HttpStatusCode.BadRequest,
+                Content = new StringContent(err, System.Text.Encoding.UTF8, "text/plain")
+            )
 
     let getVersion () =
         let version =
@@ -44,14 +49,18 @@ module GetTokens =
             let version = assembly.GetName().Version
             sprintf "%i.%i.%i" version.Major version.Minor version.Revision
 
-        new HttpResponseMessage(HttpStatusCode.OK,
-                                Content = new StringContent(version, System.Text.Encoding.UTF8, "application/text"))
+        new HttpResponseMessage(
+            HttpStatusCode.OK,
+            Content = new StringContent(version, System.Text.Encoding.UTF8, "application/text")
+        )
 
     let notFound () =
         let json = Encode.string "Not found" |> Encode.toString 4
 
-        new HttpResponseMessage(HttpStatusCode.NotFound,
-                                Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json"))
+        new HttpResponseMessage(
+            HttpStatusCode.NotFound,
+            Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json")
+        )
 
     [<FunctionName("Tokens")>]
     let run

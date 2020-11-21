@@ -61,8 +61,9 @@ Target.create "Fantomas-Git" (fun _ ->
     DotNet.exec (fun opt -> { opt with WorkingDirectory = targetDir }) "tool" "restore" |> ignore
     DotNet.build (fun opt -> { opt with Configuration = DotNet.BuildConfiguration.Release })
         "./.deps/fantomas/src/Fantomas/Fantomas.fsproj"
-    DotNet.build (fun opt -> { opt with Configuration = DotNet.BuildConfiguration.Release })
-        "./.deps/fantomas/src/Fantomas.CoreGlobalTool/Fantomas.CoreGlobalTool.fsproj")
+    //DotNet.build (fun opt -> { opt with Configuration = DotNet.BuildConfiguration.Release })
+    //  "./.deps/fantomas/src/Fantomas.CoreGlobalTool/Fantomas.CoreGlobalTool.fsproj"
+)
 
 Target.create "Clean" (fun _ ->
     Shell.rm_rf artifactDir
@@ -78,18 +79,17 @@ Target.create "Build" (fun _ ->
 Target.create "Watch" (fun _ ->
 
     Environment.setEnvironVar "NODE_ENV" "development"
-    Environment.setEnvironVar "FSHARP_TOKENS_BACKEND" (localhostBackend fsharpTokensPort)
-    Environment.setEnvironVar "AST_BACKEND" (localhostBackend astPort)
-    Environment.setEnvironVar "TRIVIA_BACKEND" (localhostBackend triviaPort)
-    Environment.setEnvironVar "FANTOMAS_V2" (localhostBackend fantomasV2Port)
-    Environment.setEnvironVar "FANTOMAS_V3" (localhostBackend fantomasV3Port)
-    Environment.setEnvironVar "FANTOMAS_V4" (localhostBackend fantomasV4Port)
-    Environment.setEnvironVar "FANTOMAS_PREVIEW" (localhostBackend fantomasPreviewPort)
-    Environment.setEnvironVar "FRONTEND_PORT" (fablePort.ToString())
+    Environment.setEnvironVar "SNOWPACK_PUBLIC_FSHARP_TOKENS_BACKEND" (localhostBackend fsharpTokensPort)
+    Environment.setEnvironVar "SNOWPACK_PUBLIC_AST_BACKEND" (localhostBackend astPort)
+    Environment.setEnvironVar "SNOWPACK_PUBLIC_TRIVIA_BACKEND" (localhostBackend triviaPort)
+    Environment.setEnvironVar "SNOWPACK_PUBLIC_FANTOMAS_V2" (localhostBackend fantomasV2Port)
+    Environment.setEnvironVar "SNOWPACK_PUBLIC_FANTOMAS_V3" (localhostBackend fantomasV3Port)
+    Environment.setEnvironVar "SNOWPACK_PUBLIC_FANTOMAS_V4" (localhostBackend fantomasV4Port)
+    Environment.setEnvironVar "SNOWPACK_PUBLIC_FANTOMAS_PREVIEW" (localhostBackend fantomasPreviewPort)
+    Environment.setEnvironVar "SNOWPACK_PUBLIC_FRONTEND_PORT" (fablePort.ToString())
 
-    let fable = async { Yarn.exec "start" setClientDir }
-
-    let cors = localhostBackend fablePort
+    let fable = async { Yarn.exec "start" (setClientDir) }
+    let cors = sprintf "https://localhost:%i" fablePort
 
     let hostAzureFunction name port =
         async {
@@ -127,13 +127,13 @@ Target.create "YarnInstall" (fun _ -> Yarn.install setClientDir)
 
 Target.create "BundleFrontend" (fun _ ->
     Environment.setEnvironVar "NODE_ENV" "production"
-    Environment.setEnvironVar "FSHARP_TOKENS_BACKEND" "https://azfun-fsharp-tokens-main.azurewebsites.net"
-    Environment.setEnvironVar "AST_BACKEND" "https://azfun-ast-viewer-main.azurewebsites.net"
-    Environment.setEnvironVar "TRIVIA_BACKEND" "https://azfun-trivia-viewer-main.azurewebsites.net"
-    Environment.setEnvironVar "FANTOMAS_V2" "https://azfun-fantomas-online-v2-main.azurewebsites.net"
-    Environment.setEnvironVar "FANTOMAS_V3" "https://azfun-fantomas-online-v3-main.azurewebsites.net"
-    Environment.setEnvironVar "FANTOMAS_V4" "https://azfun-fantomas-online-v4-main.azurewebsites.net"
-    Environment.setEnvironVar "FANTOMAS_PREVIEW" "https://azfun-fantomas-online-preview-main.azurewebsites.net"
+    Environment.setEnvironVar "SNOWPACK_PUBLIC_FSHARP_TOKENS_BACKEND" "https://azfun-fsharp-tokens-main.azurewebsites.net"
+    Environment.setEnvironVar "SNOWPACK_PUBLIC_AST_BACKEND" "https://azfun-ast-viewer-main.azurewebsites.net"
+    Environment.setEnvironVar "SNOWPACK_PUBLIC_TRIVIA_BACKEND" "https://azfun-trivia-viewer-main.azurewebsites.net"
+    Environment.setEnvironVar "SNOWPACK_PUBLIC_FANTOMAS_V2" "https://azfun-fantomas-online-v2-main.azurewebsites.net"
+    Environment.setEnvironVar "SNOWPACK_PUBLIC_FANTOMAS_V3" "https://azfun-fantomas-online-v3-main.azurewebsites.net"
+    Environment.setEnvironVar "SNOWPACK_PUBLIC_FANTOMAS_V4" "https://azfun-fantomas-online-v4-main.azurewebsites.net"
+    Environment.setEnvironVar "SNOWPACK_PUBLIC_FANTOMAS_PREVIEW" "https://azfun-fantomas-online-preview-main.azurewebsites.net"
 
     Yarn.exec "build" setClientDir
 )

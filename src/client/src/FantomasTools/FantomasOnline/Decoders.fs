@@ -1,9 +1,9 @@
-module FantomasOnline.Server.Shared.Decoders
+module FantomasTools.Client.FantomasOnline.Decoders
 
+open Thoth.Json
 open FantomasOnline.Shared
-open Thoth.Json.Net
 
-let optionDecoder: Decoder<FantomasOption> =
+let private optionDecoder: Decoder<FantomasOption> =
     Decode.object
         (fun get ->
             let t = get.Required.Field "$type" Decode.string
@@ -21,15 +21,15 @@ let optionDecoder: Decoder<FantomasOption> =
                 get.Required.Field "$value" (Decode.tuple3 Decode.int Decode.string Decode.string)
                 |> FantomasOption.EndOfLineStyleOption)
 
-let requestDecoder: Decoder<FormatRequest> =
+let decodeOptions json =
+    Decode.fromString (Decode.array optionDecoder) json
+    |> Result.map (Array.sortBy sortByOption >> List.ofArray)
+
+let decodeOptionsFromUrl: Decoder<FantomasOption list * bool> =
     Decode.object
         (fun get ->
-            { SourceCode = get.Required.Field "sourceCode" Decode.string
-              Options =
-                  get.Required.Field
-                      "options"
-                      (Decode.list optionDecoder
-                       |> Decode.map (List.sortBy sortByOption))
-              IsFsi = get.Required.Field "isFsi" Decode.bool })
+            let settings =
+                get.Required.Field "settings" (Decode.list optionDecoder)
 
-let decodeRequest json = Decode.fromString requestDecoder json
+            let isFSI = get.Required.Field "isFsi" Decode.bool
+            settings, isFSI)

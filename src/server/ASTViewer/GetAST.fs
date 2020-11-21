@@ -72,33 +72,42 @@ module GetAST =
         lazy (FSharpChecker.Create(keepAssemblyContents = true))
 
     let private sendJson json =
-        new HttpResponseMessage(HttpStatusCode.OK,
-                                Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json"))
+        new HttpResponseMessage(
+            HttpStatusCode.OK,
+            Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json")
+        )
 
     let private sendText text =
-        new HttpResponseMessage(HttpStatusCode.OK,
-                                Content = new StringContent(text, System.Text.Encoding.UTF8, "application/text"))
+        new HttpResponseMessage(
+            HttpStatusCode.OK,
+            Content = new StringContent(text, System.Text.Encoding.UTF8, "application/text")
+        )
 
     let private sendInternalError err =
-        new HttpResponseMessage(HttpStatusCode.InternalServerError,
-                                Content = new StringContent(err, System.Text.Encoding.UTF8, "application/text"))
+        new HttpResponseMessage(
+            HttpStatusCode.InternalServerError,
+            Content = new StringContent(err, System.Text.Encoding.UTF8, "application/text")
+        )
 
     let private sendTooLargeError () =
-        new HttpResponseMessage(HttpStatusCode.RequestEntityTooLarge,
-                                Content =
-                                    new StringContent("File was too large",
-                                                      System.Text.Encoding.UTF8,
-                                                      "application/text"))
+        new HttpResponseMessage(
+            HttpStatusCode.RequestEntityTooLarge,
+            Content = new StringContent("File was too large", System.Text.Encoding.UTF8, "application/text")
+        )
 
     let private sendBadRequest error =
-        new HttpResponseMessage(HttpStatusCode.BadRequest,
-                                Content = new StringContent(error, System.Text.Encoding.UTF8, "application/text"))
+        new HttpResponseMessage(
+            HttpStatusCode.BadRequest,
+            Content = new StringContent(error, System.Text.Encoding.UTF8, "application/text")
+        )
 
     let private notFound () =
         let json = Encode.string "Not found" |> Encode.toString 4
 
-        new HttpResponseMessage(HttpStatusCode.NotFound,
-                                Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json"))
+        new HttpResponseMessage(
+            HttpStatusCode.NotFound,
+            Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json")
+        )
 
     let getProjectOptionsFromScript file source defines (checker: FSharpChecker) =
         async {
@@ -108,8 +117,13 @@ module GetAST =
                 |> Array.append additionalRefs
 
             let! (opts, errors) =
-                checker.GetProjectOptionsFromScript
-                    (file, source, otherFlags = otherFlags, assumeDotNetFramework = false, useSdkRefs = true)
+                checker.GetProjectOptionsFromScript(
+                    file,
+                    source,
+                    otherFlags = otherFlags,
+                    assumeDotNetFramework = false,
+                    useSdkRefs = true
+                )
 
             match errors with
             | [] -> return opts
@@ -217,10 +231,12 @@ module GetAST =
             match typedRes with
             | FSharpCheckFileAnswer.Aborted ->
                 return
-                    Error
-                        (sprintf "Type checking aborted. With Parse errors:\n%A\n And with options: \n%A"
+                    Error(
+                        sprintf
+                            "Type checking aborted. With Parse errors:\n%A\n And with options: \n%A"
                             parseRes.Errors
-                            options)
+                            options
+                    )
             | FSharpCheckFileAnswer.Succeeded res ->
                 match res.ImplementationFile with
                 | None -> return Error(sprintf "%A" res.Errors)

@@ -26,25 +26,35 @@ module Reflection =
 let private notFound () =
     let json = Encode.string "Not found" |> Encode.toString 4
 
-    new HttpResponseMessage(HttpStatusCode.NotFound,
-                            Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json"))
+    new HttpResponseMessage(
+        HttpStatusCode.NotFound,
+        Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json")
+    )
     |> Async.lift
 
 let private sendText text =
-    new HttpResponseMessage(HttpStatusCode.OK,
-                            Content = new StringContent(text, System.Text.Encoding.UTF8, "application/text"))
+    new HttpResponseMessage(
+        HttpStatusCode.OK,
+        Content = new StringContent(text, System.Text.Encoding.UTF8, "application/text")
+    )
 
 let private sendBadRequest error =
-    new HttpResponseMessage(HttpStatusCode.BadRequest,
-                            Content = new StringContent(error, System.Text.Encoding.UTF8, "application/text"))
+    new HttpResponseMessage(
+        HttpStatusCode.BadRequest,
+        Content = new StringContent(error, System.Text.Encoding.UTF8, "application/text")
+    )
 
 let private sendJson json =
-    new HttpResponseMessage(HttpStatusCode.OK,
-                            Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json"))
+    new HttpResponseMessage(
+        HttpStatusCode.OK,
+        Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json")
+    )
 
 let private sendInternalError err =
-    new HttpResponseMessage(HttpStatusCode.InternalServerError,
-                            Content = new StringContent(err, System.Text.Encoding.UTF8, "application/text"))
+    new HttpResponseMessage(
+        HttpStatusCode.InternalServerError,
+        Content = new StringContent(err, System.Text.Encoding.UTF8, "application/text")
+    )
 
 let private getVersionResponse version = sendText version |> Async.lift
 
@@ -74,7 +84,8 @@ let private formatResponse<'options>
                     return sendText formatted
                 else
                     let content =
-                        sprintf """Fantomas was able to format the code but the result appears to be invalid F# code.
+                        sprintf
+                            """Fantomas was able to format the code but the result appears to be invalid F# code.
 Please open an issue.
 
 Formatted result:

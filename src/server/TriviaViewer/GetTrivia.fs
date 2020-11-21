@@ -20,20 +20,28 @@ open TriviaViewer.Server
 module GetTrivia =
 
     let private sendJson json =
-        new HttpResponseMessage(HttpStatusCode.OK,
-                                Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json"))
+        new HttpResponseMessage(
+            HttpStatusCode.OK,
+            Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json")
+        )
 
     let private sendText text =
-        new HttpResponseMessage(HttpStatusCode.OK,
-                                Content = new StringContent(text, System.Text.Encoding.UTF8, "application/text"))
+        new HttpResponseMessage(
+            HttpStatusCode.OK,
+            Content = new StringContent(text, System.Text.Encoding.UTF8, "application/text")
+        )
 
     let private sendInternalError err =
-        new HttpResponseMessage(HttpStatusCode.InternalServerError,
-                                Content = new StringContent(err, System.Text.Encoding.UTF8, "application/text"))
+        new HttpResponseMessage(
+            HttpStatusCode.InternalServerError,
+            Content = new StringContent(err, System.Text.Encoding.UTF8, "application/text")
+        )
 
     let private sendBadRequest error =
-        new HttpResponseMessage(HttpStatusCode.BadRequest,
-                                Content = new StringContent(error, System.Text.Encoding.UTF8, "application/text"))
+        new HttpResponseMessage(
+            HttpStatusCode.BadRequest,
+            Content = new StringContent(error, System.Text.Encoding.UTF8, "application/text")
+        )
 
     let private getProjectOptionsFromScript file source defines (checker: FSharpChecker) =
         async {
@@ -89,8 +97,10 @@ module GetTrivia =
     let private notFound () =
         let json = Encode.string "Not found" |> Encode.toString 4
 
-        new HttpResponseMessage(HttpStatusCode.NotFound,
-                                Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json"))
+        new HttpResponseMessage(
+            HttpStatusCode.NotFound,
+            Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json")
+        )
 
     let private collectTriviaCandidates tokens ast =
         let node =
