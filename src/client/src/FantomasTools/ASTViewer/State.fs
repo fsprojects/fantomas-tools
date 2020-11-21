@@ -41,13 +41,6 @@ let private fetchTypedAst (payload: Shared.Input) dispatch =
     let url = sprintf "%s/api/typed-ast" backend
     fetchNodeRequest url payload dispatch
 
-let initialGraphModel: Graph.Model =
-    { RootsPath = []
-      Options =
-          { MaxNodes = 30
-            MaxNodesInRow = 7
-            Layout = Graph.HierarchicalLeftRight } }
-
 let private initialModel =
     { Source = ""
       Defines = ""
@@ -56,8 +49,7 @@ let private initialModel =
       IsLoading = false
       Version = ""
       View = Raw
-      FSharpEditorState = Loading
-      Graph = initialGraphModel }
+      FSharpEditorState = Loading }
 
 let private getMessageFromError (ex: exn) = Error ex.Message
 
@@ -126,36 +118,8 @@ let update code (msg: Msg) (model: Model): Model * Cmd<Msg> =
         { model with IsLoading = true }, cmd
 
     | VersionFound version -> { model with Version = version }, Cmd.none
-    | ShowJsonViewer -> { model with View = JsonViewer }, Cmd.none
     | ShowEditor -> { model with View = Editor }, Cmd.none
     | ShowRaw -> { model with View = Raw }, Cmd.none
-    | ShowGraph ->
-        { model with View = Graph },
-        Cmd.OfAsync.either
-            (fun _ -> Async.Sleep 100)
-            ()
-            (fun _ -> Msg.Graph <| SetOptions model.Graph.Options)
-            (fun _ -> Error "")
-    | Msg.Graph (GraphMsg.SetRoot node) ->
-        { model with
-              Graph =
-                  { model.Graph with
-                        RootsPath = node :: model.Graph.RootsPath } },
-        Cmd.none
-    | Msg.Graph RootBack ->
-        { model with
-              Graph =
-                  { model.Graph with
-                        RootsPath =
-                            model.Graph.RootsPath
-                            |> function
-                            | [] -> []
-                            | _ :: tl -> tl } },
-        Cmd.none
-    | Msg.Graph (GraphMsg.SetOptions opt) ->
-        { model with
-              Graph = { model.Graph with Options = opt } },
-        Cmd.none
     | DefinesUpdated defines -> { model with Defines = defines }, Cmd.none
     | SetFsiFile isFsi -> { model with IsFsi = isFsi }, Cmd.none
     | HighLight hlr -> model, Cmd.ofSub (FantomasTools.Client.Editor.selectRange hlr)

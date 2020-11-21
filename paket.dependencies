@@ -95,10 +95,9 @@ storage: none
 framework: netstandard2.0
 
 nuget FSharp.Core
-nuget Fable.Elmish.React
-nuget Fable.Elmish.Debugger
-nuget Fable.Elmish.HMR
 nuget Fable.Reactstrap
 nuget Thoth.Json
 nuget Fable.Fetch
-nuget Fable.Elmish.Browser
+nuget Feliz.Router 3.2.0
+nuget Feliz.UseElmish
+nuget Feliz.CompilerPlugins

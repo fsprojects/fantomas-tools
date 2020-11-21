@@ -4,12 +4,13 @@ open Fable.React
 open Fable.React.Props
 open Reactstrap
 
-let input onChange labelValue placeholder value =
+let input key onChange labelValue placeholder value =
     FormGroup.formGroup [] [
         label [] [ str labelValue ]
         Input.input [ Input.Custom [ Placeholder placeholder
                                      OnChange(fun ev -> ev.Value |> onChange)
-                                     DefaultValue value ] ]
+                                     DefaultValue value
+                                     Key key ] ]
     ]
 
 let private toggleButton_ onClick active label =

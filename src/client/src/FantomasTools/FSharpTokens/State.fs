@@ -14,7 +14,6 @@ open FantomasTools.Client
 [<Emit("import.meta.env.SNOWPACK_PUBLIC_FSHARP_TOKENS_BACKEND")>]
 let private backend: string = jsNative
 
-
 let private getTokens (request: FSharpTokens.Shared.GetTokensRequest): JS.Promise<string> =
     let url = sprintf "%s/%s" backend "api/get-tokens"
 

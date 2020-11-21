@@ -14,9 +14,13 @@ let optionDecoder: Decoder<FantomasOption> =
             elif t = "bool" then
                 get.Required.Field "$value" (Decode.tuple3 Decode.int Decode.string Decode.bool)
                 |> FantomasOption.BoolOption
+            elif t = "multilineFormatterType" then
+                get.Required.Field "$value" (Decode.tuple3 Decode.int Decode.string Decode.string)
+                |> FantomasOption.MultilineFormatterTypeOption
             else
                 get.Required.Field "$value" (Decode.tuple3 Decode.int Decode.string Decode.string)
-                |> FantomasOption.MultilineFormatterTypeOption)
+                |> FantomasOption.EndOfLineStyleOption
+        )
 
 let requestDecoder: Decoder<FormatRequest> =
     Decode.object

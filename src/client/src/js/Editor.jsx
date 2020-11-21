@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from "react";
 // import MonacoEditor from "https://cdn.skypack.dev/pin/@monaco-editor/react@v3.7.0-s61OrFzSUFvXdpx6TX43/@monaco-editor/react.js";
-import MonacoEditor from "@monaco-editor/react";
+import ControlledEditor from "@monaco-editor/react/lib/ControlledEditor/index";
 import PropTypes from "prop-types";
 
 const useEventListener = (target, type, listener, ...options) => {
@@ -51,8 +51,7 @@ const Editor = ({ onChange, language, getEditor, value, isReadOnly }) => {
   }
 
   return (
-    <div style={{ height: "100%", overflow: "hidden" }}>
-      <MonacoEditor
+      <ControlledEditor
         height={"100%"}
         language={language}
         editorDidMount={handleEditorDidMount}
@@ -60,7 +59,6 @@ const Editor = ({ onChange, language, getEditor, value, isReadOnly }) => {
         onChange={handleEditorChange}
         options={options}
       />
-    </div>
   );
 };
 

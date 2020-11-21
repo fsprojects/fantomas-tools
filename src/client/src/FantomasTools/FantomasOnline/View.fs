@@ -32,7 +32,7 @@ let private mapToOption dispatch (key, fantomasOption) =
                     UpdateOption(key, IntOption(o, key, v))
                     |> dispatch
 
-            SettingControls.input onChange key "integer" v
+            SettingControls.input key onChange key "integer" v
         | FantomasOption.MultilineFormatterTypeOption (o, _, v) ->
             SettingControls.toggleButton
                 (fun _ ->
@@ -45,6 +45,19 @@ let private mapToOption dispatch (key, fantomasOption) =
                 "NumberOfItems"
                 key
                 (v = "character_width")
+        | FantomasOption.EndOfLineStyleOption (o, _, v) ->
+            SettingControls.toggleButton
+                (fun _ ->
+                    UpdateOption(key, MultilineFormatterTypeOption(o, key, "crlr"))
+                    |> dispatch)
+                (fun _ ->
+                    UpdateOption(key, MultilineFormatterTypeOption(o, key, "lf"))
+                    |> dispatch)
+                "CRLF"
+                "LF"
+                key
+                (v = "crlf")
+
 
     div [ Key key
           ClassName "fantomas-setting" ] [

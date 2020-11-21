@@ -87,7 +87,7 @@ Target.create "Watch" (fun _ ->
     Environment.setEnvironVar "SNOWPACK_PUBLIC_FANTOMAS_PREVIEW" (localhostBackend fantomasPreviewPort)
     Environment.setEnvironVar "SNOWPACK_PUBLIC_FRONTEND_PORT" (fablePort.ToString())
 
-    let fable = async { Yarn.exec "start" (setClientDir) }
+    let fable = async { () } // async { Yarn.exec "start" (setClientDir) }
 
     let cors = sprintf "https://localhost:%i" fablePort
 

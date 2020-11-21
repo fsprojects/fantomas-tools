@@ -91,7 +91,8 @@ let optionsListToMap options =
         (function
         | FantomasOption.BoolOption (_, k, _) as fo -> k, fo
         | FantomasOption.IntOption (_, k, _) as fo -> k, fo
-        | FantomasOption.MultilineFormatterTypeOption (_, k, _) as fo -> k, fo)
+        | FantomasOption.MultilineFormatterTypeOption (_, k, _) as fo -> k, fo
+        | FantomasOption.EndOfLineStyleOption (_, k, _) as fo -> k, fo)
     |> Map.ofList
 
 let private updateOptionValue defaultOption userOption =
@@ -104,6 +105,7 @@ let private restoreUserOptionsFromUrl (defaultOptions: FantomasOption list) =
     let userOptions, isFsi =
         UrlTools.restoreModelFromUrl (Decoders.decodeOptionsFromUrl) ([], false)
 
+    printfn "restored options: %A" userOptions
     let reconstructedOptions =
         match userOptions with
         | [] -> optionsListToMap defaultOptions
@@ -131,7 +133,7 @@ let private showSuccess _message = import "showSuccess" "../../js/notifications"
 let private showError _message = import "showSuccess" "../../js/notifications"
 
 let private copySettings (model: Model) _ =
-    let supportedProperties = [ "max_line_length"; "indent_size" ]
+    let supportedProperties = [ "max_line_length"; "indent_size"; "end_of_line" ]
 
     let toEditorConfigName value =
         value
@@ -156,7 +158,9 @@ let private copySettings (model: Model) _ =
                 then toEditorConfigName k |> sprintf "%s=true"
                 else toEditorConfigName k |> sprintf "%s=false"
             | FantomasOption.IntOption (_, k, v) -> sprintf "%s=%i" (toEditorConfigName k) v
-            | FantomasOption.MultilineFormatterTypeOption (_, k, v) -> sprintf "%s=%s" (toEditorConfigName k) v)
+            | FantomasOption.MultilineFormatterTypeOption (_, k, v)
+            | FantomasOption.EndOfLineStyleOption (_, k, v)
+                 -> sprintf "%s=%s" (toEditorConfigName k) v)
         |> String.concat "\n"
         |> sprintf "[*.fs]\n%s"
 

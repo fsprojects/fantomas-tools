@@ -34,7 +34,7 @@
     <Compile Include="FSharpTokens\State.fs" />
     <Compile Include="FSharpTokens\View.fs" />
 
-    
+
     <Compile Include="FantomasOnline\Model.fs" />
     <Compile Include="FantomasOnline\Encoders.fs" />
     <Compile Include="FantomasOnline\Decoders.fs" />
@@ -47,9 +47,8 @@
     <Compile Include="ASTViewer\State.fs" />
 <!--    <Compile Include="ASTViewer\vis.fs" />-->
 <!--    <Compile Include="ASTViewer\GraphView.fs" />-->
-    <Compile Include="ASTViewer\ReactJsonView.fs" />
     <Compile Include="ASTViewer\View.fs" />
-    
+
     <Compile Include="Model.fs" />
     <Compile Include="Navigation.fs" />
     <Compile Include="State.fs" />

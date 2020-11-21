@@ -100,7 +100,7 @@ let private details model dispatch =
                 |> Array.mapi (tokenDetail dispatch)
 
             div [ Id "details" ] [
-                h4 [ ClassName "ml-2" ] [
+                h4 [ ClassName "p-2" ] [
                     str "Details of line "
                     span [ Class "has-text-grey" ] [
                         ofInt activeLine
@@ -131,6 +131,7 @@ let settings model dispatch =
     fragment [] [
         VersionBar.versionBar (sprintf "FSC - %s" model.Version)
         SettingControls.input
+            "token-defines"
             (DefinesUpdated >> dispatch)
             "Defines"
             "Enter your defines separated with a space"

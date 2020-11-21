@@ -8,7 +8,7 @@ open FantomasTools.Client
 open FantomasTools.Client.Model
 open Reactstrap
 
-let private navigation dispatch =
+let navigation dispatch =
     let title = sprintf "Fantomas tools"
 
     Navbar.navbar [ Navbar.Light true
@@ -31,7 +31,7 @@ let private navigation dispatch =
         ]
     ]
 
-let private editor model dispatch =
+let editor model dispatch =
     Col.col [ Col.Xs(Col.mkCol !^5)
               Col.Custom [ ClassName "border-right h-100 d-flex flex-column" ] ] [
         div [ Id "source"; ClassName "flex-grow-1" ] [
@@ -39,7 +39,7 @@ let private editor model dispatch =
                             Editor.Value model.SourceCode ]
         ]
     ]
-
+//
 let private homeTab =
     Jumbotron.jumbotron [] [
         h1 [ ClassName "display-3" ] [
@@ -73,7 +73,7 @@ let private settings model dispatch inner =
         ]
     ]
 
-let private tabs model dispatch =
+let tabs (model: Model) dispatch =
     let activeTab, settingsForTab, commands =
         match model.ActiveTab with
         | HomeTab -> homeTab, null, null
@@ -107,9 +107,19 @@ let private tabs model dispatch =
         dispatch (SelectTab tab)
 
     let navItem tab label isActive =
-        NavItem.navItem [ NavItem.Custom [ OnClick(onNavItemClick tab)
+        let href =
+            let page = Navigation.toHash tab
+            let query =
+                let hash = Browser.Dom.window.location.hash
+                if hash.Contains("?") then
+                    sprintf "?%s" (hash.Split('?').[1])
+                else
+                    ""
+
+            sprintf "%s%s" page query
+        NavItem.navItem [ NavItem.Custom [ (* OnClick(onNavItemClick tab) *)
                                            Key label ] ] [
-            NavLink.navLink [ NavLink.Custom [ Href(Navigation.toHash tab) ]
+            NavLink.navLink [ NavLink.Custom [ Href href ]
                               NavLink.Active isActive ] [
                 str label
             ]
@@ -130,7 +140,7 @@ let private tabs model dispatch =
               "Fantomas"
               (isFantomasTab model.ActiveTab) ]
 
-    div [ ClassName "col-7 h-100 d-flex flex-column" ] [
+    div [ ClassName "col-7 h-100" ] [
         settings model dispatch settingsForTab
         Nav.nav [ Nav.Tabs true
                   Nav.Custom [ ClassName "" ] ] [
@@ -142,13 +152,13 @@ let private tabs model dispatch =
         ]
     ]
 
-let view model dispatch =
-    div [ ClassName "d-flex flex-column h-100" ] [
-        navigation dispatch
-        main [ ClassName "flex-grow-1" ] [
-            Row.row [ Row.Custom [ ClassName "h-100 no-gutters" ] ] [
-                editor model dispatch
-                tabs model dispatch
-            ]
-        ]
-    ]
+//let view model dispatch =
+//    div [ ClassName "d-flex flex-column h-100" ] [
+//        navigation dispatch
+//        main [ ClassName "flex-grow-1" ] [
+//            Row.row [ Row.Custom [ ClassName "h-100 no-gutters" ] ] [
+//                editor model dispatch
+//                //tabs model dispatch
+//            ]
+//        ]
+//    ]

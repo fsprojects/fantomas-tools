@@ -88,6 +88,7 @@ let settings (model: Model) dispatch =
     fragment [] [
         VersionBar.versionBar (sprintf "FSC - %s" model.Version)
         SettingControls.input
+            "trivia-defines"
             (DefinesUpdated >> dispatch)
             "Defines"
             "Enter your defines separated with a space"
