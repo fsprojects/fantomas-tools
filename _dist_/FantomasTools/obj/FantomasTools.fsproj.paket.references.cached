@@ -1,0 +1,8 @@
+group Client
+FSharp.Core
+Fable.Reactstrap
+Thoth.Json
+Fable.Fetch
+Feliz.Router
+Feliz.UseElmish
+Feliz.CompilerPlugins
