@@ -45,20 +45,16 @@ function $007CKeyValuesFromHash$007C_$007C(hash) {
 
 export function restoreModelFromUrl(decoder, defaultValue) {
     const matchValue = window.location.hash;
-    const activePatternResult11362 = $007CKeyValuesFromHash$007C_$007C(matchValue);
-    if (activePatternResult11362 != null) {
-        const v = activePatternResult11362;
-        const clo1 = toConsole(printf("v: %s"));
-        clo1(v);
+    const activePatternResult11361 = $007CKeyValuesFromHash$007C_$007C(matchValue);
+    if (activePatternResult11361 != null) {
+        const v = activePatternResult11361;
         let json;
         const _x = decodeURIComponent(v);
         json = decodeUrl(_x);
-        const clo1_1 = toConsole(printf("json: %s"));
-        clo1_1(json);
         const modelResult = fromString(decoder, json);
         if (modelResult.tag === 1) {
-            const clo1_2 = toConsole(printf("%A"));
-            clo1_2(modelResult.fields[0]);
+            const clo1 = toConsole(printf("%A"));
+            clo1(modelResult.fields[0]);
             return defaultValue;
         }
         else {

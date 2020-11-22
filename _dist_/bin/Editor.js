@@ -1,6 +1,5 @@
 import { record_type, int32_type, union_type, obj_type, bool_type, lambda_type, unit_type, string_type, class_type } from "./.fable/fable-library.3.0.0-nagareyama-rc-008/Reflection.js";
 import { Record, Union } from "./.fable/fable-library.3.0.0-nagareyama-rc-008/Types.js";
-import { printf, toConsole } from "./.fable/fable-library.3.0.0-nagareyama-rc-008/String.js";
 
 export class Editor {
     constructor() {
@@ -42,8 +41,6 @@ export function HighLightRange$reflection() {
 
 export function selectRange(range, _arg1) {
     let startColumn;
-    const clo1 = toConsole(printf("highlight range: %A"));
-    clo1(range);
     const data = {
         detail: (startColumn = ((range.StartColumn + 1) | 0), {
             endColumn: range.EndColumn + 1,

@@ -4,7 +4,7 @@ import.meta.env = __SNOWPACK_ENV__;
 import { add, empty as empty_1, find, ofList } from "../.fable/fable-library.3.0.0-nagareyama-rc-008/Map.js";
 import { Model__get_SettingsChangedByTheUser, Model, EditorState, Msg, FantomasMode } from "./Model.js";
 import { contains, tryFind, map, empty, singleton, ofArray } from "../.fable/fable-library.3.0.0-nagareyama-rc-008/List.js";
-import { isNullOrWhiteSpace, trimStart, join, toConsole, toFail, printf, toText } from "../.fable/fable-library.3.0.0-nagareyama-rc-008/String.js";
+import { isNullOrWhiteSpace, toConsole, trimStart, join, toFail, printf, toText } from "../.fable/fable-library.3.0.0-nagareyama-rc-008/String.js";
 import { postJson, getText } from "../Http.js";
 import { Types_RequestProperties, fetch$ } from "../bin/.fable/Fable.Fetch.2.2.0/Fetch.fs.js";
 import { decodeOptionsFromUrl, decodeOptions } from "./Decoders.js";
@@ -147,8 +147,6 @@ function updateOptionValue(defaultOption, userOption) {
 function restoreUserOptionsFromUrl(defaultOptions) {
     const patternInput = restoreModelFromUrl(uncurry(2, decodeOptionsFromUrl), [empty(), false]);
     const userOptions = patternInput[0];
-    const clo1 = toConsole(printf("restored options: %A"));
-    clo1(userOptions);
     let reconstructedOptions;
     if (userOptions.tail == null) {
         reconstructedOptions = optionsListToMap(defaultOptions);
