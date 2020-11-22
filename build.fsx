@@ -29,6 +29,7 @@ module Func =
 
         let parameters =
             [ "start"
+              "--csharp"
               "--cors"
               hostOptions.Cors
               "--port"

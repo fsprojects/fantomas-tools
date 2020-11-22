@@ -30,8 +30,6 @@ type HighLightRange =
       EndColumn: int }
 
 let selectRange (range: HighLightRange) _ =
-    printfn "highlight range: %A" range
-
     let data =
         jsOptions<CustomEventInit>
             (fun o ->

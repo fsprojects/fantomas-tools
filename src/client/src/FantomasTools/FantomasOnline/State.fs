@@ -105,8 +105,6 @@ let private restoreUserOptionsFromUrl (defaultOptions: FantomasOption list) =
     let userOptions, isFsi =
         UrlTools.restoreModelFromUrl (Decoders.decodeOptionsFromUrl) ([], false)
 
-    printfn "restored options: %A" userOptions
-
     let reconstructedOptions =
         match userOptions with
         | [] -> optionsListToMap defaultOptions

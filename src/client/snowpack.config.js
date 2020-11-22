@@ -22,7 +22,8 @@ module.exports = {
         /* ... */
     },
     devOptions: {
-        port
+        port,
+        output: "stream"
     },
     buildOptions: {
         /* ... */

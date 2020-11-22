@@ -33,9 +33,7 @@ let private (|KeyValuesFromHash|_|) hash =
 let restoreModelFromUrl decoder defaultValue =
     match Browser.Dom.window.location.hash with
     | KeyValuesFromHash (v) ->
-        printfn "v: %s" v
         let json = JS.decodeURIComponent (v) |> decodeUrl
-        printfn "json: %s" json
         let modelResult = Decode.fromString decoder json
 
         match modelResult with
