@@ -7,5 +7,5 @@ RUN apt-get install -y nodejs
 # Yarn
 RUN npm install -g yarn
 
-# Azure functions
-RUN apt-get install azure-functions-core-tools-3
+# Install Azure Function Core Tools
+RUN npm i -g azure-functions-core-tools@3 --unsafe-perm true
