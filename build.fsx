@@ -30,8 +30,10 @@ module Func =
         let parameters =
             [ "start"
               "--csharp"
+          //    "--cors"
+          //    hostOptions.Cors
               "--cors"
-              hostOptions.Cors
+              "*"
               "--port"
               hostOptions.Port.ToString() ]
 
@@ -84,7 +86,7 @@ Target.create "Build" (fun _ ->
 Target.create "Watch" (fun _ ->
 
     Environment.setEnvironVar "NODE_ENV" "development"
-    Environment.setEnvironVar "SNOWPACK_PUBLIC_FSHARP_TOKENS_BACKEND" (localhostBackend fsharpTokensPort)
+    Environment.setEnvironVar "SNOWPACK_PUBLIC_FSHARP_TOKENS_BACKEND" "https://7899-b410f5b1-d158-48cf-ad9d-8853d73cea39.ws-eu01.gitpod.io" //(localhostBackend fsharpTokensPort)
     Environment.setEnvironVar "SNOWPACK_PUBLIC_AST_BACKEND" (localhostBackend astPort)
     Environment.setEnvironVar "SNOWPACK_PUBLIC_TRIVIA_BACKEND" (localhostBackend triviaPort)
     Environment.setEnvironVar "SNOWPACK_PUBLIC_FANTOMAS_V2" (localhostBackend fantomasV2Port)

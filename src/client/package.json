@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "snowpack dev --secure",
+    "start": "snowpack dev",
     "build": "snowpack build",
     "postbuild": "node postbuild.mjs",
     "test": "web-test-runner \"src/**/*.test.jsx\"",
