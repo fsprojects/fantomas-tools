@@ -186,7 +186,7 @@ let view model =
     | EditorState.LoadingOptions -> Loader.loader
     | EditorState.OptionsLoaded -> null
     | EditorState.FormatResult result ->
-        div [ ClassName "tab-result" ] [
+        div [ ClassName "tab-result fantomas-result" ] [
             Editor.editorInTab [ Editor.Value result
                                  Editor.IsReadOnly true ]
         ]
