@@ -30,10 +30,8 @@ module Func =
         let parameters =
             [ "start"
               "--csharp"
-          //    "--cors"
-          //    hostOptions.Cors
               "--cors"
-              "*"
+              hostOptions.Cors
               "--port"
               hostOptions.Port.ToString() ]
 
@@ -52,8 +50,6 @@ let fantomasV2Port = 2568
 let fantomasV3Port = 9007
 let fantomasV4Port = 10707
 
-let localhostBackend port = sprintf "http://localhost:%i" port
-
 let clientDir = __SOURCE_DIRECTORY__ </> "src" </> "client"
 let setClientDir = (fun (opt: Yarn.YarnParams) -> { opt with WorkingDirectory = clientDir })
 let serverDir = __SOURCE_DIRECTORY__ </> "src" </> "server"
@@ -61,7 +57,7 @@ let artifactDir = __SOURCE_DIRECTORY__ </> "artifacts"
 
 Target.create "Fantomas-Git" (fun _ ->
     let targetDir = ".deps" @@ "fantomas"
-    Fake.IO.Shell.cleanDir targetDir
+    Shell.cleanDir targetDir
     Git.Repository.cloneSingleBranch "." "https://github.com/fsprojects/fantomas.git" "master" targetDir
     DotNet.exec (fun opt -> { opt with WorkingDirectory = targetDir }) "tool" "restore" |> ignore
     DotNet.build (fun opt -> { opt with Configuration = DotNet.BuildConfiguration.Release })
@@ -83,20 +79,19 @@ Target.create "Build" (fun _ ->
         DotNet.build (fun config -> { config with Configuration = DotNet.BuildConfiguration.Release })
             (sprintf "%s/%s/%s.fsproj" serverDir project project)))
 
-Target.create "Watch" (fun _ ->
-
+let watchMode getBackendUrl getCorsUrl =
     Environment.setEnvironVar "NODE_ENV" "development"
-    Environment.setEnvironVar "SNOWPACK_PUBLIC_FSHARP_TOKENS_BACKEND" "https://7899-b410f5b1-d158-48cf-ad9d-8853d73cea39.ws-eu01.gitpod.io" //(localhostBackend fsharpTokensPort)
-    Environment.setEnvironVar "SNOWPACK_PUBLIC_AST_BACKEND" (localhostBackend astPort)
-    Environment.setEnvironVar "SNOWPACK_PUBLIC_TRIVIA_BACKEND" (localhostBackend triviaPort)
-    Environment.setEnvironVar "SNOWPACK_PUBLIC_FANTOMAS_V2" (localhostBackend fantomasV2Port)
-    Environment.setEnvironVar "SNOWPACK_PUBLIC_FANTOMAS_V3" (localhostBackend fantomasV3Port)
-    Environment.setEnvironVar "SNOWPACK_PUBLIC_FANTOMAS_V4" (localhostBackend fantomasV4Port)
-    Environment.setEnvironVar "SNOWPACK_PUBLIC_FANTOMAS_PREVIEW" (localhostBackend fantomasPreviewPort)
+    Environment.setEnvironVar "SNOWPACK_PUBLIC_FSHARP_TOKENS_BACKEND" (getBackendUrl fsharpTokensPort) // "https://7899-b410f5b1-d158-48cf-ad9d-8853d73cea39.ws-eu01.gitpod.io" //(localhostBackend fsharpTokensPort)
+    Environment.setEnvironVar "SNOWPACK_PUBLIC_AST_BACKEND" (getBackendUrl astPort)
+    Environment.setEnvironVar "SNOWPACK_PUBLIC_TRIVIA_BACKEND" (getBackendUrl triviaPort)
+    Environment.setEnvironVar "SNOWPACK_PUBLIC_FANTOMAS_V2" (getBackendUrl fantomasV2Port)
+    Environment.setEnvironVar "SNOWPACK_PUBLIC_FANTOMAS_V3" (getBackendUrl fantomasV3Port)
+    Environment.setEnvironVar "SNOWPACK_PUBLIC_FANTOMAS_V4" (getBackendUrl fantomasV4Port)
+    Environment.setEnvironVar "SNOWPACK_PUBLIC_FANTOMAS_PREVIEW" (getBackendUrl fantomasPreviewPort)
     Environment.setEnvironVar "SNOWPACK_PUBLIC_FRONTEND_PORT" (fablePort.ToString())
 
     let fable = async { Yarn.exec "start" (setClientDir) }
-    let cors = sprintf "https://localhost:%i" fablePort
+    let cors = getCorsUrl fablePort //sprintf "https://localhost:%i" fablePort
 
     let hostAzureFunction name port =
         async {
@@ -116,7 +111,18 @@ Target.create "Watch" (fun _ ->
 
     Async.Parallel [ fable; fsharpTokens; astViewer; triviaViewer; fantomasV2; fantomasV3; fantomasV4; fantomasPreview ]
     |> Async.Ignore
-    |> Async.RunSynchronously)
+    |> Async.RunSynchronously
+
+Target.create "Watch" (fun _ ->
+    let localhostBackend port = sprintf "http://localhost:%i" port
+    let cors = sprintf "https://localhost:%i"
+    watchMode localhostBackend cors)
+
+Target.create "GitPod" (fun _ ->
+    let getBackendUrl = sprintf "https://%i-b410f5b1-d158-48cf-ad9d-8853d73cea39.ws-eu01.gitpod.io"
+    let getCorsUrl = getBackendUrl
+    watchMode getBackendUrl getCorsUrl
+)
 
 Target.create "DeployFunctions" (fun _ ->
     ["FantomasOnlineV2"; "FantomasOnlineV3"; "FantomasOnlineV4"; "FantomasOnlinePreview"; "ASTViewer"; "FSharpTokens"; "TriviaViewer"]
@@ -131,6 +137,8 @@ Target.create "DeployFunctions" (fun _ ->
 )
 
 Target.create "YarnInstall" (fun _ -> Yarn.install setClientDir)
+
+Target.create "NETInstall" (fun _ -> DotNet.restore id "fantomas-tools.sln")
 
 Target.create "BundleFrontend" (fun _ ->
     Environment.setEnvironVar "NODE_ENV" "production"
@@ -154,7 +162,7 @@ Target.create "Format" (fun _ ->
     |> printfn "Formatted files: %A")
 
 Target.create "FormatChanged" (fun _ ->
-    Fake.Tools.Git.FileStatus.getChangedFilesInWorkingCopy "." "HEAD"
+    Git.FileStatus.getChangedFilesInWorkingCopy "." "HEAD"
     |> Seq.choose (fun (_, file) ->
         let ext = System.IO.Path.GetExtension(file)
 
@@ -184,6 +192,7 @@ Target.create "CheckFormat" (fun _ ->
     else
         Trace.logf "Errors while formatting: %A" result.Errors)
 
+Target.create "Install" ignore
 Target.create "CI" ignore
 Target.create "PR" ignore
 
@@ -192,6 +201,8 @@ open Fake.Core.TargetOperators
 "Clean" ==> "Build"
 
 "YarnInstall" ==> "BundleFrontend"
+
+"Install" <== [ "YarnInstall"; "NETInstall" ]
 
 "CI"
     <== [ "BundleFrontend"; "DeployFunctions"; "Clean"; "Fantomas-Git"; "CheckFormat" ]
