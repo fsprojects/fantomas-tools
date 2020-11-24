@@ -57,11 +57,14 @@ let artifactDir = __SOURCE_DIRECTORY__ </> "artifacts"
 
 Target.create "Fantomas-Git" (fun _ ->
     let targetDir = ".deps" @@ "fantomas"
-    Shell.cleanDir targetDir
-    Git.Repository.cloneSingleBranch "." "https://github.com/fsprojects/fantomas.git" "master" targetDir
+
+    if System.IO.Directory.Exists(targetDir) then
+        Git.Branches.pull targetDir "origin" "master"
+    else
+        Git.Repository.cloneSingleBranch "." "https://github.com/fsprojects/fantomas.git" "master" targetDir
+
     DotNet.exec (fun opt -> { opt with WorkingDirectory = targetDir }) "tool" "restore" |> ignore
-    DotNet.build (fun opt -> { opt with Configuration = DotNet.BuildConfiguration.Release })
-        "./.deps/fantomas/src/Fantomas/Fantomas.fsproj"
+    DotNet.build (fun opt -> { opt with Configuration = DotNet.BuildConfiguration.Release }) "./.deps/fantomas/src/Fantomas/Fantomas.fsproj"
 )
 
 Target.create "Clean" (fun _ ->
@@ -201,6 +204,8 @@ open Fake.Core.TargetOperators
 "Clean" ==> "Build"
 
 "YarnInstall" ==> "BundleFrontend"
+
+"Fantomas-Git" ==> "NETInstall"
 
 "Install" <== [ "YarnInstall"; "NETInstall" ]
 
