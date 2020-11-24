@@ -9063,3 +9063,229 @@ pre {
 pre code {
   color: #dc3545;
 }
+
+#trivia-settings .btn-group .btn {
+  color: #5fcde3;
+  border-color: #5fcde3;
+  cursor: pointer;
+}
+#trivia-settings .btn-group .btn:hover {
+  color: #212529;
+  background-color: #5fcde3;
+  border-color: #5fcde3;
+}
+#trivia-settings .btn-group .btn:focus, #trivia-settings .btn-group .btn.focus {
+  box-shadow: 0 0 0 0.2rem rgba(95, 205, 227, 0.5);
+}
+#trivia-settings .btn-group .btn.disabled, #trivia-settings .btn-group .btn:disabled {
+  color: #5fcde3;
+  background-color: transparent;
+}
+#trivia-settings .btn-group .btn:not(:disabled):not(.disabled):active, #trivia-settings .btn-group .btn:not(:disabled):not(.disabled).active, .show > #trivia-settings .btn-group .btn.dropdown-toggle {
+  color: #212529;
+  background-color: #5fcde3;
+  border-color: #5fcde3;
+}
+#trivia-settings .btn-group .btn:not(:disabled):not(.disabled):active:focus, #trivia-settings .btn-group .btn:not(:disabled):not(.disabled).active:focus, .show > #trivia-settings .btn-group .btn.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0.2rem rgba(95, 205, 227, 0.5);
+}
+#trivia-settings .btn-group .btn.active {
+  cursor: default;
+}
+
+#results .nav-item {
+  border-radius: 0;
+}
+
+.nav-link-main-node {
+  background-color: #e26a6a;
+  color: #FFF;
+}
+.nav-pills .nav-link-main-node {
+  border-radius: 0;
+}
+.nav-link-main-node:hover {
+  background-color: #da3f3f;
+  color: #FFF;
+}
+.nav-pills .nav-link-main-node.active {
+  background-color: #e26a6a;
+  border-color: #c12525;
+  border-left: 10px solid #FFF;
+  border-top: 2px solid #FFF;
+  border-bottom: 2px solid #FFF;
+  border-right: 1px solid #FFF;
+}
+
+.nav-link-token {
+  background-color: #a2ded0;
+  color: #FFF;
+}
+.nav-pills .nav-link-token {
+  border-radius: 0;
+}
+.nav-link-token:hover {
+  background-color: #7cd1bd;
+  color: #FFF;
+}
+.nav-pills .nav-link-token.active {
+  background-color: #a2ded0;
+  border-color: #57c3aa;
+  border-left: 10px solid #FFF;
+  border-top: 2px solid #FFF;
+  border-bottom: 2px solid #FFF;
+  border-right: 1px solid #FFF;
+}
+
+tr.trivia-candidate-main-node {
+  color: white;
+}
+tr.trivia-candidate-main-node td:first-child {
+  background-color: #e26a6a;
+}
+tr.trivia-candidate-main-node td:not(:first-child) {
+  color: #211426;
+  background-color: rgba(226, 106, 106, 0.05);
+}
+
+tr.trivia-candidate-token-node {
+  color: white;
+}
+tr.trivia-candidate-token-node td:first-child {
+  background-color: #a2ded0;
+}
+tr.trivia-candidate-token-node td:not(:first-child) {
+  color: #211426;
+  background-color: rgba(162, 222, 208, 0.05);
+}
+
+.nav-link-newline {
+  background-color: #51BCD6;
+  color: #FFF;
+}
+.nav-pills .nav-link-newline {
+  border-radius: 0;
+}
+.nav-link-newline:hover {
+  background-color: #2fa8c5;
+  color: #FFF;
+}
+.nav-pills .nav-link-newline.active {
+  background-color: #51BCD6;
+  border-color: #25859c;
+  border-left: 10px solid #FFF;
+  border-top: 2px solid #FFF;
+  border-bottom: 2px solid #FFF;
+  border-right: 1px solid #FFF;
+}
+
+.nav-link-string-content {
+  background-color: #E0477F;
+  color: #FFF;
+}
+.nav-pills .nav-link-string-content {
+  border-radius: 0;
+}
+.nav-link-string-content:hover {
+  background-color: #d12363;
+  color: #FFF;
+}
+.nav-pills .nav-link-string-content.active {
+  background-color: #E0477F;
+  border-color: #a51c4e;
+  border-left: 10px solid #FFF;
+  border-top: 2px solid #FFF;
+  border-bottom: 2px solid #FFF;
+  border-right: 1px solid #FFF;
+}
+
+.nav-link-string-content {
+  background-color: #FAC389;
+  color: #FFF;
+}
+.nav-pills .nav-link-string-content {
+  border-radius: 0;
+}
+.nav-link-string-content:hover {
+  background-color: #f8aa58;
+  color: #FFF;
+}
+.nav-pills .nav-link-string-content.active {
+  background-color: #FAC389;
+  border-color: #f69127;
+  border-left: 10px solid #FFF;
+  border-top: 2px solid #FFF;
+  border-bottom: 2px solid #FFF;
+  border-right: 1px solid #FFF;
+}
+
+.nav-link-comment {
+  background-color: #46D663;
+  color: #FFF;
+}
+.nav-pills .nav-link-comment {
+  border-radius: 0;
+}
+.nav-link-comment:hover {
+  background-color: #2abf48;
+  color: #FFF;
+}
+.nav-pills .nav-link-comment.active {
+  background-color: #46D663;
+  border-color: #219538;
+  border-left: 10px solid #FFF;
+  border-top: 2px solid #FFF;
+  border-bottom: 2px solid #FFF;
+  border-right: 1px solid #FFF;
+}
+
+.nav-link-number-content {
+  background-color: #D6B527;
+  color: #FFF;
+}
+.nav-pills .nav-link-number-content {
+  border-radius: 0;
+}
+.nav-link-number-content:hover {
+  background-color: #ab911f;
+  color: #FFF;
+}
+.nav-pills .nav-link-number-content.active {
+  background-color: #D6B527;
+  border-color: #806c17;
+  border-left: 10px solid #FFF;
+  border-top: 2px solid #FFF;
+  border-bottom: 2px solid #FFF;
+  border-right: 1px solid #FFF;
+}
+
+.mw120 {
+  min-width: 120px;
+}
+
+#trivia-settings {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+#trivia-settings .flex-1 {
+  flex: 1;
+}
+#trivia-settings .form-group {
+  margin: 0;
+}
+#trivia-settings .form-group label {
+  margin: 0 15px;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+.hover-white:hover {
+  color: #FFF;
+}
+
+#tab-content .tab-result.fantomas-result {
+  overflow-y: initial;
+}

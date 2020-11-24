@@ -199,7 +199,7 @@ export function view(model) {
                 isReadOnly: true,
             }, react.createElement(Editor, props_1))];
             return react.createElement("div", {
-                className: "tab-result",
+                className: "tab-result fantomas-result",
             }, ...children_1);
         }
         case 4: {

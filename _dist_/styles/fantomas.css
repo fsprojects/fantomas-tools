@@ -5,3 +5,7 @@
 .hover-white:hover {
   color: #FFF;
 }
+
+#tab-content .tab-result.fantomas-result {
+  overflow-y: initial;
+}
