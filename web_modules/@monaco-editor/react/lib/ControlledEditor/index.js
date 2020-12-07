@@ -836,8 +836,6 @@ var Editor = function Editor(_ref) {
     }
   }, [value], isEditorReady);
   (0, hooks.useUpdate)(function () {
-    // set last value by .setValue method before changing the language
-    editorRef.current.setValue(value);
     monacoRef.current.editor.setModelLanguage(editorRef.current.getModel(), language);
   }, [language], isEditorReady);
   (0, hooks.useUpdate)(function () {
