@@ -3418,10 +3418,10 @@ signal-exit@^3.0.2, signal-exit@^3.0.3:
   resolved "https://registry.yarnpkg.com/signal-exit/-/signal-exit-3.0.3.tgz#a1410c2edd8f077b08b4e253c8eacfcaf057461c"
   integrity sha512-VUJ49FC8U1OxwZLxIbTTrDvLnf/6TDgxZcK8wxR8zs13xpx7xbG60ndBlhNrFi2EMuFRoeDoJO7wthSLq42EjA==
 
-skypack@^0.1.1:
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/skypack/-/skypack-0.1.1.tgz#69d7cec4a53107e6069bbf9bf4c3d90732c76420"
-  integrity sha512-Niv0h5gfJH+pwtPycO9s6njEFSXJZU9JusFqcJ82yJ4tsQyjZG3Flr/+7Ac3z9HMGG87VbMZ3oJEdAFAg7cdUg==
+skypack@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/skypack/-/skypack-0.1.2.tgz#1cf97efea2c506192e68a85ca7d265fdb8dc4fe1"
+  integrity sha512-zMQ2B1e34DI4EmOmSezdbSBuaW/DD9piwbOLUDF/rgSokNnvRLtCHG8d+xB5fiVIJLAW9PDCbJwtAII+awucqQ==
   dependencies:
     cacache "^15.0.0"
     cachedir "^2.3.0"
@@ -3449,10 +3449,10 @@ slice-ansi@^4.0.0:
     astral-regex "^2.0.0"
     is-fullwidth-code-point "^3.0.0"
 
-snowpack@2.18.1:
-  version "2.18.1"
-  resolved "https://registry.yarnpkg.com/snowpack/-/snowpack-2.18.1.tgz#ada4469eef6e118d27c90a317d0e24b1630ee076"
-  integrity sha512-xsrnSquDY1s5f2TX+B2tE76YFkzXgwFkvjPTOg/TcLK3UkncNYQyC8eoZRVeYbKgF7EaMYpQ0A0pK32vXJgHsw==
+snowpack@2.18.2:
+  version "2.18.2"
+  resolved "https://registry.yarnpkg.com/snowpack/-/snowpack-2.18.2.tgz#535310ad9692d2b8321e6b99b484f2e8f9730527"
+  integrity sha512-/80GmEqFBU9Xzo8dUaBGKnwgfewXU6ZzcQt4TUOhJixJCE+s6Mpglv6QfxFwybYOaMnUklSQIhUuH2jfKQUccA==
   dependencies:
     "@snowpack/plugin-build-script" "^2.0.12"
     "@snowpack/plugin-run-script" "^2.2.1"
@@ -3489,7 +3489,7 @@ snowpack@2.18.1:
     resolve-from "^5.0.0"
     rimraf "^3.0.0"
     signal-exit "^3.0.3"
-    skypack "^0.1.1"
+    skypack "^0.1.2"
     source-map "^0.7.3"
     strip-ansi "^6.0.0"
     strip-comments "^2.0.1"
