@@ -28,7 +28,8 @@ module.exports = {
     buildOptions: {
         /* ... */
         baseUrl: "/fantomas-tools",
-        clean: true
+        clean: true,
+        htmlFragments:true
     },
     proxy: {
         /* ... */

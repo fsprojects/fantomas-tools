@@ -122,7 +122,8 @@ Target.create "Watch" (fun _ ->
     watchMode localhostBackend cors)
 
 Target.create "GitPod" (fun _ ->
-    let getBackendUrl = sprintf "https://%i-b410f5b1-d158-48cf-ad9d-8853d73cea39.ws-eu01.gitpod.io"
+    // TODO: update to something clever because GitPod url can change
+    let getBackendUrl = sprintf "https://%i-a8e30ee6-f811-4ed5-93ad-014c54eff9be.ws-eu03.gitpod.io"
     let getCorsUrl = getBackendUrl
     watchMode getBackendUrl getCorsUrl
 )
