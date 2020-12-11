@@ -7,8 +7,7 @@ RUN dotnet_sdk_version=3.1.404 \
     && echo "$dotnet_sha512 dotnet.tar.gz" | sha512sum -c - \
     && mkdir -p /usr/share/dotnet \
     && tar -ozxf dotnet.tar.gz -C /usr/share/dotnet \
-    && rm dotnet.tar.gz \
-    && ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet
+    && rm dotnet.tar.gz
 
 # NodeJS 14.X
 RUN curl -sL https://deb.nodesource.com/setup_14.x | bash
