@@ -477,7 +477,9 @@ NUGET
     Thoth.Json (5.0)
       Fable.Core (>= 3.1.4)
       FSharp.Core (>= 4.7)
-
+GITHUB
+  remote: nojaf/vsix
+    FULLPROJECT (b0821ff264d3f1d567baef8ac617b9401b5f3e1f)
 GROUP Infrastructure
 STORAGE: NONE
 RESTRICTION: == netcoreapp3.1

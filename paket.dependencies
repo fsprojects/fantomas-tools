@@ -102,3 +102,7 @@ nuget Fable.Fetch
 nuget Feliz.Router 3.2.0
 nuget Feliz.UseElmish
 nuget Feliz.CompilerPlugins
+
+# GitPod
+
+github nojaf/vsix
