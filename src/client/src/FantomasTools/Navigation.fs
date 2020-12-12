@@ -20,8 +20,7 @@ let cmdForCurrentTab tab model =
             |> Cmd.map Msg.TriviaMsg
         | FantomasTab mode when (mode <> model.FantomasModel.Mode) ->
             Cmd.map FantomasMsg (FantomasOnline.State.getOptionsCmd mode)
-        | FantomasTab _ -> 
-            Cmd.none
+        | FantomasTab _ -> Cmd.none
     else
         Cmd.none
 
