@@ -6,7 +6,7 @@ import { Msg as Msg_2 } from "./ASTViewer/Model.js";
 import { Msg as Msg_3 } from "./Trivia/Model.js";
 import { equalsSafe } from "./.fable/fable-library.3.0.0-nagareyama-rc-008/Util.js";
 import { getOptionsCmd } from "./FantomasOnline/State.js";
-import { FantomasMode, Msg as Msg_4 } from "./FantomasOnline/Model.js";
+import { FantomasMode } from "./FantomasOnline/Model.js";
 import { Route_$007CQuery$007C_$007C } from "./bin/.fable/Feliz.Router.3.2.0/Router.fs.js";
 
 export function cmdForCurrentTab(tab, model) {
@@ -28,7 +28,7 @@ export function cmdForCurrentTab(tab, model) {
                 return Cmd_map((arg0_3) => (new Msg_1(5, arg0_3)), getOptionsCmd(tab.fields[0]));
             }
             else if (tab.tag === 4) {
-                return Cmd_OfFunc_result(new Msg_1(5, new Msg_4(3)));
+                return Cmd_none();
             }
             else {
                 throw (new Error("The match cases were incomplete"));
