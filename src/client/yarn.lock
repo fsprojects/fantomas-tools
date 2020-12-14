@@ -367,10 +367,10 @@
     execa "^4.0.3"
     npm-run-path "^4.0.1"
 
-"@snowpack/plugin-sass@1.1.2":
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/@snowpack/plugin-sass/-/plugin-sass-1.1.2.tgz#8ca63e460797ede7bed3247c54de946e0f542273"
-  integrity sha512-COp9YbbsLA4+8zZ5ruBfP7jcy5P4Ql+8oveA/w78HqLsjk2nNu32iUKVJU7TxganRSYxTk940ds7SxE1qHI2ZA==
+"@snowpack/plugin-sass@1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@snowpack/plugin-sass/-/plugin-sass-1.2.0.tgz#7cce577881a019837f27894e2553d8d5acaad605"
+  integrity sha512-RqSvLL+aJNtVdcjLgiWX+4G9rP2VWQcYMg18TwuPQz9mSbQPy9SR4z4BcXoyotmP4GWH/nLrbXInX1DpMHmzJg==
   dependencies:
     execa "^4.0.3"
     npm-run-path "^4.0.1"
