@@ -412,7 +412,7 @@ STORAGE: NONE
 RESTRICTION: == netstandard2.0
 NUGET
   remote: https://api.nuget.org/v3/index.json
-    Fable.AST (3.0.0-nagareyama-beta-002)
+    Fable.AST (3.0)
     Fable.Browser.Blob (1.1)
       Fable.Core (>= 3.0)
       FSharp.Core (>= 4.6.2)
@@ -450,14 +450,14 @@ NUGET
       Fable.Core (>= 3.1.6)
       Fable.React (>= 7.0.1)
       FSharp.Core (>= 4.7.2)
-    Feliz (1.17)
+    Feliz (1.28)
       Fable.Core (>= 3.1.5)
       Fable.React (>= 7.0.1)
-      Feliz.CompilerPlugins (>= 0.4)
+      Feliz.CompilerPlugins (>= 1.2)
       FSharp.Core (>= 4.7.2)
-    Feliz.CompilerPlugins (0.4)
-      Fable.AST (>= 3.0.0-nagareyama-beta-002)
-      FSharp.Core (>= 4.7.1)
+    Feliz.CompilerPlugins (1.2)
+      Fable.AST (>= 3.0)
+      FSharp.Core (>= 4.7.2)
     Feliz.Router (3.2)
       Fable.Core (>= 3.1.5)
       Fable.Elmish (>= 3.1)
@@ -479,7 +479,7 @@ NUGET
       FSharp.Core (>= 4.7)
 GITHUB
   remote: nojaf/vsix
-    FULLPROJECT (b0821ff264d3f1d567baef8ac617b9401b5f3e1f)
+    FULLPROJECT (eedda6938c49e471fe4ade93fc739352c66856fb)
 GROUP Infrastructure
 STORAGE: NONE
 RESTRICTION: == netcoreapp3.1

@@ -99,10 +99,11 @@ nuget FSharp.Core
 nuget Fable.Reactstrap 0.5.1
 nuget Thoth.Json
 nuget Fable.Fetch
+nuget Feliz 1.28.0
 nuget Feliz.Router 3.2.0
 nuget Feliz.UseElmish
-nuget Feliz.CompilerPlugins
+nuget Feliz.CompilerPlugins 1.2.0
 
 # GitPod
 
-github nojaf/vsix
+github nojaf/vsix:eedda6938c49e471fe4ade93fc739352c66856fb
