@@ -1,5 +1,5 @@
-import { record_type, int32_type, union_type, obj_type, bool_type, lambda_type, unit_type, string_type, class_type } from "./.fable/fable-library.3.0.0-nagareyama-rc-008/Reflection.js";
-import { Record, Union } from "./.fable/fable-library.3.0.0-nagareyama-rc-008/Types.js";
+import { record_type, int32_type, union_type, obj_type, bool_type, lambda_type, unit_type, string_type, class_type } from "./.fable/fable-library.3.0.1/Reflection.js";
+import { Record, Union } from "./.fable/fable-library.3.0.1/Types.js";
 
 export class Editor {
     constructor() {
@@ -40,17 +40,15 @@ export function HighLightRange$reflection() {
 }
 
 export function selectRange(range, _arg1) {
-    let startColumn;
     const data = {
-        detail: (startColumn = ((range.StartColumn + 1) | 0), {
+        detail: {
             endColumn: range.EndColumn + 1,
             endLineNumber: range.EndLine,
-            startColumn: startColumn,
+            startColumn: range.StartColumn + 1,
             startLineNumber: range.StartLine,
-        }),
+        },
     };
-    const event = new CustomEvent("select_range", data);
-    const value = window.dispatchEvent(event);
+    const value = window.dispatchEvent(new CustomEvent("select_range", data));
     void value;
 }
 

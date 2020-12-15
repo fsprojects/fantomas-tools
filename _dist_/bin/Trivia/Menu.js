@@ -1,71 +1,55 @@
-import { printf, toText } from "../.fable/fable-library.3.0.0-nagareyama-rc-008/String.js";
-import { BadgeProps, badge } from "../bin/.fable/Fable.Reactstrap.0.5.1/Badge.fs.js";
-import { DOMAttr, Prop, HTMLAttr } from "../bin/.fable/Fable.React.7.0.1/Fable.React.Props.fs.js";
-import { mapIndexed, ofSeq, ofArray, singleton } from "../.fable/fable-library.3.0.0-nagareyama-rc-008/List.js";
+import { printf, toText } from "../.fable/fable-library.3.0.1/String.js";
+import { BadgeProps, badge } from "../.fable/Fable.Reactstrap.0.5.1/Badge.fs.js";
+import { DOMAttr, Prop, HTMLAttr } from "../.fable/Fable.React.7.0.1/Fable.React.Props.fs.js";
+import { mapIndexed, ofSeq, ofArray, singleton } from "../.fable/fable-library.3.0.1/List.js";
 import * as react from "../../../web_modules/react.js";
-import { singleton as singleton_1, append, delay } from "../.fable/fable-library.3.0.0-nagareyama-rc-008/Seq.js";
-import { Record } from "../.fable/fable-library.3.0.0-nagareyama-rc-008/Types.js";
-import { record_type, string_type } from "../.fable/fable-library.3.0.0-nagareyama-rc-008/Reflection.js";
+import { singleton as singleton_1, append, delay } from "../.fable/fable-library.3.0.1/Seq.js";
+import { Record } from "../.fable/fable-library.3.0.1/Types.js";
+import { record_type, string_type } from "../.fable/fable-library.3.0.1/Reflection.js";
 import { Range$$reflection } from "../shared/TriviaShared.js";
-import { NavItemProps, navItem } from "../bin/.fable/Fable.Reactstrap.0.5.1/NavItem.fs.js";
-import { NavLinkProps, navLink } from "../bin/.fable/Fable.Reactstrap.0.5.1/NavLink.fs.js";
-import { NavProps, nav } from "../bin/.fable/Fable.Reactstrap.0.5.1/Nav.fs.js";
+import { NavProps, nav } from "../.fable/Fable.Reactstrap.0.5.1/Nav.fs.js";
+import { NavItemProps, navItem } from "../.fable/Fable.Reactstrap.0.5.1/NavItem.fs.js";
+import { NavLinkProps, navLink } from "../.fable/Fable.Reactstrap.0.5.1/NavLink.fs.js";
 
 export function rangeToText(r) {
-    const clo1 = toText(printf("(%i,%i - %i,%i)"));
-    const clo2 = clo1(r.StartLine);
-    const clo3 = clo2(r.StartColumn);
-    const clo4 = clo3(r.EndLine);
-    return clo4(r.EndColumn);
+    return toText(printf("(%i,%i - %i,%i)"))(r.StartLine)(r.StartColumn)(r.EndLine)(r.EndColumn);
 }
 
 function rangeToBadge(r) {
-    let s;
-    return badge([new BadgeProps(1, "dark"), new BadgeProps(5, singleton(new HTMLAttr(64, "px-2 py-1 ml-auto")))], [(s = rangeToText(r), (s))]);
+    return badge([new BadgeProps(1, "dark"), new BadgeProps(5, singleton(new HTMLAttr(64, "px-2 py-1 ml-auto")))], [rangeToText(r)]);
 }
 
 function triviaContentToDetail(tc) {
-    const wrap = (outer, inner) => {
-        let s, clo1;
-        return ofArray([(s = (clo1 = toText(printf("%s(")), clo1(outer)), s), react.createElement("code", {}, inner), ")"]);
-    };
+    const wrap = (outer, inner) => ofArray([toText(printf("%s("))(outer), react.createElement("code", {}, inner), ")"]);
     switch (tc.tag) {
         case 2: {
-            const children_2 = wrap("StringContent", tc.fields[0]);
-            return react.createElement(react.Fragment, {}, ...children_2);
+            return react.createElement(react.Fragment, {}, ...wrap("StringContent", tc.fields[0]));
         }
         case 9: {
-            const children_3 = wrap("CharContent", tc.fields[0]);
-            return react.createElement(react.Fragment, {}, ...children_3);
+            return react.createElement(react.Fragment, {}, ...wrap("CharContent", tc.fields[0]));
         }
         case 5: {
             const c = tc.fields[0];
             const inner_1 = (c.tag === 1) ? wrap("LineCommentOnSingleLine", c.fields[0]) : ((c.tag === 0) ? wrap("LineCommentAfterSourceCode", c.fields[0]) : wrap("BlockComment", c.fields[0]));
-            const children_4 = ofSeq(delay(() => append(singleton_1("Comment("), delay(() => append(inner_1, delay(() => singleton_1(")")))))));
-            return react.createElement(react.Fragment, {}, ...children_4);
+            return react.createElement(react.Fragment, {}, ...ofSeq(delay(() => append(singleton_1("Comment("), delay(() => append(inner_1, delay(() => singleton_1(")"))))))));
         }
         case 7: {
-            const children_5 = wrap("Directive", tc.fields[0]);
-            return react.createElement(react.Fragment, {}, ...children_5);
+            return react.createElement(react.Fragment, {}, ...wrap("Directive", tc.fields[0]));
         }
         case 3: {
-            const children_6 = wrap("IdentOperatorAsWord", tc.fields[0]);
-            return react.createElement(react.Fragment, {}, ...children_6);
+            return react.createElement(react.Fragment, {}, ...wrap("IdentOperatorAsWord", tc.fields[0]));
         }
         case 4: {
-            const children_7 = wrap("IdentBetweenTicks", tc.fields[0]);
-            return react.createElement(react.Fragment, {}, ...children_7);
+            return react.createElement(react.Fragment, {}, ...wrap("IdentBetweenTicks", tc.fields[0]));
         }
         case 1: {
-            const children_8 = wrap("Number", tc.fields[0]);
-            return react.createElement(react.Fragment, {}, ...children_8);
+            return react.createElement(react.Fragment, {}, ...wrap("Number", tc.fields[0]));
         }
         case 8: {
             return "NewlineAfter";
         }
         case 0: {
-            const children_9 = wrap("Keyword", tc.fields[0]);
-            return react.createElement(react.Fragment, {}, ...children_9);
+            return react.createElement(react.Fragment, {}, ...wrap("Keyword", tc.fields[0]));
         }
         default: {
             return "Newline";
@@ -88,20 +72,14 @@ export function MenuItem$reflection() {
 }
 
 export function menu(onItemClick, activeIndex, items) {
-    let navItems;
-    navItems = mapIndexed((idx, mi) => {
-        let className;
-        const arg10 = (idx === activeIndex) ? "active" : "";
-        const clo1 = toText(printf("d-flex %s %s"));
-        const clo2 = clo1(arg10);
-        className = clo2(mi.ClassName);
+    return nav([new NavProps(1, true), new NavProps(9, singleton(new HTMLAttr(64, "flex-column")))], [Array.from(mapIndexed((idx, mi) => {
+        let arg10;
         return navItem([new NavItemProps(2, ofArray([new Prop(0, idx), new HTMLAttr(158, mi.Title), new DOMAttr(40, (ev) => {
             ev.preventDefault();
             onItemClick(idx);
-        })]))], [navLink([new NavLinkProps(3, ofArray([new HTMLAttr(94, "#"), new HTMLAttr(64, className)]))], [react.createElement("span", {
+        })]))], [navLink([new NavLinkProps(3, ofArray([new HTMLAttr(94, "#"), new HTMLAttr(64, (arg10 = ((idx === activeIndex) ? "active" : ""), toText(printf("d-flex %s %s"))(arg10)(mi.ClassName)))]))], [react.createElement("span", {
             className: "mr-4",
         }, mi.Label), rangeToBadge(mi.Range)])]);
-    }, items);
-    return nav([new NavProps(1, true), new NavProps(9, singleton(new HTMLAttr(64, "flex-column")))], [Array.from(navItems)]);
+    }, items))]);
 }
 

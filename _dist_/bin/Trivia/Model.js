@@ -1,5 +1,5 @@
-import { Record, Union } from "../.fable/fable-library.3.0.0-nagareyama-rc-008/Types.js";
-import { record_type, int32_type, bool_type, option_type, string_type, list_type, union_type } from "../.fable/fable-library.3.0.0-nagareyama-rc-008/Reflection.js";
+import { Record, Union } from "../.fable/fable-library.3.0.1/Types.js";
+import { record_type, int32_type, bool_type, option_type, string_type, list_type, union_type } from "../.fable/fable-library.3.0.1/Reflection.js";
 import { ParseResult$reflection, TriviaNode$reflection, TriviaNodeCandidate$reflection, Trivia$reflection } from "../shared/TriviaShared.js";
 
 export class ActiveTab extends Union {

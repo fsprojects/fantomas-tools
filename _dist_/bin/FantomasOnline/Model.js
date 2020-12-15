@@ -1,9 +1,9 @@
-import { Record, Union } from "../.fable/fable-library.3.0.0-nagareyama-rc-008/Types.js";
-import { record_type, class_type, bool_type, tuple_type, list_type, string_type, union_type } from "../.fable/fable-library.3.0.0-nagareyama-rc-008/Reflection.js";
+import { Record, Union } from "../.fable/fable-library.3.0.1/Types.js";
+import { record_type, class_type, bool_type, tuple_type, list_type, string_type, union_type } from "../.fable/fable-library.3.0.1/Reflection.js";
 import { sortByOption, FantomasOption$reflection } from "../shared/FantomasOnlineShared.js";
-import { filter, zip, map, sortBy } from "../.fable/fable-library.3.0.0-nagareyama-rc-008/List.js";
-import { equalsSafe, comparePrimitives } from "../.fable/fable-library.3.0.0-nagareyama-rc-008/Util.js";
-import { toList } from "../.fable/fable-library.3.0.0-nagareyama-rc-008/Map.js";
+import { sortBy, zip, filter, map } from "../.fable/fable-library.3.0.1/List.js";
+import { comparePrimitives, equals } from "../.fable/fable-library.3.0.1/Util.js";
+import { toList } from "../.fable/fable-library.3.0.1/Map.js";
 
 export class FantomasMode extends Union {
     constructor(tag, ...fields) {
@@ -67,21 +67,10 @@ export function Model$reflection() {
 }
 
 export function Model__get_SettingsChangedByTheUser(this$) {
-    let defaultValues;
-    defaultValues = sortBy(sortByOption, this$.DefaultOptions, {
+    return map((tuple_1) => tuple_1[1], filter((tupledArg) => (!equals(tupledArg[0], tupledArg[1])), zip(sortBy(sortByOption, this$.DefaultOptions, {
         Compare: comparePrimitives,
-    });
-    let userValues;
-    let list_2;
-    let list_1;
-    list_1 = toList(this$.UserOptions);
-    list_2 = map((tuple) => tuple[1], list_1);
-    userValues = sortBy(sortByOption, list_2, {
+    }), sortBy(sortByOption, map((tuple) => tuple[1], toList(this$.UserOptions)), {
         Compare: comparePrimitives,
-    });
-    let list_4;
-    const list_3 = zip(defaultValues, userValues);
-    list_4 = filter((tupledArg) => (!equalsSafe(tupledArg[0], tupledArg[1])), list_3);
-    return map((tuple_1) => tuple_1[1], list_4);
+    }))));
 }
 

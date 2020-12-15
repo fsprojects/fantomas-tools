@@ -1,8 +1,8 @@
-import { Record, Union } from "../.fable/fable-library.3.0.0-nagareyama-rc-008/Types.js";
-import { record_type, option_type, union_type, bool_type, string_type } from "../.fable/fable-library.3.0.0-nagareyama-rc-008/Reflection.js";
+import { Record, Union } from "../.fable/fable-library.3.0.1/Types.js";
+import { record_type, option_type, union_type, bool_type, string_type } from "../.fable/fable-library.3.0.1/Reflection.js";
 import { Dto$reflection } from "../shared/ASTViewerShared.js";
 import { HighLightRange$reflection } from "../Editor.js";
-import { FSharpResult$2 } from "../.fable/fable-library.3.0.0-nagareyama-rc-008/Choice.js";
+import { FSharpResult$2 } from "../.fable/fable-library.3.0.1/Choice.js";
 
 export class Msg extends Union {
     constructor(tag, ...fields) {

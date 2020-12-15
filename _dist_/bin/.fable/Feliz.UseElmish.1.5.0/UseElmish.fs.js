@@ -1,14 +1,14 @@
-import { Union } from "../docs/.fable/fable-library.3.0.0-nagareyama-rc-007/Types.js";
-import { class_type, union_type, int32_type, array_type } from "../docs/.fable/fable-library.3.0.0-nagareyama-rc-007/Reflection.js";
-import { fill } from "../docs/.fable/fable-library.3.0.0-nagareyama-rc-007/Array.js";
-import { isDisposable, comparePrimitives, max } from "../docs/.fable/fable-library.3.0.0-nagareyama-rc-007/Util.js";
-import { toArray, value as value_1, some } from "../docs/.fable/fable-library.3.0.0-nagareyama-rc-007/Option.js";
-import { iterate as iterate_1, rangeNumber, singleton, collect, take, skip, append, delay } from "../docs/.fable/fable-library.3.0.0-nagareyama-rc-007/Seq.js";
-import { useReact_useMemo_CF4EA67, useReact_useEffect_3A5B6456, useReact_useEffect_Z101E1A95, useReact_useEffect_Z5234A374, useReact_useCallbackRef_7C4B0DD6, React_createDisposable_3A5B6456, useReact_useEffectOnce_Z5ECA432F, useFeliz_React__React_useState_Static_1505, useReact_useRef_1505 } from "../Feliz/React.fs.js";
-import { isCancellationRequested, cancel, createCancellationToken } from "../docs/.fable/fable-library.3.0.0-nagareyama-rc-007/Async.js";
-import { promise } from "../docs/.fable/Fable.Promise.2.0.0/PromiseImpl.fs.js";
-import { PromiseBuilder__While_2044D34, PromiseBuilder__Delay_62FBFDE1, PromiseBuilder__Run_212F1D4B } from "../docs/.fable/Fable.Promise.2.0.0/Promise.fs.js";
-import { iterate } from "../docs/.fable/fable-library.3.0.0-nagareyama-rc-007/List.js";
+import { Union } from "../fable-library.3.0.1/Types.js";
+import { class_type, union_type, int32_type, array_type } from "../fable-library.3.0.1/Reflection.js";
+import { fill } from "../fable-library.3.0.1/Array.js";
+import { isDisposable, comparePrimitives, max } from "../fable-library.3.0.1/Util.js";
+import { toArray, value as value_1, some } from "../fable-library.3.0.1/Option.js";
+import { iterate as iterate_1, rangeNumber, singleton, collect, take, skip, append, delay } from "../fable-library.3.0.1/Seq.js";
+import { useReact_useMemo_CF4EA67, useReact_useEffect_3A5B6456, useReact_useEffect_Z101E1A95, useReact_useEffect_Z5234A374, useReact_useCallbackRef_7C4B0DD6, React_createDisposable_3A5B6456, useReact_useEffectOnce_Z5ECA432F, useFeliz_React__React_useState_Static_1505, useReact_useRef_1505 } from "../Feliz.1.28.0/React.fs.js";
+import { isCancellationRequested, cancel, createCancellationToken } from "../fable-library.3.0.1/Async.js";
+import { PromiseBuilder__While_2044D34, PromiseBuilder__Delay_62FBFDE1, PromiseBuilder__Run_212F1D4B } from "../Fable.Promise.2.1.0/Promise.fs.js";
+import { iterate } from "../fable-library.3.0.1/List.js";
+import { promise } from "../Fable.Promise.2.1.0/PromiseImpl.fs.js";
 
 export class RingState$1 extends Union {
     constructor(tag, ...fields) {
@@ -46,8 +46,7 @@ export function RingBuffer$1__Pop(_) {
         const rix = matchValue.fields[2] | 0;
         const items = matchValue.fields[0];
         const rix$0027 = ((rix + 1) % items.length) | 0;
-        const matchValue_1 = rix$0027 === wix;
-        if (matchValue_1) {
+        if (rix$0027 === wix) {
             _.state = (new RingState$1(0, items, wix));
         }
         else {
@@ -68,9 +67,8 @@ export function RingBuffer$1__Push_2B595(_, item) {
         const items_1 = matchValue.fields[0];
         items_1[wix_1] = item;
         const wix$0027 = ((wix_1 + 1) % items_1.length) | 0;
-        const matchValue_1 = wix$0027 === rix;
-        if (matchValue_1) {
-            _.state = (new RingState$1(1, (RingBuffer$1__doubleSize(_, rix, items_1)), items_1.length, 0));
+        if (wix$0027 === rix) {
+            _.state = (new RingState$1(1, RingBuffer$1__doubleSize(_, rix, items_1), items_1.length, 0));
         }
         else {
             _.state = (new RingState$1(1, items_1, wix$0027, rix));
@@ -86,16 +84,13 @@ export function RingBuffer$1__Push_2B595(_, item) {
 }
 
 function RingBuffer$1__doubleSize(this$, ix, items) {
-    const source_2 = delay(() => append((skip(ix, items)), delay(() => append((take(ix, items)), delay(() => collect((matchValue) => singleton(null), rangeNumber(0, 1, items.length)))))));
-    return Array.from(source_2);
+    return Array.from(delay(() => append(skip(ix, items), delay(() => append(take(ix, items), delay(() => collect((matchValue) => singleton(null), rangeNumber(0, 1, items.length))))))));
 }
 
 export function useFeliz_React__React_useElmish_Static_17DC4F1D(init, update, dependencies) {
     const state = useReact_useRef_1505(init[0]);
     const ring = useReact_useRef_1505(RingBuffer$1_$ctor_Z524259A4(10));
     const patternInput = useFeliz_React__React_useState_Static_1505(init[0]);
-    const setChildState = patternInput[1];
-    const childState = patternInput[0];
     let token_1;
     const cts = useReact_useRef_1505(createCancellationToken());
     const token = useReact_useRef_1505(cts.current);
@@ -107,29 +102,24 @@ export function useFeliz_React__React_useElmish_Static_17DC4F1D(init, update, de
         const value = setTimeout(() => {
             let copyOfStruct;
             if (!(copyOfStruct = token_1.current, isCancellationRequested(copyOfStruct))) {
-                setChildState(state.current);
+                patternInput[1](state.current);
             }
         }, 0) | 0;
         void value;
     };
     const dispatch = (msg) => {
-        let pr;
-        const builder$0040 = promise;
-        pr = PromiseBuilder__Run_212F1D4B(builder$0040, PromiseBuilder__Delay_62FBFDE1(builder$0040, () => {
+        const pr = PromiseBuilder__Run_212F1D4B(promise, PromiseBuilder__Delay_62FBFDE1(promise, () => {
             let nextMsg = some(msg);
-            return PromiseBuilder__While_2044D34(builder$0040, () => {
+            return PromiseBuilder__While_2044D34(promise, () => {
                 let copyOfStruct_1;
                 return (nextMsg != null) ? (!(copyOfStruct_1 = token_1.current, isCancellationRequested(copyOfStruct_1))) : false;
-            }, PromiseBuilder__Delay_62FBFDE1(builder$0040, () => {
-                const msg_1 = value_1(nextMsg);
-                const patternInput_1 = update(msg_1, state.current);
-                const state$0027 = patternInput_1[0];
-                const cmd$0027 = patternInput_1[1];
+            }, PromiseBuilder__Delay_62FBFDE1(promise, () => {
+                const patternInput_1 = update(value_1(nextMsg), state.current);
                 iterate((sub) => {
                     sub(dispatch);
-                }, cmd$0027);
+                }, patternInput_1[1]);
                 nextMsg = RingBuffer$1__Pop(ring.current);
-                state.current = state$0027;
+                state.current = patternInput_1[0];
                 setChildState_1();
                 return Promise.resolve();
             }));
@@ -138,14 +128,10 @@ export function useFeliz_React__React_useElmish_Static_17DC4F1D(init, update, de
     };
     const dispatch_1 = useReact_useCallbackRef_7C4B0DD6(dispatch);
     useReact_useEffect_Z5234A374(() => React_createDisposable_3A5B6456(() => {
-        let disposable;
-        let option;
-        const record = state.current;
-        const matchValue = record;
-        option = (isDisposable(matchValue) ? (disposable = matchValue, disposable) : (void 0));
+        let matchValue;
         iterate_1((o) => {
             o.Dispose();
-        }, toArray(option));
+        }, toArray((matchValue = state.current, isDisposable(matchValue) ? matchValue : (void 0))));
     }), dependencies);
     useReact_useEffect_Z101E1A95(() => {
         state.current = init[0];
@@ -155,14 +141,12 @@ export function useFeliz_React__React_useElmish_Static_17DC4F1D(init, update, de
         }, init[1]);
     }, dependencies);
     useReact_useEffect_3A5B6456(() => {
-        const option_1 = RingBuffer$1__Pop(ring.current);
-        iterate_1(dispatch_1, toArray(option_1));
+        iterate_1(dispatch_1, toArray(RingBuffer$1__Pop(ring.current)));
     });
-    return [childState, dispatch_1];
+    return [patternInput[0], dispatch_1];
 }
 
 export function useFeliz_React__React_useElmish_Static_645B1FB7(init, update, dependencies) {
-    const init_1 = useReact_useMemo_CF4EA67(init, dependencies);
-    return useFeliz_React__React_useElmish_Static_17DC4F1D(init_1, update, dependencies);
+    return useFeliz_React__React_useElmish_Static_17DC4F1D(useReact_useMemo_CF4EA67(init, dependencies), update, dependencies);
 }
 

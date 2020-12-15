@@ -1,48 +1,39 @@
 import __SNOWPACK_ENV__ from '../../../__snowpack__/env.js';
 import.meta.env = __SNOWPACK_ENV__;
 
-import { add, empty as empty_1, find, ofList } from "../.fable/fable-library.3.0.0-nagareyama-rc-008/Map.js";
+import { add, empty as empty_1, find, ofList } from "../.fable/fable-library.3.0.1/Map.js";
 import { Model__get_SettingsChangedByTheUser, Model, EditorState, Msg, FantomasMode } from "./Model.js";
-import { contains, tryFind, map, empty, singleton, ofArray } from "../.fable/fable-library.3.0.0-nagareyama-rc-008/List.js";
-import { isNullOrWhiteSpace, toConsole, trimStart, join, toFail, printf, toText } from "../.fable/fable-library.3.0.0-nagareyama-rc-008/String.js";
+import { contains, tryFind, map, empty, singleton, ofArray } from "../.fable/fable-library.3.0.1/List.js";
 import { postJson, getText } from "../Http.js";
-import { Types_RequestProperties, fetch$ } from "../bin/.fable/Fable.Fetch.2.2.0/Fetch.fs.js";
+import { isNullOrWhiteSpace, toConsole, join, trimStart, toFail, printf, toText } from "../.fable/fable-library.3.0.1/String.js";
+import { Types_RequestProperties, fetch$ } from "../.fable/Fable.Fetch.2.2.0/Fetch.fs.js";
 import { decodeOptionsFromUrl, decodeOptions } from "./Decoders.js";
 import { encodeUrlModel, encodeRequest } from "./Encoders.js";
-import { toString } from "../bin/.fable/Thoth.Json.5.0.0/Encode.fs.js";
 import { restoreModelFromUrl, updateUrlWithData } from "../UrlTools.js";
-import { Cmd_ofSub, Cmd_none, Cmd_OfFunc_result, Cmd_batch, Cmd_OfPromise_either } from "../bin/.fable/Fable.Elmish.3.1.0/cmd.fs.js";
+import { toString } from "../.fable/Thoth.Json.5.0.0/Encode.fs.js";
+import { Cmd_ofSub, Cmd_none, Cmd_OfFunc_result, Cmd_batch, Cmd_OfPromise_either } from "../.fable/Fable.Elmish.3.1.0/cmd.fs.js";
 import { getOptionKey, FantomasOption } from "../shared/FantomasOnlineShared.js";
-import { structuralHash, uncurry } from "../.fable/fable-library.3.0.0-nagareyama-rc-008/Util.js";
+import { stringHash, uncurry } from "../.fable/fable-library.3.0.1/Util.js";
 import { showSuccess as showSuccess_1 } from "../../js/notifications.js";
-import { map as map_1 } from "../.fable/fable-library.3.0.0-nagareyama-rc-008/Seq.js";
-import { isUpper } from "../.fable/fable-library.3.0.0-nagareyama-rc-008/Char.js";
+import { map as map_1 } from "../.fable/fable-library.3.0.1/Seq.js";
+import { isUpper } from "../.fable/fable-library.3.0.1/Char.js";
 
 const backend = ofList(ofArray([[new FantomasMode(0), import.meta.env.SNOWPACK_PUBLIC_FANTOMAS_V2], [new FantomasMode(1), import.meta.env.SNOWPACK_PUBLIC_FANTOMAS_V3], [new FantomasMode(2), import.meta.env.SNOWPACK_PUBLIC_FANTOMAS_V4], [new FantomasMode(3), import.meta.env.SNOWPACK_PUBLIC_FANTOMAS_PREVIEW]]));
 
 function getVersion(mode) {
-    let _url;
-    const arg10 = find(mode, backend);
-    const clo1 = toText(printf("%s/%s"));
-    const clo2 = clo1(arg10);
-    _url = clo2("api/version");
-    return getText(_url);
+    let arg10;
+    return getText((arg10 = find(mode, backend), toText(printf("%s/%s"))(arg10)("api/version")));
 }
 
 function getOptions(mode) {
-    let url;
-    const arg10 = find(mode, backend);
-    const clo1 = toText(printf("%s/%s"));
-    const clo2 = clo1(arg10);
-    url = clo2("api/options");
+    let arg10;
     let pr_1;
-    const pr = fetch$(url, singleton(new Types_RequestProperties(0, "GET")));
+    const pr = fetch$((arg10 = find(mode, backend), toText(printf("%s/%s"))(arg10)("api/options")), singleton(new Types_RequestProperties(0, "GET")));
     pr_1 = (pr.then(((res) => res.text())));
     return pr_1.then(((json) => {
         const matchValue = decodeOptions(json);
         if (matchValue.tag === 1) {
-            const clo1_1 = toFail(printf("%A"));
-            return clo1_1(matchValue.fields[0]);
+            return toFail(printf("%A"))(matchValue.fields[0]);
         }
         else {
             return matchValue.fields[0];
@@ -51,13 +42,8 @@ function getOptions(mode) {
 }
 
 function getFormattedCode(code, model, dispatch) {
-    let url;
-    const arg10 = find(model.Mode, backend);
-    const clo1 = toText(printf("%s/%s"));
-    const clo2 = clo1(arg10);
-    url = clo2("api/format");
-    const json = encodeRequest(code, model);
-    const pr = postJson(url, json);
+    let arg10;
+    const pr = postJson((arg10 = find(model.Mode, backend), toText(printf("%s/%s"))(arg10)("api/format")), encodeRequest(code, model));
     pr.then(((tupledArg) => {
         const status = tupledArg[0] | 0;
         const body = tupledArg[1];
@@ -66,8 +52,7 @@ function getFormattedCode(code, model, dispatch) {
 }
 
 function updateUrl(code, model, _arg1) {
-    const json = toString(2, encodeUrlModel(code, model));
-    updateUrlWithData(json);
+    updateUrlWithData(toString(2, encodeUrlModel(code, model)));
 }
 
 export function getOptionsCmd(mode) {
@@ -75,16 +60,12 @@ export function getOptionsCmd(mode) {
 }
 
 export function init(mode) {
-    let cmd;
-    const versionCmd = Cmd_OfPromise_either(getVersion, mode, (arg0) => (new Msg(0, arg0)), (exn) => (new Msg(2, exn.message)));
-    const optionsCmd = getOptionsCmd(mode);
-    cmd = Cmd_batch(ofArray([versionCmd, optionsCmd]));
+    const cmd = Cmd_batch(ofArray([Cmd_OfPromise_either(getVersion, mode, (arg0) => (new Msg(0, arg0)), (exn) => (new Msg(2, exn.message))), getOptionsCmd(mode)]));
     return [new Model(false, "???", empty(), empty_1(), mode, new EditorState(0)), cmd];
 }
 
 export function optionsListToMap(options) {
-    let elements;
-    elements = map((_arg1) => {
+    return ofList(map((_arg1) => {
         switch (_arg1.tag) {
             case 0: {
                 return [_arg1.fields[1], _arg1];
@@ -99,8 +80,7 @@ export function optionsListToMap(options) {
                 return [_arg1.fields[1], _arg1];
             }
         }
-    }, options);
-    return ofList(elements);
+    }, options));
 }
 
 function updateOptionValue(defaultOption, userOption) {
@@ -147,26 +127,16 @@ function updateOptionValue(defaultOption, userOption) {
 function restoreUserOptionsFromUrl(defaultOptions) {
     const patternInput = restoreModelFromUrl(uncurry(2, decodeOptionsFromUrl), [empty(), false]);
     const userOptions = patternInput[0];
-    let reconstructedOptions;
-    if (userOptions.tail == null) {
-        reconstructedOptions = optionsListToMap(defaultOptions);
-    }
-    else {
-        let options;
-        options = map((defOpt) => {
-            const key = getOptionKey(defOpt);
-            const matchingUserOption = tryFind((uOpt) => (getOptionKey(uOpt) === key), userOptions);
-            if (matchingUserOption == null) {
-                return defOpt;
-            }
-            else {
-                const muo = matchingUserOption;
-                return updateOptionValue(defOpt, muo);
-            }
-        }, defaultOptions);
-        reconstructedOptions = optionsListToMap(options);
-    }
-    return [reconstructedOptions, patternInput[1]];
+    return [(userOptions.tail == null) ? optionsListToMap(defaultOptions) : optionsListToMap(map((defOpt) => {
+        const key = getOptionKey(defOpt);
+        const matchingUserOption = tryFind((uOpt) => (getOptionKey(uOpt) === key), userOptions);
+        if (matchingUserOption == null) {
+            return defOpt;
+        }
+        else {
+            return updateOptionValue(defOpt, matchingUserOption);
+        }
+    }, defaultOptions)), patternInput[1]];
 }
 
 const showSuccess = showSuccess_1;
@@ -175,37 +145,27 @@ const showError = showSuccess_1;
 
 function copySettings(model, _arg1) {
     const toEditorConfigName = (value) => {
-        let name;
-        let s;
-        let strings;
-        strings = map_1((c) => {
+        const name = trimStart(join("", map_1((c) => {
             if (isUpper(c)) {
                 const arg10 = c.toLocaleLowerCase();
-                const clo1 = toText(printf("_%s"));
-                return clo1(arg10);
+                return toText(printf("_%s"))(arg10);
             }
             else {
                 return c;
             }
-        }, value);
-        s = join("", strings);
-        name = trimStart(s, "_");
+        }, value)), "_");
         if (contains(name, ofArray(["max_line_length", "indent_size", "end_of_line"]), {
             Equals: (x, y) => (x === y),
-            GetHashCode: structuralHash,
+            GetHashCode: stringHash,
         })) {
             return name;
         }
         else {
-            const clo1_1 = toText(printf("fsharp_%s"));
-            return clo1_1(name);
+            return toText(printf("fsharp_%s"))(name);
         }
     };
     let editorconfig;
-    let arg10_6;
-    let strings_1;
-    const list = Model__get_SettingsChangedByTheUser(model);
-    strings_1 = map((_arg2) => {
+    const arg10_6 = join("\n", map((_arg2) => {
         let pattern_matching_result, k_2, v_2;
         switch (_arg2.tag) {
             case 0: {
@@ -229,43 +189,30 @@ function copySettings(model, _arg1) {
             case 0: {
                 const k = _arg2.fields[1];
                 if (_arg2.fields[2]) {
-                    let arg10_2;
-                    arg10_2 = toEditorConfigName(k.split(""));
-                    const clo1_2 = toText(printf("%s=true"));
-                    return clo1_2(arg10_2);
+                    const arg10_2 = toEditorConfigName(k.split(""));
+                    return toText(printf("%s=true"))(arg10_2);
                 }
                 else {
-                    let arg10_3;
-                    arg10_3 = toEditorConfigName(k.split(""));
-                    const clo1_3 = toText(printf("%s=false"));
-                    return clo1_3(arg10_3);
+                    const arg10_3 = toEditorConfigName(k.split(""));
+                    return toText(printf("%s=false"))(arg10_3);
                 }
             }
             case 1: {
-                let arg10_4;
-                arg10_4 = toEditorConfigName(_arg2.fields[1].split(""));
-                const clo1_4 = toText(printf("%s=%i"));
-                const clo2 = clo1_4(arg10_4);
-                return clo2(_arg2.fields[2]);
+                const arg10_4 = toEditorConfigName(_arg2.fields[1].split(""));
+                return toText(printf("%s=%i"))(arg10_4)(_arg2.fields[2]);
             }
             case 2: {
-                let arg10_5;
-                arg10_5 = toEditorConfigName(k_2.split(""));
-                const clo1_5 = toText(printf("%s=%s"));
-                const clo2_1 = clo1_5(arg10_5);
-                return clo2_1(v_2);
+                const arg10_5 = toEditorConfigName(k_2.split(""));
+                return toText(printf("%s=%s"))(arg10_5)(v_2);
             }
         }
-    }, list);
-    arg10_6 = join("\n", strings_1);
-    const clo1_6 = toText(printf("[*.fs]\n%s"));
-    editorconfig = clo1_6(arg10_6);
+    }, Model__get_SettingsChangedByTheUser(model)));
+    editorconfig = toText(printf("[*.fs]\n%s"))(arg10_6);
     let pr_1;
     const pr = navigator.clipboard.writeText(editorconfig);
     pr_1 = (pr.then(void 0, ((err) => {
         showError("Something went wrong while copying settings to the clipboard.");
-        const clo1_7 = toConsole(printf("%A"));
-        clo1_7(err);
+        toConsole(printf("%A"))(err);
     })));
     pr_1.then((() => {
         showSuccess("Copied fantomas-config settings to clipboard!");
@@ -277,16 +224,14 @@ export function update(isActiveTab, code, msg, model) {
         case 1: {
             const options = msg.fields[0];
             const patternInput = isActiveTab ? restoreUserOptionsFromUrl(options) : [optionsListToMap(options), model.IsFsi];
-            const cmd = ((!isNullOrWhiteSpace(code)) ? isActiveTab : false) ? Cmd_OfFunc_result(new Msg(3)) : Cmd_none();
-            return [new Model(patternInput[1], model.Version, options, patternInput[0], model.Mode, new EditorState(1)), cmd];
+            return [new Model(patternInput[1], model.Version, options, patternInput[0], model.Mode, new EditorState(1)), ((!isNullOrWhiteSpace(code)) ? isActiveTab : false) ? Cmd_OfFunc_result(new Msg(3)) : Cmd_none()];
         }
         case 3: {
-            const cmd_1 = Cmd_batch(ofArray([Cmd_ofSub((dispatch) => {
+            return [new Model(model.IsFsi, model.Version, model.DefaultOptions, model.UserOptions, model.Mode, new EditorState(2)), Cmd_batch(ofArray([Cmd_ofSub((dispatch) => {
                 getFormattedCode(code, model, dispatch);
             }), Cmd_ofSub((arg20$0040) => {
                 updateUrl(code, model, arg20$0040);
-            })]));
-            return [new Model(model.IsFsi, model.Version, model.DefaultOptions, model.UserOptions, model.Mode, new EditorState(2)), cmd_1];
+            })]))];
         }
         case 2: {
             return [new Model(model.IsFsi, model.Version, model.DefaultOptions, model.UserOptions, model.Mode, new EditorState(4, msg.fields[0])), Cmd_none()];
@@ -295,8 +240,7 @@ export function update(isActiveTab, code, msg, model) {
             return [new Model(model.IsFsi, model.Version, model.DefaultOptions, model.UserOptions, model.Mode, new EditorState(3, msg.fields[0])), Cmd_none()];
         }
         case 5: {
-            const userOptions_1 = add(msg.fields[0][0], msg.fields[0][1], model.UserOptions);
-            return [new Model(model.IsFsi, model.Version, model.DefaultOptions, userOptions_1, model.Mode, model.State), Cmd_none()];
+            return [new Model(model.IsFsi, model.Version, model.DefaultOptions, add(msg.fields[0][0], msg.fields[0][1], model.UserOptions), model.Mode, model.State), Cmd_none()];
         }
         case 6: {
             return [model, Cmd_none()];

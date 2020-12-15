@@ -1,10 +1,10 @@
-import { printf, toText } from "../.fable/fable-library.3.0.0-nagareyama-rc-008/String.js";
-import { BadgeProps, badge } from "../bin/.fable/Fable.Reactstrap.0.5.1/Badge.fs.js";
-import { HTMLAttr } from "../bin/.fable/Fable.React.7.0.1/Fable.React.Props.fs.js";
-import { tryItem, map, mapIndexed, ofSeq, ofArray, singleton } from "../.fable/fable-library.3.0.0-nagareyama-rc-008/List.js";
+import { printf, toText } from "../.fable/fable-library.3.0.1/String.js";
+import { BadgeProps, badge } from "../.fable/Fable.Reactstrap.0.5.1/Badge.fs.js";
+import { HTMLAttr } from "../.fable/Fable.React.7.0.1/Fable.React.Props.fs.js";
+import { tryItem, map, mapIndexed, ofSeq, ofArray, singleton } from "../.fable/fable-library.3.0.1/List.js";
 import * as react from "../../../web_modules/react.js";
-import { singleton as singleton_1, append, delay } from "../.fable/fable-library.3.0.0-nagareyama-rc-008/Seq.js";
-import { map as map_1, toArray } from "../.fable/fable-library.3.0.0-nagareyama-rc-008/Option.js";
+import { singleton as singleton_1, append, delay } from "../.fable/fable-library.3.0.1/Seq.js";
+import { map as map_1, toArray } from "../.fable/fable-library.3.0.1/Option.js";
 import { menu, MenuItem } from "./Menu.js";
 import { ActiveTab, Msg } from "./Model.js";
 
@@ -27,66 +27,46 @@ function typeTitle(_arg1) {
 }
 
 function rangeToText(r) {
-    const clo1 = toText(printf("(%i,%i - %i,%i)"));
-    const clo2 = clo1(r.StartLine);
-    const clo3 = clo2(r.StartColumn);
-    const clo4 = clo3(r.EndLine);
-    return clo4(r.EndColumn);
+    return toText(printf("(%i,%i - %i,%i)"))(r.StartLine)(r.StartColumn)(r.EndLine)(r.EndColumn);
 }
 
 function rangeToBadge(r) {
-    let s;
-    return badge([new BadgeProps(1, "dark"), new BadgeProps(5, singleton(new HTMLAttr(64, "px-2 py-1 ml-auto")))], [(s = rangeToText(r), (s))]);
+    return badge([new BadgeProps(1, "dark"), new BadgeProps(5, singleton(new HTMLAttr(64, "px-2 py-1 ml-auto")))], [rangeToText(r)]);
 }
 
-const isNotAnEmptyList = (arg) => {
-    let value;
-    value = (arg.tail == null);
-    return !value;
-};
+const isNotAnEmptyList = (arg) => (!(arg.tail == null));
 
 function triviaContentToDetail(tc) {
-    const wrap = (outer, inner) => {
-        let s, clo1;
-        return ofArray([(s = (clo1 = toText(printf("%s(")), clo1(outer)), s), react.createElement("code", {}, inner), ")"]);
-    };
+    const wrap = (outer, inner) => ofArray([toText(printf("%s("))(outer), react.createElement("code", {}, inner), ")"]);
     switch (tc.tag) {
         case 2: {
-            const children_2 = wrap("StringContent", tc.fields[0]);
-            return react.createElement(react.Fragment, {}, ...children_2);
+            return react.createElement(react.Fragment, {}, ...wrap("StringContent", tc.fields[0]));
         }
         case 9: {
-            const children_3 = wrap("CharContent", tc.fields[0]);
-            return react.createElement(react.Fragment, {}, ...children_3);
+            return react.createElement(react.Fragment, {}, ...wrap("CharContent", tc.fields[0]));
         }
         case 5: {
             const c = tc.fields[0];
             const inner_1 = (c.tag === 1) ? wrap("LineCommentOnSingleLine", c.fields[0]) : ((c.tag === 0) ? wrap("LineCommentAfterSourceCode", c.fields[0]) : wrap("BlockComment", c.fields[0]));
-            const children_4 = ofSeq(delay(() => append(singleton_1("Comment("), delay(() => append(inner_1, delay(() => singleton_1(")")))))));
-            return react.createElement(react.Fragment, {}, ...children_4);
+            return react.createElement(react.Fragment, {}, ...ofSeq(delay(() => append(singleton_1("Comment("), delay(() => append(inner_1, delay(() => singleton_1(")"))))))));
         }
         case 7: {
-            const children_5 = wrap("Directive", tc.fields[0]);
-            return react.createElement(react.Fragment, {}, ...children_5);
+            return react.createElement(react.Fragment, {}, ...wrap("Directive", tc.fields[0]));
         }
         case 3: {
-            const children_6 = wrap("IdentOperatorAsWord", tc.fields[0]);
-            return react.createElement(react.Fragment, {}, ...children_6);
+            return react.createElement(react.Fragment, {}, ...wrap("IdentOperatorAsWord", tc.fields[0]));
         }
         case 4: {
-            const children_7 = wrap("IdentBetweenTicks", tc.fields[0]);
-            return react.createElement(react.Fragment, {}, ...children_7);
+            return react.createElement(react.Fragment, {}, ...wrap("IdentBetweenTicks", tc.fields[0]));
         }
         case 1: {
-            const children_8 = wrap("Number", tc.fields[0]);
-            return react.createElement(react.Fragment, {}, ...children_8);
+            return react.createElement(react.Fragment, {}, ...wrap("Number", tc.fields[0]));
         }
         case 8: {
             return "NewlineAfter";
         }
         case 0: {
-            const children_9 = wrap("Keyword", tc.fields[0]);
-            return react.createElement(react.Fragment, {}, ...children_9);
+            return react.createElement(react.Fragment, {}, ...wrap("Keyword", tc.fields[0]));
         }
         default: {
             return "Newline";
@@ -95,26 +75,15 @@ function triviaContentToDetail(tc) {
 }
 
 function activeTriviaNode(tn) {
-    let title;
-    const arg10 = typeName(tn.Type);
-    const arg20 = rangeToText(tn.Range);
-    const clo1 = toText(printf("%s %s"));
-    const clo2 = clo1(arg10);
-    title = clo2(arg20);
+    let arg20, arg10;
     const contentInfo = (title_1, items) => {
-        let children_4;
         if (isNotAnEmptyList(items)) {
-            let listItems;
-            listItems = mapIndexed((idx, item) => {
-                const children = [triviaContentToDetail(item)];
-                return react.createElement("li", {
-                    key: idx,
-                }, ...children);
-            }, items);
-            const children_6 = [react.createElement("h4", {}, title_1), (children_4 = [Array.from(listItems)], react.createElement("ul", {
+            const listItems = mapIndexed((idx, item) => react.createElement("li", {
+                key: idx,
+            }, triviaContentToDetail(item)), items);
+            return react.createElement(react.Fragment, {}, react.createElement("h4", {}, title_1), react.createElement("ul", {
                 className: "list-unstyled",
-            }, ...children_4))];
-            return react.createElement(react.Fragment, {}, ...children_6);
+            }, Array.from(listItems)));
         }
         else {
             const o = void 0;
@@ -122,37 +91,27 @@ function activeTriviaNode(tn) {
                 return null;
             }
             else {
-                const o_1 = o;
-                return o_1;
+                return o;
             }
         }
     };
-    const children_9 = [react.createElement("h2", {
-        className: "mb-4",
-    }, title), contentInfo("Content before", tn.ContentBefore), contentInfo("Content itself", ofArray(toArray(tn.ContentItself))), contentInfo("Content after", tn.ContentAfter)];
     return react.createElement("div", {
         className: "tab-pane active",
-    }, ...children_9);
+    }, react.createElement("h2", {
+        className: "mb-4",
+    }, (arg20 = rangeToText(tn.Range), (arg10 = typeName(tn.Type), toText(printf("%s %s"))(arg10)(arg20)))), contentInfo("Content before", tn.ContentBefore), contentInfo("Content itself", ofArray(toArray(tn.ContentItself))), contentInfo("Content after", tn.ContentAfter));
 }
 
 export function view(model, dispatch) {
-    let children, o, o_1;
-    let navItems;
-    navItems = map((tn) => {
-        const className = (tn.Type.tag === 0) ? "nav-link-main-node" : "nav-link-token";
-        const Label = typeName(tn.Type);
-        return new MenuItem(className, Label, typeTitle(tn.Type), tn.Range);
-    }, model.TriviaNodes);
-    let activeNode;
-    const option = tryItem(model.ActiveByTriviaNodeIndex, model.TriviaNodes);
-    activeNode = map_1(activeTriviaNode, option);
-    const children_2 = [menu((idx) => {
-        dispatch(new Msg(3, new ActiveTab(0), idx));
-    }, model.ActiveByTriviaNodeIndex, navItems), (children = [(o = activeNode, (o == null) ? null : (o_1 = o, o_1))], react.createElement("div", {
-        className: "bg-light flex-grow-1 py-2 px-4 tab-content overflow-auto",
-    }, ...children))];
+    let o;
+    const navItems = map((tn) => (new MenuItem((tn.Type.tag === 0) ? "nav-link-main-node" : "nav-link-token", typeName(tn.Type), typeTitle(tn.Type), tn.Range)), model.TriviaNodes);
+    const activeNode = map_1(activeTriviaNode, tryItem(model.ActiveByTriviaNodeIndex, model.TriviaNodes));
     return react.createElement("div", {
         className: "d-flex h-100",
-    }, ...children_2);
+    }, menu((idx) => {
+        dispatch(new Msg(3, new ActiveTab(0), idx));
+    }, model.ActiveByTriviaNodeIndex, navItems), react.createElement("div", {
+        className: "bg-light flex-grow-1 py-2 px-4 tab-content overflow-auto",
+    }, (o = activeNode, (o == null) ? null : o)));
 }
 
