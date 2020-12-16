@@ -823,7 +823,8 @@ var Editor = function Editor(_ref) {
       if (value !== editorRef.current.getValue()) {
         editorRef.current.executeEdits('', [{
           range: editorRef.current.getModel().getFullModelRange(),
-          text: value
+          text: value,
+          forceMoveMarkers: true
         }]);
 
         if (_isControlledMode) {
