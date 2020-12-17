@@ -69,11 +69,12 @@ let private updateUrl code model _ =
 let getOptionsCmd mode =
     Cmd.OfPromise.either getOptions mode OptionsReceived (fun exn -> Msg.FormatException exn.Message)
 
+let getVersionCmd mode =
+    Cmd.OfPromise.either getVersion mode VersionReceived (fun exn -> Msg.FormatException exn.Message)
+
 let init (mode: FantomasMode) =
     let cmd =
-        let versionCmd =
-            Cmd.OfPromise.either getVersion mode VersionReceived (fun exn -> Msg.FormatException exn.Message)
-
+        let versionCmd = getVersionCmd mode
         let optionsCmd = getOptionsCmd mode
         Cmd.batch [ versionCmd; optionsCmd ]
 

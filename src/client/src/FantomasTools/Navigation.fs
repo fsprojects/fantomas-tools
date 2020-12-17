@@ -19,7 +19,10 @@ let cmdForCurrentTab tab model =
             Cmd.ofMsg (Trivia.Model.GetTrivia)
             |> Cmd.map Msg.TriviaMsg
         | FantomasTab mode when (mode <> model.FantomasModel.Mode) ->
-            Cmd.map FantomasMsg (FantomasOnline.State.getOptionsCmd mode)
+            Cmd.batch
+                [ Cmd.map FantomasMsg (FantomasOnline.State.getOptionsCmd mode)
+                  Cmd.map FantomasMsg (FantomasOnline.State.getVersionCmd mode) ]
+
         | FantomasTab _ -> Cmd.none
     else
         Cmd.none

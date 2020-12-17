@@ -1,5 +1,6 @@
 group V4
 FSharp.Compiler.Service
+Microsoft.Build.Utilities.Core
 Fantomas
 Fantomas.Extras
 Microsoft.NET.Sdk.Functions

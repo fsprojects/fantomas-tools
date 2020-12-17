@@ -1,6 +1,7 @@
 namespace FantomasOnlineLatest.Server
 
 open Fantomas
+open Fantomas.FormatConfig
 open Fantomas.Extras
 open FantomasOnline.Server.Shared
 open FantomasOnline.Shared
@@ -21,6 +22,12 @@ module FormatCode =
                 match v with
                 | :? int as i -> FantomasOption.IntOption(idx, k, i) |> Some
                 | :? bool as b -> FantomasOption.BoolOption(idx, k, b) |> Some
+                | :? MultilineFormatterType as mft ->
+                    FantomasOption.MultilineFormatterTypeOption(idx, k, (MultilineFormatterType.ToConfigString mft))
+                    |> Some
+                | :? EndOfLineStyle as eol ->
+                    FantomasOption.EndOfLineStyleOption(idx, k, (EndOfLineStyle.ToConfigString eol))
+                    |> Some
                 | _ -> None)
         |> Seq.toList
 
@@ -31,7 +38,13 @@ module FormatCode =
                 (function
                 | BoolOption (_, _, v) -> box v
                 | IntOption (_, _, v) -> box v
-                | _ -> failwith "option not supported in this version")
+                | MultilineFormatterTypeOption (_, _, v) ->
+                    MultilineFormatterType.OfConfigString(v)
+                    |> Option.defaultValue (box CharacterWidth)
+                | EndOfLineStyleOption (_, _, v) ->
+                    EndOfLineStyle.OfConfigString(v)
+                    |> Option.defaultValue EndOfLineStyle.CRLF
+                    |> box)
             |> Seq.toArray
 
         let formatConfigType = typeof<FormatConfig.FormatConfig>

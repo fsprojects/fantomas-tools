@@ -6,3 +6,6 @@ fsharp_align_function_signature_to_indentation=true
 
 [src/**/Encoders.fs]
 fsharp_disable_elmish_syntax=true
+
+[src/client/src/FantomasTools/Navigation.fs]
+fsharp_disable_elmish_syntax=true
