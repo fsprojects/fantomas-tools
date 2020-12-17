@@ -215,10 +215,10 @@
     "@types/yargs" "^15.0.0"
     chalk "^4.0.0"
 
-"@monaco-editor/react@3.7.3":
-  version "3.7.3"
-  resolved "https://registry.yarnpkg.com/@monaco-editor/react/-/react-3.7.3.tgz#7561961f3047e90313af89b6490f708f1273dbaa"
-  integrity sha512-QUXeDiROMqwPTPyCZMIBaeNiv55i6F4TYncG1F8cEKitna/6rM5C58NS0sC/A/QsrVJrOQuPf8eNYHH7WTf81Q==
+"@monaco-editor/react@3.7.4":
+  version "3.7.4"
+  resolved "https://registry.yarnpkg.com/@monaco-editor/react/-/react-3.7.4.tgz#f13a798c37f19c9f864c8bae65c24bade5da8645"
+  integrity sha512-nblpHA50mpeH3gT88EWFnaNIhGzxm4Vjc0H4UbOlHneg39kl8CakDbVTrxhtk2VWueWZEbFUllPH5dp6W/lLbg==
   dependencies:
     "@babel/runtime" "^7.11.0"
     state-local "^1.0.1"
