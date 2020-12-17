@@ -152,6 +152,8 @@ Check out our [Contribution Guidelines](https://github.com/fsprojects/fantomas/b
 Fantomas %s
 
 %s
+
+<sub>Did you know that you can ignore files when formatting from fantomas-tool or the FAKE targets by using a [.fantomasignore file](https://github.com/fsprojects/fantomas/blob/master/docs/Documentation.md#ignore-files-fantomasignore)?</sub>
         """
             location.href
             left
