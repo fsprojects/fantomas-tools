@@ -59,8 +59,12 @@ export function getOptionsCmd(mode) {
     return Cmd_OfPromise_either(getOptions, mode, (arg0) => (new Msg(1, arg0)), (exn) => (new Msg(2, exn.message)));
 }
 
+export function getVersionCmd(mode) {
+    return Cmd_OfPromise_either(getVersion, mode, (arg0) => (new Msg(0, arg0)), (exn) => (new Msg(2, exn.message)));
+}
+
 export function init(mode) {
-    const cmd = Cmd_batch(ofArray([Cmd_OfPromise_either(getVersion, mode, (arg0) => (new Msg(0, arg0)), (exn) => (new Msg(2, exn.message))), getOptionsCmd(mode)]));
+    const cmd = Cmd_batch(ofArray([getVersionCmd(mode), getOptionsCmd(mode)]));
     return [new Model(false, "???", empty(), empty_1(), mode, new EditorState(0)), cmd];
 }
 
