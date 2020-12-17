@@ -295,7 +295,7 @@ var _styles = interopRequireDefault(styles_1);
 
 // ** forwardref render functions do not support proptypes or defaultprops **
 // one of the reasons why we use a separate prop for passing ref instead of using forwardref
-var MonacoContainer = function MonacoContainer(_ref2) {
+function MonacoContainer(_ref2) {
   var width = _ref2.width,
       height = _ref2.height,
       isEditorReady = _ref2.isEditorReady,
@@ -316,7 +316,7 @@ var MonacoContainer = function MonacoContainer(_ref2) {
     style: (0, _objectSpread2.default)((0, _objectSpread2.default)({}, _styles.default.fullWidth), !isEditorReady && _styles.default.hide),
     className: className
   }));
-};
+}
 
 MonacoContainer.propTypes = {
   width: _propTypes.default.oneOfType([_propTypes.default.number, _propTypes.default.string]).isRequired,
@@ -395,12 +395,16 @@ exports.default = void 0;
 
 var _objectSpread2 = interopRequireDefault(objectSpread2);
 
-var merge = function merge(target, source) {
+function merge(target, source) {
   Object.keys(source).forEach(function (key) {
-    if (source[key] instanceof Object) target[key] && Object.assign(source[key], merge(target[key], source[key]));
+    if (source[key] instanceof Object) {
+      if (target[key]) {
+        Object.assign(source[key], merge(target[key], source[key]));
+      }
+    }
   });
   return (0, _objectSpread2.default)((0, _objectSpread2.default)({}, target), source);
-};
+}
 
 var _default = merge;
 exports.default = _default;
@@ -418,7 +422,7 @@ var CANCELATION_MESSAGE = {
   msg: 'operation is manually canceled'
 };
 
-var makeCancelable = function makeCancelable(promise) {
+function makeCancelable(promise) {
   var hasCanceled_ = false;
   var wrappedPromise = new Promise(function (resolve, reject) {
     promise.then(function (val) {
@@ -429,7 +433,7 @@ var makeCancelable = function makeCancelable(promise) {
   return wrappedPromise.cancel = function () {
     return hasCanceled_ = true;
   }, wrappedPromise;
-};
+}
 
 var _default = makeCancelable;
 exports.default = _default;
@@ -773,7 +777,7 @@ var _MonacoContainer = interopRequireDefault(MonacoContainer);
 
 var _themes = interopRequireDefault(themes_1);
 
-var Editor = function Editor(_ref) {
+function Editor(_ref) {
   var value = _ref.value,
       language = _ref.language,
       editorDidMount = _ref.editorDidMount,
@@ -798,9 +802,10 @@ var Editor = function Editor(_ref) {
       isMonacoMounting = _useState4[0],
       setIsMonacoMounting = _useState4[1];
 
-  var editorRef = (0, _react.useRef)();
-  var monacoRef = (0, _react.useRef)();
-  var containerRef = (0, _react.useRef)();
+  var editorRef = (0, _react.useRef)(null);
+  var monacoRef = (0, _react.useRef)(null);
+  var containerRef = (0, _react.useRef)(null);
+  var editorDidMountRef = (0, _react.useRef)(editorDidMount);
   (0, hooks.useMount)(function () {
     var cancelable = utils.monaco.init();
 
@@ -853,11 +858,15 @@ var Editor = function Editor(_ref) {
       language: language,
       automaticLayout: true
     }, options), overrideServices);
-    editorDidMount(editorRef.current.getValue.bind(editorRef.current), editorRef.current);
     monacoRef.current.editor.defineTheme('dark', _themes.default['night-dark']);
     monacoRef.current.editor.setTheme(theme);
     setIsEditorReady(true);
-  }, [editorDidMount, language, options, overrideServices, theme, value]);
+  }, [language, options, overrideServices, theme, value]);
+  (0, _react.useEffect)(function () {
+    if (isEditorReady) {
+      editorDidMountRef.current(editorRef.current.getValue.bind(editorRef.current), editorRef.current);
+    }
+  }, [isEditorReady]);
   (0, _react.useEffect)(function () {
     !isMonacoMounting && !isEditorReady && createEditor();
   }, [isMonacoMounting, isEditorReady, createEditor]);
@@ -875,7 +884,7 @@ var Editor = function Editor(_ref) {
     className: className,
     wrapperClassName: wrapperClassName
   });
-};
+}
 
 Editor.propTypes = {
   value: _propTypes.default.string,
@@ -951,7 +960,7 @@ var _MonacoContainer = interopRequireDefault(MonacoContainer);
 
 var _themes = interopRequireDefault(themes_1);
 
-var DiffEditor = function DiffEditor(_ref) {
+function DiffEditor(_ref) {
   var original = _ref.original,
       modified = _ref.modified,
       language = _ref.language,
@@ -976,9 +985,10 @@ var DiffEditor = function DiffEditor(_ref) {
       isMonacoMounting = _useState4[0],
       setIsMonacoMounting = _useState4[1];
 
-  var editorRef = (0, _react.useRef)();
-  var monacoRef = (0, _react.useRef)();
-  var containerRef = (0, _react.useRef)();
+  var editorRef = (0, _react.useRef)(null);
+  var monacoRef = (0, _react.useRef)(null);
+  var containerRef = (0, _react.useRef)(null);
+  var editorDidMountRef = (0, _react.useRef)(editorDidMount);
   (0, hooks.useMount)(function () {
     var cancelable = utils.monaco.init();
 
@@ -1024,16 +1034,19 @@ var DiffEditor = function DiffEditor(_ref) {
       automaticLayout: true
     }, options));
     setModels();
-
-    var _editorRef$current$ge2 = editorRef.current.getModel(),
-        original = _editorRef$current$ge2.original,
-        modified = _editorRef$current$ge2.modified;
-
-    editorDidMount(modified.getValue.bind(modified), original.getValue.bind(original), editorRef.current);
     monacoRef.current.editor.defineTheme('dark', _themes.default['night-dark']);
     monacoRef.current.editor.setTheme(theme);
     setIsEditorReady(true);
-  }, [editorDidMount, options, theme, setModels]);
+  }, [options, theme, setModels]);
+  (0, _react.useEffect)(function () {
+    if (isEditorReady) {
+      var _editorRef$current$ge2 = editorRef.current.getModel(),
+          _original = _editorRef$current$ge2.original,
+          _modified = _editorRef$current$ge2.modified;
+
+      editorDidMountRef.current(_modified.getValue.bind(_modified), _original.getValue.bind(_original), editorRef.current);
+    }
+  }, [isEditorReady]);
   (0, _react.useEffect)(function () {
     !isMonacoMounting && !isEditorReady && createEditor();
   }, [isMonacoMounting, isEditorReady, createEditor]);
@@ -1051,7 +1064,7 @@ var DiffEditor = function DiffEditor(_ref) {
     className: className,
     wrapperClassName: wrapperClassName
   });
-};
+}
 
 DiffEditor.propTypes = {
   original: _propTypes.default.string,
