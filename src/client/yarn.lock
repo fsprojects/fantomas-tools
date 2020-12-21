@@ -3450,10 +3450,10 @@ slice-ansi@^4.0.0:
     astral-regex "^2.0.0"
     is-fullwidth-code-point "^3.0.0"
 
-snowpack@2.18.4:
-  version "2.18.4"
-  resolved "https://registry.yarnpkg.com/snowpack/-/snowpack-2.18.4.tgz#819ac2bf05623f85155f82e2e49f8d5f8abde664"
-  integrity sha512-tZpcK3UBtYVF9ED1h9h9qkSYSC2IzVXjOHN+Iqo3tnDMCHvv/fgTMQT3+nJwPerBYvUemaCTS8pjRQDYfbWfQA==
+snowpack@2.18.5:
+  version "2.18.5"
+  resolved "https://registry.yarnpkg.com/snowpack/-/snowpack-2.18.5.tgz#10a0130fb1eeecda6dfd3be1b1b60ff9849e3da4"
+  integrity sha512-UThUbGXn/wN7zRJDVpbC0F3uvkhu6PAgpTbV1hdAaqLvYBewT794iEMAY5mMxT27zQ+ZOyqbICaBtKtq0BgDcA==
   dependencies:
     "@snowpack/plugin-build-script" "^2.0.12"
     "@snowpack/plugin-run-script" "^2.2.1"
