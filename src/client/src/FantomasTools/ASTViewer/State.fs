@@ -56,9 +56,10 @@ let private getMessageFromError (ex: exn) = Error ex.Message
 // defines the initial state and initial command (= side-effect) of the application
 let init isActive: Model * Cmd<Msg> =
     let model =
-        if isActive
-        then UrlTools.restoreModelFromUrl (decodeUrlModel initialModel) initialModel
-        else initialModel
+        if isActive then
+            UrlTools.restoreModelFromUrl (decodeUrlModel initialModel) initialModel
+        else
+            initialModel
 
     let cmd =
         Cmd.OfPromise.either getVersion () VersionFound getMessageFromError

@@ -56,9 +56,10 @@ let private modelToParseRequest sourceCode (model: Model) =
 
 let init isActive =
     let model =
-        if isActive
-        then UrlTools.restoreModelFromUrl (decodeUrlModel initialModel) initialModel
-        else initialModel
+        if isActive then
+            UrlTools.restoreModelFromUrl (decodeUrlModel initialModel) initialModel
+        else
+            initialModel
 
     let cmd =
         Cmd.OfPromise.either fetchFSCVersion () FSCVersionReceived (fun ex -> Error ex.Message)

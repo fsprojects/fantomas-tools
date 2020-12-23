@@ -62,9 +62,10 @@ let private updateUrl code (model: Model) _ =
 
 let init isActive =
     let model =
-        if isActive
-        then UrlTools.restoreModelFromUrl (decodeUrlModel initialModel) initialModel
-        else initialModel
+        if isActive then
+            UrlTools.restoreModelFromUrl (decodeUrlModel initialModel) initialModel
+        else
+            initialModel
 
     let cmd =
         Cmd.OfPromise.either getVersion () VersionFound NetworkException
@@ -86,9 +87,10 @@ let update code msg model =
         match decodeTokens tokensText with
         | Ok tokens ->
             let cmd =
-                if (Array.length tokens) = 1
-                then Cmd.OfFunc.result (LineSelected 1)
-                else Cmd.none
+                if (Array.length tokens) = 1 then
+                    Cmd.OfFunc.result (LineSelected 1)
+                else
+                    Cmd.none
 
             { model with
                   Tokens = tokens

@@ -15,7 +15,10 @@ let input key onChange labelValue placeholder value =
 
 let private toggleButton_ onClick active label =
     let className =
-        if active then "rounded-0 text-white" else "rounded-0"
+        if active then
+            "rounded-0 text-white"
+        else
+            "rounded-0"
 
     Button.button [ Button.Custom [ ClassName className
                                     Key label

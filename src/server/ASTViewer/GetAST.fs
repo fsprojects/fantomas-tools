@@ -171,8 +171,8 @@ module GetAST =
                     untypedRes.Errors
                     |> Array.filter (fun e -> e.Severity = FSharpErrorSeverity.Error)
 
-                if not <| Array.isEmpty errors
-                then log.LogError(sprintf "Parsing failed with errors: %A\nAnd options: %A" errors checkOptions)
+                if not <| Array.isEmpty errors then
+                    log.LogError(sprintf "Parsing failed with errors: %A\nAnd options: %A" errors checkOptions)
 
                 return Error errors
             else
@@ -218,6 +218,7 @@ module GetAST =
            IsFsi = isFsi })
         =
         let fileName = if isFsi then "tmp.fsi" else "tmp.fsx"
+
         let sourceText = FSharp.Compiler.Text.SourceText.ofString (source)
         let checker = sharedChecker.Value
 

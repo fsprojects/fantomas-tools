@@ -76,8 +76,8 @@ module GetTrivia =
                     ast.Errors
                     |> Array.filter (fun e -> e.Severity = FSharpErrorSeverity.Error)
 
-                if not <| Array.isEmpty errors
-                then log.LogError(sprintf "Parsing failed with errors: %A\nAnd options: %A" errors checkOptions)
+                if not <| Array.isEmpty errors then
+                    log.LogError(sprintf "Parsing failed with errors: %A\nAnd options: %A" errors checkOptions)
 
                 return Error ast.Errors
             else

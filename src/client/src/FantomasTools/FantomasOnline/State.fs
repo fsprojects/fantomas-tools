@@ -142,24 +142,27 @@ let private copySettings (model: Model) _ =
         value
         |> Seq.map
             (fun c ->
-                if System.Char.IsUpper(c)
-                then sprintf "_%s" (c.ToString().ToLower())
-                else c.ToString())
+                if System.Char.IsUpper(c) then
+                    sprintf "_%s" (c.ToString().ToLower())
+                else
+                    c.ToString())
         |> String.concat ""
         |> fun s -> s.TrimStart([| '_' |])
         |> fun name ->
-            if List.contains name supportedProperties
-            then name
-            else sprintf "fsharp_%s" name
+            if List.contains name supportedProperties then
+                name
+            else
+                sprintf "fsharp_%s" name
 
     let editorconfig =
         model.SettingsChangedByTheUser
         |> List.map
             (function
             | FantomasOption.BoolOption (_, k, v) ->
-                if v
-                then toEditorConfigName k |> sprintf "%s=true"
-                else toEditorConfigName k |> sprintf "%s=false"
+                if v then
+                    toEditorConfigName k |> sprintf "%s=true"
+                else
+                    toEditorConfigName k |> sprintf "%s=false"
             | FantomasOption.IntOption (_, k, v) -> sprintf "%s=%i" (toEditorConfigName k) v
             | FantomasOption.MultilineFormatterTypeOption (_, k, v)
             | FantomasOption.EndOfLineStyleOption (_, k, v) -> sprintf "%s=%s" (toEditorConfigName k) v)
@@ -178,9 +181,10 @@ let update isActiveTab code msg model =
     | VersionReceived version -> { model with Version = version }, Cmd.none
     | OptionsReceived options ->
         let userOptions, isFsi =
-            if isActiveTab
-            then restoreUserOptionsFromUrl options
-            else optionsListToMap options, model.IsFsi
+            if isActiveTab then
+                restoreUserOptionsFromUrl options
+            else
+                optionsListToMap options, model.IsFsi
 
         let cmd =
             if not (System.String.IsNullOrWhiteSpace code)

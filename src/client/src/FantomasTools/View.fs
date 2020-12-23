@@ -61,8 +61,8 @@ let private settings model dispatch inner =
     div [ ClassName className
           OnClick
               (fun ev ->
-                  if ev.target?className = "settings open"
-                  then dispatch ToggleSettings) ] [
+                  if ev.target?className = "settings open" then
+                      dispatch ToggleSettings) ] [
         div [ ClassName "inner" ] [
             h1 [ ClassName "text-center" ] [
                 i [ ClassName "fas fa-times close"
@@ -113,9 +113,10 @@ let tabs (model: Model) dispatch =
             let query =
                 let hash = Browser.Dom.window.location.hash
 
-                if hash.Contains("?")
-                then sprintf "?%s" (hash.Split('?').[1])
-                else ""
+                if hash.Contains("?") then
+                    sprintf "?%s" (hash.Split('?').[1])
+                else
+                    ""
 
             sprintf "%s%s" page query
 
