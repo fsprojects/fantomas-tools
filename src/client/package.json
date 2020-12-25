@@ -10,7 +10,7 @@
   "dependencies": {
     "react": "17.0.1",
     "react-dom": "17.0.1",
-    "reactstrap": "8.7.1",
+    "reactstrap": "8.8.0",
     "bootstrap": "4.5.3",
     "lz-string": "1.4.4",
     "notyf": "3.9.0",
