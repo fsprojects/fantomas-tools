@@ -5415,11 +5415,17 @@ var Dropdown = /*#__PURE__*/function (_React$Component) {
     _this.handleKeyDown = _this.handleKeyDown.bind(_assertThisInitialized(_this));
     _this.removeEvents = _this.removeEvents.bind(_assertThisInitialized(_this));
     _this.toggle = _this.toggle.bind(_assertThisInitialized(_this));
+    _this.handleMenuRef = _this.handleMenuRef.bind(_assertThisInitialized(_this));
     _this.containerRef = /*#__PURE__*/react.createRef();
+    _this.menuRef = /*#__PURE__*/react.createRef();
     return _this;
   }
 
   var _proto = Dropdown.prototype;
+
+  _proto.handleMenuRef = function handleMenuRef(menuRef) {
+    this.menuRef.current = menuRef;
+  };
 
   _proto.getContextValue = function getContextValue() {
     return {
@@ -5427,7 +5433,10 @@ var Dropdown = /*#__PURE__*/function (_React$Component) {
       isOpen: this.props.isOpen,
       direction: this.props.direction === 'down' && this.props.dropup ? 'up' : this.props.direction,
       inNavbar: this.props.inNavbar,
-      disabled: this.props.disabled
+      disabled: this.props.disabled,
+      // Callback that should be called by DropdownMenu to provide a ref to
+      // a HTML tag that's used for the DropdownMenu
+      onMenuRef: this.handleMenuRef
     };
   };
 
@@ -5449,6 +5458,10 @@ var Dropdown = /*#__PURE__*/function (_React$Component) {
     return this.containerRef.current;
   };
 
+  _proto.getMenu = function getMenu() {
+    return this.menuRef.current;
+  };
+
   _proto.getMenuCtrl = function getMenuCtrl() {
     if (this._$menuCtrl) return this._$menuCtrl;
     this._$menuCtrl = this.getContainer().querySelector('[aria-expanded]');
@@ -5456,7 +5469,11 @@ var Dropdown = /*#__PURE__*/function (_React$Component) {
   };
 
   _proto.getMenuItems = function getMenuItems() {
-    return [].slice.call(this.getContainer().querySelectorAll('[role="menuitem"]'));
+    // In a real menu with a child DropdownMenu, `this.getMenu()` should never
+    // be null, but it is sometimes null in tests. To mitigate that, we just
+    // use `this.getContainer()` as the fallback `menuContainer`.
+    var menuContainer = this.getMenu() || this.getContainer();
+    return [].slice.call(menuContainer.querySelectorAll('[role="menuitem"]'));
   };
 
   _proto.addEvents = function addEvents() {
@@ -5478,8 +5495,11 @@ var Dropdown = /*#__PURE__*/function (_React$Component) {
   _proto.handleDocumentClick = function handleDocumentClick(e) {
     if (e && (e.which === 3 || e.type === 'keyup' && e.which !== keyCodes.tab)) return;
     var container = this.getContainer();
+    var menu = this.getMenu();
+    var clickIsInContainer = container.contains(e.target) && container !== e.target;
+    var clickIsInMenu = menu && menu.contains(e.target) && menu !== e.target;
 
-    if (container.contains(e.target) && container !== e.target && (e.type !== 'keyup' || e.which === keyCodes.tab)) {
+    if ((clickIsInContainer || clickIsInMenu) && (e.type !== 'keyup' || e.which === keyCodes.tab)) {
       return;
     }
 
@@ -5489,7 +5509,11 @@ var Dropdown = /*#__PURE__*/function (_React$Component) {
   _proto.handleKeyDown = function handleKeyDown(e) {
     var _this4 = this;
 
-    if (/input|textarea/i.test(e.target.tagName) || keyCodes.tab === e.which && (e.target.getAttribute('role') !== 'menuitem' || !this.props.a11y)) {
+    var isTargetMenuItem = e.target.getAttribute('role') === 'menuitem';
+    var isTargetMenuCtrl = this.getMenuCtrl() === e.target;
+    var isTab = keyCodes.tab === e.which;
+
+    if (/input|textarea/i.test(e.target.tagName) || isTab && !this.props.a11y || isTab && !(isTargetMenuItem || isTargetMenuCtrl)) {
       return;
     }
 
@@ -5499,12 +5523,22 @@ var Dropdown = /*#__PURE__*/function (_React$Component) {
 
     if (this.props.disabled) return;
 
-    if (this.getMenuCtrl() === e.target) {
-      if (!this.props.isOpen && [keyCodes.space, keyCodes.enter, keyCodes.up, keyCodes.down].indexOf(e.which) > -1) {
-        this.toggle(e);
+    if (isTargetMenuCtrl) {
+      if ([keyCodes.space, keyCodes.enter, keyCodes.up, keyCodes.down].indexOf(e.which) > -1) {
+        // Open the menu (if not open) and focus the first menu item
+        if (!this.props.isOpen) {
+          this.toggle(e);
+        }
+
         setTimeout(function () {
           return _this4.getMenuItems()[0].focus();
         });
+      } else if (this.props.isOpen && isTab) {
+        // Focus the first menu item if tabbing from an open menu. We need this
+        // for cases where the DropdownMenu sets a custom container, which may
+        // not be the natural next item to tab to from the DropdownToggle.
+        e.preventDefault();
+        this.getMenuItems()[0].focus();
       } else if (this.props.isOpen && e.which === keyCodes.esc) {
         this.toggle(e);
       }
@@ -5827,7 +5861,8 @@ var propTypes$h = {
   className: propTypes$1a.string,
   cssModule: propTypes$1a.object,
   persist: propTypes$1a.bool,
-  positionFixed: propTypes$1a.bool
+  positionFixed: propTypes$1a.bool,
+  container: targetPropType
 };
 var defaultProps$g = {
   tag: 'div',
@@ -5866,7 +5901,8 @@ var DropdownMenu = /*#__PURE__*/function (_React$Component) {
         modifiers = _this$props.modifiers,
         persist = _this$props.persist,
         positionFixed = _this$props.positionFixed,
-        attrs = _objectWithoutPropertiesLoose(_this$props, ["className", "cssModule", "right", "tag", "flip", "modifiers", "persist", "positionFixed"]);
+        container = _this$props.container,
+        attrs = _objectWithoutPropertiesLoose(_this$props, ["className", "cssModule", "right", "tag", "flip", "modifiers", "persist", "positionFixed", "container"]);
 
     var classes = mapToCssModules(classnames(className, 'dropdown-menu', {
       'dropdown-menu-right': right,
@@ -5880,7 +5916,7 @@ var DropdownMenu = /*#__PURE__*/function (_React$Component) {
       var poperPlacement = position1 + "-" + position2;
       var poperModifiers = !flip ? _objectSpread(_objectSpread({}, modifiers), noFlipModifier) : modifiers;
       var popperPositionFixed = !!positionFixed;
-      return /*#__PURE__*/react.createElement(Popper$1, {
+      var popper = /*#__PURE__*/react.createElement(Popper$1, {
         placement: poperPlacement,
         modifiers: poperModifiers,
         positionFixed: popperPositionFixed
@@ -5891,10 +5927,19 @@ var DropdownMenu = /*#__PURE__*/function (_React$Component) {
 
         var combinedStyle = _objectSpread(_objectSpread({}, _this.props.style), style);
 
+        var handleRef = function handleRef(tagRef) {
+          // Send the ref to `react-popper`
+          ref(tagRef); // Send the ref to the parent Dropdown so that clicks outside
+          // it will cause it to close
+
+          var onMenuRef = _this.context.onMenuRef;
+          if (onMenuRef) onMenuRef(tagRef);
+        };
+
         return /*#__PURE__*/react.createElement(Tag, _extends({
           tabIndex: "-1",
           role: "menu",
-          ref: ref
+          ref: handleRef
         }, attrs, {
           style: combinedStyle,
           "aria-hidden": !_this.context.isOpen,
@@ -5902,6 +5947,12 @@ var DropdownMenu = /*#__PURE__*/function (_React$Component) {
           "x-placement": placement
         }));
       });
+
+      if (container) {
+        return /*#__PURE__*/reactDom.createPortal(popper, getTarget(container));
+      } else {
+        return popper;
+      }
     }
 
     return /*#__PURE__*/react.createElement(Tag, _extends({
@@ -8220,23 +8271,30 @@ var CarouselControl = function CarouselControl(props) {
   var anchorClasses = mapToCssModules(classnames(className, "carousel-control-" + direction), cssModule);
   var iconClasses = mapToCssModules(classnames("carousel-control-" + direction + "-icon"), cssModule);
   var screenReaderClasses = mapToCssModules(classnames('sr-only'), cssModule);
-  return /*#__PURE__*/react.createElement("a", {
-    className: anchorClasses,
-    style: {
-      cursor: "pointer"
-    },
-    role: "button",
-    tabIndex: "0",
-    onClick: function onClick(e) {
-      e.preventDefault();
-      onClickHandler();
-    }
-  }, /*#__PURE__*/react.createElement("span", {
-    className: iconClasses,
-    "aria-hidden": "true"
-  }), /*#__PURE__*/react.createElement("span", {
-    className: screenReaderClasses
-  }, directionText || direction));
+  return (
+    /*#__PURE__*/
+    // We need to disable this linting rule to use an `<a>` instead of
+    // `<button>` because that's what the Bootstrap examples require:
+    // https://getbootstrap.com/docs/4.5/components/carousel/#with-controls
+    // eslint-disable-next-line jsx-a11y/anchor-is-valid
+    react.createElement("a", {
+      className: anchorClasses,
+      style: {
+        cursor: "pointer"
+      },
+      role: "button",
+      tabIndex: "0",
+      onClick: function onClick(e) {
+        e.preventDefault();
+        onClickHandler();
+      }
+    }, /*#__PURE__*/react.createElement("span", {
+      className: iconClasses,
+      "aria-hidden": "true"
+    }), /*#__PURE__*/react.createElement("span", {
+      className: screenReaderClasses
+    }, directionText || direction))
+  );
 };
 
 CarouselControl.propTypes = {
@@ -8576,6 +8634,7 @@ var propTypes$A = {
   container: targetPropType,
   target: targetPropType.isRequired,
   modifiers: propTypes$1a.object,
+  positionFixed: propTypes$1a.bool,
   boundariesElement: propTypes$1a.oneOfType([propTypes$1a.string, DOMElement]),
   onClosed: propTypes$1a.func,
   fade: propTypes$1a.bool,
@@ -8668,12 +8727,13 @@ var PopperContent = /*#__PURE__*/function (_React$Component) {
         tag = _this$props.tag,
         container = _this$props.container,
         modifiers = _this$props.modifiers,
+        positionFixed = _this$props.positionFixed,
         boundariesElement = _this$props.boundariesElement,
         onClosed = _this$props.onClosed,
         fade = _this$props.fade,
         transition = _this$props.transition,
         placement = _this$props.placement,
-        attrs = _objectWithoutPropertiesLoose(_this$props, ["cssModule", "children", "isOpen", "flip", "target", "offset", "fallbackPlacement", "placementPrefix", "arrowClassName", "hideArrow", "popperClassName", "tag", "container", "modifiers", "boundariesElement", "onClosed", "fade", "transition", "placement"]);
+        attrs = _objectWithoutPropertiesLoose(_this$props, ["cssModule", "children", "isOpen", "flip", "target", "offset", "fallbackPlacement", "placementPrefix", "arrowClassName", "hideArrow", "popperClassName", "tag", "container", "modifiers", "positionFixed", "boundariesElement", "onClosed", "fade", "transition", "placement"]);
 
     var arrowClassName = mapToCssModules(classnames('arrow', _arrowClassName), cssModule);
     var popperClassName = mapToCssModules(classnames(_popperClassName, placementPrefix ? placementPrefix + "-auto" : ''), this.props.cssModule);
@@ -8703,7 +8763,8 @@ var PopperContent = /*#__PURE__*/function (_React$Component) {
     }), /*#__PURE__*/react.createElement(Popper$1, {
       referenceElement: this.targetNode,
       modifiers: extendedModifiers,
-      placement: placement
+      placement: placement,
+      positionFixed: positionFixed
     }, function (_ref) {
       var ref = _ref.ref,
           style = _ref.style,
@@ -8767,6 +8828,7 @@ var propTypes$B = {
     hide: propTypes$1a.number
   }), propTypes$1a.number]),
   modifiers: propTypes$1a.object,
+  positionFixed: propTypes$1a.bool,
   offset: propTypes$1a.oneOfType([propTypes$1a.string, propTypes$1a.number]),
   innerRef: propTypes$1a.oneOfType([propTypes$1a.func, propTypes$1a.string, propTypes$1a.object]),
   trigger: propTypes$1a.string,
@@ -8905,10 +8967,19 @@ var TooltipPopoverWrapper = /*#__PURE__*/function (_React$Component) {
     return delay;
   };
 
+  _proto.getCurrentTarget = function getCurrentTarget(target) {
+    if (!target) return null;
+
+    var index = this._targets.indexOf(target);
+
+    if (index >= 0) return this._targets[index];
+    return this.getCurrentTarget(target.parentElement);
+  };
+
   _proto.show = function show(e) {
     if (!this.props.isOpen) {
       this.clearShowTimeout();
-      this.currentTargetElement = e ? e.currentTarget || e.target : null;
+      this.currentTargetElement = e ? e.currentTarget || this.getCurrentTarget(e.target) : null;
 
       if (e && e.composedPath && typeof e.composedPath === 'function') {
         var path = e.composedPath();
@@ -9051,11 +9122,10 @@ var TooltipPopoverWrapper = /*#__PURE__*/function (_React$Component) {
   _proto.render = function render() {
     var _this2 = this;
 
-    if (!this.props.isOpen) {
-      return null;
+    if (this.props.isOpen) {
+      this.updateTarget();
     }
 
-    this.updateTarget();
     var _this$props = this.props,
         className = _this$props.className,
         cssModule = _this$props.cssModule,
@@ -9069,6 +9139,7 @@ var TooltipPopoverWrapper = /*#__PURE__*/function (_React$Component) {
         popperClassName = _this$props.popperClassName,
         container = _this$props.container,
         modifiers = _this$props.modifiers,
+        positionFixed = _this$props.positionFixed,
         offset = _this$props.offset,
         fade = _this$props.fade,
         flip = _this$props.flip,
@@ -9088,6 +9159,7 @@ var TooltipPopoverWrapper = /*#__PURE__*/function (_React$Component) {
       popperClassName: popperClasses,
       container: container,
       modifiers: modifiers,
+      positionFixed: positionFixed,
       offset: offset,
       cssModule: cssModule,
       fade: fade,
@@ -9380,6 +9452,7 @@ var Modal = /*#__PURE__*/function (_React$Component) {
     _this.onClosed = _this.onClosed.bind(_assertThisInitialized(_this));
     _this.manageFocusAfterClose = _this.manageFocusAfterClose.bind(_assertThisInitialized(_this));
     _this.clearBackdropAnimationTimeout = _this.clearBackdropAnimationTimeout.bind(_assertThisInitialized(_this));
+    _this.trapFocus = _this.trapFocus.bind(_assertThisInitialized(_this));
     _this.state = {
       isOpen: false,
       showStaticBackdropAnimation: false
@@ -9408,8 +9481,10 @@ var Modal = /*#__PURE__*/function (_React$Component) {
 
     if (onEnter) {
       onEnter();
-    }
+    } // traps focus inside the Modal, even if the browser address bar is focused
 
+
+    document.addEventListener('focus', this.trapFocus, true);
     this._isMounted = true;
   };
 
@@ -9448,7 +9523,30 @@ var Modal = /*#__PURE__*/function (_React$Component) {
       }
     }
 
+    document.removeEventListener('focus', this.trapFocus, true);
     this._isMounted = false;
+  };
+
+  _proto.trapFocus = function trapFocus(ev) {
+    if (!this._element) //element is not attached
+      return;
+    if (this._dialog && this._dialog.parentNode === ev.target) // initial focus when the Modal is opened
+      return;
+    if (this.modalIndex < Modal.openCount - 1) // last opened modal
+      return;
+    var children = this.getFocusableChildren();
+
+    for (var i = 0; i < children.length; i++) {
+      // focus is already inside the Modal
+      if (children[i] === ev.target) return;
+    }
+
+    if (children.length > 0) {
+      // otherwise focus the first focusable element in the Modal
+      ev.preventDefault();
+      ev.stopPropagation();
+      children[0].focus();
+    }
   };
 
   _proto.onOpened = function onOpened(node, isAppearing) {
@@ -9518,6 +9616,8 @@ var Modal = /*#__PURE__*/function (_React$Component) {
 
   _proto.handleTab = function handleTab(e) {
     if (e.which !== 9) return;
+    if (this.modalIndex < Modal.openCount - 1) return; // last opened modal
+
     var focusableChildren = this.getFocusableChildren();
     var totalFocusable = focusableChildren.length;
     if (totalFocusable === 0) return;
@@ -9598,6 +9698,7 @@ var Modal = /*#__PURE__*/function (_React$Component) {
       document.body.className = classnames(document.body.className, mapToCssModules('modal-open', this.props.cssModule));
     }
 
+    this.modalIndex = Modal.openCount;
     Modal.openCount += 1;
   };
 
