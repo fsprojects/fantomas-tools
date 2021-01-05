@@ -471,22 +471,22 @@ var _objectWithoutProperties2 = interopRequireDefault(objectWithoutProperties);
 
 var _slicedToArray2 = interopRequireDefault(slicedToArray);
 
-
+var _stateLocal = interopRequireDefault(stateLocal);
 
 var _config = interopRequireDefault(config_1);
 
 
 
-var _createState = (0, stateLocal.create)({
+var _state$create = _stateLocal.default.create({
   config: _config.default,
   isInitialized: false,
   configScriptSrc: null,
   resolve: null,
   reject: null
 }),
-    _createState2 = (0, _slicedToArray2.default)(_createState, 2),
-    getState = _createState2[0],
-    setState = _createState2[1];
+    _state$create2 = (0, _slicedToArray2.default)(_state$create, 2),
+    getState = _state$create2[0],
+    setState = _state$create2[1];
 
 var MONACO_INIT = 'monaco_init';
 
