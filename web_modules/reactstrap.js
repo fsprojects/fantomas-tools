@@ -9126,12 +9126,6 @@ var TooltipPopoverWrapper = /*#__PURE__*/function (_React$Component) {
       this.updateTarget();
     }
 
-    var target = this.currentTargetElement || this._targets[0];
-
-    if (!target) {
-      return null;
-    }
-
     var _this$props = this.props,
         className = _this$props.className,
         cssModule = _this$props.cssModule,
@@ -9155,7 +9149,7 @@ var TooltipPopoverWrapper = /*#__PURE__*/function (_React$Component) {
     var classes = mapToCssModules(innerClassName, cssModule);
     return /*#__PURE__*/react.createElement(PopperContent, {
       className: className,
-      target: target,
+      target: this.currentTargetElement || this._targets[0],
       isOpen: isOpen,
       hideArrow: hideArrow,
       boundariesElement: boundariesElement,
