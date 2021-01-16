@@ -123,7 +123,7 @@ Target.create "Watch" (fun _ ->
 
 Target.create "GitPod" (fun _ ->
     // TODO: update to something clever because GitPod url can change
-    let getBackendUrl = sprintf "https://%i-f503f23d-caca-4aba-9467-7f8ff3a0cffe.ws-eu03.gitpod.io"
+    let getBackendUrl = sprintf "https://%i-b6aa6ede-4f2e-4cac-ba4a-ede6b23505f0.ws-eu03.gitpod.io"
     let getCorsUrl = getBackendUrl
     watchMode getBackendUrl getCorsUrl
 )
