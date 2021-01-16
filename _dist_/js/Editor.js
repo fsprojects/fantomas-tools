@@ -1,5 +1,5 @@
 import React, {useRef, useEffect} from "../../web_modules/react.js";
-import ControlledEditor2 from "../../web_modules/@monaco-editor/react/lib/ControlledEditor/index.js";
+import ControlledEditor2 from "../../web_modules/@monaco-editor/react/lib/es/ControlledEditor/index.js";
 import PropTypes from "../../web_modules/prop-types.js";
 const useEventListener = (target, type, listener, ...options) => {
   useEffect(() => {
