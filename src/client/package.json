@@ -14,7 +14,7 @@
     "bootstrap": "4.5.3",
     "lz-string": "1.4.4",
     "notyf": "3.9.0",
-    "@monaco-editor/react": "3.8.3",
+    "@monaco-editor/react": "4.0.2",
     "monaco-editor": "0.21.2"
   },
   "devDependencies": {
