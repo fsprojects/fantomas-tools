@@ -215,19 +215,21 @@
     "@types/yargs" "^15.0.0"
     chalk "^4.0.0"
 
-"@monaco-editor/loader@^0.1.2":
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/@monaco-editor/loader/-/loader-0.1.2.tgz#d9c221e9892c28357feda83186e20372a6942721"
-  integrity sha512-JL4ZctA07613CFh2vR+vjM3uQQc6rohjXwrLGCONZc7WmzMA2OTmTd4n2bKvmBBKHxCKsgSYAgAU2nno6diI2w==
+"@monaco-editor/loader@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@monaco-editor/loader/-/loader-1.0.0.tgz#c7ea78ef07cebcae83d92bbfe2bddab563468102"
+  integrity sha512-CA35bf5Y7wFWfeJZfkLslOxiatln3oTBKkfbdo+TF5H+UdPP96qHvhOUjjd1DeQ2NWsRkVPSnoSYek7NE5B26w==
   dependencies:
     state-local "^1.0.6"
 
-"@monaco-editor/react@3.8.3":
-  version "3.8.3"
-  resolved "https://registry.yarnpkg.com/@monaco-editor/react/-/react-3.8.3.tgz#36d19278fdee2a7f97fd193c0596df531b183a5e"
-  integrity sha512-wd+XzqATnUoODHSm2JMZi5OV9qeC8hdoSgoZHsTceXyH3Z/oktUtFbjaYeK0XL/lnXAScSYue81GA2UsiAx0sQ==
+"@monaco-editor/react@4.0.5":
+  version "4.0.5"
+  resolved "https://registry.yarnpkg.com/@monaco-editor/react/-/react-4.0.5.tgz#c6d0693df771f6c6e81bc82c2c19d78c62ecaba9"
+  integrity sha512-w477xNaGQO4HjyNLhJFBGRI6wfGY3rC36AvO8rJ02lZsAzg+UkOqNv1X2hPml5zLYcvUHsTdPDQLv9MSaVxlag==
   dependencies:
-    "@monaco-editor/loader" "^0.1.2"
+    "@monaco-editor/loader" "^1.0.0"
+    prop-types "^15.7.2"
+    state-local "^1.0.7"
 
 "@nodelib/fs.scandir@2.1.3":
   version "2.1.3"
@@ -3092,7 +3094,7 @@ promise-inflight@^1.0.1:
   resolved "https://registry.yarnpkg.com/promise-inflight/-/promise-inflight-1.0.1.tgz#98472870bf228132fcbdd868129bad12c3c029e3"
   integrity sha1-mEcocL8igTL8vdhoEputEsPAKeM=
 
-prop-types@^15.5.8, prop-types@^15.6.1, prop-types@^15.6.2:
+prop-types@^15.5.8, prop-types@^15.6.1, prop-types@^15.6.2, prop-types@^15.7.2:
   version "15.7.2"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
   integrity sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ==
@@ -3551,7 +3553,7 @@ ssri@^8.0.0:
   dependencies:
     minipass "^3.1.1"
 
-state-local@^1.0.6:
+state-local@^1.0.6, state-local@^1.0.7:
   version "1.0.7"
   resolved "https://registry.yarnpkg.com/state-local/-/state-local-1.0.7.tgz#da50211d07f05748d53009bee46307a37db386d5"
   integrity sha512-HTEHMNieakEnoe33shBYcZ7NX83ACUjCu8c40iOGEZsngj9zRnkqS9j1pqQPXwobB0ZcVTk27REb7COQ0UR59w==
