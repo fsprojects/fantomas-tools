@@ -15,7 +15,7 @@
     "lz-string": "1.4.4",
     "notyf": "3.9.0",
     "@monaco-editor/react": "3.8.3",
-    "monaco-editor": "0.21.2"
+    "monaco-editor": "0.21.3"
   },
   "devDependencies": {
     "@snowpack/plugin-react-refresh": "2.4.0",
