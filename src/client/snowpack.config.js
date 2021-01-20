@@ -15,11 +15,10 @@ module.exports = {
             "watch": "dotnet fable watch ./src/FantomasTools/FantomasTools.fsproj --outDir ./src/bin"
         }]
     ],
-    install: [
-        "reactstrap"
-    ],
-    installOptions: {
-        /* ... */
+    packageOptions: {
+        knownEntrypoints: [
+            "reactstrap"
+        ]
     },
     devOptions: {
         port,
@@ -29,9 +28,6 @@ module.exports = {
         /* ... */
         baseUrl: "/fantomas-tools",
         clean: true
-    },
-    proxy: {
-        /* ... */
     },
     alias: {
         /* ... */
