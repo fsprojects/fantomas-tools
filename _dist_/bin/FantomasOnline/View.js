@@ -1,4 +1,4 @@
-import * as react from "../../../web_modules/react.js";
+import * as react from "../../../_snowpack/pkg/react.js";
 import { MultiButtonSettings, multiButton, toggleButton, input } from "../SettingControls.js";
 import { isMatch } from "../.fable/fable-library.3.0.1/RegExp.js";
 import { FantomasMode, Model__get_SettingsChangedByTheUser, Msg } from "./Model.js";

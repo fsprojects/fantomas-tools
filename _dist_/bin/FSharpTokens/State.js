@@ -1,5 +1,4 @@
-import __SNOWPACK_ENV__ from '../../../__snowpack__/env.js';
-import.meta.env = __SNOWPACK_ENV__;
+import * as __SNOWPACK_ENV__ from '../../../_snowpack/env.js';
 
 import { Types_RequestProperties, fetch$ } from "../.fable/Fable.Fetch.2.2.0/Fetch.fs.js";
 import { toConsole, split, printf, toText } from "../.fable/fable-library.3.0.1/String.js";
@@ -20,13 +19,13 @@ import { selectRange, HighLightRange } from "../Editor.js";
 
 function getTokens(request) {
     let arg10;
-    const pr = fetch$((arg10 = (import.meta.env.SNOWPACK_PUBLIC_FSHARP_TOKENS_BACKEND), toText(printf("%s/%s"))(arg10)("api/get-tokens")), ofArray([new Types_RequestProperties(2, toString(4, encodeGetTokensRequest(request))), new Types_RequestProperties(0, "POST")]));
+    const pr = fetch$((arg10 = (__SNOWPACK_ENV__.SNOWPACK_PUBLIC_FSHARP_TOKENS_BACKEND), toText(printf("%s/%s"))(arg10)("api/get-tokens")), ofArray([new Types_RequestProperties(2, toString(4, encodeGetTokensRequest(request))), new Types_RequestProperties(0, "POST")]));
     return pr.then(((res) => res.text()));
 }
 
 function getVersion() {
     let arg10;
-    return getText((arg10 = (import.meta.env.SNOWPACK_PUBLIC_FSHARP_TOKENS_BACKEND), toText(printf("%s/%s"))(arg10)("api/version")));
+    return getText((arg10 = (__SNOWPACK_ENV__.SNOWPACK_PUBLIC_FSHARP_TOKENS_BACKEND), toText(printf("%s/%s"))(arg10)("api/version")));
 }
 
 const initialModel = new Model("", [], void 0, void 0, false, "??");

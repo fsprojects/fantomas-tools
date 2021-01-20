@@ -1,5 +1,5 @@
 import { class_type } from "../fable-library.3.0.1/Reflection.js";
-import { render } from "../../../../web_modules/react-dom.js";
+import { render } from "../../../../_snowpack/pkg/react-dom.js";
 
 export class ReactDOM {
     constructor() {

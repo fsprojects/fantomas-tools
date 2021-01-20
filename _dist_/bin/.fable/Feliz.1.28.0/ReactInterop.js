@@ -1,7 +1,7 @@
 import {
     useEffect as useEffectReact,
     useLayoutEffect as useLayoutEffectReact,
-    useDebugValue as useDebugValueReact } from '../../../../web_modules/react.js'
+    useDebugValue as useDebugValueReact } from '../../../../_snowpack/pkg/react.js'
 
 export const useEffect = getDisposable => {
     useEffectReact(() => {

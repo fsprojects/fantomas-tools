@@ -16,7 +16,7 @@ export function setGetParam(value) {
   }
 }
 
-import lzString from "../../web_modules/lz-string.js";
+import lzString from "../../_snowpack/pkg/lz-string.js";
 
 export function compressToEncodedURIComponent(x) {
   return lzString.compressToEncodedURIComponent(x);

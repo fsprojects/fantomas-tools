@@ -2,7 +2,7 @@ import { class_type } from "../fable-library.3.0.1/Reflection.js";
 import { defaultArg, value as value_1, some } from "../fable-library.3.0.1/Option.js";
 import { curry, int32ToString } from "../fable-library.3.0.1/Util.js";
 import { ReactElementTypeModule_memoWith } from "./Fable.React.Helpers.fs.js";
-import * as react from "../../../../web_modules/react.js";
+import * as react from "../../../../_snowpack/pkg/react.js";
 
 export class Cache {
     constructor() {

@@ -2,7 +2,7 @@ import { printf, toText } from "../.fable/fable-library.3.0.1/String.js";
 import { BadgeProps, badge } from "../.fable/Fable.Reactstrap.0.5.1/Badge.fs.js";
 import { DOMAttr, Prop, HTMLAttr } from "../.fable/Fable.React.7.0.1/Fable.React.Props.fs.js";
 import { mapIndexed, ofSeq, ofArray, singleton } from "../.fable/fable-library.3.0.1/List.js";
-import * as react from "../../../web_modules/react.js";
+import * as react from "../../../_snowpack/pkg/react.js";
 import { singleton as singleton_1, append, delay } from "../.fable/fable-library.3.0.1/Seq.js";
 import { Record } from "../.fable/fable-library.3.0.1/Types.js";
 import { record_type, string_type } from "../.fable/fable-library.3.0.1/Reflection.js";

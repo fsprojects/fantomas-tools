@@ -1,4 +1,4 @@
-import * as react from "../../web_modules/react.js";
+import * as react from "../../_snowpack/pkg/react.js";
 import { SpinnerProps, spinner } from "./.fable/Fable.Reactstrap.0.5.1/Spinner.fs.js";
 
 export const loader = react.createElement("div", {

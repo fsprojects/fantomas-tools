@@ -1,7 +1,7 @@
 import { Record } from "../fable-library.3.0.1/Types.js";
 import { array_type, record_type, class_type, unit_type, lambda_type, string_type } from "../fable-library.3.0.1/Reflection.js";
-import { Component } from "../../../../web_modules/react.js";
-import * as react from "../../../../web_modules/react.js";
+import { Component } from "../../../../_snowpack/pkg/react.js";
+import * as react from "../../../../_snowpack/pkg/react.js";
 
 export class ReactiveComponents_Props$3 extends Record {
     constructor(key, props, update, view, init) {

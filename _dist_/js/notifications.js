@@ -1,5 +1,5 @@
-import { Notyf } from '../../web_modules/notyf.js';
-import '../../web_modules/notyf/notyf.min.css.proxy.js';
+import { Notyf } from '../../_snowpack/pkg/notyf.js';
+import '../../_snowpack/pkg/notyf/notyf.min.css.proxy.js';
 
 const notyf = new Notyf();
 

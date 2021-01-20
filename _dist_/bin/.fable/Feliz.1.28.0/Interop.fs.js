@@ -1,4 +1,4 @@
-import react from "../../../../web_modules/react.js";
+import react from "../../../../_snowpack/pkg/react.js";
 
 export const reactApi = react;
 

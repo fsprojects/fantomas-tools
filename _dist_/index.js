@@ -1,10 +1,10 @@
-import __SNOWPACK_ENV__ from '../__snowpack__/env.js';
+import * as __SNOWPACK_ENV__ from '../_snowpack/env.js';
 import.meta.env = __SNOWPACK_ENV__;
 
-import React from "../web_modules/react.js";
-import ReactDOM from "../web_modules/react-dom.js";
+import React from "../_snowpack/pkg/react.js";
+import ReactDOM from "../_snowpack/pkg/react-dom.js";
 import "./bin/App.js";
 import "./styles/style.css.proxy.js";
-if (import.meta.hot) {
-  import.meta.hot.accept();
+if (undefined /* [snowpack] import.meta.hot */ ) {
+  undefined /* [snowpack] import.meta.hot */ .accept();
 }

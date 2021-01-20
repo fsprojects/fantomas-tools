@@ -1,5 +1,4 @@
-import __SNOWPACK_ENV__ from '../../../__snowpack__/env.js';
-import.meta.env = __SNOWPACK_ENV__;
+import * as __SNOWPACK_ENV__ from '../../../_snowpack/env.js';
 
 import { getText, postJson } from "../Http.js";
 import { split, printf, toText } from "../.fable/fable-library.3.0.1/String.js";
@@ -17,7 +16,7 @@ import { selectRange, HighLightRange } from "../Editor.js";
 
 function fetchTrivia(payload, dispatch) {
     let arg10;
-    const pr = postJson((arg10 = (import.meta.env.SNOWPACK_PUBLIC_TRIVIA_BACKEND), toText(printf("%s/api/get-trivia"))(arg10)), encodeParseRequest(payload));
+    const pr = postJson((arg10 = (__SNOWPACK_ENV__.SNOWPACK_PUBLIC_TRIVIA_BACKEND), toText(printf("%s/api/get-trivia"))(arg10)), encodeParseRequest(payload));
     pr.then(((tupledArg) => {
         let matchValue;
         const status = tupledArg[0] | 0;
@@ -28,7 +27,7 @@ function fetchTrivia(payload, dispatch) {
 
 function fetchFSCVersion() {
     let arg10;
-    return getText((arg10 = (import.meta.env.SNOWPACK_PUBLIC_TRIVIA_BACKEND), toText(printf("%s/api/version"))(arg10)));
+    return getText((arg10 = (__SNOWPACK_ENV__.SNOWPACK_PUBLIC_TRIVIA_BACKEND), toText(printf("%s/api/version"))(arg10)));
 }
 
 const initialModel = new Model(new ActiveTab_1(0), empty(), empty(), empty(), void 0, true, 0, 0, "", "???", false);

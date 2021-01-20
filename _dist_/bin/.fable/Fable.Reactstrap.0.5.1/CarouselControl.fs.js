@@ -3,8 +3,8 @@ import { union_type, list_type, lambda_type, unit_type, class_type, string_type 
 import { keyValueList } from "../fable-library.3.0.1/MapUtil.js";
 import { choose, collect } from "../fable-library.3.0.1/Seq.js";
 import { empty } from "../fable-library.3.0.1/List.js";
-import * as react from "../../../../web_modules/react.js";
-import { CarouselControl } from "../../../../web_modules/reactstrap.js";
+import * as react from "../../../../_snowpack/pkg/react.js";
+import { CarouselControl } from "../../../../_snowpack/pkg/reactstrap.js";
 
 export class CarouselControlProps extends Union {
     constructor(tag, ...fields) {

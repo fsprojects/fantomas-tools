@@ -1,6 +1,6 @@
-import React, {useRef, useEffect} from "../../web_modules/react.js";
-import ControlledEditor2 from "../../web_modules/@monaco-editor/react/lib/es/ControlledEditor/index.js";
-import PropTypes from "../../web_modules/prop-types.js";
+import React, {useRef, useEffect} from "../../_snowpack/pkg/react.js";
+import ControlledEditor2 from "../../_snowpack/pkg/@monaco-editor/react/lib/es/ControlledEditor/index.js";
+import PropTypes from "../../_snowpack/pkg/prop-types.js";
 const useEventListener = (target, type, listener, ...options) => {
   useEffect(() => {
     target.addEventListener(type, listener, ...options);

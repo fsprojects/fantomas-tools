@@ -1,7 +1,7 @@
 import { FSharpRef, Record } from "../fable-library.3.0.1/Types.js";
 import { lambda_type, class_type, record_type, bool_type } from "../fable-library.3.0.1/Reflection.js";
-import { Component } from "../../../../web_modules/react.js";
-import * as react from "../../../../web_modules/react.js";
+import { Component } from "../../../../_snowpack/pkg/react.js";
+import * as react from "../../../../_snowpack/pkg/react.js";
 
 export class Components_HybridState extends Record {
     constructor(isClient) {

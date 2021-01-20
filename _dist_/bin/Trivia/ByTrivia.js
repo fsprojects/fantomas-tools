@@ -1,7 +1,7 @@
 import { printf, toText } from "../.fable/fable-library.3.0.1/String.js";
 import { menu, MenuItem, rangeToText } from "./Menu.js";
 import { map } from "../.fable/fable-library.3.0.1/Option.js";
-import * as react from "../../../web_modules/react.js";
+import * as react from "../../../_snowpack/pkg/react.js";
 import { tryItem, map as map_1 } from "../.fable/fable-library.3.0.1/List.js";
 import { ActiveTab, Msg } from "./Model.js";
 

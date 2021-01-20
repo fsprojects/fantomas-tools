@@ -1,15 +1,15 @@
 import { useFeliz_React__React_useElmish_Static_645B1FB7 } from "./.fable/Feliz.UseElmish.1.5.0/UseElmish.fs.js";
 import { update, init } from "./State.js";
 import { editor, navigation, tabs } from "./View.js";
-import { createElement } from "../../web_modules/react.js";
-import * as react from "../../web_modules/react.js";
+import { createElement } from "../../_snowpack/pkg/react.js";
+import * as react from "../../_snowpack/pkg/react.js";
 import { RowProps, row } from "./.fable/Fable.Reactstrap.0.5.1/Row.fs.js";
 import { HTMLAttr } from "./.fable/Fable.React.7.0.1/Fable.React.Props.fs.js";
 import { ofArray } from "./.fable/fable-library.3.0.1/List.js";
 import { RouterModule_router } from "./.fable/Feliz.Router.3.2.0/Router.fs.js";
 import { Msg } from "./Model.js";
 import { parseUrl } from "./Navigation.js";
-import { render } from "../../web_modules/react-dom.js";
+import { render } from "../../_snowpack/pkg/react-dom.js";
 
 export function App() {
     const patternInput = useFeliz_React__React_useElmish_Static_645B1FB7(init, update, []);

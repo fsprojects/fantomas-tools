@@ -1,5 +1,4 @@
-import __SNOWPACK_ENV__ from '../../../__snowpack__/env.js';
-import.meta.env = __SNOWPACK_ENV__;
+import * as __SNOWPACK_ENV__ from '../../../_snowpack/env.js';
 
 import { add, empty as empty_1, find, ofList } from "../.fable/fable-library.3.0.1/Map.js";
 import { Model__get_SettingsChangedByTheUser, Model, EditorState, Msg, FantomasMode } from "./Model.js";
@@ -18,7 +17,7 @@ import { showSuccess as showSuccess_1 } from "../../js/notifications.js";
 import { map as map_1 } from "../.fable/fable-library.3.0.1/Seq.js";
 import { isUpper } from "../.fable/fable-library.3.0.1/Char.js";
 
-const backend = ofList(ofArray([[new FantomasMode(0), import.meta.env.SNOWPACK_PUBLIC_FANTOMAS_V2], [new FantomasMode(1), import.meta.env.SNOWPACK_PUBLIC_FANTOMAS_V3], [new FantomasMode(2), import.meta.env.SNOWPACK_PUBLIC_FANTOMAS_V4], [new FantomasMode(3), import.meta.env.SNOWPACK_PUBLIC_FANTOMAS_PREVIEW]]));
+const backend = ofList(ofArray([[new FantomasMode(0), __SNOWPACK_ENV__.SNOWPACK_PUBLIC_FANTOMAS_V2], [new FantomasMode(1), __SNOWPACK_ENV__.SNOWPACK_PUBLIC_FANTOMAS_V3], [new FantomasMode(2), __SNOWPACK_ENV__.SNOWPACK_PUBLIC_FANTOMAS_V4], [new FantomasMode(3), __SNOWPACK_ENV__.SNOWPACK_PUBLIC_FANTOMAS_PREVIEW]]));
 
 function getVersion(mode) {
     let arg10;

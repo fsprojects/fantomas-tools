@@ -1,4 +1,4 @@
-import * as react from "../../web_modules/react.js";
+import * as react from "../../_snowpack/pkg/react.js";
 
 export function versionBar(version) {
     return react.createElement("div", {

@@ -1,5 +1,4 @@
-import __SNOWPACK_ENV__ from '../../../__snowpack__/env.js';
-import.meta.env = __SNOWPACK_ENV__;
+import * as __SNOWPACK_ENV__ from '../../../_snowpack/env.js';
 
 import { postJson, getText } from "../Http.js";
 import { split, printf, toText } from "../.fable/fable-library.3.0.1/String.js";
@@ -17,7 +16,7 @@ import { selectRange } from "../Editor.js";
 
 function getVersion() {
     let arg10;
-    return getText((arg10 = (import.meta.env.SNOWPACK_PUBLIC_AST_BACKEND), toText(printf("%s/%s"))(arg10)("api/version")));
+    return getText((arg10 = (__SNOWPACK_ENV__.SNOWPACK_PUBLIC_AST_BACKEND), toText(printf("%s/%s"))(arg10)("api/version")));
 }
 
 function fetchNodeRequest(url, payload, dispatch) {
@@ -32,12 +31,12 @@ function fetchNodeRequest(url, payload, dispatch) {
 
 function fetchUntypedAST(payload, dispatch) {
     let arg10;
-    fetchNodeRequest((arg10 = (import.meta.env.SNOWPACK_PUBLIC_AST_BACKEND), toText(printf("%s/api/untyped-ast"))(arg10)), payload, dispatch);
+    fetchNodeRequest((arg10 = (__SNOWPACK_ENV__.SNOWPACK_PUBLIC_AST_BACKEND), toText(printf("%s/api/untyped-ast"))(arg10)), payload, dispatch);
 }
 
 function fetchTypedAst(payload, dispatch) {
     let arg10;
-    fetchNodeRequest((arg10 = (import.meta.env.SNOWPACK_PUBLIC_AST_BACKEND), toText(printf("%s/api/typed-ast"))(arg10)), payload, dispatch);
+    fetchNodeRequest((arg10 = (__SNOWPACK_ENV__.SNOWPACK_PUBLIC_AST_BACKEND), toText(printf("%s/api/typed-ast"))(arg10)), payload, dispatch);
 }
 
 const initialModel = new Model("", "", false, new FSharpResult$2(0, void 0), false, "", new View_2(1), new EditorState(0));

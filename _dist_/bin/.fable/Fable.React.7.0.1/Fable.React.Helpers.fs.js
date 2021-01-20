@@ -1,4 +1,4 @@
-import * as react from "../../../../web_modules/react.js";
+import * as react from "../../../../_snowpack/pkg/react.js";
 import { equals, uncurry } from "../fable-library.3.0.1/Util.js";
 import { HTMLAttr } from "./Fable.React.Props.fs.js";
 import { choose, fold } from "../fable-library.3.0.1/Seq.js";

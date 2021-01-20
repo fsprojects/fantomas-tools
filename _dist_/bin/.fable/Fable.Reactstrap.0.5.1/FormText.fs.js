@@ -3,8 +3,8 @@ import { union_type, list_type, obj_type, class_type, string_type, bool_type } f
 import { keyValueList } from "../fable-library.3.0.1/MapUtil.js";
 import { choose, collect } from "../fable-library.3.0.1/Seq.js";
 import { empty } from "../fable-library.3.0.1/List.js";
-import * as react from "../../../../web_modules/react.js";
-import { FormText } from "../../../../web_modules/reactstrap.js";
+import * as react from "../../../../_snowpack/pkg/react.js";
+import { FormText } from "../../../../_snowpack/pkg/reactstrap.js";
 
 export class FormTextProps extends Union {
     constructor(tag, ...fields) {

@@ -1,4 +1,4 @@
-import * as react from "../../../web_modules/react.js";
+import * as react from "../../../_snowpack/pkg/react.js";
 import Editor from "../../js/Editor.js";
 import { EditorProp } from "../Editor.js";
 import { uncurry } from "../.fable/fable-library.3.0.1/Util.js";

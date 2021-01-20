@@ -1,5 +1,5 @@
 import { printf, toText } from "../.fable/fable-library.3.0.1/String.js";
-import * as react from "../../../web_modules/react.js";
+import * as react from "../../../_snowpack/pkg/react.js";
 import { numberHash, int32ToString } from "../.fable/fable-library.3.0.1/Util.js";
 import { Msg } from "./Model.js";
 import { groupBy, map, mapIndexed } from "../.fable/fable-library.3.0.1/Array.js";

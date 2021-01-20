@@ -3,8 +3,8 @@ import { union_type, list_type, obj_type, lambda_type, unit_type, class_type, in
 import { keyValueList } from "../fable-library.3.0.1/MapUtil.js";
 import { choose, collect } from "../fable-library.3.0.1/Seq.js";
 import { empty } from "../fable-library.3.0.1/List.js";
-import * as react from "../../../../web_modules/react.js";
-import { Input } from "../../../../web_modules/reactstrap.js";
+import * as react from "../../../../_snowpack/pkg/react.js";
+import { Input } from "../../../../_snowpack/pkg/reactstrap.js";
 
 export class InputProps extends Union {
     constructor(tag, ...fields) {

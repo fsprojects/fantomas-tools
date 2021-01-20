@@ -1,5 +1,5 @@
 import { formGroup } from "./.fable/Fable.Reactstrap.0.5.1/FormGroup.fs.js";
-import * as react from "../../web_modules/react.js";
+import * as react from "../../_snowpack/pkg/react.js";
 import { InputProps, input as input_1 } from "./.fable/Fable.Reactstrap.0.5.1/Input.fs.js";
 import { Prop, DOMAttr, HTMLAttr } from "./.fable/Fable.React.7.0.1/Fable.React.Props.fs.js";
 import { Browser_Types_Event__Event_get_Value } from "./.fable/Fable.React.7.0.1/Fable.React.Extensions.fs.js";

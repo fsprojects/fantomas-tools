@@ -1,8 +1,8 @@
 import { Union } from "../fable-library.3.0.1/Types.js";
 import { union_type, list_type, class_type, obj_type, bool_type, string_type } from "../fable-library.3.0.1/Reflection.js";
 import { FadeProps$reflection } from "./Fade.fs.js";
-import * as react from "../../../../web_modules/react.js";
-import { Toast } from "../../../../web_modules/reactstrap.js";
+import * as react from "../../../../_snowpack/pkg/react.js";
+import { Toast } from "../../../../_snowpack/pkg/reactstrap.js";
 import { singleton, map, reduce, isEmpty } from "../fable-library.3.0.1/Seq.js";
 import { keyValueList } from "../fable-library.3.0.1/MapUtil.js";
 

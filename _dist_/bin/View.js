@@ -3,7 +3,7 @@ import { Prop, DOMAttr, HTMLAttr } from "./.fable/Fable.React.7.0.1/Fable.React.
 import { ofArray, singleton } from "./.fable/fable-library.3.0.1/List.js";
 import { NavbarBrandProps, navbarBrand } from "./.fable/Fable.Reactstrap.0.5.1/NavbarBrand.fs.js";
 import { printf, toText } from "./.fable/fable-library.3.0.1/String.js";
-import * as react from "../../web_modules/react.js";
+import * as react from "../../_snowpack/pkg/react.js";
 import { ButtonProps, button } from "./.fable/Fable.Reactstrap.0.5.1/Button.fs.js";
 import { ActiveTab, Msg } from "./Model.js";
 import { mkCol, ColProps, col } from "./.fable/Fable.Reactstrap.0.5.1/Col.fs.js";

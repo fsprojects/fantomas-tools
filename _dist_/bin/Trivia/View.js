@@ -9,7 +9,7 @@ import { view as view_2 } from "./ByTriviaNodeCandidates.js";
 import { view as view_3 } from "./ByTrivia.js";
 import { NavItemProps, navItem } from "../.fable/Fable.Reactstrap.0.5.1/NavItem.fs.js";
 import { NavLinkProps, navLink } from "../.fable/Fable.Reactstrap.0.5.1/NavLink.fs.js";
-import * as react from "../../../web_modules/react.js";
+import * as react from "../../../_snowpack/pkg/react.js";
 import { NavProps, nav } from "../.fable/Fable.Reactstrap.0.5.1/Nav.fs.js";
 import { TabContentProps, tabContent as tabContent_1 } from "../.fable/Fable.Reactstrap.0.5.1/TabContent.fs.js";
 import { loader } from "../Loader.js";

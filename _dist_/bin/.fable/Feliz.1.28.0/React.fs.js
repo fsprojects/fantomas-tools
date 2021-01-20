@@ -4,8 +4,8 @@ import { iterate } from "../fable-library.3.0.1/Seq.js";
 import { defaultArg, some, toArray } from "../fable-library.3.0.1/Option.js";
 import { reactApi } from "./Interop.fs.js";
 import { curry, uncurry } from "../fable-library.3.0.1/Util.js";
-import { useState } from "../../../../web_modules/react.js";
-import * as react from "../../../../web_modules/react.js";
+import { useState } from "../../../../_snowpack/pkg/react.js";
+import * as react from "../../../../_snowpack/pkg/react.js";
 
 export const ReactInterop_useDebugValueWithFormatter = useDebugValue;
 
