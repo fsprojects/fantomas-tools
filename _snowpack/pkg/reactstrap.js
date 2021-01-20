@@ -9340,6 +9340,7 @@ var propTypes$E = {
   barClassName: propTypes$1a.string,
   cssModule: propTypes$1a.object,
   style: propTypes$1a.object,
+  barStyle: propTypes$1a.object,
   barAriaValueText: propTypes$1a.string,
   barAriaLabelledBy: propTypes$1a.string
 };
@@ -9348,7 +9349,8 @@ var defaultProps$C = {
   value: 0,
   min: 0,
   max: 100,
-  style: {}
+  style: {},
+  barStyle: {}
 };
 
 var Progress = function Progress(props) {
@@ -9366,16 +9368,17 @@ var Progress = function Progress(props) {
       multi = props.multi,
       Tag = props.tag,
       style = props.style,
+      barStyle = props.barStyle,
       barAriaValueText = props.barAriaValueText,
       barAriaLabelledBy = props.barAriaLabelledBy,
-      attributes = _objectWithoutPropertiesLoose(props, ["children", "className", "barClassName", "cssModule", "value", "min", "max", "animated", "striped", "color", "bar", "multi", "tag", "style", "barAriaValueText", "barAriaLabelledBy"]);
+      attributes = _objectWithoutPropertiesLoose(props, ["children", "className", "barClassName", "cssModule", "value", "min", "max", "animated", "striped", "color", "bar", "multi", "tag", "style", "barStyle", "barAriaValueText", "barAriaLabelledBy"]);
 
   var percent = toNumber(value) / toNumber(max) * 100;
   var progressClasses = mapToCssModules(classnames(className, 'progress'), cssModule);
   var progressBarClasses = mapToCssModules(classnames('progress-bar', bar ? className || barClassName : barClassName, animated ? 'progress-bar-animated' : null, color ? "bg-" + color : null, striped || animated ? 'progress-bar-striped' : null), cssModule);
   var progressBarProps = {
     className: progressBarClasses,
-    style: _objectSpread$4(_objectSpread$4({}, style), {}, {
+    style: _objectSpread$4(_objectSpread$4(_objectSpread$4({}, bar ? style : {}), barStyle), {}, {
       width: percent + "%"
     }),
     role: 'progressbar',
@@ -9392,6 +9395,7 @@ var Progress = function Progress(props) {
   }
 
   return /*#__PURE__*/react.createElement(Tag, _extends({}, attributes, {
+    style: style,
     className: progressClasses
   }), multi ? children : /*#__PURE__*/react.createElement("div", progressBarProps));
 };
@@ -9476,7 +9480,8 @@ var propTypes$G = {
   innerRef: propTypes$1a.oneOfType([propTypes$1a.object, propTypes$1a.string, propTypes$1a.func]),
   unmountOnClose: propTypes$1a.bool,
   returnFocusAfterClose: propTypes$1a.bool,
-  container: targetPropType
+  container: targetPropType,
+  trapFocus: propTypes$1a.bool
 };
 var propsToOmit = Object.keys(propTypes$G);
 var defaultProps$D = {
@@ -9501,7 +9506,8 @@ var defaultProps$D = {
   },
   unmountOnClose: true,
   returnFocusAfterClose: true,
-  container: 'body'
+  container: 'body',
+  trapFocus: false
 };
 
 var Modal = /*#__PURE__*/function (_React$Component) {
@@ -9599,6 +9605,10 @@ var Modal = /*#__PURE__*/function (_React$Component) {
   };
 
   _proto.trapFocus = function trapFocus(ev) {
+    if (!this.props.trapFocus) {
+      return;
+    }
+
     if (!this._element) //element is not attached
       return;
     if (this._dialog && this._dialog.parentNode === ev.target) // initial focus when the Modal is opened
