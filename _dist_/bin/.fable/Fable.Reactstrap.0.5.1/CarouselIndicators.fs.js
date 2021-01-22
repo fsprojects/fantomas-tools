@@ -1,8 +1,8 @@
-import { Union, Record } from "../fable-library.3.0.1/Types.js";
-import { union_type, list_type, lambda_type, unit_type, int32_type, class_type, record_type, string_type } from "../fable-library.3.0.1/Reflection.js";
-import { keyValueList } from "../fable-library.3.0.1/MapUtil.js";
-import { choose, collect } from "../fable-library.3.0.1/Seq.js";
-import { empty } from "../fable-library.3.0.1/List.js";
+import { Union, Record } from "../fable-library.3.1.1/Types.js";
+import { union_type, list_type, lambda_type, unit_type, int32_type, class_type, record_type, string_type } from "../fable-library.3.1.1/Reflection.js";
+import { keyValueList } from "../fable-library.3.1.1/MapUtil.js";
+import { choose, collect } from "../fable-library.3.1.1/Seq.js";
+import { empty } from "../fable-library.3.1.1/List.js";
 import * as react from "../../../../_snowpack/pkg/react.js";
 import { CarouselIndicators } from "../../../../_snowpack/pkg/reactstrap.js";
 

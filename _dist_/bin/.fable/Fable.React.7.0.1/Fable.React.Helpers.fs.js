@@ -1,8 +1,8 @@
 import * as react from "../../../../_snowpack/pkg/react.js";
-import { equals, uncurry } from "../fable-library.3.0.1/Util.js";
+import { equals, uncurry } from "../fable-library.3.1.1/Util.js";
 import { HTMLAttr } from "./Fable.React.Props.fs.js";
-import { choose, fold } from "../fable-library.3.0.1/Seq.js";
-import { isNullOrEmpty } from "../fable-library.3.0.1/String.js";
+import { choose, fold } from "../fable-library.3.1.1/Seq.js";
+import { isNullOrEmpty } from "../fable-library.3.1.1/String.js";
 
 export function ReactElementTypeModule_memo(render) {
     return react.memo(render, uncurry(2, null));

@@ -1,18 +1,18 @@
-import { trimEnd, isNullOrWhiteSpace, substring, join, endsWith } from "../fable-library.3.0.1/String.js";
-import { ofSeq, ofArray, singleton, empty, collect, map } from "../fable-library.3.0.1/List.js";
-import { equalsWith } from "../fable-library.3.0.1/Array.js";
-import { comparePrimitives } from "../fable-library.3.0.1/Util.js";
+import { trimEnd, isNullOrWhiteSpace, substring, join, endsWith } from "../fable-library.3.1.1/String.js";
+import { ofSeq, ofArray, singleton, empty, collect, map } from "../fable-library.3.1.1/List.js";
+import { equalsWith } from "../fable-library.3.1.1/Array.js";
+import { comparePrimitives } from "../fable-library.3.1.1/Util.js";
 import { React_createDisposable_3A5B6456, useReact_useEffect_Z5ECA432F, useReact_useMemo_CF4EA67, useReact_useCallbackRef_7C4B0DD6, React_memo_62A0F746 } from "../Feliz.1.28.0/React.fs.js";
-import { defaultArg } from "../fable-library.3.0.1/Option.js";
+import { defaultArg } from "../fable-library.3.1.1/Option.js";
 import { Impl_createRemoveOptions, Impl_adjustPassive } from "../Feliz.UseListener.0.6.3/Listener.fs.js";
-import { tryParse } from "../fable-library.3.0.1/Int32.js";
-import { FSharpRef } from "../fable-library.3.0.1/Types.js";
-import { tryParse as tryParse_1, fromInt } from "../fable-library.3.0.1/Long.js";
-import { tryParse as tryParse_2 } from "../fable-library.3.0.1/Guid.js";
-import { tryParse as tryParse_3 } from "../fable-library.3.0.1/Double.js";
-import { tryParse as tryParse_4 } from "../fable-library.3.0.1/Decimal.js";
-import Decimal from "../fable-library.3.0.1/Decimal.js";
-import { map as map_1, delay } from "../fable-library.3.0.1/Seq.js";
+import { tryParse } from "../fable-library.3.1.1/Int32.js";
+import { FSharpRef } from "../fable-library.3.1.1/Types.js";
+import { tryParse as tryParse_1, fromInt } from "../fable-library.3.1.1/Long.js";
+import { tryParse as tryParse_2 } from "../fable-library.3.1.1/Guid.js";
+import { tryParse as tryParse_3 } from "../fable-library.3.1.1/Double.js";
+import { tryParse as tryParse_4 } from "../fable-library.3.1.1/Decimal.js";
+import Decimal from "../fable-library.3.1.1/Decimal.js";
+import { map as map_1, delay } from "../fable-library.3.1.1/Seq.js";
 
 export function RouterModule_String_$007CPrefix$007C(prefix, str) {
     if (str.indexOf(prefix) === 0) {

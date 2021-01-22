@@ -1,8 +1,8 @@
 import { fromString, array, int, bool, string, object } from "../.fable/Thoth.Json.5.0.0/Decode.fs.js";
 import { Model } from "./Model.js";
-import { Lazy, uncurry } from "../.fable/fable-library.3.0.1/Util.js";
+import { Lazy, uncurry } from "../.fable/fable-library.3.1.1/Util.js";
 import { Dto, Node$, Range$ } from "../shared/ASTViewerShared.js";
-import { FSharpResult$2 } from "../.fable/fable-library.3.0.1/Choice.js";
+import { FSharpResult$2 } from "../.fable/fable-library.3.1.1/Choice.js";
 
 export function decodeUrlModel(initialModel) {
     return (path_2) => ((v) => object((get$) => (new Model(initialModel.Source, get$.Required.Field("defines", string), get$.Required.Field("isFsi", bool), initialModel.Parsed, initialModel.IsLoading, initialModel.Version, initialModel.View, initialModel.FSharpEditorState)), path_2, v));

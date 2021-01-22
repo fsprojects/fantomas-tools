@@ -1,9 +1,9 @@
-import { Union } from "../fable-library.3.0.1/Types.js";
-import { class_type, union_type, int32_type, array_type } from "../fable-library.3.0.1/Reflection.js";
-import { fill } from "../fable-library.3.0.1/Array.js";
-import { comparePrimitives, max } from "../fable-library.3.0.1/Util.js";
-import { some } from "../fable-library.3.0.1/Option.js";
-import { rangeNumber, singleton, collect, take, skip, append, delay } from "../fable-library.3.0.1/Seq.js";
+import { Union } from "../fable-library.3.1.1/Types.js";
+import { class_type, union_type, int32_type, array_type } from "../fable-library.3.1.1/Reflection.js";
+import { fill } from "../fable-library.3.1.1/Array.js";
+import { comparePrimitives, max } from "../fable-library.3.1.1/Util.js";
+import { some } from "../fable-library.3.1.1/Option.js";
+import { rangeNumber, singleton, collect, take, skip, append, delay } from "../fable-library.3.1.1/Seq.js";
 
 export class RingState$1 extends Union {
     constructor(tag, ...fields) {

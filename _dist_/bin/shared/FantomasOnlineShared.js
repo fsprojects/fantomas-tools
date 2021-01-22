@@ -1,6 +1,6 @@
-import { Record, toString, Union } from "../.fable/fable-library.3.0.1/Types.js";
-import { record_type, list_type, union_type, bool_type, string_type, int32_type } from "../.fable/fable-library.3.0.1/Reflection.js";
-import { int32ToString } from "../.fable/fable-library.3.0.1/Util.js";
+import { Record, toString, Union } from "../.fable/fable-library.3.1.1/Types.js";
+import { record_type, list_type, union_type, bool_type, string_type, int32_type } from "../.fable/fable-library.3.1.1/Reflection.js";
+import { int32ToString } from "../.fable/fable-library.3.1.1/Util.js";
 
 export class FantomasOption extends Union {
     constructor(tag, ...fields) {

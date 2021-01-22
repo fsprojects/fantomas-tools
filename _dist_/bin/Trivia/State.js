@@ -1,17 +1,17 @@
 import * as __SNOWPACK_ENV__ from '../../../_snowpack/env.js';
 
 import { getText, postJson } from "../Http.js";
-import { split, printf, toText } from "../.fable/fable-library.3.0.1/String.js";
+import { split, printf, toText } from "../.fable/fable-library.3.1.1/String.js";
 import { encodeUrlModel, encodeParseRequest } from "./Encoders.js";
 import { decodeUrlModel, decodeResult } from "./Decoders.js";
 import { Model, ActiveTab as ActiveTab_1, Msg } from "./Model.js";
-import { tryItem, ofArray, empty } from "../.fable/fable-library.3.0.1/List.js";
+import { tryItem, ofArray, empty } from "../.fable/fable-library.3.1.1/List.js";
 import { ParseRequest } from "../shared/TriviaShared.js";
 import { updateUrlWithData, restoreModelFromUrl } from "../UrlTools.js";
-import { uncurry } from "../.fable/fable-library.3.0.1/Util.js";
+import { uncurry } from "../.fable/fable-library.3.1.1/Util.js";
 import { Cmd_none, Cmd_ofSub, Cmd_batch, Cmd_OfPromise_either } from "../.fable/Fable.Elmish.3.1.0/cmd.fs.js";
 import { toString } from "../.fable/Thoth.Json.5.0.0/Encode.fs.js";
-import { defaultArg, map } from "../.fable/fable-library.3.0.1/Option.js";
+import { defaultArg, map } from "../.fable/fable-library.3.1.1/Option.js";
 import { selectRange, HighLightRange } from "../Editor.js";
 
 function fetchTrivia(payload, dispatch) {

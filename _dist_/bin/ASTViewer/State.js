@@ -1,17 +1,17 @@
 import * as __SNOWPACK_ENV__ from '../../../_snowpack/env.js';
 
 import { postJson, getText } from "../Http.js";
-import { split, printf, toText } from "../.fable/fable-library.3.0.1/String.js";
+import { split, printf, toText } from "../.fable/fable-library.3.1.1/String.js";
 import { encodeUrlModel, encodeInput } from "./Encoders.js";
 import { decodeUrlModel, decodeResult } from "./Decoders.js";
 import { Model, EditorState, View as View_2, Msg } from "./Model.js";
-import { FSharpResult$2 } from "../.fable/fable-library.3.0.1/Choice.js";
+import { FSharpResult$2 } from "../.fable/fable-library.3.1.1/Choice.js";
 import { updateUrlWithData, restoreModelFromUrl } from "../UrlTools.js";
-import { uncurry } from "../.fable/fable-library.3.0.1/Util.js";
+import { uncurry } from "../.fable/fable-library.3.1.1/Util.js";
 import { Cmd_ofSub, Cmd_batch, Cmd_none, Cmd_OfPromise_either } from "../.fable/Fable.Elmish.3.1.0/cmd.fs.js";
 import { Input } from "../shared/ASTViewerShared.js";
 import { toString } from "../.fable/Thoth.Json.5.0.0/Encode.fs.js";
-import { ofArray } from "../.fable/fable-library.3.0.1/List.js";
+import { ofArray } from "../.fable/fable-library.3.1.1/List.js";
 import { selectRange } from "../Editor.js";
 
 function getVersion() {

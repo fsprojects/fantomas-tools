@@ -1,5 +1,5 @@
-import { record_type, int32_type, union_type, obj_type, bool_type, lambda_type, unit_type, string_type, class_type } from "./.fable/fable-library.3.0.1/Reflection.js";
-import { Record, Union } from "./.fable/fable-library.3.0.1/Types.js";
+import { record_type, int32_type, union_type, obj_type, bool_type, lambda_type, unit_type, string_type, class_type } from "./.fable/fable-library.3.1.1/Reflection.js";
+import { Record, Union } from "./.fable/fable-library.3.1.1/Types.js";
 
 export class Editor {
     constructor() {

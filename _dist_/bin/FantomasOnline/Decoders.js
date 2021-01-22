@@ -1,9 +1,9 @@
 import { list, array as array_2, fromString, bool, int, tuple3, string, object } from "../.fable/Thoth.Json.5.0.0/Decode.fs.js";
-import { comparePrimitives, uncurry } from "../.fable/fable-library.3.0.1/Util.js";
+import { comparePrimitives, uncurry } from "../.fable/fable-library.3.1.1/Util.js";
 import { sortByOption, FantomasOption } from "../shared/FantomasOnlineShared.js";
-import { Result_Map } from "../.fable/fable-library.3.0.1/Choice.js";
-import { ofArray } from "../.fable/fable-library.3.0.1/List.js";
-import { sortBy } from "../.fable/fable-library.3.0.1/Array.js";
+import { Result_Map } from "../.fable/fable-library.3.1.1/Choice.js";
+import { ofArray } from "../.fable/fable-library.3.1.1/List.js";
+import { sortBy } from "../.fable/fable-library.3.1.1/Array.js";
 
 const optionDecoder = (path_8) => ((v) => object((get$) => {
     const t = get$.Required.Field("$type", string);

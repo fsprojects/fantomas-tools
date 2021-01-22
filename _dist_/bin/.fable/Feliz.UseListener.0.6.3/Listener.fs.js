@@ -1,4 +1,4 @@
-import { bind, map } from "../fable-library.3.0.1/Option.js";
+import { bind, map } from "../fable-library.3.1.1/Option.js";
 
 export const Impl_allowsPassiveEvents = (() => {
     let passive = false;

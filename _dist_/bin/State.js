@@ -3,18 +3,18 @@ import { string, object } from "./.fable/Thoth.Json.5.0.0/Decode.fs.js";
 import { cmdForCurrentTab, parseUrl } from "./Navigation.js";
 import { RouterModule_urlSegments } from "./.fable/Feliz.Router.3.2.0/Router.fs.js";
 import { update as update_1, init as init_1 } from "./Trivia/State.js";
-import { equals } from "./.fable/fable-library.3.0.1/Util.js";
+import { equals } from "./.fable/fable-library.3.1.1/Util.js";
 import { Msg, Model, ActiveTab } from "./Model.js";
 import { update as update_2, init as init_2 } from "./FSharpTokens/State.js";
 import { update as update_3, init as init_3 } from "./ASTViewer/State.js";
 import { update as update_4, init as init_4 } from "./FantomasOnline/State.js";
 import { Model as Model_1, Msg as Msg_4, FantomasMode } from "./FantomasOnline/Model.js";
 import { Cmd_ofSub, Cmd_none, Cmd_OfFunc_result, Cmd_map, Cmd_batch } from "./.fable/Fable.Elmish.3.1.0/cmd.fs.js";
-import { ofArray } from "./.fable/fable-library.3.0.1/List.js";
+import { ofArray } from "./.fable/fable-library.3.1.1/List.js";
 import { Msg as Msg_1 } from "./FSharpTokens/Model.js";
 import { Msg as Msg_2 } from "./ASTViewer/Model.js";
 import { Msg as Msg_3 } from "./Trivia/Model.js";
-import { replace } from "./.fable/fable-library.3.0.1/String.js";
+import { replace } from "./.fable/fable-library.3.1.1/String.js";
 
 function getCodeFromUrl() {
     return restoreModelFromUrl((path_1, v) => object((get$) => get$.Required.Field("code", string), path_1, v), "");

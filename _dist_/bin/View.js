@@ -1,8 +1,8 @@
 import { NavbarProps, navbar } from "./.fable/Fable.Reactstrap.0.5.1/Navbar.fs.js";
 import { Prop, DOMAttr, HTMLAttr } from "./.fable/Fable.React.7.0.1/Fable.React.Props.fs.js";
-import { ofArray, singleton } from "./.fable/fable-library.3.0.1/List.js";
+import { ofArray, singleton } from "./.fable/fable-library.3.1.1/List.js";
 import { NavbarBrandProps, navbarBrand } from "./.fable/Fable.Reactstrap.0.5.1/NavbarBrand.fs.js";
-import { printf, toText } from "./.fable/fable-library.3.0.1/String.js";
+import { printf, toText } from "./.fable/fable-library.3.1.1/String.js";
 import * as react from "../../_snowpack/pkg/react.js";
 import { ButtonProps, button } from "./.fable/Fable.Reactstrap.0.5.1/Button.fs.js";
 import { ActiveTab, Msg } from "./Model.js";
@@ -16,7 +16,7 @@ import { commands as commands_4, settings as settings_4, view as view_3 } from "
 import { NavItemProps, navItem as navItem_1 } from "./.fable/Fable.Reactstrap.0.5.1/NavItem.fs.js";
 import { NavLinkProps, navLink } from "./.fable/Fable.Reactstrap.0.5.1/NavLink.fs.js";
 import { toHash } from "./Navigation.js";
-import { equals } from "./.fable/fable-library.3.0.1/Util.js";
+import { equals } from "./.fable/fable-library.3.1.1/Util.js";
 import { FantomasMode } from "./FantomasOnline/Model.js";
 import { NavProps, nav } from "./.fable/Fable.Reactstrap.0.5.1/Nav.fs.js";
 

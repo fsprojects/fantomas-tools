@@ -1,8 +1,8 @@
-import { FSharpRef, Record, Union } from "../fable-library.3.0.1/Types.js";
-import { record_type, class_type, tuple_type, lambda_type, union_type, list_type, obj_type, string_type } from "../fable-library.3.0.1/Reflection.js";
-import { FSharpResult$2 } from "../fable-library.3.0.1/Choice.js";
-import { addToDict, tryGetValue } from "../fable-library.3.0.1/MapUtil.js";
-import { replace } from "../fable-library.3.0.1/RegExp.js";
+import { FSharpRef, Record, Union } from "../fable-library.3.1.1/Types.js";
+import { record_type, class_type, tuple_type, lambda_type, union_type, list_type, obj_type, string_type } from "../fable-library.3.1.1/Reflection.js";
+import { FSharpResult$2 } from "../fable-library.3.1.1/Choice.js";
+import { addToDict, tryGetValue } from "../fable-library.3.1.1/MapUtil.js";
+import { replace } from "../fable-library.3.1.1/RegExp.js";
 
 export class ErrorReason extends Union {
     constructor(tag, ...fields) {

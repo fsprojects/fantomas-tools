@@ -1,16 +1,16 @@
 import * as react from "../../../_snowpack/pkg/react.js";
 import Editor from "../../js/Editor.js";
 import { EditorProp } from "../Editor.js";
-import { uncurry } from "../.fable/fable-library.3.0.1/Util.js";
-import { some } from "../.fable/fable-library.3.0.1/Option.js";
-import { singleton, ofArray } from "../.fable/fable-library.3.0.1/List.js";
-import { keyValueList } from "../.fable/fable-library.3.0.1/MapUtil.js";
+import { uncurry } from "../.fable/fable-library.3.1.1/Util.js";
+import { some } from "../.fable/fable-library.3.1.1/Option.js";
+import { singleton, ofArray } from "../.fable/fable-library.3.1.1/List.js";
+import { keyValueList } from "../.fable/fable-library.3.1.1/MapUtil.js";
 import { loader } from "../Loader.js";
 import { ButtonProps, button } from "../.fable/Fable.Reactstrap.0.5.1/Button.fs.js";
 import { DOMAttr } from "../.fable/Fable.React.7.0.1/Fable.React.Props.fs.js";
 import { Msg } from "./Model.js";
 import { versionBar } from "../VersionBar.js";
-import { printf, toText } from "../.fable/fable-library.3.0.1/String.js";
+import { printf, toText } from "../.fable/fable-library.3.1.1/String.js";
 import { MultiButtonSettings, multiButton, toggleButton, input } from "../SettingControls.js";
 
 function isEditorView(_arg1) {

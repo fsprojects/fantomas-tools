@@ -1,12 +1,12 @@
-import { Record } from "../fable-library.3.0.1/Types.js";
-import { record_type, class_type, string_type, tuple_type, list_type, lambda_type, unit_type } from "../fable-library.3.0.1/Reflection.js";
+import { Record } from "../fable-library.3.1.1/Types.js";
+import { record_type, class_type, string_type, tuple_type, list_type, lambda_type, unit_type } from "../fable-library.3.1.1/Reflection.js";
 import { Cmd_exec, Cmd_batch, Cmd_none } from "./cmd.fs.js";
 import { Log_toConsole, Log_onError } from "./prelude.fs.js";
-import { curry, partialApply, uncurry } from "../fable-library.3.0.1/Util.js";
-import { ofArray } from "../fable-library.3.0.1/List.js";
+import { curry, partialApply, uncurry } from "../fable-library.3.1.1/Util.js";
+import { ofArray } from "../fable-library.3.1.1/List.js";
 import { RingBuffer$1__Pop, RingBuffer$1__Push_2B595, RingBuffer$1_$ctor_Z524259A4 } from "./ring.fs.js";
-import { value as value_1, some } from "../fable-library.3.0.1/Option.js";
-import { printf, toText } from "../fable-library.3.0.1/String.js";
+import { value as value_1, some } from "../fable-library.3.1.1/Option.js";
+import { printf, toText } from "../fable-library.3.1.1/String.js";
 
 export class Program$4 extends Record {
     constructor(init, update, subscribe, view, setState, onError, syncDispatch) {

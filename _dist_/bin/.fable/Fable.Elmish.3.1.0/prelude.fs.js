@@ -1,6 +1,6 @@
-import { some } from "../fable-library.3.0.1/Option.js";
-import Timer from "../fable-library.3.0.1/Timer.js";
-import { add } from "../fable-library.3.0.1/Observable.js";
+import { some } from "../fable-library.3.1.1/Option.js";
+import Timer from "../fable-library.3.1.1/Timer.js";
+import { add } from "../fable-library.3.1.1/Observable.js";
 
 export function Log_onError(text, ex) {
     console.error(some(text), ex);

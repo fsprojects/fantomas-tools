@@ -1,8 +1,8 @@
-import { equals } from "../.fable/fable-library.3.0.1/Util.js";
-import { printf, toText } from "../.fable/fable-library.3.0.1/String.js";
+import { equals } from "../.fable/fable-library.3.1.1/Util.js";
+import { printf, toText } from "../.fable/fable-library.3.1.1/String.js";
 import { TabPaneProps, tabPane } from "../.fable/Fable.Reactstrap.0.5.1/TabPane.fs.js";
 import { DOMAttr, HTMLAttr } from "../.fable/Fable.React.7.0.1/Fable.React.Props.fs.js";
-import { ofArray, singleton } from "../.fable/fable-library.3.0.1/List.js";
+import { ofArray, singleton } from "../.fable/fable-library.3.1.1/List.js";
 import { Msg, ActiveTab } from "./Model.js";
 import { view as view_1 } from "./ByTriviaNodes.js";
 import { view as view_2 } from "./ByTriviaNodeCandidates.js";

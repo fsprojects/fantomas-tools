@@ -1,7 +1,7 @@
-import { Result_MapError, Result_Map, FSharpResult$2 } from "../fable-library.3.0.1/Choice.js";
-import { class_type } from "../fable-library.3.0.1/Reflection.js";
-import { getEnumerator } from "../fable-library.3.0.1/Seq.js";
-import { equals } from "../fable-library.3.0.1/Util.js";
+import { Result_MapError, Result_Map, FSharpResult$2 } from "../fable-library.3.1.1/Choice.js";
+import { class_type } from "../fable-library.3.1.1/Reflection.js";
+import { getEnumerator } from "../fable-library.3.1.1/Seq.js";
+import { equals } from "../fable-library.3.1.1/Util.js";
 
 export function reject(reason) {
     return Promise.reject(reason);

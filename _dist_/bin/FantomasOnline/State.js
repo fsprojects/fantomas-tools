@@ -1,10 +1,10 @@
 import * as __SNOWPACK_ENV__ from '../../../_snowpack/env.js';
 
-import { add, empty as empty_1, find, ofList } from "../.fable/fable-library.3.0.1/Map.js";
+import { add, empty as empty_1, find, ofList } from "../.fable/fable-library.3.1.1/Map.js";
 import { Model__get_SettingsChangedByTheUser, Model, EditorState, Msg, FantomasMode } from "./Model.js";
-import { contains, tryFind, map, empty, singleton, ofArray } from "../.fable/fable-library.3.0.1/List.js";
+import { contains, tryFind, map, empty, singleton, ofArray } from "../.fable/fable-library.3.1.1/List.js";
 import { postJson, getText } from "../Http.js";
-import { isNullOrWhiteSpace, toConsole, join, trimStart, toFail, printf, toText } from "../.fable/fable-library.3.0.1/String.js";
+import { isNullOrWhiteSpace, toConsole, join, trimStart, toFail, printf, toText } from "../.fable/fable-library.3.1.1/String.js";
 import { Types_RequestProperties, fetch$ } from "../.fable/Fable.Fetch.2.2.0/Fetch.fs.js";
 import { decodeOptionsFromUrl, decodeOptions } from "./Decoders.js";
 import { encodeUrlModel, encodeRequest } from "./Encoders.js";
@@ -12,10 +12,10 @@ import { restoreModelFromUrl, updateUrlWithData } from "../UrlTools.js";
 import { toString } from "../.fable/Thoth.Json.5.0.0/Encode.fs.js";
 import { Cmd_ofSub, Cmd_none, Cmd_OfFunc_result, Cmd_batch, Cmd_OfPromise_either } from "../.fable/Fable.Elmish.3.1.0/cmd.fs.js";
 import { getOptionKey, FantomasOption } from "../shared/FantomasOnlineShared.js";
-import { stringHash, uncurry } from "../.fable/fable-library.3.0.1/Util.js";
+import { stringHash, uncurry } from "../.fable/fable-library.3.1.1/Util.js";
 import { showSuccess as showSuccess_1 } from "../../js/notifications.js";
-import { map as map_1 } from "../.fable/fable-library.3.0.1/Seq.js";
-import { isUpper } from "../.fable/fable-library.3.0.1/Char.js";
+import { map as map_1 } from "../.fable/fable-library.3.1.1/Seq.js";
+import { isUpper } from "../.fable/fable-library.3.1.1/Char.js";
 
 const backend = ofList(ofArray([[new FantomasMode(0), __SNOWPACK_ENV__.SNOWPACK_PUBLIC_FANTOMAS_V2], [new FantomasMode(1), __SNOWPACK_ENV__.SNOWPACK_PUBLIC_FANTOMAS_V3], [new FantomasMode(2), __SNOWPACK_ENV__.SNOWPACK_PUBLIC_FANTOMAS_V4], [new FantomasMode(3), __SNOWPACK_ENV__.SNOWPACK_PUBLIC_FANTOMAS_PREVIEW]]));
 

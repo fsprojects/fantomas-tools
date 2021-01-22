@@ -1,16 +1,16 @@
-import { toString as toString_1 } from "../fable-library.3.0.1/Decimal.js";
-import { mapIndexed, map as map_2, fold, getEnumerator } from "../fable-library.3.0.1/Seq.js";
-import { empty, map as map_3, tryFind, add, toList } from "../fable-library.3.0.1/Map.js";
-import { toString as toString_2 } from "../fable-library.3.0.1/BigInt.js";
-import { toString as toString_3 } from "../fable-library.3.0.1/Date.js";
-import { toString as toString_4 } from "../fable-library.3.0.1/TimeSpan.js";
-import { Lazy, mapCurriedArgs, uncurry } from "../fable-library.3.0.1/Util.js";
-import { defaultArg, value as value_34, map, defaultArgWith, some } from "../fable-library.3.0.1/Option.js";
-import { toString as toString_5, FSharpRef } from "../fable-library.3.0.1/Types.js";
-import { class_type, getGenerics, getGenericTypeDefinition, getTupleFields, getTupleElements, isTuple, isGenericType, getEnumUnderlyingType, isEnum, getElementType, isArray, getUnionCaseFields, getUnionFields, isUnion, getRecordElements, getRecordField, name, isRecord, fullName } from "../fable-library.3.0.1/Reflection.js";
-import { fill, map as map_1 } from "../fable-library.3.0.1/Array.js";
+import { toString as toString_1 } from "../fable-library.3.1.1/Decimal.js";
+import { mapIndexed, map as map_2, fold, getEnumerator } from "../fable-library.3.1.1/Seq.js";
+import { empty, map as map_3, tryFind, add, toList } from "../fable-library.3.1.1/Map.js";
+import { toString as toString_2 } from "../fable-library.3.1.1/BigInt.js";
+import { toString as toString_3 } from "../fable-library.3.1.1/Date.js";
+import { toString as toString_4 } from "../fable-library.3.1.1/TimeSpan.js";
+import { Lazy, mapCurriedArgs, uncurry } from "../fable-library.3.1.1/Util.js";
+import { defaultArg, value as value_34, map, defaultArgWith, some } from "../fable-library.3.1.1/Option.js";
+import { toString as toString_5, FSharpRef } from "../fable-library.3.1.1/Types.js";
+import { class_type, getGenerics, getGenericTypeDefinition, getTupleFields, getTupleElements, isTuple, isGenericType, getEnumUnderlyingType, isEnum, getElementType, isArray, getUnionCaseFields, getUnionFields, isUnion, getRecordElements, getRecordField, name, isRecord, fullName } from "../fable-library.3.1.1/Reflection.js";
+import { fill, map as map_1 } from "../fable-library.3.1.1/Array.js";
 import { Util_CachedEncoders, Util_Cache$1__GetOrAdd_43981464, CaseStrategy, Util_Casing_convert } from "./Types.fs.js";
-import { toFail, printf, toText } from "../fable-library.3.0.1/String.js";
+import { toFail, printf, toText } from "../fable-library.3.1.1/String.js";
 
 export function guid(value) {
     return value;

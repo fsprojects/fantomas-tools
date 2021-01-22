@@ -1,5 +1,5 @@
-import { Record } from "../.fable/fable-library.3.0.1/Types.js";
-import { record_type, list_type, string_type } from "../.fable/fable-library.3.0.1/Reflection.js";
+import { Record } from "../.fable/fable-library.3.1.1/Types.js";
+import { record_type, list_type, string_type } from "../.fable/fable-library.3.1.1/Reflection.js";
 
 export class GetTokensRequest extends Record {
     constructor(Defines, SourceCode) {

@@ -5,7 +5,7 @@ import { createElement } from "../../_snowpack/pkg/react.js";
 import * as react from "../../_snowpack/pkg/react.js";
 import { RowProps, row } from "./.fable/Fable.Reactstrap.0.5.1/Row.fs.js";
 import { HTMLAttr } from "./.fable/Fable.React.7.0.1/Fable.React.Props.fs.js";
-import { ofArray } from "./.fable/fable-library.3.0.1/List.js";
+import { ofArray } from "./.fable/fable-library.3.1.1/List.js";
 import { RouterModule_router } from "./.fable/Feliz.Router.3.2.0/Router.fs.js";
 import { Msg } from "./Model.js";
 import { parseUrl } from "./Navigation.js";
