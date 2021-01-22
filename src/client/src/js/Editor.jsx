@@ -1,6 +1,5 @@
 import React, { useRef, useEffect } from "react";
-// import MonacoEditor from "https://cdn.skypack.dev/pin/@monaco-editor/react@v3.7.0-s61OrFzSUFvXdpx6TX43/@monaco-editor/react.js";
-import ControlledEditor from "@monaco-editor/react/lib/es/ControlledEditor/index";
+import MonacoEditor  from "@monaco-editor/react";
 import PropTypes from "prop-types";
 
 const useEventListener = (target, type, listener, ...options) => {
@@ -36,7 +35,7 @@ const Editor = ({ onChange, language, getEditor, value, isReadOnly }) => {
       enabled: false
     }
   };
-  const handleEditorChange = (ev, value) => {
+  const handleEditorChange = (value) => {
     if (onChange) {
       onChange(value);
     }
@@ -51,7 +50,7 @@ const Editor = ({ onChange, language, getEditor, value, isReadOnly }) => {
   }
 
   return (
-      <ControlledEditor
+      <MonacoEditor
         height={"100%"}
         language={language}
         editorDidMount={handleEditorDidMount}
