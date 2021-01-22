@@ -23,6 +23,9 @@ let cmdForCurrentTab tab model =
                 [ Cmd.map FantomasMsg (FantomasOnline.State.getOptionsCmd mode)
                   Cmd.map FantomasMsg (FantomasOnline.State.getVersionCmd mode) ]
 
+        | FantomasTab _ when not (List.isEmpty model.FantomasModel.DefaultOptions) ->
+            Cmd.ofMsg (FantomasOnline.Model.Format)
+            |> Cmd.map FantomasMsg
         | FantomasTab _ -> Cmd.none
     else
         Cmd.none
@@ -47,15 +50,11 @@ let parseUrl segments =
     | [ "trivia" ]
     | [ "trivia"; Route.Query [ "data", _ ] ] -> ActiveTab.TriviaTab
     | [ "fantomas"; "v2" ]
-    | [ "fantomas"; "v2"; Route.Query [ "data", _ ] ] ->
-        ActiveTab.FantomasTab(FantomasTools.Client.FantomasOnline.Model.V2)
+    | [ "fantomas"; "v2"; Route.Query [ "data", _ ] ] -> ActiveTab.FantomasTab(FantomasOnline.Model.V2)
     | [ "fantomas"; "v3" ]
-    | [ "fantomas"; "v3"; Route.Query [ "data", _ ] ] ->
-        ActiveTab.FantomasTab(FantomasTools.Client.FantomasOnline.Model.V3)
+    | [ "fantomas"; "v3"; Route.Query [ "data", _ ] ] -> ActiveTab.FantomasTab(FantomasOnline.Model.V3)
     | [ "fantomas"; "v4" ]
-    | [ "fantomas"; "v4"; Route.Query [ "data", _ ] ] ->
-        ActiveTab.FantomasTab(FantomasTools.Client.FantomasOnline.Model.V4)
+    | [ "fantomas"; "v4"; Route.Query [ "data", _ ] ] -> ActiveTab.FantomasTab(FantomasOnline.Model.V4)
     | [ "fantomas"; "preview" ]
-    | [ "fantomas"; "preview"; Route.Query [ "data", _ ] ] ->
-        ActiveTab.FantomasTab(FantomasTools.Client.FantomasOnline.Model.Preview)
+    | [ "fantomas"; "preview"; Route.Query [ "data", _ ] ] -> ActiveTab.FantomasTab(FantomasOnline.Model.Preview)
     | _ -> ActiveTab.HomeTab
