@@ -1,5 +1,5 @@
 import React, {useRef, useEffect} from "../../_snowpack/pkg/react.js";
-import ControlledEditor2 from "../../_snowpack/pkg/@monaco-editor/react/lib/es/ControlledEditor/index.js";
+import MonacoEditor from "../../_snowpack/pkg/@monaco-editor/react.js";
 import PropTypes from "../../_snowpack/pkg/prop-types.js";
 const useEventListener = (target, type, listener, ...options) => {
   useEffect(() => {
@@ -30,7 +30,7 @@ const Editor = ({onChange, language, getEditor, value, isReadOnly}) => {
       enabled: false
     }
   };
-  const handleEditorChange = (ev, value2) => {
+  const handleEditorChange = (value2) => {
     if (onChange) {
       onChange(value2);
     }
@@ -42,7 +42,7 @@ const Editor = ({onChange, language, getEditor, value, isReadOnly}) => {
       getEditor(editor);
     }
   }
-  return /* @__PURE__ */ React.createElement(ControlledEditor2, {
+  return /* @__PURE__ */ React.createElement(MonacoEditor, {
     height: "100%",
     language,
     editorDidMount: handleEditorDidMount,

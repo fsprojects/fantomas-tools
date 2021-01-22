@@ -1,6 +1,6 @@
 {
   "imports": {
-    "@monaco-editor/react/lib/es/ControlledEditor/index": "./@monaco-editor/react/lib/es/ControlledEditor/index.js",
+    "@monaco-editor/react": "./@monaco-editor/react.js",
     "lz-string": "./lz-string.js",
     "notyf": "./notyf.js",
     "notyf/notyf.min.css": "./notyf/notyf.min.css",
