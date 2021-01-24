@@ -23,7 +23,9 @@ import { NavProps, nav } from "./.fable/Fable.Reactstrap.0.5.1/Nav.fs.js";
 export function navigation(dispatch) {
     return navbar([new NavbarProps(1, true), new NavbarProps(7, singleton(new HTMLAttr(64, "bg-light")))], [navbarBrand([new NavbarBrandProps(2, singleton(new HTMLAttr(64, "py-0")))], [toText(printf("Fantomas tools"))]), react.createElement("div", {
         className: "navbar-text py1",
-    }, button([new ButtonProps(9, ofArray([new HTMLAttr(94, "https://github.com/fsprojects/fantomas-tools"), new HTMLAttr(157, "_blank"), new HTMLAttr(64, "text-white")])), new ButtonProps(1, "dark")], [react.createElement("i", {
+    }, button([new ButtonProps(9, ofArray([new HTMLAttr(94, "https://github.com/sponsors/nojaf"), new HTMLAttr(157, "_blank"), new HTMLAttr(99, "sponsor-button")])), new ButtonProps(1, "success"), new ButtonProps(2, true)], [react.createElement("i", {
+        className: "far fa-heart mr-1 mt-1 text-danger",
+    }), "Sponsor"]), button([new ButtonProps(9, ofArray([new HTMLAttr(94, "https://github.com/fsprojects/fantomas-tools"), new HTMLAttr(157, "_blank"), new HTMLAttr(64, "text-white ml-2")])), new ButtonProps(1, "dark")], [react.createElement("i", {
         className: "fab fa-github mr-1 mt-1",
     }), "GitHub"]), button([new ButtonProps(9, ofArray([new HTMLAttr(64, "ml-2 pointer"), new DOMAttr(40, (_arg1) => {
         dispatch(new Msg(6));

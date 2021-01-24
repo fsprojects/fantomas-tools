@@ -8695,6 +8695,13 @@ a.text-dark:hover, a.text-dark:focus {
   overflow: hidden;
 }
 
+#sponsor-button {
+  border-color: rgba(27, 31, 35, 0.15);
+}
+#sponsor-button:hover {
+  background-color: #f3f4f6;
+}
+
 .fa-github-wrapper {
   width: 24px;
   display: inline;
