@@ -17,9 +17,17 @@ let navigation dispatch =
             str title
         ]
         div [ ClassName "navbar-text py1" ] [
+            Button.button [ Button.Custom [ Href "https://github.com/sponsors/nojaf"
+                                            Target "_blank"
+                                            Id "sponsor-button" ]
+                            Button.Color Success
+                            Button.Outline true ] [
+                i [ ClassName "far fa-heart mr-1 mt-1 text-danger" ] []
+                str "Sponsor"
+            ]
             Button.button [ Button.Custom [ Href "https://github.com/fsprojects/fantomas-tools"
                                             Target "_blank"
-                                            ClassName "text-white" ]
+                                            ClassName "text-white ml-2" ]
                             Button.Color Dark ] [
                 i [ ClassName "fab fa-github mr-1 mt-1" ] []
                 str "GitHub"
