@@ -844,6 +844,7 @@ function Editor({
   options,
   overrideServices,
   saveViewState,
+  keepCurrentModel,
 
   /* === */
   width,
@@ -965,10 +966,16 @@ function Editor({
   }, [isEditorReady, onValidate]);
 
   function disposeEditor() {
-    var _subscriptionRef$curr2, _editorRef$current$ge;
+    var _subscriptionRef$curr2;
 
     (_subscriptionRef$curr2 = subscriptionRef.current) === null || _subscriptionRef$curr2 === void 0 ? void 0 : _subscriptionRef$curr2.dispose();
-    (_editorRef$current$ge = editorRef.current.getModel()) === null || _editorRef$current$ge === void 0 ? void 0 : _editorRef$current$ge.dispose();
+
+    if (!keepCurrentModel) {
+      var _editorRef$current$ge;
+
+      (_editorRef$current$ge = editorRef.current.getModel()) === null || _editorRef$current$ge === void 0 ? void 0 : _editorRef$current$ge.dispose();
+    }
+
     editorRef.current.dispose();
   }
 
@@ -998,6 +1005,7 @@ Editor.propTypes = {
   options: propTypes.object,
   overrideServices: propTypes.object,
   saveViewState: propTypes.bool,
+  keepCurrentModel: propTypes.bool,
 
   /* === */
   width: propTypes.oneOfType([propTypes.number, propTypes.string]),
@@ -1017,6 +1025,7 @@ Editor.defaultProps = {
   options: {},
   overrideServices: {},
   saveViewState: true,
+  keepCurrentModel: false,
 
   /* === */
   width: '100%',
