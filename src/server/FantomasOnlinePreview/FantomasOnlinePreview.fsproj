@@ -2,7 +2,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <LangVersion>preview</LangVersion>
     <AzureFunctionsVersion>v3</AzureFunctionsVersion>
     <AssemblyName>FantomasOnlinePreview.Server</AssemblyName>
     <RootNamespace>FantomasOnlinePreview.Server</RootNamespace>
