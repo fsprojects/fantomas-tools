@@ -912,12 +912,14 @@ function Editor({
   }, [theme], isEditorReady);
   const createEditor = react.useCallback(() => {
     beforeMountRef.current(monacoRef.current);
-    const defaultModel = getOrCreateModel(monacoRef.current, value || defaultValue, defaultLanguage || language, path || defaultPath);
+    const autoCreatedModelPath = path || defaultPath;
+    const defaultModel = getOrCreateModel(monacoRef.current, value || defaultValue, defaultLanguage || language, autoCreatedModelPath);
     editorRef.current = monacoRef.current.editor.create(containerRef.current, {
       model: defaultModel,
       automaticLayout: true,
       ...options
     }, overrideServices);
+    saveViewState && editorRef.current.restoreViewState(viewStates.get(autoCreatedModelPath));
     monacoRef.current.editor.setTheme(theme);
 
     if (!getModelMarkersSetter().backup) {
@@ -927,7 +929,7 @@ function Editor({
     }
 
     setIsEditorReady(true);
-  }, [defaultValue, defaultLanguage, defaultPath, value, language, path, options, overrideServices, theme]);
+  }, [defaultValue, defaultLanguage, defaultPath, value, language, path, options, overrideServices, saveViewState, theme]);
   react.useEffect(() => {
     if (isEditorReady) {
       onMountRef.current(editorRef.current, monacoRef.current);
@@ -970,7 +972,9 @@ function Editor({
 
     (_subscriptionRef$curr2 = subscriptionRef.current) === null || _subscriptionRef$curr2 === void 0 ? void 0 : _subscriptionRef$curr2.dispose();
 
-    if (!keepCurrentModel) {
+    if (keepCurrentModel) {
+      saveViewState && viewStates.set(path, editorRef.current.saveViewState());
+    } else {
       var _editorRef$current$ge;
 
       (_editorRef$current$ge = editorRef.current.getModel()) === null || _editorRef$current$ge === void 0 ? void 0 : _editorRef$current$ge.dispose();
