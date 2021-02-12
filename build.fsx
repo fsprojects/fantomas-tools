@@ -8,7 +8,6 @@ open Fake.IO.FileSystemOperators
 open Fake.IO.Globbing.Operators
 open Fake.JavaScript
 open Fake.Tools
-open Fantomas
 open System.IO
 
 module Azure =
