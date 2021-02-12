@@ -138,7 +138,14 @@ module GetTrivia =
             |> Trivia.filterNodes
             |> List.choose mapNodeToTriviaNode
 
-        let triviaNodesFromTokens = TokenParser.getTriviaNodesFromTokens tokens
+        let mkRange (sl, sc) (el, ec) =
+            FSharp.Compiler.Range.mkRange
+                ast.Range.FileName
+                (FSharp.Compiler.Range.mkPos sl sc)
+                (FSharp.Compiler.Range.mkPos el ec)
+
+        let triviaNodesFromTokens =
+            TokenParser.getTriviaNodesFromTokens mkRange tokens
 
         triviaNodesFromAST @ triviaNodesFromTokens
         |> List.sortBy (fun n -> n.Range.Start.Line, n.Range.Start.Column)
@@ -165,9 +172,15 @@ module GetTrivia =
 
                 match astResult with
                 | Result.Ok ast ->
-                    let trivias = TokenParser.getTriviaFromTokens tokens
+                    let mkRange (sl, sc) (el, ec) =
+                        FSharp.Compiler.Range.mkRange
+                            ast.Range.FileName
+                            (FSharp.Compiler.Range.mkPos sl sc)
+                            (FSharp.Compiler.Range.mkPos el ec)
+
+                    let trivias = TokenParser.getTriviaFromTokens mkRange tokens
                     let triviaCandidates = collectTriviaCandidates tokens ast
-                    let triviaNodes = Trivia.collectTrivia tokens ast
+                    let triviaNodes = Trivia.collectTrivia mkRange tokens ast
 
                     let json =
                         Encoders.encodeParseResult trivias triviaNodes triviaCandidates
