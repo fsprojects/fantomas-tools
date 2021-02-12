@@ -122,6 +122,12 @@ let githubIssueUri code (model: Model) =
         | FormatResult result -> codeTemplate "Code" code, codeTemplate "Result" result
         | _ -> codeTemplate "Code" code, ""
 
+    let fileType =
+        if model.IsFsi then
+            "\n*Signature file*"
+        else
+            System.String.Empty
+
     let body =
         (sprintf
             """
@@ -152,6 +158,7 @@ Check out our [Contribution Guidelines](https://github.com/fsprojects/fantomas/b
 Fantomas %s
 
 %s
+%s
 
 <sub>Did you know that you can ignore files when formatting from fantomas-tool or the FAKE targets by using a [.fantomasignore file](https://github.com/fsprojects/fantomas/blob/master/docs/Documentation.md#ignore-files-fantomasignore)?</sub>
         """
@@ -159,7 +166,8 @@ Fantomas %s
             left
             right
             model.Version
-            options)
+            options
+            fileType)
         |> System.Uri.EscapeDataString
 
     let uri =
@@ -174,6 +182,7 @@ let private createGitHubIssue code model =
         Button.button [ Button.Color Danger
                         Button.Outline true
                         Button.Custom [ githubIssueUri code model
+                                        Target "_blank"
                                         ClassName "rounded-0" ] ] [
             str "Looks wrong? Create an issue!"
         ]
