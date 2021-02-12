@@ -20,7 +20,6 @@ let private tab activeTab tabType tabContent =
         match activeTab with
         | t when (t = tabType) -> "active show"
         | _ -> System.String.Empty
-        |> sprintf "fade h-100 %s"
 
     TabPane.tabPane [ TabPane.TabId(!^(tabToId tabType))
                       TabPane.Custom [ ClassName tabClassName ] ] [
@@ -48,8 +47,7 @@ let private results model dispatch =
             ]
         ]
 
-    div [ ClassName "h-100 d-flex flex-column"
-          Id "results" ] [
+    div [ Id "results" ] [
         Nav.nav [ Nav.Tabs true
                   Nav.Pills true
                   Nav.Custom [ ClassName "border-bottom border-primary" ] ] [
@@ -57,7 +55,7 @@ let private results model dispatch =
             tabHeader "Trivia node candidates" ByTriviaNodeCandidates
             tabHeader "Trivia" ByTrivia
         ]
-        TabContent.tabContent [ TabContent.Custom [ ClassName "flex-grow-1" ]
+        TabContent.tabContent [ TabContent.Custom [ Id "trivia-result-content" ]
                                 TabContent.ActiveTab(!^(tabToId model.ActiveTab)) ] [
             byTriviaNodes model dispatch
             byTriviaNodeCandidates model dispatch

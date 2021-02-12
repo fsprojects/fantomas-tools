@@ -56,6 +56,10 @@ tr.trivia-candidate-token-node
     color: $dark
     background-color: transparentize($token-node, 0.95)
 
+tr.trivia-candidate-main-node, tr.trivia-candidate-token-node
+  td
+    padding: 9px
+
 $newline: #51BCD6
 .nav-link-newline
   @include custom-nav-link($newline)
@@ -89,3 +93,7 @@ $number-content: #D6B527
     margin: 0
     label
       margin: 0 15px
+
+#trivia-result-content
+  overflow-y: auto
+  max-height: calc(100vh - 154px)

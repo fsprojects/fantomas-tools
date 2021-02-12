@@ -27,7 +27,7 @@ let view (model: Model) _dispatch =
                     ]
                 ])
 
-    div [ ClassName "d-flex h-100" ] [
+    div [] [
         table [ ClassName "table table-bordered" ] [
             thead [] [
                 tr [] [
