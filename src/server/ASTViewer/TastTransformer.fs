@@ -4,7 +4,7 @@ open FSharp.Compiler.SourceCodeServices
 open FSharp.Compiler.Range
 
 module Helpers =
-    let r (r: range): range option = Some r
+    let r (r: range) : range option = Some r
 
     let p = Map.ofList
     let inline (==>) a b = (a, box b)
@@ -37,7 +37,7 @@ module Tast =
 
     let fsharpEntityToProps (t: FSharpEntity) = sprintf "%A" t
 
-    let rec visitExpr (e: FSharpExpr): Node =
+    let rec visitExpr (e: FSharpExpr) : Node =
         match e with
         | BasicPatterns.AddressOf (lvalueExpr) ->
             { Type = "BasicPatterns.AddressOf"
@@ -408,7 +408,7 @@ module Tast =
               Childs = []
               FsAstNode = box e }
 
-    let rec visitDeclaration d: Node option =
+    let rec visitDeclaration d : Node option =
         match d with
         | FSharpImplementationFileDeclaration.Entity (e, subDecls) ->
             Some
@@ -436,7 +436,7 @@ module Tast =
                   FsAstNode = box d }
         | _ -> None
 
-let tastToNode tast: Tast.Node =
+let tastToNode tast : Tast.Node =
     let child = tast |> List.choose Tast.visitDeclaration
 
     { Type = "File"

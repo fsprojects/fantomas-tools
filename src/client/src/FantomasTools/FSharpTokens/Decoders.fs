@@ -3,7 +3,7 @@ module FantomasTools.Client.FSharpTokens.Decoders
 open FantomasTools.Client.FSharpTokens.Model
 open Thoth.Json
 
-let private decodeTokenInfo: Decoder<TokenInfo> =
+let private decodeTokenInfo : Decoder<TokenInfo> =
     Decode.object
         (fun get ->
             { ColorClass = get.Required.Field "colorClass" Decode.string
@@ -15,7 +15,7 @@ let private decodeTokenInfo: Decoder<TokenInfo> =
               Tag = get.Required.Field "tag" Decode.int
               FullMatchedLength = get.Required.Field "fullMatchedLength" Decode.int })
 
-let private decodeToken: Decoder<Token> =
+let private decodeToken : Decoder<Token> =
     Decode.object
         (fun get ->
             { TokenInfo = get.Required.Field "tokenInfo" decodeTokenInfo
@@ -24,7 +24,7 @@ let private decodeToken: Decoder<Token> =
 
 let decodeTokens json = Decode.fromString (Decode.array decodeToken) json
 
-let decodeUrlModel initialModel: Decoder<Model> =
+let decodeUrlModel initialModel : Decoder<Model> =
     Decode.object
         (fun get ->
             { initialModel with

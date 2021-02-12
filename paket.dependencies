@@ -20,7 +20,6 @@ nuget Fake.JavaScript.Yarn
 nuget Fake.DotNet.Cli
 nuget Fake.IO.Zip
 nuget Fake.Tools.Git
-nuget Fantomas.Extras 4.4.0-beta-003
 
 group Infrastructure
 

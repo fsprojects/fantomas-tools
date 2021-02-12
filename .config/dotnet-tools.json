@@ -19,6 +19,12 @@
       "commands": [
         "fable"
       ]
+    },
+    "fantomas-tool": {
+      "version": "4.4.0-beta-006",
+      "commands": [
+        "fantomas"
+      ]
     }
   }
 }

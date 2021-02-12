@@ -17,10 +17,10 @@ type EditorProp =
     | IsReadOnly of bool
     | GetEditor of (obj -> unit)
 
-let inline editor (props: EditorProp list): ReactElement =
+let inline editor (props: EditorProp list) : ReactElement =
     ofImport "default" "../js/Editor.jsx" (keyValueList CaseRules.LowerFirst props) []
 
-let inline editorInTab (props: EditorProp list): ReactElement =
+let inline editorInTab (props: EditorProp list) : ReactElement =
     ofImport "default" "../../js/Editor.jsx" (keyValueList CaseRules.LowerFirst props) []
 
 type HighLightRange =

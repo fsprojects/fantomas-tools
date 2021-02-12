@@ -3,7 +3,7 @@ module FSharpTokens.Server.Decoders
 open Thoth.Json.Net
 open FSharpTokens.Shared
 
-let decodeTokenRequest: Decoder<GetTokensRequest> =
+let decodeTokenRequest : Decoder<GetTokensRequest> =
     Decode.object
         (fun get ->
             { Defines = get.Required.Field "defines" (Decode.list Decode.string)

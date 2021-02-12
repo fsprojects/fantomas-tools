@@ -4,14 +4,14 @@ open ASTViewer.Shared
 open FantomasTools.Client.ASTViewer.Model
 open Thoth.Json
 
-let decodeUrlModel initialModel: Decoder<Model> =
+let decodeUrlModel initialModel : Decoder<Model> =
     Decode.object
         (fun get ->
             { initialModel with
                   Defines = get.Required.Field "defines" Decode.string
                   IsFsi = get.Required.Field "isFsi" Decode.bool })
 
-let private rangeDecoder: Decoder<Range> =
+let private rangeDecoder : Decoder<Range> =
     Decode.object
         (fun get ->
             { StartLine = get.Required.Field "startLine" Decode.int
@@ -19,11 +19,11 @@ let private rangeDecoder: Decoder<Range> =
               EndLine = get.Required.Field "endLine" Decode.int
               EndCol = get.Required.Field "endCol" Decode.int })
 
-let decodeKeyValue: Decoder<obj> = fun _ -> Ok
+let decodeKeyValue : Decoder<obj> = fun _ -> Ok
 
 #nowarn "40"
 
-let rec private nodeDecoder: Decoder<Node> =
+let rec private nodeDecoder : Decoder<Node> =
     Decode.object
         (fun get ->
             { Type = get.Required.Field "type" Decode.string
@@ -32,7 +32,7 @@ let rec private nodeDecoder: Decoder<Node> =
               Childs = get.Required.Field "childs" (Decode.array nodeDecoder) })
 
 
-let responseDecoder: Decoder<Dto> =
+let responseDecoder : Decoder<Dto> =
     Decode.object
         (fun get ->
             { Node = get.Required.Field "node" nodeDecoder

@@ -11,7 +11,7 @@ open FantomasTools.Client.ASTViewer.Decoders
 open FantomasTools.Client.ASTViewer.Encoders
 
 [<Emit("import.meta.env.SNOWPACK_PUBLIC_AST_BACKEND")>]
-let private backend: string = jsNative
+let private backend : string = jsNative
 
 let private getVersion () =
     sprintf "%s/%s" backend "api/version"
@@ -54,7 +54,7 @@ let private initialModel =
 let private getMessageFromError (ex: exn) = Error ex.Message
 
 // defines the initial state and initial command (= side-effect) of the application
-let init isActive: Model * Cmd<Msg> =
+let init isActive : Model * Cmd<Msg> =
     let model =
         if isActive then
             UrlTools.restoreModelFromUrl (decodeUrlModel initialModel) initialModel
@@ -69,7 +69,7 @@ let init isActive: Model * Cmd<Msg> =
 let private getDefines (model: Model) =
     model.Defines.Split([| ' '; ','; ';' |], StringSplitOptions.RemoveEmptyEntries)
 
-let private modelToParseRequest sourceCode (model: Model): Shared.Input =
+let private modelToParseRequest sourceCode (model: Model) : Shared.Input =
     { SourceCode = sourceCode
       Defines = getDefines model
       IsFsi = model.IsFsi }
@@ -82,7 +82,7 @@ let private updateUrl code (model: Model) _ =
 // The update function computes the next state of the application based on the current state and the incoming events/messages
 // It can also run side-effects (encoded as commands) like calling the server via Http.
 // these commands in turn, can dispatch messages to which the update function will react.
-let update code (msg: Msg) (model: Model): Model * Cmd<Msg> =
+let update code (msg: Msg) (model: Model) : Model * Cmd<Msg> =
     match msg with
     | SetSourceText x ->
         let nextModel = { model with Source = x }
