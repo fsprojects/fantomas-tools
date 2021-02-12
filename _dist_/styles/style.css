@@ -9327,6 +9327,33 @@ tr.trivia-candidate-main-node td, tr.trivia-candidate-token-node td {
   max-height: calc(100vh - 154px);
 }
 
+#ast-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.ast-editor-container {
+  flex: 1;
+}
+
+#ast-errors {
+  border-top: 2px solid #22A7F0;
+  background-color: rgba(224, 29, 49, 0.05);
+  padding-top: 10px;
+  padding-bottom: 50px;
+}
+#ast-errors li {
+  font-size: 0.8rem;
+}
+#ast-errors li .badge {
+  margin-right: 5px;
+}
+#ast-errors li strong {
+  font-size: 0.9em;
+  margin-right: 5px;
+}
+
 .flex-1 {
   flex: 1;
 }

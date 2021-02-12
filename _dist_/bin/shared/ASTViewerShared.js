@@ -41,16 +41,32 @@ export function Node$$reflection() {
     return record_type("ASTViewer.Shared.Node", [], Node$, () => [["Type", string_type], ["Range", option_type(Range$$reflection())], ["Properties", obj_type], ["Childs", array_type(Node$$reflection())]]);
 }
 
+export class ASTError extends Record {
+    constructor(SubCategory, Range$, Severity, ErrorNumber, Message) {
+        super();
+        this.SubCategory = SubCategory;
+        this.Range = Range$;
+        this.Severity = Severity;
+        this.ErrorNumber = (ErrorNumber | 0);
+        this.Message = Message;
+    }
+}
+
+export function ASTError$reflection() {
+    return record_type("ASTViewer.Shared.ASTError", [], ASTError, () => [["SubCategory", string_type], ["Range", Range$$reflection()], ["Severity", string_type], ["ErrorNumber", int32_type], ["Message", string_type]]);
+}
+
 export class Dto extends Record {
-    constructor(Node$, String$) {
+    constructor(Node$, String$, Errors) {
         super();
         this.Node = Node$;
         this.String = String$;
+        this.Errors = Errors;
     }
 }
 
 export function Dto$reflection() {
-    return record_type("ASTViewer.Shared.Dto", [], Dto, () => [["Node", Node$$reflection()], ["String", string_type]]);
+    return record_type("ASTViewer.Shared.Dto", [], Dto, () => [["Node", Node$$reflection()], ["String", string_type], ["Errors", array_type(ASTError$reflection())]]);
 }
 
 export class Input extends Record {

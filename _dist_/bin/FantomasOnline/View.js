@@ -90,7 +90,8 @@ export function githubIssueUri(code, model) {
             patternInput = [codeTemplate("Code", code), ""];
         }
     }
-    const body = escapeDataString((arg10_3 = location.href, toText(printf("\n\u003c!--\n\n    Please only use this to create issues.\n    If you wish to suggest a feature,\n    please fill in the feature request template at https://github.com/fsprojects/fantomas/issues/new/choose\n\n--\u003e\nIssue created from [fantomas-online](%s)\n\n%s\n%s\n#### Problem description\n\nPlease describe here the Fantomas problem you encountered.\nCheck out our [Contribution Guidelines](https://github.com/fsprojects/fantomas/blob/master/CONTRIBUTING.md#bug-reports).\n\n#### Extra information\n\n- [ ] The formatted result breaks by code.\n- [ ] The formatted result gives compiler warnings.\n- [ ] I or my company would be willing to help fix this.\n\n#### Options\n\nFantomas %s\n\n%s\n\n\u003csub\u003eDid you know that you can ignore files when formatting from fantomas-tool or the FAKE targets by using a [.fantomasignore file](https://github.com/fsprojects/fantomas/blob/master/docs/Documentation.md#ignore-files-fantomasignore)?\u003c/sub\u003e\n        "))(arg10_3)(patternInput[0])(patternInput[1])(model.Version)(options_1)));
+    const fileType = model.IsFsi ? "\n*Signature file*" : "";
+    const body = escapeDataString((arg10_3 = location.href, toText(printf("\n\u003c!--\n\n    Please only use this to create issues.\n    If you wish to suggest a feature,\n    please fill in the feature request template at https://github.com/fsprojects/fantomas/issues/new/choose\n\n--\u003e\nIssue created from [fantomas-online](%s)\n\n%s\n%s\n#### Problem description\n\nPlease describe here the Fantomas problem you encountered.\nCheck out our [Contribution Guidelines](https://github.com/fsprojects/fantomas/blob/master/CONTRIBUTING.md#bug-reports).\n\n#### Extra information\n\n- [ ] The formatted result breaks by code.\n- [ ] The formatted result gives compiler warnings.\n- [ ] I or my company would be willing to help fix this.\n\n#### Options\n\nFantomas %s\n\n%s\n%s\n\n\u003csub\u003eDid you know that you can ignore files when formatting from fantomas-tool or the FAKE targets by using a [.fantomasignore file](https://github.com/fsprojects/fantomas/blob/master/docs/Documentation.md#ignore-files-fantomasignore)?\u003c/sub\u003e\n        "))(arg10_3)(patternInput[0])(patternInput[1])(model.Version)(options_1)(fileType)));
     return new HTMLAttr(94, toText(printf("https://github.com/fsprojects/fantomas/issues/new?title=%s\u0026labels=%s\u0026body=%s"))("\u003cInsert meaningful title\u003e")("bug")(body));
 }
 
@@ -109,7 +110,7 @@ function createGitHubIssue(code, model) {
     }
     switch (pattern_matching_result) {
         case 0: {
-            return button([new ButtonProps(1, "danger"), new ButtonProps(2, true), new ButtonProps(9, ofArray([githubIssueUri(code, model), new HTMLAttr(64, "rounded-0")]))], ["Looks wrong? Create an issue!"]);
+            return button([new ButtonProps(1, "danger"), new ButtonProps(2, true), new ButtonProps(9, ofArray([githubIssueUri(code, model), new HTMLAttr(157, "_blank"), new HTMLAttr(64, "rounded-0")]))], ["Looks wrong? Create an issue!"]);
         }
         case 1: {
             return react.createElement("span", {

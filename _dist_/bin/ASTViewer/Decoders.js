@@ -1,7 +1,7 @@
 import { fromString, array, int, bool, string, object } from "../.fable/Thoth.Json.5.0.0/Decode.fs.js";
 import { Model } from "./Model.js";
 import { Lazy, uncurry } from "../.fable/fable-library.3.1.1/Util.js";
-import { Dto, Node$, Range$ } from "../shared/ASTViewerShared.js";
+import { Dto, ASTError, Node$, Range$ } from "../shared/ASTViewerShared.js";
 import { FSharpResult$2 } from "../.fable/fable-library.3.1.1/Choice.js";
 
 export function decodeUrlModel(initialModel) {
@@ -25,7 +25,9 @@ const nodeDecoder$004026$002D1 = new Lazy(nodeDecoder$004026);
 
 const nodeDecoder = nodeDecoder$004026$002D1.Value;
 
-export const responseDecoder = (path_1) => ((v) => object((get$) => (new Dto(get$.Required.Field("node", uncurry(2, nodeDecoder)), get$.Required.Field("string", string))), path_1, v));
+const decodeASTError = (path_3) => ((v) => object((get$) => (new ASTError(get$.Required.Field("subcategory", string), get$.Required.Field("range", uncurry(2, rangeDecoder)), get$.Required.Field("severity", string), get$.Required.Field("errorNumber", uncurry(2, int)), get$.Required.Field("message", string))), path_3, v));
+
+export const responseDecoder = (path_2) => ((v) => object((get$) => (new Dto(get$.Required.Field("node", uncurry(2, nodeDecoder)), get$.Required.Field("string", string), get$.Required.Field("errors", (path_1, value_1) => array(uncurry(2, decodeASTError), path_1, value_1)))), path_2, v));
 
 export function decodeResult(json) {
     return fromString(uncurry(2, responseDecoder), json);

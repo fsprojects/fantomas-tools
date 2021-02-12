@@ -64,6 +64,6 @@ export class Model extends Record {
 }
 
 export function Model$reflection() {
-    return record_type("FantomasTools.Client.ASTViewer.Model.Model", [], Model, () => [["Source", string_type], ["Defines", string_type], ["IsFsi", bool_type], ["Parsed", union_type("Microsoft.FSharp.Core.FSharpResult`2", [option_type(Dto$reflection()), string_type], FSharpResult$2, () => [[["ResultValue", option_type(Dto$reflection())]], [["ErrorValue", string_type]]])], ["IsLoading", bool_type], ["Version", string_type], ["View", View$reflection()], ["FSharpEditorState", EditorState$reflection()]]);
+    return record_type("FantomasTools.Client.ASTViewer.Model.Model", [], Model, () => [["Source", string_type], ["Defines", string_type], ["IsFsi", bool_type], ["Parsed", option_type(union_type("Microsoft.FSharp.Core.FSharpResult`2", [Dto$reflection(), string_type], FSharpResult$2, () => [[["ResultValue", Dto$reflection()]], [["ErrorValue", string_type]]]))], ["IsLoading", bool_type], ["Version", string_type], ["View", View$reflection()], ["FSharpEditorState", EditorState$reflection()]]);
 }
 

@@ -1,7 +1,26 @@
-.react-json-view {
+#ast-content {
   display: flex;
-  min-height: 0px;
+  flex-direction: column;
+  height: 100%;
+}
+
+.ast-editor-container {
   flex: 1;
-  overflow-y: auto;
-  max-height: 75vh;
+}
+
+#ast-errors {
+  border-top: 2px solid #22A7F0;
+  background-color: rgba(224, 29, 49, 0.05);
+  padding-top: 10px;
+  padding-bottom: 50px;
+}
+#ast-errors li {
+  font-size: 0.8rem;
+}
+#ast-errors li .badge {
+  margin-right: 5px;
+}
+#ast-errors li strong {
+  font-size: 0.9em;
+  margin-right: 5px;
 }
