@@ -84,7 +84,7 @@ Target.create "Build" (fun _ ->
 
 let watchMode getBackendUrl getCorsUrl =
     Environment.setEnvironVar "NODE_ENV" "development"
-    Environment.setEnvironVar "SNOWPACK_PUBLIC_FSHARP_TOKENS_BACKEND" (getBackendUrl fsharpTokensPort) // "https://7899-b410f5b1-d158-48cf-ad9d-8853d73cea39.ws-eu01.gitpod.io" //(localhostBackend fsharpTokensPort)
+    Environment.setEnvironVar "SNOWPACK_PUBLIC_FSHARP_TOKENS_BACKEND" (getBackendUrl fsharpTokensPort)
     Environment.setEnvironVar "SNOWPACK_PUBLIC_AST_BACKEND" (getBackendUrl astPort)
     Environment.setEnvironVar "SNOWPACK_PUBLIC_TRIVIA_BACKEND" (getBackendUrl triviaPort)
     Environment.setEnvironVar "SNOWPACK_PUBLIC_FANTOMAS_V2" (getBackendUrl fantomasV2Port)
@@ -122,8 +122,9 @@ Target.create "Watch" (fun _ ->
     watchMode localhostBackend cors)
 
 Target.create "GitPod" (fun _ ->
-    // TODO: update to something clever because GitPod url can change
-    let getBackendUrl = sprintf "https://%i-b6aa6ede-4f2e-4cac-ba4a-ede6b23505f0.ws-eu03.gitpod.io"
+    let gitpod = System.Environment.GetEnvironmentVariable "GITPOD"
+    printfn "GITPOD = %s" gitpod
+    let getBackendUrl port = sprintf "https://%i-%s.gitpod.io" port gitpod
     let getCorsUrl = getBackendUrl
     watchMode getBackendUrl getCorsUrl
 )
