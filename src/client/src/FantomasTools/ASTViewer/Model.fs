@@ -27,7 +27,7 @@ type Model =
     { Source: string
       Defines: string
       IsFsi: bool
-      Parsed: Result<Dto option, string>
+      Parsed: Result<Dto, string> option
       IsLoading: bool
       Version: string
       View: View

@@ -88,7 +88,8 @@ let private encodeFSharpErrorInfo (info: FSharpErrorInfo) =
         [ "subcategory", Encode.string info.Subcategory
           "range", rangeEncoder info.Range
           "severity", encodeFSharpErrorInfoSeverity info.Severity
-          "errorNumber", Encode.int info.ErrorNumber ]
+          "errorNumber", Encode.int info.ErrorNumber
+          "message", Encode.string info.Message ]
 
 let encodeResponse nodeJson string (errors: FSharpErrorInfo array) =
     let errors =

@@ -32,10 +32,20 @@ let rec private nodeDecoder : Decoder<Node> =
               Childs = get.Required.Field "childs" (Decode.array nodeDecoder) })
 
 
+let private decodeASTError : Decoder<ASTError> =
+    Decode.object
+        (fun get ->
+            { SubCategory = get.Required.Field "subcategory" Decode.string
+              Range = get.Required.Field "range" rangeDecoder
+              Severity = get.Required.Field "severity" Decode.string
+              ErrorNumber = get.Required.Field "errorNumber" Decode.int
+              Message = get.Required.Field "message" Decode.string })
+
 let responseDecoder : Decoder<Dto> =
     Decode.object
         (fun get ->
             { Node = get.Required.Field "node" nodeDecoder
-              String = get.Required.Field "string" Decode.string })
+              String = get.Required.Field "string" Decode.string
+              Errors = get.Required.Field "errors" (Decode.array decodeASTError) })
 
 let decodeResult json = Decode.fromString responseDecoder json

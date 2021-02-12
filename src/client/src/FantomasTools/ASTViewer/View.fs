@@ -18,22 +18,78 @@ let private isRawView =
     | _ -> false
 
 let private results model dispatch =
-    match model.Parsed with
-    | Ok (Some parsed) ->
-        match model.View with
-        | Raw ->
+    let result =
+        match model.Parsed with
+        | Some (Ok parsed) ->
+            match model.View with
+            | Raw ->
+                editorInTab [ EditorProp.Language "fsharp"
+                              EditorProp.IsReadOnly true
+                              EditorProp.Value parsed.String ]
+            | Editor ->
+                editorInTab [ EditorProp.Language "fsharp"
+                              EditorProp.IsReadOnly true
+                              EditorProp.Value(Fable.Core.JS.JSON.stringify (parsed.Node, space = 4)) ]
+        | Some (Result.Error errors) ->
             editorInTab [ EditorProp.Language "fsharp"
                           EditorProp.IsReadOnly true
-                          EditorProp.Value parsed.String ]
-        | Editor ->
-            editorInTab [ EditorProp.Language "fsharp"
-                          EditorProp.IsReadOnly true
-                          EditorProp.Value(Fable.Core.JS.JSON.stringify (parsed.Node, space = 4)) ]
-    | Result.Error errors ->
-        editorInTab [ EditorProp.Language "fsharp"
-                      EditorProp.IsReadOnly true
-                      EditorProp.Value errors ]
-    | Ok None -> str ""
+                          EditorProp.Value errors ]
+        | None -> str ""
+
+    let astErrors =
+        model.Parsed
+        |> Option.bind
+            (fun parsed ->
+                match parsed with
+                | Ok (parsed) when (not (Seq.isEmpty parsed.Errors)) ->
+                    let badgeColor (e: ASTViewer.Shared.ASTError) =
+                        if e.Severity = "warning" then
+                            Color.Warning
+                        else
+                            Color.Danger
+
+                    let errors =
+                        parsed.Errors
+                        |> Array.mapi
+                            (fun i e ->
+                                li [ Key(sprintf "ast-error-%i" i) ] [
+                                    strong [] [
+                                        str (
+                                            sprintf
+                                                "(%i,%i) (%i, %i)"
+                                                e.Range.StartLine
+                                                e.Range.StartCol
+                                                e.Range.EndLine
+                                                e.Range.EndCol
+                                        )
+                                    ]
+                                    Badge.badge [ Badge.Color(badgeColor e) ] [
+                                        str e.Severity
+                                    ]
+                                    Badge.badge [ Badge.Color Color.Dark
+                                                  Badge.Custom [ Title "ErrorNumber" ] ] [
+                                        ofInt e.ErrorNumber
+                                    ]
+                                    Badge.badge [ Badge.Color Color.Light
+                                                  Badge.Custom [ Title "SubCategory" ] ] [
+                                        str e.SubCategory
+                                    ]
+                                    p [] [ str e.Message ]
+                                ])
+
+                    ul [ Id "ast-errors"; ClassName "" ] [
+                        ofArray errors
+                    ]
+                    |> Some
+                | _ -> None)
+        |> ofOption
+
+    div [ Id "ast-content" ] [
+        div [ ClassName "ast-editor-container" ] [
+            result
+        ]
+        astErrors
+    ]
 
 let view model dispatch =
     if model.IsLoading then

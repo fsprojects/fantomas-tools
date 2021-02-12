@@ -45,7 +45,7 @@ let private initialModel =
     { Source = ""
       Defines = ""
       IsFsi = false
-      Parsed = Ok None
+      Parsed = None
       IsLoading = false
       Version = ""
       View = Raw
@@ -91,14 +91,14 @@ let update code (msg: Msg) (model: Model) : Model * Cmd<Msg> =
         let nextModel =
             { model with
                   IsLoading = false
-                  Parsed = Ok(Some x) }
+                  Parsed = Some(Ok x) }
 
         nextModel, Cmd.none
     | Error e ->
         let nextModel =
             { model with
                   IsLoading = false
-                  Parsed = Result.Error e }
+                  Parsed = Some(Result.Error e) }
 
         nextModel, Cmd.none
     | DoParse ->
