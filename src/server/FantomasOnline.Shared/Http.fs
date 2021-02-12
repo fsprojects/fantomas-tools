@@ -78,7 +78,9 @@ let private formatResponse<'options>
         let configResult =
             Result.map (fun r -> r, mapFantomasOptionsToRecord r.Options) model
 
-        match configResult with
+        match configResult
+
+              with
         | Ok ({ SourceCode = code; IsFsi = isFsi }, config) ->
             let fileName = if isFsi then "tmp.fsi" else "tmp.fsx"
 
@@ -90,6 +92,7 @@ let private formatResponse<'options>
                 | FormatResult.Valid -> return sendText formatted
                 | FormatResult.Warnings ws ->
                     let warnings = Seq.map (sprintf "- %s") ws |> String.concat "\n"
+
                     let content =
                         sprintf
                             """Fantomas was able to format the code but the result appears to have warnings:
@@ -99,12 +102,15 @@ Please open an issue.
 Formatted result:
 
 %O"""
-                            warnings 
+                            warnings
                             formatted
 
                     return sendBadRequest content
                 | FormatResult.Errors errs ->
-                    let errors = Seq.map (sprintf "- %s") errs |> String.concat "\n"
+                    let errors =
+                        Seq.map (sprintf "- %s") errs
+                        |> String.concat "\n"
+
                     let content =
                         sprintf
                             """Fantomas was able to format the code but the result appears to have errors:
@@ -114,7 +120,7 @@ Please open an issue.
 Formatted result:
 
 %O"""
-                            errors 
+                            errors
                             formatted
 
                     return sendBadRequest content
