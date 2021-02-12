@@ -1,5 +1,4 @@
 import { equals } from "../.fable/fable-library.3.1.1/Util.js";
-import { printf, toText } from "../.fable/fable-library.3.1.1/String.js";
 import { TabPaneProps, tabPane } from "../.fable/Fable.Reactstrap.0.5.1/TabPane.fs.js";
 import { DOMAttr, HTMLAttr } from "../.fable/Fable.React.7.0.1/Fable.React.Props.fs.js";
 import { ofArray, singleton } from "../.fable/fable-library.3.1.1/List.js";
@@ -16,6 +15,7 @@ import { loader } from "../Loader.js";
 import Editor from "../../js/Editor.js";
 import { ButtonProps, button } from "../.fable/Fable.Reactstrap.0.5.1/Button.fs.js";
 import { versionBar } from "../VersionBar.js";
+import { printf, toText } from "../.fable/fable-library.3.1.1/String.js";
 import { toggleButton, input } from "../SettingControls.js";
 
 function tabToId(tab_1) {
@@ -33,9 +33,7 @@ function tabToId(tab_1) {
 }
 
 function tab(activeTab, tabType, tabContent) {
-    let tabClassName;
-    const arg10 = equals(activeTab, tabType) ? "active show" : "";
-    tabClassName = toText(printf("fade h-100 %s"))(arg10);
+    const tabClassName = equals(activeTab, tabType) ? "active show" : "";
     return tabPane([new TabPaneProps(1, tabToId(tabType)), new TabPaneProps(3, singleton(new HTMLAttr(64, tabClassName)))], [tabContent]);
 }
 
@@ -56,9 +54,8 @@ function results(model, dispatch) {
         dispatch(new Msg(0, tabType));
     }), new HTMLAttr(64, "pointer")]))], [navLink([new NavLinkProps(0, equals(tabType, model.ActiveTab)), new NavLinkProps(3, singleton(new HTMLAttr(64, "rounded-0")))], [label])]);
     return react.createElement("div", {
-        className: "h-100 d-flex flex-column",
         id: "results",
-    }, nav([new NavProps(0, true), new NavProps(1, true), new NavProps(9, singleton(new HTMLAttr(64, "border-bottom border-primary")))], [tabHeader("Trivia nodes", new ActiveTab(0)), tabHeader("Trivia node candidates", new ActiveTab(2)), tabHeader("Trivia", new ActiveTab(1))]), tabContent_1([new TabContentProps(3, singleton(new HTMLAttr(64, "flex-grow-1"))), new TabContentProps(1, tabToId(model.ActiveTab))], [byTriviaNodes(model, dispatch), byTriviaNodeCandidates(model, dispatch), byTrivia(model, dispatch)]));
+    }, nav([new NavProps(0, true), new NavProps(1, true), new NavProps(9, singleton(new HTMLAttr(64, "border-bottom border-primary")))], [tabHeader("Trivia nodes", new ActiveTab(0)), tabHeader("Trivia node candidates", new ActiveTab(2)), tabHeader("Trivia", new ActiveTab(1))]), tabContent_1([new TabContentProps(3, singleton(new HTMLAttr(99, "trivia-result-content"))), new TabContentProps(1, tabToId(model.ActiveTab))], [byTriviaNodes(model, dispatch), byTriviaNodeCandidates(model, dispatch), byTrivia(model, dispatch)]));
 }
 
 export function view(model, dispatch) {

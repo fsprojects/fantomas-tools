@@ -15,9 +15,7 @@ export function view(model, _dispatch) {
     }, node.Range.EndLine), react.createElement("td", {
         className: "text-center",
     }, node.Range.EndColumn)), model.TriviaNodeCandidates);
-    return react.createElement("div", {
-        className: "d-flex h-100",
-    }, react.createElement("table", {
+    return react.createElement("div", {}, react.createElement("table", {
         className: "table table-bordered",
     }, react.createElement("thead", {}, react.createElement("tr", {}, react.createElement("th", {}, "Name"), react.createElement("th", {
         className: "text-center",

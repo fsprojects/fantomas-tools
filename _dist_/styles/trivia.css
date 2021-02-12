@@ -93,6 +93,10 @@ tr.trivia-candidate-token-node td:not(:first-child) {
   background-color: rgba(162, 222, 208, 0.05);
 }
 
+tr.trivia-candidate-main-node td, tr.trivia-candidate-token-node td {
+  padding: 9px;
+}
+
 .nav-link-newline {
   background-color: #51BCD6;
   color: #FFF;
@@ -210,4 +214,9 @@ tr.trivia-candidate-token-node td:not(:first-child) {
 }
 #trivia-settings .form-group label {
   margin: 0 15px;
+}
+
+#trivia-result-content {
+  overflow-y: auto;
+  max-height: calc(100vh - 154px);
 }

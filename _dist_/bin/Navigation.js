@@ -96,11 +96,11 @@ export function parseUrl(segments) {
     if (segments.tail != null) {
         if (segments.head === "tokens") {
             if (segments.tail.tail != null) {
-                const activePatternResult12965 = Route_$007CQuery$007C_$007C(segments.tail.head);
-                if (activePatternResult12965 != null) {
-                    if (activePatternResult12965.tail != null) {
-                        if (activePatternResult12965.head[0] === "data") {
-                            if (activePatternResult12965.tail.tail == null) {
+                const activePatternResult12964 = Route_$007CQuery$007C_$007C(segments.tail.head);
+                if (activePatternResult12964 != null) {
+                    if (activePatternResult12964.tail != null) {
+                        if (activePatternResult12964.head[0] === "data") {
+                            if (activePatternResult12964.tail.tail == null) {
                                 if (segments.tail.tail.tail == null) {
                                     pattern_matching_result = 0;
                                 }
@@ -144,11 +144,11 @@ export function parseUrl(segments) {
             if (segments.tail != null) {
                 if (segments.head === "ast") {
                     if (segments.tail.tail != null) {
-                        const activePatternResult12964 = Route_$007CQuery$007C_$007C(segments.tail.head);
-                        if (activePatternResult12964 != null) {
-                            if (activePatternResult12964.tail != null) {
-                                if (activePatternResult12964.head[0] === "data") {
-                                    if (activePatternResult12964.tail.tail == null) {
+                        const activePatternResult12963 = Route_$007CQuery$007C_$007C(segments.tail.head);
+                        if (activePatternResult12963 != null) {
+                            if (activePatternResult12963.tail != null) {
+                                if (activePatternResult12963.head[0] === "data") {
+                                    if (activePatternResult12963.tail.tail == null) {
                                         if (segments.tail.tail.tail == null) {
                                             pattern_matching_result_1 = 0;
                                         }
@@ -192,11 +192,11 @@ export function parseUrl(segments) {
                     if (segments.tail != null) {
                         if (segments.head === "trivia") {
                             if (segments.tail.tail != null) {
-                                const activePatternResult12963 = Route_$007CQuery$007C_$007C(segments.tail.head);
-                                if (activePatternResult12963 != null) {
-                                    if (activePatternResult12963.tail != null) {
-                                        if (activePatternResult12963.head[0] === "data") {
-                                            if (activePatternResult12963.tail.tail == null) {
+                                const activePatternResult12962 = Route_$007CQuery$007C_$007C(segments.tail.head);
+                                if (activePatternResult12962 != null) {
+                                    if (activePatternResult12962.tail != null) {
+                                        if (activePatternResult12962.head[0] === "data") {
+                                            if (activePatternResult12962.tail.tail == null) {
                                                 if (segments.tail.tail.tail == null) {
                                                     pattern_matching_result_2 = 0;
                                                 }
@@ -242,11 +242,11 @@ export function parseUrl(segments) {
                                     if (segments.tail.tail != null) {
                                         if (segments.tail.head === "v2") {
                                             if (segments.tail.tail.tail != null) {
-                                                const activePatternResult12962 = Route_$007CQuery$007C_$007C(segments.tail.tail.head);
-                                                if (activePatternResult12962 != null) {
-                                                    if (activePatternResult12962.tail != null) {
-                                                        if (activePatternResult12962.head[0] === "data") {
-                                                            if (activePatternResult12962.tail.tail == null) {
+                                                const activePatternResult12961 = Route_$007CQuery$007C_$007C(segments.tail.tail.head);
+                                                if (activePatternResult12961 != null) {
+                                                    if (activePatternResult12961.tail != null) {
+                                                        if (activePatternResult12961.head[0] === "data") {
+                                                            if (activePatternResult12961.tail.tail == null) {
                                                                 if (segments.tail.tail.tail.tail == null) {
                                                                     pattern_matching_result_3 = 0;
                                                                 }
@@ -300,11 +300,11 @@ export function parseUrl(segments) {
                                             if (segments.tail.tail != null) {
                                                 if (segments.tail.head === "v3") {
                                                     if (segments.tail.tail.tail != null) {
-                                                        const activePatternResult12961 = Route_$007CQuery$007C_$007C(segments.tail.tail.head);
-                                                        if (activePatternResult12961 != null) {
-                                                            if (activePatternResult12961.tail != null) {
-                                                                if (activePatternResult12961.head[0] === "data") {
-                                                                    if (activePatternResult12961.tail.tail == null) {
+                                                        const activePatternResult12960 = Route_$007CQuery$007C_$007C(segments.tail.tail.head);
+                                                        if (activePatternResult12960 != null) {
+                                                            if (activePatternResult12960.tail != null) {
+                                                                if (activePatternResult12960.head[0] === "data") {
+                                                                    if (activePatternResult12960.tail.tail == null) {
                                                                         if (segments.tail.tail.tail.tail == null) {
                                                                             pattern_matching_result_4 = 0;
                                                                         }
@@ -358,11 +358,11 @@ export function parseUrl(segments) {
                                                     if (segments.tail.tail != null) {
                                                         if (segments.tail.head === "v4") {
                                                             if (segments.tail.tail.tail != null) {
-                                                                const activePatternResult12960 = Route_$007CQuery$007C_$007C(segments.tail.tail.head);
-                                                                if (activePatternResult12960 != null) {
-                                                                    if (activePatternResult12960.tail != null) {
-                                                                        if (activePatternResult12960.head[0] === "data") {
-                                                                            if (activePatternResult12960.tail.tail == null) {
+                                                                const activePatternResult12959 = Route_$007CQuery$007C_$007C(segments.tail.tail.head);
+                                                                if (activePatternResult12959 != null) {
+                                                                    if (activePatternResult12959.tail != null) {
+                                                                        if (activePatternResult12959.head[0] === "data") {
+                                                                            if (activePatternResult12959.tail.tail == null) {
                                                                                 if (segments.tail.tail.tail.tail == null) {
                                                                                     pattern_matching_result_5 = 0;
                                                                                 }
@@ -416,11 +416,11 @@ export function parseUrl(segments) {
                                                             if (segments.tail.tail != null) {
                                                                 if (segments.tail.head === "preview") {
                                                                     if (segments.tail.tail.tail != null) {
-                                                                        const activePatternResult12959 = Route_$007CQuery$007C_$007C(segments.tail.tail.head);
-                                                                        if (activePatternResult12959 != null) {
-                                                                            if (activePatternResult12959.tail != null) {
-                                                                                if (activePatternResult12959.head[0] === "data") {
-                                                                                    if (activePatternResult12959.tail.tail == null) {
+                                                                        const activePatternResult12958 = Route_$007CQuery$007C_$007C(segments.tail.tail.head);
+                                                                        if (activePatternResult12958 != null) {
+                                                                            if (activePatternResult12958.tail != null) {
+                                                                                if (activePatternResult12958.head[0] === "data") {
+                                                                                    if (activePatternResult12958.tail.tail == null) {
                                                                                         if (segments.tail.tail.tail.tail == null) {
                                                                                             pattern_matching_result_6 = 0;
                                                                                         }
