@@ -3,11 +3,13 @@ namespace FantomasOnlineLatest.Server
 open Fantomas
 open FantomasOnline.Server.Shared
 open FantomasOnline.Shared
+open FantomasOnline.Server.Shared.Http
 open Microsoft.AspNetCore.Http
 open Microsoft.Azure.WebJobs
 open Microsoft.Azure.WebJobs.Extensions.Http
 open Microsoft.Extensions.Logging
 open System.Net
+open Microsoft.FSharp.Compiler.SourceCodeServices
 
 module FormatCode =
     let private checker = CodeFormatterImpl.sharedChecker.Value
@@ -47,10 +49,25 @@ module FormatCode =
 
     let private validate fileName code =
         let options =
-            { Microsoft.FSharp.Compiler.SourceCodeServices.FSharpParsingOptions.Default with
+            { FSharpParsingOptions.Default with
                   SourceFiles = [| fileName |] }
 
-        CodeFormatter.IsValidFSharpCodeAsync(fileName, code, options, checker)
+        async {
+            let! result = checker.ParseFile(fileName, code, options)
+            let errors = 
+                result.Errors 
+                |> Array.choose (fun e -> match e.Severity with FSharpErrorSeverity.Error -> Some e.Message | _ -> None)
+            let warnings =
+                result.Errors
+                |> Array.choose (fun e -> match e.Severity with FSharpErrorSeverity.Warning -> Some e.Message | _ -> None)
+            
+            if not (Array.isEmpty errors) then
+                return FormatResult.Errors errors
+            elif not (Array.isEmpty warnings) then
+                return FormatResult.Warnings warnings
+            else
+                return FormatResult.Valid
+        }
 
     [<FunctionName("FormatCode")>]
     let run

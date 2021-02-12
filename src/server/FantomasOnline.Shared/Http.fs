@@ -9,6 +9,12 @@ open System.Net
 open System.Net.Http
 open Thoth.Json.Net
 
+[<RequireQualifiedAccessAttribute>]
+type FormatResult =
+    | Valid
+    | Warnings of string array
+    | Errors of string array
+
 module Async =
     let lift a = async { return a }
 
@@ -61,7 +67,7 @@ let private getVersionResponse version = sendText version |> Async.lift
 let private formatResponse<'options>
     (mapFantomasOptionsToRecord: FantomasOption list -> 'options)
     (format: string -> string -> 'options -> Async<string>)
-    (validateResult: string -> string -> Async<bool>)
+    (validateResult: string -> string -> Async<FormatResult>)
     (req: HttpRequest)
     =
     async {
@@ -78,22 +84,41 @@ let private formatResponse<'options>
 
             try
                 let! formatted = format fileName code config
-                let! isValid = validateResult fileName formatted
+                let! validationResult = validateResult fileName formatted
 
-                if isValid then
-                    return sendText formatted
-                else
+                match validationResult with
+                | FormatResult.Valid -> return sendText formatted
+                | FormatResult.Warnings ws ->
+                    let warnings = Seq.map (sprintf "- %s") ws |> String.concat "\n"
                     let content =
                         sprintf
-                            """Fantomas was able to format the code but the result appears to be invalid F# code.
+                            """Fantomas was able to format the code but the result appears to have warnings:
+%s
 Please open an issue.
 
 Formatted result:
 
 %O"""
+                            warnings 
                             formatted
 
                     return sendBadRequest content
+                | FormatResult.Errors errs ->
+                    let errors = Seq.map (sprintf "- %s") errs |> String.concat "\n"
+                    let content =
+                        sprintf
+                            """Fantomas was able to format the code but the result appears to have errors:
+%s
+Please open an issue.
+
+Formatted result:
+
+%O"""
+                            errors 
+                            formatted
+
+                    return sendBadRequest content
+
             with exn -> return sendBadRequest (sprintf "%A" exn)
         | Error err -> return sendInternalError (err)
     }
@@ -109,7 +134,7 @@ let main
     (getOptions: unit -> FantomasOption list)
     (mapFantomasOptionsToRecord: FantomasOption list -> 'options)
     (format: string -> string -> 'options -> Async<string>)
-    (validate: string -> string -> Async<bool>)
+    (validate: string -> string -> Async<FormatResult>)
     (log: ILogger)
     (req: HttpRequest)
     =

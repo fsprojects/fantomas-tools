@@ -4,11 +4,13 @@ open Fantomas
 open Fantomas.FormatConfig
 open FantomasOnline.Server.Shared
 open FantomasOnline.Shared
+open FantomasOnline.Server.Shared.Http
 open Microsoft.AspNetCore.Http
 open Microsoft.Azure.WebJobs
 open Microsoft.Azure.WebJobs.Extensions.Http
 open Microsoft.Extensions.Logging
 open System.Net
+open FSharp.Compiler.SourceCodeServices
 
 module FormatCode =
 
@@ -60,10 +62,27 @@ module FormatCode =
 
     let private validate fileName code =
         let options =
-            Fantomas.Extras.FakeHelpers.createParsingOptionsFromFile fileName
+            { FSharpParsingOptions.Default with
+                  SourceFiles = [| fileName |] }
 
-        let source = SourceOrigin.SourceString code
-        CodeFormatter.IsValidFSharpCodeAsync(fileName, source, options, checker)
+        let sourceCode = FSharp.Compiler.Text.SourceText.ofString code
+
+        async {
+            let! result = checker.ParseFile(fileName, sourceCode, options)
+            let errors = 
+                result.Errors 
+                |> Array.choose (fun e -> match e.Severity with FSharpErrorSeverity.Error -> Some e.Message | _ -> None)
+            let warnings =
+                result.Errors
+                |> Array.choose (fun e -> match e.Severity with FSharpErrorSeverity.Warning -> Some e.Message | _ -> None)
+            
+            if not (Array.isEmpty errors) then
+                return FormatResult.Errors errors
+            elif not (Array.isEmpty warnings) then
+                return FormatResult.Warnings warnings
+            else
+                return FormatResult.Valid
+        }
 
     let getFantomasVersion () =
         let date =
