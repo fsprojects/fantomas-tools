@@ -1,8 +1,8 @@
 image: nojaf/fable-azure-functions:1.0
 vscode:
   extensions:
-    - ms-dotnettools.csharp@1.21.17:5/iI88WHX4j3iL5jASDTYQ==
-    - Ionide.Ionide-fsharp@4.8.1:Und1hQIrCL6QCVpIlT9ZRw==
+    - muhammad-sammy.csharp@1.23.9:BMArOoGwWqKRrH6s4E2/AQ==
+    - ionide.ionide-fsharp@5.3.2:ktwOdXq2H8VHS6SX8scVIw==
 tasks:
   - init: dotnet tool restore && dotnet fake run build.fsx -t Install -p 2
 ports:
