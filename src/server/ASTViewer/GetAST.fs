@@ -166,19 +166,10 @@ module GetAST =
                 checker.ParseFile(fileName, sourceText, checkOptions)
                 |> Async.RunSynchronously
 
-            if untypedRes.ParseHadErrors then
-                let errors =
-                    untypedRes.Errors
-                    |> Array.filter (fun e -> e.Severity = FSharpErrorSeverity.Error)
 
-                if not <| Array.isEmpty errors then
-                    log.LogError(sprintf "Parsing failed with errors: %A\nAnd options: %A" errors checkOptions)
-
-                return Error errors
-            else
-                match untypedRes.ParseTree with
-                | Some tree -> return Result.Ok tree
-                | _ -> return Error Array.empty // Not sure this branch can be reached.
+            match untypedRes.ParseTree with
+            | Some tree -> return Result.Ok(tree, untypedRes.Errors)
+            | _ -> return Error Array.empty // Not sure this branch can be reached.
         }
 
     let private getAST log (req: HttpRequest) =
@@ -192,7 +183,7 @@ module GetAST =
                 let! astResult = parseAST log input
 
                 match astResult with
-                | Result.Ok ast ->
+                | Result.Ok (ast, errors) ->
                     let node =
                         match ast with
                         | ParsedInput.ImplFile (ParsedImplFileInput.ParsedImplFileInput (_, _, _, _, hds, mns, _)) ->
@@ -203,7 +194,7 @@ module GetAST =
                         |> Encoders.astNodeEncoder
 
                     let responseJson =
-                        Encoders.encodeResponse node (sprintf "%A" ast)
+                        Encoders.encodeResponse node (sprintf "%A" ast) errors
                         |> Encode.toString 2
 
                     return sendJson responseJson
@@ -241,7 +232,7 @@ module GetAST =
             | FSharpCheckFileAnswer.Succeeded res ->
                 match res.ImplementationFile with
                 | None -> return Error(sprintf "%A" res.Errors)
-                | Some fc -> return Result.Ok fc.Declarations
+                | Some fc -> return Result.Ok(fc.Declarations, parseRes.Errors)
         }
 
 
@@ -256,13 +247,13 @@ module GetAST =
                 let! tastResult = parseTypedAST input
 
                 match tastResult with
-                | Result.Ok tast ->
+                | Result.Ok (tast, errors) ->
                     let node =
                         TastTransformer.tastToNode tast
                         |> Encoders.tastNodeEncoder
 
                     let responseJson =
-                        Encoders.encodeResponse node (sprintf "%A" tast)
+                        Encoders.encodeResponse node (sprintf "%A" tast) errors
                         |> Encode.toString 2
 
                     return sendJson responseJson

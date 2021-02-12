@@ -1,6 +1,7 @@
 module ASTViewer.Server.Encoders
 
 open Thoth.Json.Net
+open FSharp.Compiler.SourceCodeServices
 
 let private rangeEncoder (range: FSharp.Compiler.Range.range) =
     Encode.object
@@ -77,7 +78,24 @@ let rec tastNodeEncoder (node: TastTransformer.Tast.Node) =
           "properties", properties
           "childs", Encode.array (Array.map tastNodeEncoder (Array.ofList node.Childs)) ]
 
-let rec encodeResponse nodeJson string =
+let private encodeFSharpErrorInfoSeverity =
+    function
+    | FSharpErrorSeverity.Warning -> Encode.string "warning"
+    | FSharpErrorSeverity.Error -> Encode.string "error"
+
+let private encodeFSharpErrorInfo (info: FSharpErrorInfo) =
+    Encode.object
+        [ "subcategory", Encode.string info.Subcategory
+          "range", rangeEncoder info.Range
+          "severity", encodeFSharpErrorInfoSeverity info.Severity
+          "errorNumber", Encode.int info.ErrorNumber ]
+
+let encodeResponse nodeJson string (errors: FSharpErrorInfo array) =
+    let errors =
+        Array.map encodeFSharpErrorInfo errors
+        |> Encode.array
+
     Encode.object
         [ "node", nodeJson
-          "string", Encode.string string ]
+          "string", Encode.string string
+          "errors", errors ]
