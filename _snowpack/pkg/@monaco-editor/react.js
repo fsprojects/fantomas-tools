@@ -903,9 +903,7 @@ function Editor({
     monacoRef.current.editor.setModelLanguage(editorRef.current.getModel(), language);
   }, [language], isEditorReady);
   useUpdate(() => {
-    editorRef.current.setScrollPosition({
-      scrollTop: line
-    });
+    editorRef.current.revealLine(line);
   }, [line], isEditorReady);
   useUpdate(() => {
     monacoRef.current.editor.setTheme(theme);
