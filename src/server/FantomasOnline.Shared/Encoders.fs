@@ -27,3 +27,36 @@ let encodeOptions options =
                       "$value", Encode.tuple3 Encode.int Encode.string Encode.string (o, k, v) ])
     |> Encode.array
     |> Encode.toString 4
+
+let private encodeRange (range: Range) =
+    Encode.object
+        [ "startLine", Encode.int range.StartLine
+          "startCol", Encode.int range.StartCol
+          "endLine", Encode.int range.EndLine
+          "endCol", Encode.int range.EndCol ]
+
+let private encodeASTErrorSeverity =
+    function
+    | ASTErrorSeverity.Error -> Encode.string "error"
+    | ASTErrorSeverity.Warning -> Encode.string "warning"
+
+let private encodeASTError (astError: ASTError) =
+    Encode.object
+        [ "subCategory", Encode.string astError.SubCategory
+          "range", encodeRange astError.Range
+          "severity", encodeASTErrorSeverity astError.Severity
+          "errorNumber", Encode.int astError.ErrorNumber
+          "message", Encode.string astError.Message ]
+
+let encodeFormatResponse (formatResponse: FormatResponse) =
+    Encode.object
+        [ "firstFormat", Encode.string formatResponse.FirstFormat
+          "firstValidation",
+          (formatResponse.FirstValidation
+           |> List.map encodeASTError
+           |> Encode.list)
+          "secondFormat", Encode.option Encode.string formatResponse.SecondFormat
+          "secondValidation",
+          (formatResponse.SecondValidation
+           |> List.map encodeASTError
+           |> Encode.list) ]

@@ -119,7 +119,8 @@ let githubIssueUri code (model: Model) =
     let (left, right) =
         match model.State with
         | FormatError e -> codeTemplate "Code" code, codeTemplate "Error" e
-        | FormatResult result -> codeTemplate "Code" code, codeTemplate "Result" result
+        | FormatResult result ->
+            codeTemplate "Code" code, codeTemplate "Result" (Option.defaultValue result.FirstFormat result.SecondFormat)
         | _ -> codeTemplate "Code" code, ""
 
     let fileType =
@@ -198,7 +199,7 @@ let view model =
     | EditorState.OptionsLoaded -> null
     | EditorState.FormatResult result ->
         div [ ClassName "tab-result fantomas-result" ] [
-            Editor.editorInTab [ Editor.Value result
+            Editor.editorInTab [ Editor.Value(Option.defaultValue result.FirstFormat result.SecondFormat)
                                  Editor.IsReadOnly true ]
         ]
 

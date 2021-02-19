@@ -55,28 +55,23 @@ module FormatCode =
         async {
             let! result = checker.ParseFile(fileName, sourceCode, options)
 
-            let errors =
+            return
                 result.Errors
-                |> Array.choose
+                |> Array.map
                     (fun e ->
-                        match e.Severity with
-                        | FSharpErrorSeverity.Error -> Some e.Message
-                        | _ -> None)
-
-            let warnings =
-                result.Errors
-                |> Array.choose
-                    (fun e ->
-                        match e.Severity with
-                        | FSharpErrorSeverity.Warning -> Some e.Message
-                        | _ -> None)
-
-            if not (Array.isEmpty errors) then
-                return FormatResult.Errors errors
-            elif not (Array.isEmpty warnings) then
-                return FormatResult.Warnings warnings
-            else
-                return FormatResult.Valid
+                        { SubCategory = e.Subcategory
+                          Range =
+                              { StartLine = e.StartLineAlternate
+                                StartCol = e.StartColumn
+                                EndLine = e.EndLineAlternate
+                                EndCol = e.EndColumn }
+                          Severity =
+                              match e.Severity with
+                              | FSharpErrorSeverity.Warning -> ASTErrorSeverity.Warning
+                              | FSharpErrorSeverity.Error -> ASTErrorSeverity.Error
+                          ErrorNumber = e.ErrorNumber
+                          Message = e.Message })
+                |> Array.toList
         }
 
     [<FunctionName("FormatCode")>]

@@ -9,12 +9,6 @@ open System.Net
 open System.Net.Http
 open Thoth.Json.Net
 
-[<RequireQualifiedAccessAttribute>]
-type FormatResult =
-    | Valid
-    | Warnings of string array
-    | Errors of string array
-
 module Async =
     let lift a = async { return a }
 
@@ -67,7 +61,7 @@ let private getVersionResponse version = sendText version |> Async.lift
 let private formatResponse<'options>
     (mapFantomasOptionsToRecord: FantomasOption list -> 'options)
     (format: string -> string -> 'options -> Async<string>)
-    (validateResult: string -> string -> Async<FormatResult>)
+    (validateResult: string -> string -> Async<ASTError list>)
     (req: HttpRequest)
     =
     async {
@@ -83,46 +77,28 @@ let private formatResponse<'options>
             let fileName = if isFsi then "tmp.fsi" else "tmp.fsx"
 
             try
-                let! formatted = format fileName code config
-                let! validationResult = validateResult fileName formatted
+                let! firstFormat = format fileName code config
+                let! firstValidation = validateResult fileName firstFormat
 
-                match validationResult with
-                | FormatResult.Valid -> return sendText formatted
-                | FormatResult.Warnings ws ->
-                    let warnings = Seq.map (sprintf "- %s") ws |> String.concat "\n"
+                let! secondFormat, secondValidation =
+                    if not (List.isEmpty firstValidation) then
+                        Async.lift (None, [])
+                    else
+                        async {
+                            let! secondFormat = format fileName firstFormat config
+                            let! secondValidation = validateResult fileName secondFormat
+                            return (Some secondFormat, secondValidation)
+                        }
 
-                    let content =
-                        sprintf
-                            """Fantomas was able to format the code but the result appears to have warnings:
-%s
-Please open an issue.
+                let response =
+                    { FirstFormat = firstFormat
+                      FirstValidation = firstValidation
+                      SecondFormat = secondFormat
+                      SecondValidation = secondValidation }
+                    |> Encoders.encodeFormatResponse
+                    |> Encode.toString 4
 
-Formatted result:
-
-%O"""
-                            warnings
-                            formatted
-
-                    return sendBadRequest content
-                | FormatResult.Errors errs ->
-                    let errors =
-                        Seq.map (sprintf "- %s") errs
-                        |> String.concat "\n"
-
-                    let content =
-                        sprintf
-                            """Fantomas was able to format the code but the result appears to have errors:
-%s
-Please open an issue.
-
-Formatted result:
-
-%O"""
-                            errors
-                            formatted
-
-                    return sendBadRequest content
-
+                return sendJson response
             with exn -> return sendBadRequest (sprintf "%A" exn)
         | Error err -> return sendInternalError (err)
     }
@@ -138,7 +114,7 @@ let main
     (getOptions: unit -> FantomasOption list)
     (mapFantomasOptionsToRecord: FantomasOption list -> 'options)
     (format: string -> string -> 'options -> Async<string>)
-    (validate: string -> string -> Async<FormatResult>)
+    (validate: string -> string -> Async<ASTError list>)
     (log: ILogger)
     (req: HttpRequest)
     =

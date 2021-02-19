@@ -31,3 +31,27 @@ type FormatRequest =
     { SourceCode: string
       Options: FantomasOption list
       IsFsi: bool }
+
+type Range =
+    { StartLine: int
+      StartCol: int
+      EndLine: int
+      EndCol: int }
+
+[<RequireQualifiedAccessAttribute>]
+type ASTErrorSeverity =
+    | Error
+    | Warning
+
+type ASTError =
+    { SubCategory: string
+      Range: Range
+      Severity: ASTErrorSeverity
+      ErrorNumber: int
+      Message: string }
+
+type FormatResponse =
+    { FirstFormat: string
+      FirstValidation: ASTError list
+      SecondFormat: string option
+      SecondValidation: ASTError list }
