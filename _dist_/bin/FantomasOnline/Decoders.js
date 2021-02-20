@@ -1,6 +1,6 @@
-import { list, array as array_2, fromString, bool, int, tuple3, string, object } from "../.fable/Thoth.Json.5.0.0/Decode.fs.js";
+import { map, list, array as array_2, fromString, bool, int, tuple3, string, object } from "../.fable/Thoth.Json.5.0.0/Decode.fs.js";
 import { comparePrimitives, uncurry } from "../.fable/fable-library.3.1.1/Util.js";
-import { sortByOption, FantomasOption } from "../shared/FantomasOnlineShared.js";
+import { FormatResponse, ASTError, ASTErrorSeverity, Range$, sortByOption, FantomasOption } from "../shared/FantomasOnlineShared.js";
 import { Result_Map } from "../.fable/fable-library.3.1.1/Choice.js";
 import { ofArray } from "../.fable/fable-library.3.1.1/List.js";
 import { sortBy } from "../.fable/fable-library.3.1.1/Array.js";
@@ -32,4 +32,19 @@ export function decodeOptions(json) {
 }
 
 export const decodeOptionsFromUrl = (path_2) => ((v) => object((get$) => [get$.Required.Field("settings", (path, value) => list(uncurry(2, optionDecoder), path, value)), get$.Required.Field("isFsi", bool)], path_2, v));
+
+const decodeRange = (path) => ((v) => object((get$) => (new Range$(get$.Required.Field("startLine", uncurry(2, int)), get$.Required.Field("startCol", uncurry(2, int)), get$.Required.Field("endLine", uncurry(2, int)), get$.Required.Field("endCol", uncurry(2, int)))), path, v));
+
+const decoderASTErrorSeverity = (path_1) => ((value_1) => map((s) => {
+    if (s === "error") {
+        return new ASTErrorSeverity(0);
+    }
+    else {
+        return new ASTErrorSeverity(1);
+    }
+}, string, path_1, value_1));
+
+const decodeASTError = (path_2) => ((v) => object((get$) => (new ASTError(get$.Required.Field("subCategory", string), get$.Required.Field("range", uncurry(2, decodeRange)), get$.Required.Field("severity", uncurry(2, decoderASTErrorSeverity)), get$.Required.Field("errorNumber", uncurry(2, int)), get$.Required.Field("message", string))), path_2, v));
+
+export const decodeFormatResponse = (path_4) => ((v) => object((get$) => (new FormatResponse(get$.Required.Field("firstFormat", string), get$.Required.Field("firstValidation", (path_1, value_1) => list(uncurry(2, decodeASTError), path_1, value_1)), get$.Optional.Field("secondFormat", string), get$.Required.Field("secondValidation", (path_3, value_3) => list(uncurry(2, decodeASTError), path_3, value_3)))), path_4, v));
 

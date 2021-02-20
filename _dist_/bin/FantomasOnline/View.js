@@ -2,15 +2,19 @@ import * as react from "../../../_snowpack/pkg/react.js";
 import { MultiButtonSettings, multiButton, toggleButton, input } from "../SettingControls.js";
 import { isMatch } from "../.fable/fable-library.3.1.1/RegExp.js";
 import { FantomasMode, Model__get_SettingsChangedByTheUser, Msg } from "./Model.js";
-import { getOptionKey, optionValue, sortByOption, FantomasOption } from "../shared/FantomasOnlineShared.js";
+import { getOptionKey, optionValue, sortByOption, FantomasOption$reflection, FantomasOption } from "../shared/FantomasOnlineShared.js";
 import { parse } from "../.fable/fable-library.3.1.1/Int32.js";
-import { empty, singleton, ofArray, ofSeq, sortBy, map } from "../.fable/fable-library.3.1.1/List.js";
+import { singleton, mapIndexed, empty, ofArray, ofSeq, sortBy, map } from "../.fable/fable-library.3.1.1/List.js";
 import { toList } from "../.fable/fable-library.3.1.1/Map.js";
 import { escapeDataString, equals, comparePrimitives } from "../.fable/fable-library.3.1.1/Util.js";
+import { toString, Record } from "../.fable/fable-library.3.1.1/Types.js";
+import { record_type, bool_type, class_type, list_type, string_type } from "../.fable/fable-library.3.1.1/Reflection.js";
 import { map as map_1, zip, choose } from "../.fable/fable-library.3.1.1/Seq.js";
 import { isNullOrWhiteSpace, printf, toText, join } from "../.fable/fable-library.3.1.1/String.js";
 import { DOMAttr, HTMLAttr } from "../.fable/Fable.React.7.0.1/Fable.React.Props.fs.js";
+import { defaultArg } from "../.fable/fable-library.3.1.1/Option.js";
 import { ButtonProps, button } from "../.fable/Fable.Reactstrap.0.5.1/Button.fs.js";
+import { BadgeProps, badge } from "../.fable/Fable.Reactstrap.0.5.1/Badge.fs.js";
 import { loader } from "../Loader.js";
 import Editor from "../../js/Editor.js";
 import { SpinnerProps, spinner } from "../.fable/Fable.Reactstrap.0.5.1/Spinner.fs.js";
@@ -46,7 +50,27 @@ export function options(model, dispatch) {
     })));
 }
 
-export function githubIssueUri(code, model) {
+export class GithubIssue extends Record {
+    constructor(BeforeHeader, BeforeContent, AfterHeader, AfterContent, Description, Title, DefaultOptions, UserOptions, Version, IsFsi) {
+        super();
+        this.BeforeHeader = BeforeHeader;
+        this.BeforeContent = BeforeContent;
+        this.AfterHeader = AfterHeader;
+        this.AfterContent = AfterContent;
+        this.Description = Description;
+        this.Title = Title;
+        this.DefaultOptions = DefaultOptions;
+        this.UserOptions = UserOptions;
+        this.Version = Version;
+        this.IsFsi = IsFsi;
+    }
+}
+
+export function GithubIssue$reflection() {
+    return record_type("FantomasTools.Client.FantomasOnline.View.GithubIssue", [], GithubIssue, () => [["BeforeHeader", string_type], ["BeforeContent", string_type], ["AfterHeader", string_type], ["AfterContent", string_type], ["Description", string_type], ["Title", string_type], ["DefaultOptions", list_type(FantomasOption$reflection())], ["UserOptions", class_type("Microsoft.FSharp.Collections.FSharpMap`2", [string_type, FantomasOption$reflection()])], ["Version", string_type], ["IsFsi", bool_type]]);
+}
+
+export function githubIssueUri(githubIssue) {
     let arg10_3;
     const location = window.location;
     let options_1;
@@ -58,9 +82,9 @@ export function githubIssueUri(code, model) {
         else {
             return void 0;
         }
-    }, Array.from(zip(sortBy(sortByOption, map((tuple) => tuple[1], toList(model.UserOptions)), {
+    }, Array.from(zip(sortBy(sortByOption, map((tuple) => tuple[1], toList(githubIssue.UserOptions)), {
         Compare: comparePrimitives,
-    }), sortBy(sortByOption, model.DefaultOptions, {
+    }), sortBy(sortByOption, githubIssue.DefaultOptions, {
         Compare: comparePrimitives,
     })))));
     if (changedOptions.tail == null) {
@@ -74,28 +98,30 @@ export function githubIssueUri(code, model) {
         }, changedOptions));
         options_1 = toText(printf("```fsharp\n    { config with\n%s }\n```"))(arg10_1);
     }
-    const codeTemplate = (header, code_1) => toText(printf("\n#### %s\n\n```fsharp\n%s\n```\n            "))(header)(code_1);
+    const codeTemplate = (header, code) => toText(printf("\n#### %s\n\n```fsharp\n%s\n```\n            "))(header)(code);
+    const patternInput = [codeTemplate(githubIssue.BeforeHeader, githubIssue.BeforeContent), codeTemplate(githubIssue.AfterHeader, githubIssue.AfterContent)];
+    const fileType = githubIssue.IsFsi ? "\n*Signature file*" : "";
+    const body = escapeDataString((arg10_3 = location.href, toText(printf("\n\u003c!--\n\n    Please only use this to create issues.\n    If you wish to suggest a feature,\n    please fill in the feature request template at https://github.com/fsprojects/fantomas/issues/new/choose\n\n--\u003e\nIssue created from [fantomas-online](%s)\n\n%s\n%s\n#### Problem description\n\n%s\n\n#### Extra information\n\n- [ ] The formatted result breaks by code.\n- [ ] The formatted result gives compiler warnings.\n- [ ] I or my company would be willing to help fix this.\n\n#### Options\n\nFantomas %s\n\n%s\n%s\n\n\u003csub\u003eDid you know that you can ignore files when formatting from fantomas-tool or the FAKE targets by using a [.fantomasignore file](https://github.com/fsprojects/fantomas/blob/master/docs/Documentation.md#ignore-files-fantomasignore)?\u003c/sub\u003e\n        "))(arg10_3)(patternInput[0])(patternInput[1])(githubIssue.Description)(githubIssue.Version)(options_1)(fileType)));
+    return new HTMLAttr(94, toText(printf("https://github.com/fsprojects/fantomas/issues/new?title=%s\u0026body=%s"))(githubIssue.Title)(body));
+}
+
+function createGitHubIssue(code, model) {
     let patternInput;
     const matchValue = model.State;
     switch (matchValue.tag) {
         case 4: {
-            patternInput = [codeTemplate("Code", code), codeTemplate("Error", matchValue.fields[0])];
+            patternInput = ["Code", code, "Error", matchValue.fields[0]];
             break;
         }
         case 3: {
-            patternInput = [codeTemplate("Code", code), codeTemplate("Result", matchValue.fields[0])];
+            const result = matchValue.fields[0];
+            patternInput = ["Code", code, "Result", defaultArg(result.SecondFormat, result.FirstFormat)];
             break;
         }
         default: {
-            patternInput = [codeTemplate("Code", code), ""];
+            patternInput = ["Code", code, "", ""];
         }
     }
-    const fileType = model.IsFsi ? "\n*Signature file*" : "";
-    const body = escapeDataString((arg10_3 = location.href, toText(printf("\n\u003c!--\n\n    Please only use this to create issues.\n    If you wish to suggest a feature,\n    please fill in the feature request template at https://github.com/fsprojects/fantomas/issues/new/choose\n\n--\u003e\nIssue created from [fantomas-online](%s)\n\n%s\n%s\n#### Problem description\n\nPlease describe here the Fantomas problem you encountered.\nCheck out our [Contribution Guidelines](https://github.com/fsprojects/fantomas/blob/master/CONTRIBUTING.md#bug-reports).\n\n#### Extra information\n\n- [ ] The formatted result breaks by code.\n- [ ] The formatted result gives compiler warnings.\n- [ ] I or my company would be willing to help fix this.\n\n#### Options\n\nFantomas %s\n\n%s\n%s\n\n\u003csub\u003eDid you know that you can ignore files when formatting from fantomas-tool or the FAKE targets by using a [.fantomasignore file](https://github.com/fsprojects/fantomas/blob/master/docs/Documentation.md#ignore-files-fantomasignore)?\u003c/sub\u003e\n        "))(arg10_3)(patternInput[0])(patternInput[1])(model.Version)(options_1)(fileType)));
-    return new HTMLAttr(94, toText(printf("https://github.com/fsprojects/fantomas/issues/new?title=%s\u0026labels=%s\u0026body=%s"))("\u003cInsert meaningful title\u003e")("bug")(body));
-}
-
-function createGitHubIssue(code, model) {
     let pattern_matching_result;
     if (model.Mode.tag === 3) {
         if (!isNullOrWhiteSpace(code)) {
@@ -110,7 +136,7 @@ function createGitHubIssue(code, model) {
     }
     switch (pattern_matching_result) {
         case 0: {
-            return button([new ButtonProps(1, "danger"), new ButtonProps(2, true), new ButtonProps(9, ofArray([githubIssueUri(code, model), new HTMLAttr(157, "_blank"), new HTMLAttr(64, "rounded-0")]))], ["Looks wrong? Create an issue!"]);
+            return button([new ButtonProps(1, "danger"), new ButtonProps(2, true), new ButtonProps(9, ofArray([githubIssueUri(new GithubIssue(patternInput[0], patternInput[1], patternInput[2], patternInput[3], "Please describe here the Fantomas problem you encountered.\n                    Check out our [Contribution Guidelines](https://github.com/fsprojects/fantomas/blob/master/CONTRIBUTING.md#bug-reports).", "\u003cInsert meaningful title\u003e", model.DefaultOptions, model.UserOptions, model.Version, model.IsFsi)), new HTMLAttr(157, "_blank"), new HTMLAttr(64, "rounded-0")]))], ["Looks wrong? Create an issue!"]);
         }
         case 1: {
             return react.createElement("span", {
@@ -120,7 +146,26 @@ function createGitHubIssue(code, model) {
     }
 }
 
+function viewErrors(model, result, isIdempotent, errors) {
+    let o, githubIssue;
+    const errors_2 = (errors.tail == null) ? empty() : mapIndexed((i, e_1) => react.createElement("li", {
+        key: toText(printf("ast-error-%i"))(i),
+    }, react.createElement("strong", {}, toText(printf("(%i,%i) (%i, %i)"))(e_1.Range.StartLine)(e_1.Range.StartCol)(e_1.Range.EndLine)(e_1.Range.EndCol)), badge([new BadgeProps(1, (e_1.Severity.tag === 1) ? "warning" : "danger")], [toString(e_1.Severity)]), badge([new BadgeProps(1, "dark"), new BadgeProps(5, singleton(new HTMLAttr(158, "ErrorNumber")))], [e_1.ErrorNumber]), badge([new BadgeProps(1, "light"), new BadgeProps(5, singleton(new HTMLAttr(158, "SubCategory")))], [e_1.SubCategory]), react.createElement("p", {}, e_1.Message)), errors);
+    if ((!isIdempotent) ? true : (!(errors_2.tail == null))) {
+        return react.createElement("ul", {
+            id: "ast-errors",
+            className: "",
+        }, (o = (isIdempotent ? (void 0) : (githubIssue = (new GithubIssue("Formatted code", result.FirstFormat, "Reformatted code", defaultArg(result.SecondFormat, result.FirstFormat), "Fantomas was not able to produce the same code after reformatting the result.", "Idempotency problem when \u003cadd use-case\u003e", model.DefaultOptions, model.UserOptions, model.Version, model.IsFsi)), react.createElement("div", {
+            className: "idempotent-error",
+        }, react.createElement("h6", {}, "The result was not idempotent"), "Fantomas was able to format the code, but when formatting the result again, the code changed.", react.createElement("br", {}), "The result after the first format is being displayed.", react.createElement("br", {}), button([new ButtonProps(1, "danger"), new ButtonProps(9, ofArray([githubIssueUri(githubIssue), new HTMLAttr(157, "_blank"), new HTMLAttr(64, "rounded-0")]))], ["Report idempotancy issue"])))), (o == null) ? null : o), Array.from(errors_2));
+    }
+    else {
+        return void 0;
+    }
+}
+
 export function view(model) {
+    let o;
     const matchValue = model.State;
     switch (matchValue.tag) {
         case 0: {
@@ -130,12 +175,40 @@ export function view(model) {
             return null;
         }
         case 3: {
+            const result = matchValue.fields[0];
+            let patternInput;
+            const matchValue_1 = result.SecondFormat;
+            let pattern_matching_result, sf_1;
+            if (matchValue_1 != null) {
+                if (matchValue_1 === result.FirstFormat) {
+                    pattern_matching_result = 0;
+                    sf_1 = matchValue_1;
+                }
+                else {
+                    pattern_matching_result = 1;
+                }
+            }
+            else {
+                pattern_matching_result = 1;
+            }
+            switch (pattern_matching_result) {
+                case 0: {
+                    patternInput = [sf_1, true, result.SecondValidation];
+                    break;
+                }
+                case 1: {
+                    patternInput = ((matchValue_1 == null) ? [result.FirstFormat, true, result.FirstValidation] : [result.FirstFormat, false, result.FirstValidation]);
+                    break;
+                }
+            }
             return react.createElement("div", {
                 className: "tab-result fantomas-result",
+            }, react.createElement("div", {
+                className: "fantomas-editor-container",
             }, react.createElement(Editor, {
-                value: matchValue.fields[0],
+                value: patternInput[0],
                 isReadOnly: true,
-            }));
+            })), (o = viewErrors(model, result, patternInput[1], patternInput[2]), (o == null) ? null : o));
         }
         case 4: {
             return react.createElement("div", {

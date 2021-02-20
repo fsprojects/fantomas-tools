@@ -1,6 +1,6 @@
 import { Record, Union } from "../.fable/fable-library.3.1.1/Types.js";
 import { record_type, class_type, bool_type, tuple_type, list_type, string_type, union_type } from "../.fable/fable-library.3.1.1/Reflection.js";
-import { sortByOption, FantomasOption$reflection } from "../shared/FantomasOnlineShared.js";
+import { sortByOption, FormatResponse$reflection, FantomasOption$reflection } from "../shared/FantomasOnlineShared.js";
 import { sortBy, zip, filter, map } from "../.fable/fable-library.3.1.1/List.js";
 import { comparePrimitives, equals } from "../.fable/fable-library.3.1.1/Util.js";
 import { toList } from "../.fable/fable-library.3.1.1/Map.js";
@@ -32,7 +32,7 @@ export class Msg extends Union {
 }
 
 export function Msg$reflection() {
-    return union_type("FantomasTools.Client.FantomasOnline.Model.Msg", [], Msg, () => [[["Item", string_type]], [["Item", list_type(FantomasOption$reflection())]], [["Item", string_type]], [], [["Item", string_type]], [["Item", tuple_type(string_type, FantomasOption$reflection())]], [["Item", FantomasMode$reflection()]], [["Item", bool_type]], []]);
+    return union_type("FantomasTools.Client.FantomasOnline.Model.Msg", [], Msg, () => [[["Item", string_type]], [["Item", list_type(FantomasOption$reflection())]], [["Item", string_type]], [], [["Item", FormatResponse$reflection()]], [["Item", tuple_type(string_type, FantomasOption$reflection())]], [["Item", FantomasMode$reflection()]], [["Item", bool_type]], []]);
 }
 
 export class EditorState extends Union {
@@ -47,7 +47,7 @@ export class EditorState extends Union {
 }
 
 export function EditorState$reflection() {
-    return union_type("FantomasTools.Client.FantomasOnline.Model.EditorState", [], EditorState, () => [[], [], [], [["Item", string_type]], [["Item", string_type]]]);
+    return union_type("FantomasTools.Client.FantomasOnline.Model.EditorState", [], EditorState, () => [[], [], [], [["Item", FormatResponse$reflection()]], [["Item", string_type]]]);
 }
 
 export class Model extends Record {

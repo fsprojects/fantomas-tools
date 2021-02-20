@@ -6,13 +6,14 @@ import { contains, tryFind, map, empty, singleton, ofArray } from "../.fable/fab
 import { postJson, getText } from "../Http.js";
 import { isNullOrWhiteSpace, toConsole, join, trimStart, toFail, printf, toText } from "../.fable/fable-library.3.1.1/String.js";
 import { Types_RequestProperties, fetch$ } from "../.fable/Fable.Fetch.2.2.0/Fetch.fs.js";
-import { decodeOptionsFromUrl, decodeOptions } from "./Decoders.js";
+import { decodeOptionsFromUrl, decodeFormatResponse, decodeOptions } from "./Decoders.js";
 import { encodeUrlModel, encodeRequest } from "./Encoders.js";
+import { fromString } from "../.fable/Thoth.Json.5.0.0/Decode.fs.js";
+import { stringHash, uncurry } from "../.fable/fable-library.3.1.1/Util.js";
 import { restoreModelFromUrl, updateUrlWithData } from "../UrlTools.js";
 import { toString } from "../.fable/Thoth.Json.5.0.0/Encode.fs.js";
 import { Cmd_ofSub, Cmd_none, Cmd_OfFunc_result, Cmd_batch, Cmd_OfPromise_either } from "../.fable/Fable.Elmish.3.1.0/cmd.fs.js";
 import { getOptionKey, FantomasOption } from "../shared/FantomasOnlineShared.js";
-import { stringHash, uncurry } from "../.fable/fable-library.3.1.1/Util.js";
 import { showSuccess as showSuccess_1 } from "../../js/notifications.js";
 import { map as map_1 } from "../.fable/fable-library.3.1.1/Seq.js";
 import { isUpper } from "../.fable/fable-library.3.1.1/Char.js";
@@ -44,9 +45,10 @@ function getFormattedCode(code, model, dispatch) {
     let arg10;
     const pr = postJson((arg10 = find(model.Mode, backend), toText(printf("%s/%s"))(arg10)("api/format")), encodeRequest(code, model));
     pr.then(((tupledArg) => {
+        let matchValue;
         const status = tupledArg[0] | 0;
         const body = tupledArg[1];
-        dispatch((status === 200) ? (new Msg(4, body)) : ((status === 400) ? (new Msg(2, body)) : ((status === 413) ? (new Msg(2, "the input was too large to process")) : (new Msg(2, body)))));
+        dispatch((status === 200) ? (matchValue = fromString(uncurry(2, decodeFormatResponse), body), (matchValue.tag === 1) ? (new Msg(2, matchValue.fields[0])) : (new Msg(4, matchValue.fields[0]))) : ((status === 400) ? (new Msg(2, body)) : ((status === 413) ? (new Msg(2, "the input was too large to process")) : (new Msg(2, body)))));
     }));
 }
 

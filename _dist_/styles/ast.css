@@ -12,7 +12,8 @@
   border-top: 2px solid #22A7F0;
   background-color: rgba(224, 29, 49, 0.05);
   padding-top: 10px;
-  padding-bottom: 50px;
+  padding-bottom: 55px;
+  margin-bottom: 0;
 }
 #ast-errors li {
   font-size: 0.8rem;
