@@ -71,16 +71,30 @@ let options model dispatch =
     |> List.map (mapToOption dispatch)
     |> ofList
 
-let githubIssueUri code (model: Model) =
+type GithubIssue =
+    { BeforeHeader: string
+      BeforeContent: string
+      AfterHeader: string
+      AfterContent: string
+      Description: string
+      Title: string
+      DefaultOptions: FantomasOption list
+      UserOptions: Map<string, FantomasOption>
+      Version: string
+      IsFsi: bool }
+
+let githubIssueUri (githubIssue: GithubIssue) =
     let location = Browser.Dom.window.location
 
     let config =
-        model.UserOptions
+        githubIssue.UserOptions
         |> Map.toList
         |> List.map snd
         |> List.sortBy sortByOption
 
-    let defaultValues = model.DefaultOptions |> List.sortBy sortByOption
+    let defaultValues =
+        githubIssue.DefaultOptions
+        |> List.sortBy sortByOption
 
     let options =
         let changedOptions =
@@ -101,9 +115,6 @@ let githubIssueUri code (model: Model) =
 %s }
 ```"""
 
-    let title = "<Insert meaningful title>"
-    let label = "bug"
-
     let codeTemplate header code =
         sprintf
             """
@@ -117,13 +128,12 @@ let githubIssueUri code (model: Model) =
             code
 
     let (left, right) =
-        match model.State with
-        | FormatError e -> codeTemplate "Code" code, codeTemplate "Error" e
-        | FormatResult result -> codeTemplate "Code" code, codeTemplate "Result" result
-        | _ -> codeTemplate "Code" code, ""
+        codeTemplate githubIssue.BeforeHeader githubIssue.BeforeContent,
+        codeTemplate githubIssue.AfterHeader githubIssue.AfterContent
+
 
     let fileType =
-        if model.IsFsi then
+        if githubIssue.IsFsi then
             "\n*Signature file*"
         else
             System.String.Empty
@@ -144,8 +154,7 @@ Issue created from [fantomas-online](%s)
 %s
 #### Problem description
 
-Please describe here the Fantomas problem you encountered.
-Check out our [Contribution Guidelines](https://github.com/fsprojects/fantomas/blob/master/CONTRIBUTING.md#bug-reports).
+%s
 
 #### Extra information
 
@@ -165,23 +174,45 @@ Fantomas %s
             location.href
             left
             right
-            model.Version
+            githubIssue.Description
+            githubIssue.Version
             options
             fileType)
         |> System.Uri.EscapeDataString
 
     let uri =
-        sprintf "https://github.com/fsprojects/fantomas/issues/new?title=%s&labels=%s&body=%s" title label body
+        sprintf "https://github.com/fsprojects/fantomas/issues/new?title=%s&body=%s" githubIssue.Title body
 
     uri |> Href
 
 
 let private createGitHubIssue code model =
+    let description = """Please describe here the Fantomas problem you encountered.
+                    Check out our [Contribution Guidelines](https://github.com/fsprojects/fantomas/blob/master/CONTRIBUTING.md#bug-reports)."""
+
+    let bh, bc, ah, ac =
+        match model.State with
+        | FormatError e -> "Code", code, "Error", e
+        | FormatResult result -> "Code", code, "Result", (Option.defaultValue result.FirstFormat result.SecondFormat)
+        | _ -> "Code", code, "", ""
+
     match model.Mode with
     | Preview when (not (System.String.IsNullOrWhiteSpace(code))) ->
+        let githubIssue =
+            { BeforeHeader = bh
+              BeforeContent = bc
+              AfterHeader = ah
+              AfterContent = ac
+              Description = description
+              Title = "<Insert meaningful title>"
+              DefaultOptions = model.DefaultOptions
+              UserOptions = model.UserOptions
+              Version = model.Version
+              IsFsi = model.IsFsi }
+
         Button.button [ Button.Color Danger
                         Button.Outline true
-                        Button.Custom [ githubIssueUri code model
+                        Button.Custom [ githubIssueUri githubIssue
                                         Target "_blank"
                                         ClassName "rounded-0" ] ] [
             str "Looks wrong? Create an issue!"
@@ -191,15 +222,104 @@ let private createGitHubIssue code model =
             str "Looks wrong? Try using the preview version!"
         ]
 
+let private viewErrors (model: Model) result isIdempotent errors =
+    let errors =
+        match errors with
+        | [] -> []
+        | errors ->
+            let badgeColor (e: FantomasOnline.Shared.ASTError) =
+                match e.Severity with
+                | ASTErrorSeverity.Error -> Color.Danger
+                | ASTErrorSeverity.Warning -> Color.Warning
+
+            errors
+            |> List.mapi
+                (fun i e ->
+                    li [ Key(sprintf "ast-error-%i" i) ] [
+                        strong [] [
+                            str (
+                                sprintf
+                                    "(%i,%i) (%i, %i)"
+                                    e.Range.StartLine
+                                    e.Range.StartCol
+                                    e.Range.EndLine
+                                    e.Range.EndCol
+                            )
+                        ]
+                        Badge.badge [ Badge.Color(badgeColor e) ] [
+                            str (e.Severity.ToString())
+                        ]
+                        Badge.badge [ Badge.Color Color.Dark
+                                      Badge.Custom [ Title "ErrorNumber" ] ] [
+                            ofInt e.ErrorNumber
+                        ]
+                        Badge.badge [ Badge.Color Color.Light
+                                      Badge.Custom [ Title "SubCategory" ] ] [
+                            str e.SubCategory
+                        ]
+                        p [] [ str e.Message ]
+                    ])
+
+    let idempotency =
+        if isIdempotent then
+            None
+        else
+            let githubIssue =
+                { BeforeHeader = "Formatted code"
+                  BeforeContent = result.FirstFormat
+                  AfterHeader = "Reformatted code"
+                  AfterContent = Option.defaultValue result.FirstFormat result.SecondFormat
+                  Description = "Fantomas was not able to produce the same code after reformatting the result."
+                  Title = "Idempotency problem when <add use-case>"
+                  DefaultOptions = model.DefaultOptions
+                  UserOptions = model.UserOptions
+                  Version = model.Version
+                  IsFsi = model.IsFsi }
+
+            div [ ClassName "idempotent-error" ] [
+                h6 [] [
+                    str "The result was not idempotent"
+                ]
+                str "Fantomas was able to format the code, but when formatting the result again, the code changed."
+                br []
+                str "The result after the first format is being displayed."
+                br []
+                Button.button [ Button.Color Danger
+                                Button.Custom [ githubIssueUri githubIssue
+                                                Target "_blank"
+                                                ClassName "rounded-0" ] ] [
+                    str "Report idempotancy issue"
+                ]
+            ]
+            |> Some
+
+    if not isIdempotent || not (List.isEmpty errors) then
+        ul [ Id "ast-errors"; ClassName "" ] [
+            ofOption idempotency
+            ofList errors
+        ]
+        |> Some
+    else
+        None
+
 let view model =
     match model.State with
     | EditorState.LoadingFormatRequest
     | EditorState.LoadingOptions -> Loader.loader
     | EditorState.OptionsLoaded -> null
     | EditorState.FormatResult result ->
+        let formattedCode, isIdempotent, astErrors =
+            match result.SecondFormat with
+            | Some sf when sf = result.FirstFormat -> sf, true, result.SecondValidation
+            | Some _ -> result.FirstFormat, false, result.FirstValidation
+            | None -> result.FirstFormat, true, result.FirstValidation
+
         div [ ClassName "tab-result fantomas-result" ] [
-            Editor.editorInTab [ Editor.Value result
-                                 Editor.IsReadOnly true ]
+            div [ ClassName "fantomas-editor-container" ] [
+                Editor.editorInTab [ Editor.Value formattedCode
+                                     Editor.IsReadOnly true ]
+            ]
+            ofOption (viewErrors model result isIdempotent astErrors)
         ]
 
     | EditorState.FormatError error ->

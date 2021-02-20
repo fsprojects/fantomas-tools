@@ -13,7 +13,7 @@ type Msg =
     | OptionsReceived of FantomasOption list
     | FormatException of string
     | Format
-    | FormattedReceived of string
+    | FormattedReceived of FormatResponse
     | UpdateOption of (string * FantomasOption)
     | ChangeMode of FantomasMode
     | SetFsiFile of bool
@@ -23,7 +23,7 @@ type EditorState =
     | LoadingOptions
     | OptionsLoaded
     | LoadingFormatRequest
-    | FormatResult of string
+    | FormatResult of FormatResponse
     | FormatError of string
 
 type Model =

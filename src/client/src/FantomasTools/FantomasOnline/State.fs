@@ -54,7 +54,11 @@ let private getFormattedCode code model dispatch =
     |> Promise.iter
         (fun (status, body) ->
             match status with
-            | 200 -> Msg.FormattedReceived body
+            | 200 ->
+                match Decode.fromString Decoders.decodeFormatResponse body with
+                | Ok res -> Msg.FormattedReceived res
+                | Error err -> Msg.FormatException err
+
             | 400 -> Msg.FormatException body
             | 413 -> Msg.FormatException "the input was too large to process"
             | _ -> Msg.FormatException body
