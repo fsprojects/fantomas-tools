@@ -148,9 +148,12 @@ function createGitHubIssue(code, model) {
 
 function viewErrors(model, result, isIdempotent, errors) {
     let o, githubIssue;
-    const errors_2 = (errors.tail == null) ? empty() : mapIndexed((i, e_1) => react.createElement("li", {
-        key: toText(printf("ast-error-%i"))(i),
-    }, react.createElement("strong", {}, toText(printf("(%i,%i) (%i, %i)"))(e_1.Range.StartLine)(e_1.Range.StartCol)(e_1.Range.EndLine)(e_1.Range.EndCol)), badge([new BadgeProps(1, (e_1.Severity.tag === 1) ? "warning" : "danger")], [toString(e_1.Severity)]), badge([new BadgeProps(1, "dark"), new BadgeProps(5, singleton(new HTMLAttr(158, "ErrorNumber")))], [e_1.ErrorNumber]), badge([new BadgeProps(1, "light"), new BadgeProps(5, singleton(new HTMLAttr(158, "SubCategory")))], [e_1.SubCategory]), react.createElement("p", {}, e_1.Message)), errors);
+    const errors_2 = (errors.tail == null) ? empty() : mapIndexed((i, e_1) => {
+        let matchValue;
+        return react.createElement("li", {
+            key: toText(printf("ast-error-%i"))(i),
+        }, react.createElement("strong", {}, toText(printf("(%i,%i) (%i, %i)"))(e_1.Range.StartLine)(e_1.Range.StartCol)(e_1.Range.EndLine)(e_1.Range.EndCol)), badge([new BadgeProps(1, (matchValue = e_1.Severity, (matchValue.tag === 0) ? "danger" : ((matchValue.tag === 1) ? "warning" : "info")))], [toString(e_1.Severity)]), badge([new BadgeProps(1, "dark"), new BadgeProps(5, singleton(new HTMLAttr(158, "ErrorNumber")))], [e_1.ErrorNumber]), badge([new BadgeProps(1, "light"), new BadgeProps(5, singleton(new HTMLAttr(158, "SubCategory")))], [e_1.SubCategory]), react.createElement("p", {}, e_1.Message));
+    }, errors);
     if ((!isIdempotent) ? true : (!(errors_2.tail == null))) {
         return react.createElement("ul", {
             id: "ast-errors",

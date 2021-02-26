@@ -36,11 +36,19 @@ export const decodeOptionsFromUrl = (path_2) => ((v) => object((get$) => [get$.R
 const decodeRange = (path) => ((v) => object((get$) => (new Range$(get$.Required.Field("startLine", uncurry(2, int)), get$.Required.Field("startCol", uncurry(2, int)), get$.Required.Field("endLine", uncurry(2, int)), get$.Required.Field("endCol", uncurry(2, int)))), path, v));
 
 const decoderASTErrorSeverity = (path_1) => ((value_1) => map((s) => {
-    if (s === "error") {
-        return new ASTErrorSeverity(0);
-    }
-    else {
-        return new ASTErrorSeverity(1);
+    switch (s) {
+        case "error": {
+            return new ASTErrorSeverity(0);
+        }
+        case "warning": {
+            return new ASTErrorSeverity(1);
+        }
+        case "info": {
+            return new ASTErrorSeverity(2);
+        }
+        default: {
+            return new ASTErrorSeverity(3);
+        }
     }
 }, string, path_1, value_1));
 

@@ -142,12 +142,12 @@ export class ASTErrorSeverity extends Union {
         this.fields = fields;
     }
     cases() {
-        return ["Error", "Warning"];
+        return ["Error", "Warning", "Info", "Hidden"];
     }
 }
 
 export function ASTErrorSeverity$reflection() {
-    return union_type("FantomasOnline.Shared.ASTErrorSeverity", [], ASTErrorSeverity, () => [[], []]);
+    return union_type("FantomasOnline.Shared.ASTErrorSeverity", [], ASTErrorSeverity, () => [[], [], [], []]);
 }
 
 export class ASTError extends Record {
