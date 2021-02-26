@@ -46,10 +46,11 @@ let private decoderASTErrorSeverity : Decoder<ASTErrorSeverity> =
     Decode.string
     |> Decode.map
         (fun s ->
-            if s = "error" then
-                ASTErrorSeverity.Error
-            else
-                ASTErrorSeverity.Warning)
+            match s with
+            | "error" -> ASTErrorSeverity.Error
+            | "warning" -> ASTErrorSeverity.Warning
+            | "info" -> ASTErrorSeverity.Info
+            | _ -> ASTErrorSeverity.Hidden)
 
 let private decodeASTError : Decoder<ASTError> =
     Decode.object

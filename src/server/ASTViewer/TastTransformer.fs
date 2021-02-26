@@ -1,7 +1,7 @@
 module ASTViewer.Server.TastTransformer
 
 open FSharp.Compiler.SourceCodeServices
-open FSharp.Compiler.Range
+open FSharp.Compiler.Text
 
 module Helpers =
     let r (r: range) : range option = Some r

@@ -39,6 +39,8 @@ let private encodeASTErrorSeverity =
     function
     | ASTErrorSeverity.Error -> Encode.string "error"
     | ASTErrorSeverity.Warning -> Encode.string "warning"
+    | ASTErrorSeverity.Info -> Encode.string "info"
+    | ASTErrorSeverity.Hidden -> Encode.string "hidden"
 
 let private encodeASTError (astError: ASTError) =
     Encode.object

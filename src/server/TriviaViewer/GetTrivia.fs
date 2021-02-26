@@ -74,7 +74,7 @@ module GetTrivia =
             if ast.ParseHadErrors then
                 let errors =
                     ast.Errors
-                    |> Array.filter (fun e -> e.Severity = FSharpErrorSeverity.Error)
+                    |> Array.filter (fun e -> e.Severity = FSharpDiagnosticSeverity.Error)
 
                 if not <| Array.isEmpty errors then
                     log.LogError(sprintf "Parsing failed with errors: %A\nAnd options: %A" errors checkOptions)
@@ -139,10 +139,10 @@ module GetTrivia =
             |> List.choose mapNodeToTriviaNode
 
         let mkRange (sl, sc) (el, ec) =
-            FSharp.Compiler.Range.mkRange
+            FSharp.Compiler.Text.Range.mkRange
                 ast.Range.FileName
-                (FSharp.Compiler.Range.mkPos sl sc)
-                (FSharp.Compiler.Range.mkPos el ec)
+                (FSharp.Compiler.Text.Pos.mkPos sl sc)
+                (FSharp.Compiler.Text.Pos.mkPos el ec)
 
         let triviaNodesFromTokens =
             TokenParser.getTriviaNodesFromTokens mkRange tokens
@@ -173,10 +173,10 @@ module GetTrivia =
                 match astResult with
                 | Result.Ok ast ->
                     let mkRange (sl, sc) (el, ec) =
-                        FSharp.Compiler.Range.mkRange
+                        FSharp.Compiler.Text.Range.mkRange
                             ast.Range.FileName
-                            (FSharp.Compiler.Range.mkPos sl sc)
-                            (FSharp.Compiler.Range.mkPos el ec)
+                            (FSharp.Compiler.Text.Pos.mkPos sl sc)
+                            (FSharp.Compiler.Text.Pos.mkPos el ec)
 
                     let trivias = TokenParser.getTriviaFromTokens mkRange tokens
                     let triviaCandidates = collectTriviaCandidates tokens ast

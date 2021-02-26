@@ -42,6 +42,8 @@ type Range =
 type ASTErrorSeverity =
     | Error
     | Warning
+    | Info
+    | Hidden
 
 type ASTError =
     { SubCategory: string

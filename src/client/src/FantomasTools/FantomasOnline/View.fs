@@ -229,8 +229,9 @@ let private viewErrors (model: Model) result isIdempotent errors =
         | errors ->
             let badgeColor (e: FantomasOnline.Shared.ASTError) =
                 match e.Severity with
-                | ASTErrorSeverity.Error -> Color.Danger
-                | ASTErrorSeverity.Warning -> Color.Warning
+                | ASTErrorSeverity.Error -> Danger
+                | ASTErrorSeverity.Warning -> Warning
+                | _ -> Info
 
             errors
             |> List.mapi

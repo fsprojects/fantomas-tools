@@ -1,6 +1,6 @@
 module TriviaViewer.Server.Encoders
 
-open FSharp.Compiler.Range
+open FSharp.Compiler.Text
 open Thoth.Json.Net
 open Fantomas.TriviaTypes
 open TriviaViewer
@@ -38,7 +38,7 @@ let private triviaContentEncoder =
 
 let private encodeTriviaContent = mapToTriviaContent >> triviaContentEncoder
 
-let private encodeRange (range: range) =
+let private encodeRange (range: Range) =
     Encode.object
         [ "startLine", Encode.int range.Start.Line
           "startColumn", Encode.int range.Start.Column

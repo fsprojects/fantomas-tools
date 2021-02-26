@@ -82,8 +82,10 @@ module FormatCode =
                                 EndCol = e.Range.EndColumn }
                           Severity =
                               match e.Severity with
-                              | FSharpErrorSeverity.Warning -> ASTErrorSeverity.Warning
-                              | FSharpErrorSeverity.Error -> ASTErrorSeverity.Error
+                              | FSharpDiagnosticSeverity.Warning -> ASTErrorSeverity.Warning
+                              | FSharpDiagnosticSeverity.Error -> ASTErrorSeverity.Error
+                              | FSharpDiagnosticSeverity.Info -> ASTErrorSeverity.Info
+                              | FSharpDiagnosticSeverity.Hidden -> ASTErrorSeverity.Hidden
                           ErrorNumber = e.ErrorNumber
                           Message = e.Message })
                 |> Array.toList

@@ -3,7 +3,7 @@ module ASTViewer.Server.Encoders
 open Thoth.Json.Net
 open FSharp.Compiler.SourceCodeServices
 
-let private rangeEncoder (range: FSharp.Compiler.Range.range) =
+let private rangeEncoder (range: FSharp.Compiler.Text.Range) =
     Encode.object
         [ "startLine", Encode.int range.StartLine
           "startCol", Encode.int range.StartColumn
@@ -32,7 +32,7 @@ let private encodeKeyValue (k, v: obj) =
         | :? string as s -> Encode.string s
         | :? int as i -> Encode.int i
         | :? uint16 as ui -> Encode.uint16 ui
-        | :? FSharp.Compiler.Range.range as r -> rangeEncoder r
+        | :? FSharp.Compiler.Text.Range as r -> rangeEncoder r
         | :? Fantomas.AstTransformer.Id as id -> idEncoder id
         | :? FSharp.Compiler.SyntaxTree.SynModuleOrNamespaceKind as kind ->
             match kind with
@@ -41,7 +41,7 @@ let private encodeKeyValue (k, v: obj) =
             | FSharp.Compiler.SyntaxTree.SynModuleOrNamespaceKind.GlobalNamespace -> Encode.string "GlobalNamespace"
             | FSharp.Compiler.SyntaxTree.SynModuleOrNamespaceKind.NamedModule -> Encode.string "NamedModule"
         | :? (ref<bool>) as r -> encodeValue r.Value
-        | :? (option<FSharp.Compiler.Range.range>) as o -> Encode.option encodeValue o
+        | :? (option<FSharp.Compiler.Text.Range>) as o -> Encode.option encodeValue o
         | IsList l ->
             l
             |> Seq.cast
@@ -80,10 +80,12 @@ let rec tastNodeEncoder (node: TastTransformer.Tast.Node) =
 
 let private encodeFSharpErrorInfoSeverity =
     function
-    | FSharpErrorSeverity.Warning -> Encode.string "warning"
-    | FSharpErrorSeverity.Error -> Encode.string "error"
+    | FSharpDiagnosticSeverity.Warning -> Encode.string "warning"
+    | FSharpDiagnosticSeverity.Error -> Encode.string "error"
+    | FSharpDiagnosticSeverity.Hidden -> Encode.string "hidden"
+    | FSharpDiagnosticSeverity.Info -> Encode.string "info"
 
-let private encodeFSharpErrorInfo (info: FSharpErrorInfo) =
+let private encodeFSharpErrorInfo (info: FSharpDiagnostic) =
     Encode.object
         [ "subcategory", Encode.string info.Subcategory
           "range", rangeEncoder info.Range
@@ -91,7 +93,7 @@ let private encodeFSharpErrorInfo (info: FSharpErrorInfo) =
           "errorNumber", Encode.int info.ErrorNumber
           "message", Encode.string info.Message ]
 
-let encodeResponse nodeJson string (errors: FSharpErrorInfo array) =
+let encodeResponse nodeJson string (errors: FSharpDiagnostic array) =
     let errors =
         Array.map encodeFSharpErrorInfo errors
         |> Encode.array
