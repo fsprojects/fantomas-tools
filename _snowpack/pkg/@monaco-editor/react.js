@@ -675,6 +675,10 @@ function crateModelUri(monaco, path) {
   return monaco.Uri.parse(path);
 }
 
+function isUndefined(input) {
+  return input === undefined;
+}
+
 ({
   original: propTypes.string,
   modified: propTypes.string,
@@ -787,7 +791,10 @@ function Editor({
     monacoRef.current.editor.setModelLanguage(editorRef.current.getModel(), language);
   }, [language], isEditorReady);
   useUpdate(() => {
-    editorRef.current.revealLine(line);
+    // reason for undefined check: https://github.com/suren-atoyan/monaco-react/pull/188
+    if (!isUndefined(line)) {
+      editorRef.current.revealLine(line);
+    }
   }, [line], isEditorReady);
   useUpdate(() => {
     monacoRef.current.editor.setTheme(theme);
