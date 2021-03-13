@@ -1,38 +1,17 @@
 import * as react from "../../../_snowpack/pkg/react.js";
 import Editor from "../../js/Editor.js";
-import { EditorProp } from "../Editor.js";
-import { uncurry } from "../.fable/fable-library.3.1.1/Util.js";
-import { bind, some } from "../.fable/fable-library.3.1.1/Option.js";
-import { singleton, ofArray } from "../.fable/fable-library.3.1.1/List.js";
-import { keyValueList } from "../.fable/fable-library.3.1.1/MapUtil.js";
+import { bind } from "../.fable/fable-library.3.1.1/Option.js";
 import { mapIndexed } from "../.fable/fable-library.3.1.1/Array.js";
 import { printf, toText } from "../.fable/fable-library.3.1.1/String.js";
 import { BadgeProps, badge } from "../.fable/Fable.Reactstrap.0.5.1/Badge.fs.js";
 import { DOMAttr, HTMLAttr } from "../.fable/Fable.React.7.0.1/Fable.React.Props.fs.js";
+import { singleton } from "../.fable/fable-library.3.1.1/List.js";
 import { isEmpty } from "../.fable/fable-library.3.1.1/Seq.js";
 import { loader } from "../Loader.js";
 import { ButtonProps, button } from "../.fable/Fable.Reactstrap.0.5.1/Button.fs.js";
 import { Msg } from "./Model.js";
 import { versionBar } from "../VersionBar.js";
-import { MultiButtonSettings, multiButton, toggleButton, input } from "../SettingControls.js";
-
-function isEditorView(_arg1) {
-    if (_arg1.tag === 0) {
-        return true;
-    }
-    else {
-        return false;
-    }
-}
-
-function isRawView(_arg1) {
-    if (_arg1.tag === 1) {
-        return true;
-    }
-    else {
-        return false;
-    }
-}
+import { toggleButton, input } from "../SettingControls.js";
 
 function results(model, dispatch) {
     let result;
@@ -42,24 +21,15 @@ function results(model, dispatch) {
     }
     else {
         const copyOfStruct = matchValue;
-        if (copyOfStruct.tag === 1) {
-            result = react.createElement(Editor, {
-                language: "fsharp",
-                isReadOnly: true,
-                value: copyOfStruct.fields[0],
-            });
-        }
-        else if (model.View.tag === 0) {
-            const props_2 = ofArray([new EditorProp(2, "fsharp"), new EditorProp(3, true), new EditorProp(1, JSON.stringify(copyOfStruct.fields[0].Node, uncurry(2, void 0), some(4)))]);
-            result = react.createElement(Editor, keyValueList(props_2, 1));
-        }
-        else {
-            result = react.createElement(Editor, {
-                language: "fsharp",
-                isReadOnly: true,
-                value: copyOfStruct.fields[0].String,
-            });
-        }
+        result = ((copyOfStruct.tag === 1) ? react.createElement(Editor, {
+            language: "fsharp",
+            isReadOnly: true,
+            value: copyOfStruct.fields[0],
+        }) : react.createElement(Editor, {
+            language: "fsharp",
+            isReadOnly: true,
+            value: copyOfStruct.fields[0].String,
+        }));
     }
     let astErrors;
     const o_1 = bind((parsed_1) => {
@@ -116,15 +86,11 @@ export function commands(dispatch) {
 
 export function settings(model, dispatch) {
     return react.createElement(react.Fragment, {}, versionBar(toText(printf("FSC - %s"))(model.Version)), input("ast-defines", (arg) => {
-        dispatch(new Msg(8, arg));
+        dispatch(new Msg(6, arg));
     }, "Defines", "Enter your defines separated with a space", model.Defines), toggleButton((_arg1) => {
-        dispatch(new Msg(9, true));
+        dispatch(new Msg(7, true));
     }, (_arg2) => {
-        dispatch(new Msg(9, false));
-    }, "*.fsi", "*.fs", "File extension", model.IsFsi), multiButton("Mode", ofArray([new MultiButtonSettings("Editor", (_arg3) => {
-        dispatch(new Msg(6));
-    }, isEditorView(model.View)), new MultiButtonSettings("Raw", (_arg4) => {
-        dispatch(new Msg(7));
-    }, isRawView(model.View))])));
+        dispatch(new Msg(7, false));
+    }, "*.fsi", "*.fs", "File extension", model.IsFsi));
 }
 

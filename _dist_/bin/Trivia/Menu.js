@@ -51,6 +51,9 @@ function triviaContentToDetail(tc) {
         case 0: {
             return react.createElement(react.Fragment, {}, ...wrap("Keyword", tc.fields[0]));
         }
+        case 10: {
+            return react.createElement(react.Fragment, {}, ...wrap("EmbeddedIL", tc.fields[0]));
+        }
         default: {
             return "Newline";
         }

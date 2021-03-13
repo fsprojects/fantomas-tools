@@ -6,7 +6,7 @@ import { tryItem, map as map_1 } from "../.fable/fable-library.3.1.1/List.js";
 import { ActiveTab, Msg } from "./Model.js";
 
 function contentToClassName(c) {
-    const arg10 = (c.tag === 1) ? "number-content" : ((c.tag === 2) ? "string-content" : ((c.tag === 9) ? "char-content" : ((c.tag === 3) ? "ident-operator-keyword" : ((c.tag === 4) ? "ident-between-ticks" : ((c.tag === 5) ? "comment" : ((c.tag === 6) ? "newline" : ((c.tag === 7) ? "directive" : ((c.tag === 8) ? "newline-after" : "keyword"))))))));
+    const arg10 = (c.tag === 1) ? "number-content" : ((c.tag === 2) ? "string-content" : ((c.tag === 9) ? "char-content" : ((c.tag === 3) ? "ident-operator-keyword" : ((c.tag === 4) ? "ident-between-ticks" : ((c.tag === 5) ? "comment" : ((c.tag === 6) ? "newline" : ((c.tag === 7) ? "directive" : ((c.tag === 8) ? "newline-after" : ((c.tag === 10) ? "embedded-il" : "keyword")))))))));
     return toText(printf("nav-link-%s"))(arg10);
 }
 
@@ -40,6 +40,9 @@ function typeName(c) {
         }
         case 8: {
             return "Newline-after";
+        }
+        case 10: {
+            return "EmbeddedIL";
         }
         default: {
             return "Keyword";

@@ -52,12 +52,12 @@ export class TriviaContent extends Union {
         this.fields = fields;
     }
     cases() {
-        return ["Keyword", "Number", "StringContent", "IdentOperatorAsWord", "IdentBetweenTicks", "Comment", "Newline", "Directive", "NewlineAfter", "CharContent"];
+        return ["Keyword", "Number", "StringContent", "IdentOperatorAsWord", "IdentBetweenTicks", "Comment", "Newline", "Directive", "NewlineAfter", "CharContent", "EmbeddedIL"];
     }
 }
 
 export function TriviaContent$reflection() {
-    return union_type("TriviaViewer.Shared.TriviaContent", [], TriviaContent, () => [[["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", Comment$$reflection()]], [], [["directive", string_type]], [], [["Item", string_type]]]);
+    return union_type("TriviaViewer.Shared.TriviaContent", [], TriviaContent, () => [[["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", Comment$$reflection()]], [], [["directive", string_type]], [], [["Item", string_type]], [["Item", string_type]]]);
 }
 
 export class TriviaNode extends Record {
