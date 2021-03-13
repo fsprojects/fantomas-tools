@@ -29,9 +29,6 @@ Open http://localhost:9060
 
 * Open the repository via https://gitpod.io/#https://github.com/fsprojects/fantomas-tools
 
-* Each gitpod workspace has a unique url, this should be added as an environment variables:<br />
-    Example workspace url `https://azure-dragonfly-j2ukxl6p.ws-eu03.gitpod.io/` => `export GITPOD=azure-dragonfly-j2ukxl6p.ws-eu03`
-
 * Run `dotnet fake run build.fsx -t Gitpod`
 
 * Open browser for port `9060`

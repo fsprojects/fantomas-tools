@@ -10,7 +10,7 @@ let encodeUrlModel code model : JsonValue =
           "isFsi", Encode.bool model.IsFsi
           "code", Encode.string code ]
 
-let encodeInput (input: Input) =
+let encodeInput (input: Request) =
     Encode.object
         [ "sourceCode", Encode.string input.SourceCode
           "defines",

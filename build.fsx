@@ -121,9 +121,9 @@ Target.create "Watch" (fun _ ->
     watchMode localhostBackend cors)
 
 Target.create "GitPod" (fun _ ->
-    let gitpod = System.Environment.GetEnvironmentVariable "GITPOD"
-    printfn "GITPOD = %s" gitpod
-    let getBackendUrl port = sprintf "https://%i-%s.gitpod.io" port gitpod
+    let gitpodWorkspaceUrl = System.Environment.GetEnvironmentVariable "GITPOD_WORKSPACE_URL"
+    let gitpod = gitpodWorkspaceUrl.Replace("https://", System.String.Empty)
+    let getBackendUrl port = sprintf "https://%i-%s" port gitpod
     let getCorsUrl = getBackendUrl
     watchMode getBackendUrl getCorsUrl
 )

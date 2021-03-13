@@ -42,6 +42,7 @@ let private triviaContentToDetail tc =
     | Number n -> fragment [] (wrap "Number" n)
     | NewlineAfter -> str "NewlineAfter"
     | Keyword kw -> fragment [] (wrap "Keyword" kw)
+    | EmbeddedIL eil -> fragment [] (wrap "EmbeddedIL" eil)
 
 type MenuItem =
     { ClassName: string

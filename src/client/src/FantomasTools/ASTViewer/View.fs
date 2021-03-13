@@ -7,33 +7,18 @@ open FantomasTools.Client.ASTViewer.Model
 open FantomasTools.Client.Editor
 open Reactstrap
 
-let private isEditorView =
-    function
-    | Editor -> true
-    | _ -> false
-
-let private isRawView =
-    function
-    | Raw -> true
-    | _ -> false
 
 let private results model dispatch =
     let result =
         match model.Parsed with
         | Some (Ok parsed) ->
-            match model.View with
-            | Raw ->
-                editorInTab [ EditorProp.Language "fsharp"
-                              EditorProp.IsReadOnly true
-                              EditorProp.Value parsed.String ]
-            | Editor ->
-                editorInTab [ EditorProp.Language "fsharp"
-                              EditorProp.IsReadOnly true
-                              EditorProp.Value(Fable.Core.JS.JSON.stringify (parsed.Node, space = 4)) ]
+            editorInTab [ Language "fsharp"
+                          IsReadOnly true
+                          Value parsed.String ]
         | Some (Result.Error errors) ->
-            editorInTab [ EditorProp.Language "fsharp"
-                          EditorProp.IsReadOnly true
-                          EditorProp.Value errors ]
+            editorInTab [ Language "fsharp"
+                          IsReadOnly true
+                          Value errors ]
         | None -> str ""
 
     let astErrors =
@@ -125,12 +110,4 @@ let settings model dispatch =
             "*.fs"
             "File extension"
             model.IsFsi
-        SettingControls.multiButton
-            "Mode"
-            [ { IsActive = (isEditorView model.View)
-                Label = "Editor"
-                OnClick = (fun _ -> dispatch ShowEditor) }
-              { IsActive = (isRawView model.View)
-                Label = "Raw"
-                OnClick = (fun _ -> dispatch ShowRaw) } ]
     ]

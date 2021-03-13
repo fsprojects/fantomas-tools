@@ -26,6 +26,7 @@ type TriviaContent =
     | Directive of directive: string
     | NewlineAfter
     | CharContent of string
+    | EmbeddedIL of string
 
 type TriviaNode =
     { Type: TriviaNodeType

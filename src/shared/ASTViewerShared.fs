@@ -6,14 +6,6 @@ type Range =
       EndLine: int
       EndCol: int }
 
-type Id = { Ident: string; Range: Range option }
-
-type Node =
-    { Type: string
-      Range: Range option
-      Properties: obj
-      Childs: Node array }
-
 type ASTError =
     { SubCategory: string
       Range: Range
@@ -21,12 +13,11 @@ type ASTError =
       ErrorNumber: int
       Message: string }
 
-type Dto =
-    { Node: Node
-      String: string
+type Response =
+    { String: string
       Errors: ASTError array }
 
-type Input =
+type Request =
     { SourceCode: string
       Defines: string array
       IsFsi: bool }

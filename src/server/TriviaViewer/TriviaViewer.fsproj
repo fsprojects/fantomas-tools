@@ -18,11 +18,11 @@
   <ItemGroup>
     <Compile Include="../../../.deps/fantomas/src/Fantomas/RangeHelpers.fs" />
     <Compile Include="../../../.deps/fantomas/src/Fantomas/TriviaTypes.fs" />
+    <Compile Include="../../../.deps/fantomas/src/Fantomas/Dbg.fs" />
+    <Compile Include="../../../.deps/fantomas/src/Fantomas/Utils.fs" />
     <Compile Include="../../../.deps/fantomas/src/Fantomas/AstTransformer.fs" />
     <Compile Include="../../../.deps/fantomas/src/Fantomas/SourceOrigin.fs" />
     <Compile Include="../../../.deps/fantomas/src/Fantomas/Version.fs" />
-    <Compile Include="../../../.deps/fantomas/src/Fantomas/Dbg.fs" />
-    <Compile Include="../../../.deps/fantomas/src/Fantomas/Utils.fs" />
     <Compile Include="../../../.deps/fantomas/src/Fantomas/FormatConfig.fs" />
     <Compile Include="../../../.deps/fantomas/src/Fantomas/TriviaTypes.fs" />
     <Compile Include="../../../.deps/fantomas/src/Fantomas/TokenParserBoolExpr.fs" />

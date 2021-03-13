@@ -17,7 +17,7 @@ let private getVersion () =
     sprintf "%s/%s" backend "api/version"
     |> Http.getText
 
-let private fetchNodeRequest url (payload: Shared.Input) dispatch =
+let private fetchNodeRequest url (payload: Shared.Request) dispatch =
     let json = encodeInput payload
 
     Http.postJson url json
@@ -33,11 +33,11 @@ let private fetchNodeRequest url (payload: Shared.Input) dispatch =
             | _ -> Error body
             |> dispatch)
 
-let private fetchUntypedAST (payload: Shared.Input) dispatch =
+let private fetchUntypedAST (payload: Shared.Request) dispatch =
     let url = sprintf "%s/api/untyped-ast" backend
     fetchNodeRequest url payload dispatch
 
-let private fetchTypedAst (payload: Shared.Input) dispatch =
+let private fetchTypedAst (payload: Shared.Request) dispatch =
     let url = sprintf "%s/api/typed-ast" backend
     fetchNodeRequest url payload dispatch
 
@@ -48,7 +48,6 @@ let private initialModel =
       Parsed = None
       IsLoading = false
       Version = ""
-      View = Raw
       FSharpEditorState = Loading }
 
 let private getMessageFromError (ex: exn) = Error ex.Message
@@ -69,7 +68,7 @@ let init isActive : Model * Cmd<Msg> =
 let private getDefines (model: Model) =
     model.Defines.Split([| ' '; ','; ';' |], StringSplitOptions.RemoveEmptyEntries)
 
-let private modelToParseRequest sourceCode (model: Model) : Shared.Input =
+let private modelToParseRequest sourceCode (model: Model) : Shared.Request =
     { SourceCode = sourceCode
       Defines = getDefines model
       IsFsi = model.IsFsi }
@@ -119,8 +118,6 @@ let update code (msg: Msg) (model: Model) : Model * Cmd<Msg> =
         { model with IsLoading = true }, cmd
 
     | VersionFound version -> { model with Version = version }, Cmd.none
-    | ShowEditor -> { model with View = Editor }, Cmd.none
-    | ShowRaw -> { model with View = Raw }, Cmd.none
     | DefinesUpdated defines -> { model with Defines = defines }, Cmd.none
     | SetFsiFile isFsi -> { model with IsFsi = isFsi }, Cmd.none
     | HighLight hlr -> model, Cmd.ofSub (FantomasTools.Client.Editor.selectRange hlr)

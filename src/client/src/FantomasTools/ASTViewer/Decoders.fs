@@ -23,15 +23,6 @@ let decodeKeyValue : Decoder<obj> = fun _ -> Ok
 
 #nowarn "40"
 
-let rec private nodeDecoder : Decoder<Node> =
-    Decode.object
-        (fun get ->
-            { Type = get.Required.Field "type" Decode.string
-              Range = get.Optional.Field "range" rangeDecoder
-              Properties = get.Required.Field "properties" decodeKeyValue
-              Childs = get.Required.Field "childs" (Decode.array nodeDecoder) })
-
-
 let private decodeASTError : Decoder<ASTError> =
     Decode.object
         (fun get ->
@@ -41,11 +32,10 @@ let private decodeASTError : Decoder<ASTError> =
               ErrorNumber = get.Required.Field "errorNumber" Decode.int
               Message = get.Required.Field "message" Decode.string })
 
-let responseDecoder : Decoder<Dto> =
+let responseDecoder : Decoder<Response> =
     Decode.object
         (fun get ->
-            { Node = get.Required.Field "node" nodeDecoder
-              String = get.Required.Field "string" Decode.string
+            { String = get.Required.Field "string" Decode.string
               Errors = get.Required.Field "errors" (Decode.array decodeASTError) })
 
 let decodeResult json = Decode.fromString responseDecoder json

@@ -18,6 +18,7 @@ let private contentToClassName c =
     | Newline -> "newline"
     | Directive _ -> "directive"
     | NewlineAfter -> "newline-after"
+    | EmbeddedIL _ -> "embedded-il"
     |> sprintf "nav-link-%s"
 
 let private typeName c =
@@ -37,6 +38,7 @@ let private typeName c =
     | Newline -> "Newline"
     | Directive _ -> "Directive"
     | NewlineAfter -> "Newline-after"
+    | EmbeddedIL _ -> "EmbeddedIL"
 
 let private activeTrivia trivia =
     let title =

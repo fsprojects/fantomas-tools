@@ -179,27 +179,18 @@ module GetAST =
             let parseRequest = Decoders.decodeInputRequest json
 
             match parseRequest with
-            | Result.Ok input when (input.SourceCode.Length < Const.sourceSizeLimit) ->
+            | Ok input when (input.SourceCode.Length < Const.sourceSizeLimit) ->
                 let! astResult = parseAST log input
 
                 match astResult with
-                | Result.Ok (ast, errors) ->
-                    let node =
-                        match ast with
-                        | ParsedInput.ImplFile (ParsedImplFileInput.ParsedImplFileInput (_, _, _, _, hds, mns, _)) ->
-                            Fantomas.AstTransformer.astToNode hds mns
-
-                        | ParsedInput.SigFile (ParsedSigFileInput.ParsedSigFileInput (_, _, _, _, mns)) ->
-                            Fantomas.AstTransformer.sigAstToNode mns
-                        |> Encoders.astNodeEncoder
-
+                | Ok (ast, errors) ->
                     let responseJson =
-                        Encoders.encodeResponse node (sprintf "%A" ast) errors
+                        Encoders.encodeResponse (sprintf "%A" ast) errors
                         |> Encode.toString 2
 
                     return sendJson responseJson
                 | Error error -> return sendBadRequest (sprintf "%A" error)
-            | Result.Ok _ -> return sendTooLargeError ()
+            | Ok _ -> return sendTooLargeError ()
             | Error err -> return sendInternalError (sprintf "%A" err)
         }
 
@@ -248,12 +239,8 @@ module GetAST =
 
                 match tastResult with
                 | Result.Ok (tast, errors) ->
-                    let node =
-                        TastTransformer.tastToNode tast
-                        |> Encoders.tastNodeEncoder
-
                     let responseJson =
-                        Encoders.encodeResponse node (sprintf "%A" tast) errors
+                        Encoders.encodeResponse (sprintf "%A" tast) errors
                         |> Encode.toString 2
 
                     return sendJson responseJson

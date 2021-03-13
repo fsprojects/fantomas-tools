@@ -11,13 +11,13 @@ open FantomasTools.Client.Trivia.Menu
 
 let private typeName =
     function
-    | TriviaNodeType.Token t -> t
-    | TriviaNodeType.MainNode mn -> mn
+    | Token t -> t
+    | MainNode mn -> mn
 
 let private typeTitle =
     function
-    | TriviaNodeType.Token _ -> "Token"
-    | TriviaNodeType.MainNode _ -> "MainNode"
+    | Token _ -> "Token"
+    | MainNode _ -> "MainNode"
 
 let private rangeToText (r: Range) =
     sprintf "(%i,%i - %i,%i)" r.StartLine r.StartColumn r.EndLine r.EndColumn
@@ -57,6 +57,7 @@ let private triviaContentToDetail tc =
     | Number n -> fragment [] (wrap "Number" n)
     | NewlineAfter -> str "NewlineAfter"
     | Keyword kw -> fragment [] (wrap "Keyword" kw)
+    | EmbeddedIL eil -> fragment [] (wrap "EmbeddedIL" eil)
 
 
 
@@ -97,8 +98,8 @@ let view (model: Model) dispatch =
             (fun tn ->
                 let className =
                     match tn.Type with
-                    | TriviaNodeType.Token _ -> "nav-link-token"
-                    | TriviaNodeType.MainNode _ -> "nav-link-main-node"
+                    | Token _ -> "nav-link-token"
+                    | MainNode _ -> "nav-link-main-node"
 
                 { Label = typeName tn.Type
                   ClassName = className

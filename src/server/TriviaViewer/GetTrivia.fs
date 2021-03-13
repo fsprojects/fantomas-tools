@@ -103,40 +103,12 @@ module GetTrivia =
         )
 
     let private collectTriviaCandidates tokens ast =
-        let node =
+        let triviaNodesFromAST =
             match ast with
             | ParsedInput.ImplFile (ParsedImplFileInput.ParsedImplFileInput (_, _, _, _, hds, mns, _)) ->
                 astToNode hds mns
 
             | ParsedInput.SigFile (ParsedSigFileInput.ParsedSigFileInput (_, _, _, _, mns)) -> sigAstToNode mns
-
-        let rec flattenNodeToList (node: Node) =
-            [ yield node
-              yield!
-                  (node.Childs
-                   |> List.map flattenNodeToList
-                   |> List.collect id) ]
-
-        let mapNodeToTriviaNode (node: Node) =
-            node.Range
-            |> Option.map
-                (fun range ->
-                    let attributeParent =
-                        Map.tryFind "linesBetweenParent" node.Properties
-                        |> Option.bind
-                            (fun v ->
-                                match v with
-                                | :? int as i when (i > 0) -> Some i
-                                | _ -> None)
-
-                    match attributeParent with
-                    | Some i -> TriviaNodeAssigner(TriviaTypes.MainNode(node.Type), range, i)
-                    | None -> TriviaNodeAssigner(TriviaTypes.MainNode(node.Type), range))
-
-        let triviaNodesFromAST =
-            flattenNodeToList node
-            |> Trivia.filterNodes
-            |> List.choose mapNodeToTriviaNode
 
         let mkRange (sl, sc) (el, ec) =
             FSharp.Compiler.Text.Range.mkRange

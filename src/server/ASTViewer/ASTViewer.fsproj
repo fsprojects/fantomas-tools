@@ -17,8 +17,9 @@
     <ItemGroup>
         <None Include="paket.references" />
         <Compile Include="../../../.deps/fantomas/src/Fantomas/TriviaTypes.fs" />
+        <Compile Include="../../../.deps/fantomas/src/Fantomas/Dbg.fs" />
+        <Compile Include="../../../.deps/fantomas/src/Fantomas/Utils.fs" />
         <Compile Include="../../../.deps/fantomas/src/Fantomas/AstTransformer.fs" />
-        <Compile Include="TastTransformer.fs" />
         <Compile Include="..\..\shared\ASTViewerShared.fs" />
         <Compile Include="Encoders.fs" />
         <Compile Include="Decoders.fs" />
