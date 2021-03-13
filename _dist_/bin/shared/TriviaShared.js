@@ -1,5 +1,5 @@
-import { Record, Union } from "../.fable/fable-library.3.1.1/Types.js";
-import { option_type, list_type, bool_type, record_type, int32_type, union_type, string_type } from "../.fable/fable-library.3.1.1/Reflection.js";
+import { Record, Union } from "../.fable/fable-library.3.1.7/Types.js";
+import { option_type, list_type, bool_type, record_type, int32_type, union_type, string_type } from "../.fable/fable-library.3.1.7/Reflection.js";
 
 export class TriviaNodeType extends Union {
     constructor(tag, ...fields) {

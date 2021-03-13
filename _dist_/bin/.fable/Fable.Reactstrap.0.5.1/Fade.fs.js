@@ -1,8 +1,8 @@
-import { Union, Record } from "../fable-library.3.1.1/Types.js";
-import { union_type, lambda_type, unit_type, class_type, string_type, obj_type, bool_type, record_type, int32_type } from "../fable-library.3.1.1/Reflection.js";
+import { Union, Record } from "../fable-library.3.1.7/Types.js";
+import { union_type, lambda_type, unit_type, class_type, string_type, obj_type, bool_type, record_type, int32_type } from "../fable-library.3.1.7/Reflection.js";
+import { keyValueList } from "../fable-library.3.1.7/MapUtil.js";
 import * as react from "../../../../_snowpack/pkg/react.js";
 import { Fade } from "../../../../_snowpack/pkg/reactstrap.js";
-import { keyValueList } from "../fable-library.3.1.1/MapUtil.js";
 
 export class TimeoutEx extends Record {
     constructor(enter, exit) {
@@ -32,6 +32,7 @@ export function FadeProps$reflection() {
 }
 
 export function fade(props, elems) {
-    return react.createElement(Fade, keyValueList(props, 1), ...elems);
+    const fadeProps = keyValueList(props, 1);
+    return react.createElement(Fade, fadeProps, ...elems);
 }
 

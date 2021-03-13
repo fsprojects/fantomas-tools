@@ -1,9 +1,10 @@
-import { Union } from "../fable-library.3.1.1/Types.js";
-import { class_type, union_type, int32_type, array_type } from "../fable-library.3.1.1/Reflection.js";
-import { fill } from "../fable-library.3.1.1/Array.js";
-import { comparePrimitives, max } from "../fable-library.3.1.1/Util.js";
-import { some } from "../fable-library.3.1.1/Option.js";
-import { rangeNumber, singleton, collect, take, skip, append, delay } from "../fable-library.3.1.1/Seq.js";
+import { Union } from "../fable-library.3.1.7/Types.js";
+import { class_type, union_type, int32_type, array_type } from "../fable-library.3.1.7/Reflection.js";
+import { fill } from "../fable-library.3.1.7/Array.js";
+import { comparePrimitives, max } from "../fable-library.3.1.7/Util.js";
+import { some } from "../fable-library.3.1.7/Option.js";
+import { singleton, collect, take, skip, append, delay } from "../fable-library.3.1.7/Seq.js";
+import { rangeDouble } from "../fable-library.3.1.7/Range.js";
 
 export class RingState$1 extends Union {
     constructor(tag, ...fields) {
@@ -22,7 +23,7 @@ export function RingState$1$reflection(gen0) {
 
 export class RingBuffer$1 {
     constructor(size) {
-        this.state = (new RingState$1(0, fill(new Array(max(comparePrimitives, size, 10)), 0, max(comparePrimitives, size, 10), null), 0));
+        this.state = (new RingState$1(0, fill(new Array(max((x, y) => comparePrimitives(x, y), size, 10)), 0, max((x, y) => comparePrimitives(x, y), size, 10), null), 0));
     }
 }
 
@@ -79,6 +80,6 @@ export function RingBuffer$1__Push_2B595(__, item) {
 }
 
 function RingBuffer$1__doubleSize(this$, ix, items) {
-    return Array.from(delay(() => append(skip(ix, items), delay(() => append(take(ix, items), delay(() => collect((matchValue) => singleton(null), rangeNumber(0, 1, items.length))))))));
+    return Array.from(delay(() => append(skip(ix, items), delay(() => append(take(ix, items), delay(() => collect((matchValue) => singleton(null), rangeDouble(0, 1, items.length))))))));
 }
 

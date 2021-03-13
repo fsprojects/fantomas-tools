@@ -1,4 +1,4 @@
-import { class_type } from "../fable-library.3.1.1/Reflection.js";
+import { class_type } from "../fable-library.3.1.7/Reflection.js";
 
 export class Svg {
     constructor() {

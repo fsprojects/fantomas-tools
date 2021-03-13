@@ -1,6 +1,6 @@
-import { Record, Union } from "./.fable/fable-library.3.1.1/Types.js";
+import { Record, Union } from "./.fable/fable-library.3.1.7/Types.js";
 import { Msg$reflection as Msg$reflection_4, Model$reflection as Model$reflection_4, FantomasMode$reflection } from "./FantomasOnline/Model.js";
-import { record_type, bool_type, string_type, union_type } from "./.fable/fable-library.3.1.1/Reflection.js";
+import { record_type, bool_type, string_type, union_type } from "./.fable/fable-library.3.1.7/Reflection.js";
 import { Msg$reflection as Msg$reflection_1, Model$reflection as Model$reflection_1 } from "./Trivia/Model.js";
 import { Msg$reflection as Msg$reflection_2, Model$reflection as Model$reflection_2 } from "./FSharpTokens/Model.js";
 import { Msg$reflection as Msg$reflection_3, Model$reflection as Model$reflection_3 } from "./ASTViewer/Model.js";

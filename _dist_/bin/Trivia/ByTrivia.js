@@ -1,8 +1,8 @@
-import { printf, toText } from "../.fable/fable-library.3.1.1/String.js";
+import { printf, toText } from "../.fable/fable-library.3.1.7/String.js";
 import { menu, MenuItem, rangeToText } from "./Menu.js";
-import { map } from "../.fable/fable-library.3.1.1/Option.js";
+import { map } from "../.fable/fable-library.3.1.7/Option.js";
 import * as react from "../../../_snowpack/pkg/react.js";
-import { tryItem, map as map_1 } from "../.fable/fable-library.3.1.1/List.js";
+import { tryItem, map as map_1 } from "../.fable/fable-library.3.1.7/List.js";
 import { ActiveTab, Msg } from "./Model.js";
 
 function contentToClassName(c) {
@@ -51,33 +51,34 @@ function typeName(c) {
 }
 
 function activeTrivia(trivia) {
-    let matchValue, c, o;
+    let matchValue, i, c, c_1, nb, na, c_2, o, o_1;
     let title;
     const arg20 = rangeToText(trivia.Range);
     const arg10 = typeName(trivia.Item);
     title = toText(printf("%s %s"))(arg10)(arg20);
-    const content = map((c_3) => react.createElement("code", {}, c_3), (matchValue = trivia.Item, (matchValue.tag === 1) ? matchValue.fields[0] : ((matchValue.tag === 2) ? matchValue.fields[0] : ((matchValue.tag === 9) ? matchValue.fields[0] : ((matchValue.tag === 3) ? matchValue.fields[0] : ((matchValue.tag === 4) ? matchValue.fields[0] : ((matchValue.tag === 7) ? matchValue.fields[0] : ((matchValue.tag === 5) ? (c = matchValue.fields[0], (c.tag === 1) ? c.fields[0] : ((c.tag === 2) ? toText(printf("%s (newline before: %b) (newline after: %b)"))(c.fields[0])(c.fields[1])(c.fields[2]) : c.fields[0])) : (void 0)))))))));
+    const content = map((c_3) => react.createElement("code", {}, c_3), (matchValue = trivia.Item, (matchValue.tag === 1) ? (i = matchValue.fields[0], i) : ((matchValue.tag === 2) ? (i = matchValue.fields[0], i) : ((matchValue.tag === 9) ? (i = matchValue.fields[0], i) : ((matchValue.tag === 3) ? (i = matchValue.fields[0], i) : ((matchValue.tag === 4) ? (i = matchValue.fields[0], i) : ((matchValue.tag === 7) ? (i = matchValue.fields[0], i) : ((matchValue.tag === 5) ? (c = matchValue.fields[0], (c.tag === 1) ? (c_1 = c.fields[0], c_1) : ((c.tag === 2) ? (nb = c.fields[1], (na = c.fields[2], (c_2 = c.fields[0], toText(printf("%s (newline before: %b) (newline after: %b)"))(c_2)(nb)(na)))) : (c_1 = c.fields[0], c_1))) : (void 0)))))))));
     return react.createElement("div", {
         className: "tab-pane active",
     }, react.createElement("h2", {
         className: "mb-4",
-    }, title), (o = content, (o == null) ? null : o));
+    }, title), (o = content, (o == null) ? null : (o_1 = o, o_1)));
 }
 
 export function view(model, dispatch) {
-    let o;
+    let o, o_1;
     const navItems = map_1((t) => {
         const className = contentToClassName(t.Item);
         const label = typeName(t.Item);
         return new MenuItem(className, label, label, t.Range);
     }, model.Trivia);
-    const activeTrivia_1 = map(activeTrivia, tryItem(model.ActiveByTriviaIndex, model.Trivia));
+    const onClick = (idx) => {
+        dispatch(new Msg(3, new ActiveTab(1), idx));
+    };
+    const activeTrivia_1 = map((trivia) => activeTrivia(trivia), tryItem(model.ActiveByTriviaIndex, model.Trivia));
     return react.createElement("div", {
         className: "d-flex h-100",
-    }, menu((idx) => {
-        dispatch(new Msg(3, new ActiveTab(1), idx));
-    }, model.ActiveByTriviaIndex, navItems), react.createElement("div", {
+    }, menu(onClick, model.ActiveByTriviaIndex, navItems), react.createElement("div", {
         className: "bg-light flex-grow-1 py-2 px-4 tab-content overflow-auto",
-    }, (o = activeTrivia_1, (o == null) ? null : o)));
+    }, (o = activeTrivia_1, (o == null) ? null : (o_1 = o, o_1))));
 }
 

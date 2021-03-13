@@ -3,11 +3,11 @@ import * as react from "../../_snowpack/pkg/react.js";
 import { InputProps, input as input_1 } from "./.fable/Fable.Reactstrap.0.5.1/Input.fs.js";
 import { Prop, DOMAttr, HTMLAttr } from "./.fable/Fable.React.7.0.1/Fable.React.Props.fs.js";
 import { Browser_Types_Event__Event_get_Value } from "./.fable/Fable.React.7.0.1/Fable.React.Extensions.fs.js";
-import { map, singleton, ofArray } from "./.fable/fable-library.3.1.1/List.js";
+import { toArray, map, singleton, ofArray } from "./.fable/fable-library.3.1.7/List.js";
 import { ButtonProps, button } from "./.fable/Fable.Reactstrap.0.5.1/Button.fs.js";
 import { ButtonGroupProps, buttonGroup } from "./.fable/Fable.Reactstrap.0.5.1/ButtonGroup.fs.js";
-import { Record } from "./.fable/fable-library.3.1.1/Types.js";
-import { record_type, bool_type, lambda_type, unit_type, obj_type, string_type } from "./.fable/fable-library.3.1.1/Reflection.js";
+import { Record } from "./.fable/fable-library.3.1.7/Types.js";
+import { record_type, bool_type, lambda_type, unit_type, obj_type, string_type } from "./.fable/fable-library.3.1.7/Reflection.js";
 
 export function input(key, onChange, labelValue, placeholder, value) {
     return formGroup([], [react.createElement("label", {}, labelValue), input_1([new InputProps(13, ofArray([new HTMLAttr(128, placeholder), new DOMAttr(9, (ev) => {
@@ -16,7 +16,8 @@ export function input(key, onChange, labelValue, placeholder, value) {
 }
 
 function toggleButton_(onClick, active, label) {
-    return button([new ButtonProps(9, ofArray([new HTMLAttr(64, active ? "rounded-0 text-white" : "rounded-0"), new Prop(0, label), new DOMAttr(40, onClick)])), new ButtonProps(2, !active)], [label]);
+    const className = active ? "rounded-0 text-white" : "rounded-0";
+    return button([new ButtonProps(9, ofArray([new HTMLAttr(64, className), new Prop(0, label), new DOMAttr(40, onClick)])), new ButtonProps(2, !active)], [label]);
 }
 
 export function toggleButton(onTrue, onFalse, labelTrue, labelFalse, labelValue, value) {
@@ -37,9 +38,14 @@ export function MultiButtonSettings$reflection() {
 }
 
 export function multiButton(labelValue, options) {
-    const buttons = map((_arg1) => toggleButton_((arg00) => {
-        _arg1.OnClick(arg00);
-    }, _arg1.IsActive, _arg1.Label), options);
-    return formGroup([], [react.createElement("label", {}, labelValue), react.createElement("br", {}), buttonGroup([new ButtonGroupProps(4, singleton(new HTMLAttr(64, "btn-group-toggle rounded-0")))], [Array.from(buttons)])]);
+    const buttons = map((_arg1) => {
+        const o = _arg1.OnClick;
+        const l = _arg1.Label;
+        const i = _arg1.IsActive;
+        return toggleButton_((arg00) => {
+            o(arg00);
+        }, i, l);
+    }, options);
+    return formGroup([], [react.createElement("label", {}, labelValue), react.createElement("br", {}), buttonGroup([new ButtonGroupProps(4, singleton(new HTMLAttr(64, "btn-group-toggle rounded-0")))], [toArray(buttons)])]);
 }
 

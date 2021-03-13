@@ -1,10 +1,10 @@
-import { Union } from "../fable-library.3.1.1/Types.js";
-import { union_type, list_type, class_type, obj_type, lambda_type, unit_type, string_type, bool_type } from "../fable-library.3.1.1/Reflection.js";
+import { Union } from "../fable-library.3.1.7/Types.js";
+import { union_type, list_type, class_type, obj_type, lambda_type, unit_type, string_type, bool_type } from "../fable-library.3.1.7/Reflection.js";
 import { FadeProps$reflection } from "./Fade.fs.js";
+import { singleton, map, reduce, isEmpty } from "../fable-library.3.1.7/Seq.js";
+import { keyValueList } from "../fable-library.3.1.7/MapUtil.js";
 import * as react from "../../../../_snowpack/pkg/react.js";
 import { Modal } from "../../../../_snowpack/pkg/reactstrap.js";
-import { singleton, map, reduce, isEmpty } from "../fable-library.3.1.1/Seq.js";
-import { keyValueList } from "../fable-library.3.1.1/MapUtil.js";
 
 export class ModalProps extends Union {
     constructor(tag, ...fields) {
@@ -22,22 +22,26 @@ export function ModalProps$reflection() {
 }
 
 export function modal(props, elems) {
-    return react.createElement(Modal, isEmpty(props) ? {} : reduce((a, b) => Object.assign(a, b), map((prop) => {
+    const modalProps = isEmpty(props) ? {} : reduce((a, b) => Object.assign(a, b), map((prop) => {
         switch (prop.tag) {
             case 21: {
+                const fade = prop.fields[0];
                 return {
-                    backdropTransition: keyValueList(prop.fields[0], 1),
+                    backdropTransition: keyValueList(fade, 1),
                 };
             }
             case 22: {
+                const fade_1 = prop.fields[0];
                 return {
-                    modalTransition: keyValueList(prop.fields[0], 1),
+                    modalTransition: keyValueList(fade_1, 1),
                 };
             }
             default: {
-                return keyValueList(singleton(prop), 1);
+                const prop_1 = prop;
+                return keyValueList(singleton(prop_1), 1);
             }
         }
-    }, props)), ...elems);
+    }, props));
+    return react.createElement(Modal, modalProps, ...elems);
 }
 

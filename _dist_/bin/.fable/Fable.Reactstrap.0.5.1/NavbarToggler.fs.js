@@ -1,8 +1,8 @@
-import { Union } from "../fable-library.3.1.1/Types.js";
-import { union_type, list_type, class_type, obj_type, string_type } from "../fable-library.3.1.1/Reflection.js";
-import { keyValueList } from "../fable-library.3.1.1/MapUtil.js";
-import { choose, collect } from "../fable-library.3.1.1/Seq.js";
-import { empty } from "../fable-library.3.1.1/List.js";
+import { Union } from "../fable-library.3.1.7/Types.js";
+import { union_type, list_type, class_type, obj_type, string_type } from "../fable-library.3.1.7/Reflection.js";
+import { keyValueList } from "../fable-library.3.1.7/MapUtil.js";
+import { choose, collect } from "../fable-library.3.1.7/Seq.js";
+import { empty } from "../fable-library.3.1.7/List.js";
 import * as react from "../../../../_snowpack/pkg/react.js";
 import { NavbarToggler } from "../../../../_snowpack/pkg/reactstrap.js";
 
@@ -24,7 +24,8 @@ export function NavbarTogglerProps$reflection() {
 export function navbarToggler(props, elems) {
     const customProps = keyValueList(collect((_arg1) => {
         if (_arg1.tag === 2) {
-            return _arg1.fields[0];
+            const props_1 = _arg1.fields[0];
+            return props_1;
         }
         else {
             return empty();
@@ -35,9 +36,11 @@ export function navbarToggler(props, elems) {
             return void 0;
         }
         else {
-            return _arg2;
+            const prop = _arg2;
+            return prop;
         }
     }, props), 1);
-    return react.createElement(NavbarToggler, Object.assign({}, customProps, typeProps), ...elems);
+    const props_2 = Object.assign({}, customProps, typeProps);
+    return react.createElement(NavbarToggler, props_2, ...elems);
 }
 

@@ -1,5 +1,6 @@
-import { Record } from "../fable-library.3.1.1/Types.js";
-import { array_type, record_type, class_type, unit_type, lambda_type, string_type } from "../fable-library.3.1.1/Reflection.js";
+import { Record } from "../fable-library.3.1.7/Types.js";
+import { array_type, record_type, class_type, unit_type, lambda_type, string_type } from "../fable-library.3.1.7/Reflection.js";
+import { checkArity } from "../fable-library.3.1.7/Util.js";
 import { Component } from "../../../../_snowpack/pkg/react.js";
 import * as react from "../../../../_snowpack/pkg/react.js";
 
@@ -45,13 +46,13 @@ export function ReactiveComponents_Model$2$reflection(gen0, gen1) {
 export class ReactiveComponents_ReactiveCom$3 extends Component {
     constructor(initProps) {
         super(initProps);
-        this.state = (new ReactiveComponents_State$1(initProps.init(initProps.props)));
+        this.state = (new ReactiveComponents_State$1(checkArity(1, initProps.init)(initProps.props)));
     }
     render() {
         const this$ = this;
         const model = new ReactiveComponents_Model$2((this$.props).props, (this$.state).value, Array.prototype.concat(this$.props.children || []));
         return (this$.props).view(model, (msg) => {
-            const newState = (this$.props).update(msg, (this$.state).value);
+            const newState = checkArity(2, (this$.props).update)(msg, (this$.state).value);
             this$.setState(((_arg2, _arg1) => (new ReactiveComponents_State$1(newState))));
         });
     }

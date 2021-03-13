@@ -1,16 +1,16 @@
-import { toString as toString_1 } from "../fable-library.3.1.1/Decimal.js";
-import { mapIndexed, map as map_2, fold, getEnumerator } from "../fable-library.3.1.1/Seq.js";
-import { empty, map as map_3, tryFind, add, toList } from "../fable-library.3.1.1/Map.js";
-import { toString as toString_2 } from "../fable-library.3.1.1/BigInt.js";
-import { toString as toString_3 } from "../fable-library.3.1.1/Date.js";
-import { toString as toString_4 } from "../fable-library.3.1.1/TimeSpan.js";
-import { Lazy, mapCurriedArgs, uncurry } from "../fable-library.3.1.1/Util.js";
-import { defaultArg, value as value_34, map, defaultArgWith, some } from "../fable-library.3.1.1/Option.js";
-import { toString as toString_5, FSharpRef } from "../fable-library.3.1.1/Types.js";
-import { class_type, getGenerics, getGenericTypeDefinition, getTupleFields, getTupleElements, isTuple, isGenericType, getEnumUnderlyingType, isEnum, getElementType, isArray, getUnionCaseFields, getUnionFields, isUnion, getRecordElements, getRecordField, name, isRecord, fullName } from "../fable-library.3.1.1/Reflection.js";
-import { fill, map as map_1 } from "../fable-library.3.1.1/Array.js";
+import { toString as toString_1 } from "../fable-library.3.1.7/Decimal.js";
+import { Lazy, mapCurriedArgs, uncurry, getEnumerator } from "../fable-library.3.1.7/Util.js";
+import { empty, map as map_3, tryFind, add, toList } from "../fable-library.3.1.7/Map.js";
+import { toString as toString_2 } from "../fable-library.3.1.7/BigInt.js";
+import { toString as toString_3 } from "../fable-library.3.1.7/Date.js";
+import { toString as toString_4 } from "../fable-library.3.1.7/TimeSpan.js";
+import { defaultArg, value as value_34, map, defaultArgWith, some } from "../fable-library.3.1.7/Option.js";
+import { toString as toString_5, FSharpRef } from "../fable-library.3.1.7/Types.js";
+import { class_type, getGenerics, getGenericTypeDefinition, getTupleFields, getTupleElements, isTuple, isGenericType, getEnumUnderlyingType, isEnum, getElementType, isArray, getUnionCaseFields, getUnionFields, isUnion, getRecordElements, getRecordField, name, isRecord, fullName } from "../fable-library.3.1.7/Reflection.js";
+import { fill, map as map_1 } from "../fable-library.3.1.7/Array.js";
 import { Util_CachedEncoders, Util_Cache$1__GetOrAdd_43981464, CaseStrategy, Util_Casing_convert } from "./Types.fs.js";
-import { toFail, printf, toText } from "../fable-library.3.1.1/String.js";
+import { mapIndexed, map as map_2, fold } from "../fable-library.3.1.7/Seq.js";
+import { toFail, printf, toText } from "../fable-library.3.1.7/String.js";
 
 export function guid(value) {
     return value;
@@ -28,7 +28,9 @@ export function object(values) {
     try {
         while (enumerator["System.Collections.IEnumerator.MoveNext"]()) {
             const forLoopVar = enumerator["System.Collections.Generic.IEnumerator`1.get_Current"]();
-            o[forLoopVar[0]] = forLoopVar[1];
+            const value = forLoopVar[1];
+            const key = forLoopVar[0];
+            o[key] = value;
         }
     }
     finally {
@@ -214,16 +216,16 @@ function autoEncoder(extra, caseStrategy, skipNullField, t) {
         else if (isEnum(t)) {
             const enumType = fullName(getEnumUnderlyingType(t));
             if (enumType === "System.SByte") {
-                return sbyte;
+                return (value_1) => sbyte(value_1);
             }
             else if (enumType === "System.Byte") {
-                return byte;
+                return (value_2) => byte(value_2);
             }
             else if (enumType === "System.Int16") {
-                return int16;
+                return (value_3) => int16(value_3);
             }
             else if (enumType === "System.UInt16") {
-                return uint16;
+                return (value_4) => uint16(value_4);
             }
             else if (enumType === "System.Int32") {
                 return (value_5) => value_5;
@@ -234,7 +236,7 @@ function autoEncoder(extra, caseStrategy, skipNullField, t) {
             else {
                 const arg10 = fullName(t);
                 const clo2 = toFail(printf("Cannot generate auto encoder for %s.\nThoth.Json.Net only support the folluwing enum types:\n- sbyte\n- byte\n- int16\n- uint16\n- int\n- uint32\nIf you can\u0027t use one of these types, please pass an extra encoder.\n                    "))(arg10);
-                return clo2;
+                return (arg20) => clo2(arg20);
             }
         }
         else if (isGenericType(t)) {
@@ -264,18 +266,22 @@ function autoEncoder(extra, caseStrategy, skipNullField, t) {
                     const valueEncoder = autoEncoder(extra, caseStrategy, skipNullField, getGenerics(t)[1]);
                     if ((fullName(keyType) === "System.String") ? true : (fullName(keyType) === "System.Guid")) {
                         return (value_12) => fold((target, _arg1) => {
-                            const activePatternResult11764 = _arg1;
-                            target[activePatternResult11764[0]]=valueEncoder(activePatternResult11764[1]);
+                            const activePatternResult11774 = _arg1;
+                            const v_1 = activePatternResult11774[1];
+                            const k = activePatternResult11774[0];
+                            target[k]=valueEncoder(v_1);
                             return target;
                         }, {}, value_12);
                     }
                     else {
                         let keyEncoder;
                         const clo4 = autoEncoder(extra, caseStrategy, skipNullField, keyType);
-                        keyEncoder = (clo4);
+                        keyEncoder = ((arg40) => clo4(arg40));
                         return (value_13) => seq(map_2((_arg2) => {
-                            const activePatternResult11768 = _arg2;
-                            return [keyEncoder(activePatternResult11768[0]), valueEncoder(activePatternResult11768[1])];
+                            const activePatternResult11778 = _arg2;
+                            const v_2 = activePatternResult11778[1];
+                            const k_1 = activePatternResult11778[0];
+                            return [keyEncoder(k_1), valueEncoder(v_2)];
                         }, value_13));
                     }
                 }
@@ -294,16 +300,16 @@ function autoEncoder(extra, caseStrategy, skipNullField, t) {
             return (value_16) => value_16;
         }
         else if (fullname === "System.SByte") {
-            return sbyte;
+            return (value_18) => sbyte(value_18);
         }
         else if (fullname === "System.Byte") {
-            return byte;
+            return (value_19) => byte(value_19);
         }
         else if (fullname === "System.Int16") {
-            return int16;
+            return (value_20) => int16(value_20);
         }
         else if (fullname === "System.UInt16") {
-            return uint16;
+            return (value_21) => uint16(value_21);
         }
         else if (fullname === "System.Int32") {
             return (value_22) => value_22;
@@ -318,16 +324,16 @@ function autoEncoder(extra, caseStrategy, skipNullField, t) {
             return (value_28) => value_28;
         }
         else if (fullname === "System.DateTime") {
-            return datetime;
+            return (value_30) => datetime(value_30);
         }
         else if (fullname === "System.DateTimeOffset") {
-            return datetimeOffset;
+            return (value_31) => datetimeOffset(value_31);
         }
         else if (fullname === "System.TimeSpan") {
-            return timespan;
+            return (value_32) => timespan(value_32);
         }
         else if (fullname === "System.Guid") {
-            return guid;
+            return (value_33) => guid(value_33);
         }
         else if (fullname === "System.Object") {
             return (x_1) => x_1;
@@ -344,7 +350,11 @@ function autoEncoder(extra, caseStrategy, skipNullField, t) {
 
 function makeExtra(extra) {
     if (extra != null) {
-        return map_3((_arg2, tupledArg) => (new FSharpRef(tupledArg[0])), extra.Coders);
+        const e = extra;
+        return map_3((_arg2, tupledArg) => {
+            const enc = tupledArg[0];
+            return new FSharpRef(enc);
+        }, e.Coders);
     }
     else {
         return empty();
@@ -361,11 +371,15 @@ export function Auto$reflection() {
 }
 
 export function Auto_generateEncoderCached_Z127D9D79(caseStrategy, extra, skipNullField, resolver) {
-    let y_1, y;
     const t = value_34(resolver).ResolveType();
     const caseStrategy_1 = defaultArg(caseStrategy, new CaseStrategy(0));
     const skipNullField_1 = defaultArg(skipNullField, true);
-    return Util_Cache$1__GetOrAdd_43981464(Util_CachedEncoders, (y_1 = (y = fullName(t), toString_5(caseStrategy_1) + y), defaultArg(map((e) => e.Hash, extra), "") + y_1), () => autoEncoder(makeExtra(extra), caseStrategy_1, skipNullField_1, t));
+    let key;
+    let y_1;
+    const y = fullName(t);
+    y_1 = (toString_5(caseStrategy_1) + y);
+    key = (defaultArg(map((e) => e.Hash, extra), "") + y_1);
+    return Util_Cache$1__GetOrAdd_43981464(Util_CachedEncoders, key, () => autoEncoder(makeExtra(extra), caseStrategy_1, skipNullField_1, t));
 }
 
 export function Auto_generateEncoder_Z127D9D79(caseStrategy, extra, skipNullField, resolver) {
@@ -376,7 +390,8 @@ export function Auto_generateEncoder_Z127D9D79(caseStrategy, extra, skipNullFiel
 }
 
 export function Auto_toString_5A41365E(space, value, caseStrategy, extra, skipNullField, resolver) {
-    return toString(space, Auto_generateEncoder_Z127D9D79(caseStrategy, extra, skipNullField, resolver)(value));
+    const encoder = Auto_generateEncoder_Z127D9D79(caseStrategy, extra, skipNullField, resolver);
+    return toString(space, encoder(value));
 }
 
 export function encode(space, value) {

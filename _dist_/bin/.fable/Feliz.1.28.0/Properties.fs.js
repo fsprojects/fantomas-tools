@@ -1,7 +1,7 @@
-import { join } from "../fable-library.3.1.1/String.js";
-import { length, ofArray, map } from "../fable-library.3.1.1/List.js";
-import { milliseconds, seconds, minutes, hours } from "../fable-library.3.1.1/TimeSpan.js";
-import { map as map_1 } from "../fable-library.3.1.1/Seq.js";
+import { join } from "../fable-library.3.1.7/String.js";
+import { length, ofArray, map } from "../fable-library.3.1.7/List.js";
+import { milliseconds, seconds, minutes, hours } from "../fable-library.3.1.7/TimeSpan.js";
+import { map as map_1 } from "../fable-library.3.1.7/Seq.js";
 
 export function PropHelpers_createClockValue(duration) {
     let i_1;
@@ -9,13 +9,21 @@ export function PropHelpers_createClockValue(duration) {
 }
 
 export function PropHelpers_createKeySplines(values) {
-    return join("; ", map_1((tupledArg) => ((((((tupledArg[0] + " ") + tupledArg[1]) + " ") + tupledArg[2]) + " ") + tupledArg[3]), values));
+    return join("; ", map_1((tupledArg) => {
+        const x1 = tupledArg[0];
+        const y1 = tupledArg[1];
+        const x2 = tupledArg[2];
+        const y2 = tupledArg[3];
+        return (((((x1 + " ") + y1) + " ") + x2) + " ") + y2;
+    }, values));
 }
 
 export function PropHelpers_createOnKey(key, handler, ev) {
     const patternInput = key;
+    const shift = patternInput[2];
     const pressedKey = patternInput[0];
-    const matchValue = [patternInput[1], patternInput[2]];
+    const ctrl = patternInput[1];
+    const matchValue = [ctrl, shift];
     let pattern_matching_result;
     if (matchValue[0]) {
         if (matchValue[1]) {
@@ -115,11 +123,19 @@ export function PropHelpers_createOnKey(key, handler, ev) {
 }
 
 export function PropHelpers_createPointsFloat(coordinates) {
-    return join(" ", map_1((tupledArg) => ((tupledArg[0] + ",") + tupledArg[1]), coordinates));
+    return join(" ", map_1((tupledArg) => {
+        const x = tupledArg[0];
+        const y = tupledArg[1];
+        return (x + ",") + y;
+    }, coordinates));
 }
 
 export function PropHelpers_createPointsInt(coordinates) {
-    return join(" ", map_1((tupledArg) => ((tupledArg[0] + ",") + tupledArg[1]), coordinates));
+    return join(" ", map_1((tupledArg) => {
+        const x = tupledArg[0] | 0;
+        const y = tupledArg[1] | 0;
+        return (x + ",") + y;
+    }, coordinates));
 }
 
 export function PropHelpers_createSvgPathFloat(path) {

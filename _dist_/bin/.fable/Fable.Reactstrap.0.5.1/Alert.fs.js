@@ -1,9 +1,9 @@
-import { Union } from "../fable-library.3.1.1/Types.js";
-import { union_type, list_type, lambda_type, unit_type, bool_type, string_type, class_type, obj_type } from "../fable-library.3.1.1/Reflection.js";
+import { Union } from "../fable-library.3.1.7/Types.js";
+import { union_type, list_type, lambda_type, unit_type, bool_type, string_type, class_type, obj_type } from "../fable-library.3.1.7/Reflection.js";
 import { TransitionProps$reflection } from "./Common.fs.js";
-import { keyValueList } from "../fable-library.3.1.1/MapUtil.js";
-import { choose, collect } from "../fable-library.3.1.1/Seq.js";
-import { empty } from "../fable-library.3.1.1/List.js";
+import { keyValueList } from "../fable-library.3.1.7/MapUtil.js";
+import { choose, collect } from "../fable-library.3.1.7/Seq.js";
+import { empty } from "../fable-library.3.1.7/List.js";
 import * as react from "../../../../_snowpack/pkg/react.js";
 import { Alert } from "../../../../_snowpack/pkg/reactstrap.js";
 
@@ -25,7 +25,8 @@ export function AlertProps$reflection() {
 export function alert(props, elems) {
     const customProps = keyValueList(collect((_arg1) => {
         if (_arg1.tag === 6) {
-            return _arg1.fields[0];
+            const props_1 = _arg1.fields[0];
+            return props_1;
         }
         else {
             return empty();
@@ -36,9 +37,11 @@ export function alert(props, elems) {
             return void 0;
         }
         else {
-            return _arg2;
+            const prop = _arg2;
+            return prop;
         }
     }, props), 1);
-    return react.createElement(Alert, Object.assign({}, customProps, typeProps), ...elems);
+    const props_2 = Object.assign({}, customProps, typeProps);
+    return react.createElement(Alert, props_2, ...elems);
 }
 

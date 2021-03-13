@@ -1,8 +1,8 @@
-import { Union } from "../fable-library.3.1.1/Types.js";
-import { union_type, list_type, class_type } from "../fable-library.3.1.1/Reflection.js";
+import { Union } from "../fable-library.3.1.7/Types.js";
+import { union_type, list_type, class_type } from "../fable-library.3.1.7/Reflection.js";
+import { keyValueList } from "../fable-library.3.1.7/MapUtil.js";
 import * as react from "../../../../_snowpack/pkg/react.js";
 import { PopoverHeader } from "../../../../_snowpack/pkg/reactstrap.js";
-import { keyValueList } from "../fable-library.3.1.1/MapUtil.js";
 
 export class PopoverHeaderProps extends Union {
     constructor(tag, ...fields) {
@@ -20,6 +20,7 @@ export function PopoverHeaderProps$reflection() {
 }
 
 export function popoverHeader(props, elems) {
-    return react.createElement(PopoverHeader, keyValueList(props, 1), ...elems);
+    const props_1 = keyValueList(props, 1);
+    return react.createElement(PopoverHeader, props_1, ...elems);
 }
 

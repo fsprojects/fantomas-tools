@@ -1,16 +1,15 @@
-import { bind, map } from "../fable-library.3.1.1/Option.js";
+import { bind, map } from "../fable-library.3.1.7/Option.js";
 
 export const Impl_allowsPassiveEvents = (() => {
     let passive = false;
     try {
         if ((typeof window !== 'undefined') ? (typeof window.addEventListener === 'function') : false) {
-            window.addEventListener("testPassiveEventSupport", (value) => {
-                void value;
-            }, {
+            const options = {
                 passive: true,
-            });
+            };
+            window.addEventListener("testPassiveEventSupport", (value) => {
+            }, options);
             window.removeEventListener("testPassiveEventSupport", (value_1) => {
-                void value_1;
             });
         }
     }

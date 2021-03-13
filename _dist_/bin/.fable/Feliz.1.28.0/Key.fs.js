@@ -91,15 +91,20 @@ export const key_z = key_create("z");
 
 export function key_ctrl(key) {
     const patternInput = key;
-    return [patternInput[0], true, patternInput[2]];
+    const c = patternInput[2];
+    const a = patternInput[0];
+    return [a, true, c];
 }
 
 export function key_shift(key) {
     const patternInput = key;
-    return [patternInput[0], patternInput[1], true];
+    const b = patternInput[1];
+    const a = patternInput[0];
+    return [a, b, true];
 }
 
 export function key_ctrlAndShift(key) {
-    return [key[0], true, true];
+    const a = key[0];
+    return [a, true, true];
 }
 

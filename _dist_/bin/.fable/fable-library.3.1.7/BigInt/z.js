@@ -32,7 +32,13 @@ export class BigInteger extends Record {
     }
     Equals(obj) {
         const this$ = this;
-        return (obj instanceof BigInteger) ? BigInteger_op_Equality_56F059C0(this$, obj) : false;
+        if (obj instanceof BigInteger) {
+            const that = obj;
+            return BigInteger_op_Equality_56F059C0(this$, that);
+        }
+        else {
+            return false;
+        }
     }
     GetHashCode() {
         const x = this;
@@ -41,7 +47,8 @@ export class BigInteger extends Record {
     CompareTo(obj) {
         const this$ = this;
         if (obj instanceof BigInteger) {
-            return BigInteger_compare_56F059C0(this$, obj) | 0;
+            const that = obj;
+            return BigInteger_compare_56F059C0(this$, that) | 0;
         }
         else {
             throw (new Error("the objects are not comparable\\nParameter name: obj"));
@@ -59,7 +66,7 @@ export function BigInteger_$ctor_Z2BE94A1(signInt, v) {
 
 (() => {
     BigInteger.smallLim = 4096;
-    BigInteger.smallPosTab = initialize(BigInteger.smallLim, BigNatModule_ofInt32);
+    BigInteger.smallPosTab = initialize(BigInteger.smallLim, (n) => BigNatModule_ofInt32(n));
     BigInteger.one = BigInteger_$ctor_Z524259A4(1);
     BigInteger.two = BigInteger_$ctor_Z524259A4(2);
     BigInteger.zero = BigInteger_$ctor_Z524259A4(0);
@@ -440,7 +447,8 @@ export function BigInteger_op_UnaryNegation_Z665282C2(z) {
         return BigInteger_get_Zero();
     }
     else {
-        return BigInteger_create_Z2BE94A1(op_UnaryNegation_Int32(matchValue), BigInteger__get_V(z));
+        const i = matchValue | 0;
+        return BigInteger_create_Z2BE94A1(op_UnaryNegation_Int32(i), BigInteger__get_V(z));
     }
 }
 

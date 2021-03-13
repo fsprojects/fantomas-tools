@@ -1,7 +1,6 @@
-import { Result_MapError, Result_Map, FSharpResult$2 } from "../fable-library.3.1.1/Choice.js";
-import { class_type } from "../fable-library.3.1.1/Reflection.js";
-import { getEnumerator } from "../fable-library.3.1.1/Seq.js";
-import { equals } from "../fable-library.3.1.1/Util.js";
+import { Result_MapError, Result_Map, FSharpResult$2 } from "../fable-library.3.1.7/Choice.js";
+import { class_type } from "../fable-library.3.1.7/Reflection.js";
+import { equals, getEnumerator } from "../fable-library.3.1.7/Util.js";
 
 export function reject(reason) {
     return Promise.reject(reason);
@@ -18,10 +17,12 @@ export function mapResult(fn, a) {
 export function bindResult(fn, a) {
     return a.then(((a_1) => {
         if (a_1.tag === 1) {
-            return Promise.resolve((new FSharpResult$2(1, a_1.fields[0])));
+            const e = a_1.fields[0];
+            return Promise.resolve((new FSharpResult$2(1, e)));
         }
         else {
-            return result(fn(a_1.fields[0]));
+            const a_2 = a_1.fields[0];
+            return result(fn(a_2));
         }
     }));
 }

@@ -1,13 +1,14 @@
-import { Union } from "../fable-library.3.1.1/Types.js";
-import { class_type, union_type, int32_type, array_type } from "../fable-library.3.1.1/Reflection.js";
-import { fill } from "../fable-library.3.1.1/Array.js";
-import { isDisposable, comparePrimitives, max } from "../fable-library.3.1.1/Util.js";
-import { toArray, value as value_1, some } from "../fable-library.3.1.1/Option.js";
-import { iterate as iterate_1, rangeNumber, singleton, collect, take, skip, append, delay } from "../fable-library.3.1.1/Seq.js";
+import { Union } from "../fable-library.3.1.7/Types.js";
+import { class_type, union_type, int32_type, array_type } from "../fable-library.3.1.7/Reflection.js";
+import { fill } from "../fable-library.3.1.7/Array.js";
+import { isDisposable, comparePrimitives, max } from "../fable-library.3.1.7/Util.js";
+import { toArray, value as value_1, some } from "../fable-library.3.1.7/Option.js";
+import { iterate as iterate_1, singleton, collect, take, skip, append, delay } from "../fable-library.3.1.7/Seq.js";
+import { rangeDouble } from "../fable-library.3.1.7/Range.js";
 import { useReact_useMemo_CF4EA67, useReact_useEffect_3A5B6456, useReact_useEffect_Z101E1A95, useReact_useEffect_Z5234A374, useReact_useCallbackRef_7C4B0DD6, React_createDisposable_3A5B6456, useReact_useEffectOnce_Z5ECA432F, useFeliz_React__React_useState_Static_1505, useReact_useRef_1505 } from "../Feliz.1.28.0/React.fs.js";
-import { isCancellationRequested, cancel, createCancellationToken } from "../fable-library.3.1.1/Async.js";
+import { isCancellationRequested, cancel, createCancellationToken } from "../fable-library.3.1.7/Async.js";
 import { PromiseBuilder__While_2044D34, PromiseBuilder__Delay_62FBFDE1, PromiseBuilder__Run_212F1D4B } from "../Fable.Promise.2.1.0/Promise.fs.js";
-import { iterate } from "../fable-library.3.1.1/List.js";
+import { iterate } from "../fable-library.3.1.7/List.js";
 import { promise } from "../Fable.Promise.2.1.0/PromiseImpl.fs.js";
 
 export class RingState$1 extends Union {
@@ -27,7 +28,7 @@ export function RingState$1$reflection(gen0) {
 
 export class RingBuffer$1 {
     constructor(size) {
-        this.state = (new RingState$1(0, fill(new Array(max(comparePrimitives, size, 10)), 0, max(comparePrimitives, size, 10), null), 0));
+        this.state = (new RingState$1(0, fill(new Array(max((x, y) => comparePrimitives(x, y), size, 10)), 0, max((x, y) => comparePrimitives(x, y), size, 10), null), 0));
     }
 }
 
@@ -84,13 +85,15 @@ export function RingBuffer$1__Push_2B595(_, item) {
 }
 
 function RingBuffer$1__doubleSize(this$, ix, items) {
-    return Array.from(delay(() => append(skip(ix, items), delay(() => append(take(ix, items), delay(() => collect((matchValue) => singleton(null), rangeNumber(0, 1, items.length))))))));
+    return Array.from(delay(() => append(skip(ix, items), delay(() => append(take(ix, items), delay(() => collect((matchValue) => singleton(null), rangeDouble(0, 1, items.length))))))));
 }
 
 export function useFeliz_React__React_useElmish_Static_17DC4F1D(init, update, dependencies) {
     const state = useReact_useRef_1505(init[0]);
     const ring = useReact_useRef_1505(RingBuffer$1_$ctor_Z524259A4(10));
     const patternInput = useFeliz_React__React_useState_Static_1505(init[0]);
+    const setChildState = patternInput[1];
+    const childState = patternInput[0];
     let token_1;
     const cts = useReact_useRef_1505(createCancellationToken());
     const token = useReact_useRef_1505(cts.current);
@@ -99,13 +102,12 @@ export function useFeliz_React__React_useElmish_Static_17DC4F1D(init, update, de
     }));
     token_1 = token;
     const setChildState_1 = () => {
-        const value = setTimeout(() => {
+        void setTimeout(() => {
             let copyOfStruct;
             if (!(copyOfStruct = token_1.current, isCancellationRequested(copyOfStruct))) {
-                patternInput[1](state.current);
+                setChildState(state.current);
             }
-        }, 0) | 0;
-        void value;
+        }, 0);
     };
     const dispatch = (msg) => {
         const pr = PromiseBuilder__Run_212F1D4B(promise, PromiseBuilder__Delay_62FBFDE1(promise, () => {
@@ -114,12 +116,15 @@ export function useFeliz_React__React_useElmish_Static_17DC4F1D(init, update, de
                 let copyOfStruct_1;
                 return (nextMsg != null) ? (!(copyOfStruct_1 = token_1.current, isCancellationRequested(copyOfStruct_1))) : false;
             }, PromiseBuilder__Delay_62FBFDE1(promise, () => {
-                const patternInput_1 = update(value_1(nextMsg), state.current);
+                const msg_1 = value_1(nextMsg);
+                const patternInput_1 = update(msg_1, state.current);
+                const state$0027 = patternInput_1[0];
+                const cmd$0027 = patternInput_1[1];
                 iterate((sub) => {
                     sub(dispatch);
-                }, patternInput_1[1]);
+                }, cmd$0027);
                 nextMsg = RingBuffer$1__Pop(ring.current);
-                state.current = patternInput_1[0];
+                state.current = state$0027;
                 setChildState_1();
                 return Promise.resolve();
             }));
@@ -128,10 +133,10 @@ export function useFeliz_React__React_useElmish_Static_17DC4F1D(init, update, de
     };
     const dispatch_1 = useReact_useCallbackRef_7C4B0DD6(dispatch);
     useReact_useEffect_Z5234A374(() => React_createDisposable_3A5B6456(() => {
-        let matchValue;
+        let matchValue, disposable;
         iterate_1((o) => {
             o.Dispose();
-        }, toArray((matchValue = state.current, isDisposable(matchValue) ? matchValue : (void 0))));
+        }, toArray((matchValue = state.current, isDisposable(matchValue) ? (disposable = matchValue, disposable) : (void 0))));
     }), dependencies);
     useReact_useEffect_Z101E1A95(() => {
         state.current = init[0];
@@ -143,10 +148,11 @@ export function useFeliz_React__React_useElmish_Static_17DC4F1D(init, update, de
     useReact_useEffect_3A5B6456(() => {
         iterate_1(dispatch_1, toArray(RingBuffer$1__Pop(ring.current)));
     });
-    return [patternInput[0], dispatch_1];
+    return [childState, dispatch_1];
 }
 
 export function useFeliz_React__React_useElmish_Static_645B1FB7(init, update, dependencies) {
-    return useFeliz_React__React_useElmish_Static_17DC4F1D(useReact_useMemo_CF4EA67(init, dependencies), update, dependencies);
+    const init_1 = useReact_useMemo_CF4EA67(init, dependencies);
+    return useFeliz_React__React_useElmish_Static_17DC4F1D(init_1, update, dependencies);
 }
 

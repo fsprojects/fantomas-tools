@@ -1,5 +1,5 @@
-import { Record, Union } from "../.fable/fable-library.3.1.1/Types.js";
-import { bool_type, option_type, array_type, record_type, union_type, class_type, int32_type, string_type } from "../.fable/fable-library.3.1.1/Reflection.js";
+import { Record, Union } from "../.fable/fable-library.3.1.7/Types.js";
+import { bool_type, option_type, array_type, record_type, union_type, class_type, int32_type, string_type } from "../.fable/fable-library.3.1.7/Reflection.js";
 
 export class Msg extends Union {
     constructor(tag, ...fields) {

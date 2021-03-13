@@ -1,8 +1,8 @@
+import { printf, toText } from "./.fable/fable-library.3.1.7/String.js";
 import { NavbarProps, navbar } from "./.fable/Fable.Reactstrap.0.5.1/Navbar.fs.js";
 import { Prop, DOMAttr, HTMLAttr } from "./.fable/Fable.React.7.0.1/Fable.React.Props.fs.js";
-import { ofArray, singleton } from "./.fable/fable-library.3.1.1/List.js";
+import { toArray, ofArray, singleton } from "./.fable/fable-library.3.1.7/List.js";
 import { NavbarBrandProps, navbarBrand } from "./.fable/Fable.Reactstrap.0.5.1/NavbarBrand.fs.js";
-import { printf, toText } from "./.fable/fable-library.3.1.1/String.js";
 import * as react from "../../_snowpack/pkg/react.js";
 import { ButtonProps, button } from "./.fable/Fable.Reactstrap.0.5.1/Button.fs.js";
 import { ActiveTab, Msg } from "./Model.js";
@@ -13,15 +13,16 @@ import { commands as commands_1, settings as settings_1, view } from "./Trivia/V
 import { commands as commands_2, settings as settings_2, view as view_1 } from "./FSharpTokens/View.js";
 import { commands as commands_3, settings as settings_3, view as view_2 } from "./ASTViewer/View.js";
 import { commands as commands_4, settings as settings_4, view as view_3 } from "./FantomasOnline/View.js";
+import { toHash } from "./Navigation.js";
 import { NavItemProps, navItem as navItem_1 } from "./.fable/Fable.Reactstrap.0.5.1/NavItem.fs.js";
 import { NavLinkProps, navLink } from "./.fable/Fable.Reactstrap.0.5.1/NavLink.fs.js";
-import { toHash } from "./Navigation.js";
-import { equals } from "./.fable/fable-library.3.1.1/Util.js";
+import { equals } from "./.fable/fable-library.3.1.7/Util.js";
 import { FantomasMode } from "./FantomasOnline/Model.js";
 import { NavProps, nav } from "./.fable/Fable.Reactstrap.0.5.1/Nav.fs.js";
 
 export function navigation(dispatch) {
-    return navbar([new NavbarProps(1, true), new NavbarProps(7, singleton(new HTMLAttr(64, "bg-light")))], [navbarBrand([new NavbarBrandProps(2, singleton(new HTMLAttr(64, "py-0")))], [toText(printf("Fantomas tools"))]), react.createElement("div", {
+    const title = toText(printf("Fantomas tools"));
+    return navbar([new NavbarProps(1, true), new NavbarProps(7, singleton(new HTMLAttr(64, "bg-light")))], [navbarBrand([new NavbarBrandProps(2, singleton(new HTMLAttr(64, "py-0")))], [title]), react.createElement("div", {
         className: "navbar-text py1",
     }, button([new ButtonProps(9, ofArray([new HTMLAttr(94, "https://github.com/sponsors/nojaf"), new HTMLAttr(157, "_blank"), new HTMLAttr(99, "sponsor-button")])), new ButtonProps(1, "success"), new ButtonProps(2, true)], [react.createElement("i", {
         className: "far fa-heart mr-1 mt-1 text-danger",
@@ -111,17 +112,43 @@ export function tabs(model, dispatch) {
             patternInput = [homeTab, null, null];
         }
     }
-    const navItem = (tab_1, label, isActive) => {
-        let page, query, hash, arg10;
-        return navItem_1([new NavItemProps(2, singleton(new Prop(0, label)))], [navLink([new NavLinkProps(3, singleton(new HTMLAttr(94, (page = toHash(tab_1), (query = (hash = window.location.hash, (hash.indexOf("?") >= 0) ? (arg10 = hash.split("?")[1], toText(printf("?%s"))(arg10)) : ""), toText(printf("%s%s"))(page)(query)))))), new NavLinkProps(0, isActive)], [label])]);
+    const settingsForTab = patternInput[1];
+    const commands = patternInput[2];
+    const activeTab = patternInput[0];
+    const onNavItemClick = (tab, ev) => {
+        ev.preventDefault();
+        dispatch(new Msg(0, tab));
     };
-    const navItems = ofArray([navItem(new ActiveTab(0), "Home", equals(model.ActiveTab, new ActiveTab(0))), navItem(new ActiveTab(1), "FSharp Tokens", equals(model.ActiveTab, new ActiveTab(1))), navItem(new ActiveTab(2), "AST", equals(model.ActiveTab, new ActiveTab(2))), navItem(new ActiveTab(3), "Trivia", equals(model.ActiveTab, new ActiveTab(3))), navItem(new ActiveTab(4, new FantomasMode(3)), "Fantomas", (model.ActiveTab.tag === 4) ? true : false)]);
+    const navItem = (tab_1, label, isActive) => {
+        let href;
+        const page = toHash(tab_1);
+        let query;
+        const hash = window.location.hash;
+        if (hash.indexOf("?") >= 0) {
+            const arg10 = hash.split("?")[1];
+            query = toText(printf("?%s"))(arg10);
+        }
+        else {
+            query = "";
+        }
+        href = toText(printf("%s%s"))(page)(query);
+        return navItem_1([new NavItemProps(2, singleton(new Prop(0, label)))], [navLink([new NavLinkProps(3, singleton(new HTMLAttr(94, href))), new NavLinkProps(0, isActive)], [label])]);
+    };
+    const isFantomasTab = (_arg1) => {
+        if (_arg1.tag === 4) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    };
+    const navItems = ofArray([navItem(new ActiveTab(0), "Home", equals(model.ActiveTab, new ActiveTab(0))), navItem(new ActiveTab(1), "FSharp Tokens", equals(model.ActiveTab, new ActiveTab(1))), navItem(new ActiveTab(2), "AST", equals(model.ActiveTab, new ActiveTab(2))), navItem(new ActiveTab(3), "Trivia", equals(model.ActiveTab, new ActiveTab(3))), navItem(new ActiveTab(4, new FantomasMode(3)), "Fantomas", isFantomasTab(model.ActiveTab))]);
     return react.createElement("div", {
         className: "col-7 h-100",
-    }, settings(model, dispatch, patternInput[1]), nav([new NavProps(0, true), new NavProps(9, singleton(new HTMLAttr(64, "")))], [Array.from(navItems)]), react.createElement("div", {
+    }, settings(model, dispatch, settingsForTab), nav([new NavProps(0, true), new NavProps(9, singleton(new HTMLAttr(64, "")))], [toArray(navItems)]), react.createElement("div", {
         id: "tab-content",
-    }, patternInput[0], react.createElement("div", {
+    }, activeTab, react.createElement("div", {
         id: "commands",
-    }, patternInput[2])));
+    }, commands)));
 }
 

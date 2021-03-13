@@ -1,8 +1,8 @@
 import * as react from "../../../../_snowpack/pkg/react.js";
-import { equals, uncurry } from "../fable-library.3.1.1/Util.js";
+import { equals, uncurry } from "../fable-library.3.1.7/Util.js";
 import { HTMLAttr } from "./Fable.React.Props.fs.js";
-import { choose, fold } from "../fable-library.3.1.1/Seq.js";
-import { isNullOrEmpty } from "../fable-library.3.1.1/String.js";
+import { choose, fold } from "../fable-library.3.1.7/Seq.js";
+import { isNullOrEmpty } from "../fable-library.3.1.7/String.js";
 
 export function ReactElementTypeModule_memo(render) {
     return react.memo(render, uncurry(2, null));
@@ -74,7 +74,8 @@ export function Helpers_opt(o) {
         return null;
     }
     else {
-        return o_1;
+        const o_2 = o_1;
+        return o_2;
     }
 }
 
@@ -83,7 +84,8 @@ export const Helpers_nothing = null;
 export function Helpers_classBaseList(baseClass, classes) {
     return new HTMLAttr(64, fold((state, name_1) => ((state + " ") + name_1), baseClass, choose((tupledArg) => {
         const name = tupledArg[0];
-        if (tupledArg[1] ? (!isNullOrEmpty(name)) : false) {
+        const condition = tupledArg[1];
+        if (condition ? (!isNullOrEmpty(name)) : false) {
             return name;
         }
         else {

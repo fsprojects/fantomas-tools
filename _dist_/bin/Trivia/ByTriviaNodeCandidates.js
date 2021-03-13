@@ -1,6 +1,6 @@
-import { mapIndexed } from "../.fable/fable-library.3.1.1/List.js";
+import { toArray, mapIndexed } from "../.fable/fable-library.3.1.7/List.js";
 import * as react from "../../../_snowpack/pkg/react.js";
-import { printf, toText } from "../.fable/fable-library.3.1.1/String.js";
+import { printf, toText } from "../.fable/fable-library.3.1.7/String.js";
 
 export function view(model, _dispatch) {
     const nodes = mapIndexed((idx, node) => react.createElement("tr", {
@@ -25,6 +25,6 @@ export function view(model, _dispatch) {
         className: "text-center",
     }, "EndLine"), react.createElement("th", {
         className: "text-center",
-    }, "EndCol"))), react.createElement("tbody", {}, Array.from(nodes))));
+    }, "EndCol"))), react.createElement("tbody", {}, toArray(nodes))));
 }
 

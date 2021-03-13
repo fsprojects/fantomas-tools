@@ -97,7 +97,7 @@ export function interpolate(input, values) {
     let i = 0;
     return input.replace(interpolateRegExp, (_, prefix, flags, padLength, precision, format) => {
         return formatReplacement(values[i++], prefix, flags, padLength, precision, format);
-    });
+    }).replace(/%%/g, "%");
 }
 function continuePrint(cont, arg) {
     return typeof arg === "string" ? cont(arg) : arg.cont(cont);

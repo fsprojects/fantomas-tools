@@ -1,16 +1,17 @@
-import { isNullOrWhiteSpace } from "./.fable/fable-library.3.1.1/String.js";
+import { isNullOrWhiteSpace } from "./.fable/fable-library.3.1.7/String.js";
 import { Cmd_none, Cmd_batch, Cmd_OfFunc_result, Cmd_map } from "./.fable/Fable.Elmish.3.1.0/cmd.fs.js";
 import { ActiveTab, Msg } from "./Model.js";
 import { Msg as Msg_1 } from "./FSharpTokens/Model.js";
 import { Msg as Msg_2 } from "./ASTViewer/Model.js";
 import { Msg as Msg_3 } from "./Trivia/Model.js";
-import { equals } from "./.fable/fable-library.3.1.1/Util.js";
+import { equals } from "./.fable/fable-library.3.1.7/Util.js";
 import { getVersionCmd, getOptionsCmd } from "./FantomasOnline/State.js";
-import { ofArray } from "./.fable/fable-library.3.1.1/List.js";
+import { tail, head, isEmpty, ofArray } from "./.fable/fable-library.3.1.7/List.js";
 import { FantomasMode, Msg as Msg_4 } from "./FantomasOnline/Model.js";
 import { Route_$007CQuery$007C_$007C } from "./.fable/Feliz.Router.3.2.0/Router.fs.js";
 
 export function cmdForCurrentTab(tab, model) {
+    let mode;
     if (!isNullOrWhiteSpace(model.SourceCode)) {
         if (tab.tag === 1) {
             return Cmd_map((arg0) => (new Msg(3, arg0)), Cmd_OfFunc_result(new Msg_1(0)));
@@ -22,13 +23,14 @@ export function cmdForCurrentTab(tab, model) {
             return Cmd_map((arg0_2) => (new Msg(2, arg0_2)), Cmd_OfFunc_result(new Msg_3(1)));
         }
         else if (tab.tag === 4) {
-            if (!equals(tab.fields[0], model.FantomasModel.Mode)) {
-                return Cmd_batch(ofArray([Cmd_map((arg0_3) => (new Msg(5, arg0_3)), getOptionsCmd(tab.fields[0])), Cmd_map((arg0_4) => (new Msg(5, arg0_4)), getVersionCmd(tab.fields[0]))]));
+            if (mode = tab.fields[0], !equals(mode, model.FantomasModel.Mode)) {
+                const mode_1 = tab.fields[0];
+                return Cmd_batch(ofArray([Cmd_map((arg0_3) => (new Msg(5, arg0_3)), getOptionsCmd(mode_1)), Cmd_map((arg0_4) => (new Msg(5, arg0_4)), getVersionCmd(mode_1))]));
             }
             else {
                 let pattern_matching_result;
                 if (tab.tag === 4) {
-                    if (!(model.FantomasModel.DefaultOptions.tail == null)) {
+                    if (!isEmpty(model.FantomasModel.DefaultOptions)) {
                         pattern_matching_result = 0;
                     }
                     else {
@@ -47,7 +49,7 @@ export function cmdForCurrentTab(tab, model) {
                             return Cmd_none();
                         }
                         else {
-                            throw (new Error("The match cases were incomplete"));
+                            throw (new Error("Match failure"));
                         }
                     }
                 }
@@ -93,15 +95,15 @@ export function toHash(_arg1) {
 
 export function parseUrl(segments) {
     let pattern_matching_result;
-    if (segments.tail != null) {
-        if (segments.head === "tokens") {
-            if (segments.tail.tail != null) {
-                const activePatternResult13093 = Route_$007CQuery$007C_$007C(segments.tail.head);
-                if (activePatternResult13093 != null) {
-                    if (activePatternResult13093.tail != null) {
-                        if (activePatternResult13093.head[0] === "data") {
-                            if (activePatternResult13093.tail.tail == null) {
-                                if (segments.tail.tail.tail == null) {
+    if (!isEmpty(segments)) {
+        if (head(segments) === "tokens") {
+            if (!isEmpty(tail(segments))) {
+                const activePatternResult13103 = Route_$007CQuery$007C_$007C(head(tail(segments)));
+                if (activePatternResult13103 != null) {
+                    if (!isEmpty(activePatternResult13103)) {
+                        if (head(activePatternResult13103)[0] === "data") {
+                            if (isEmpty(tail(activePatternResult13103))) {
+                                if (isEmpty(tail(tail(segments)))) {
                                     pattern_matching_result = 0;
                                 }
                                 else {
@@ -141,15 +143,15 @@ export function parseUrl(segments) {
         }
         case 1: {
             let pattern_matching_result_1;
-            if (segments.tail != null) {
-                if (segments.head === "ast") {
-                    if (segments.tail.tail != null) {
-                        const activePatternResult13092 = Route_$007CQuery$007C_$007C(segments.tail.head);
-                        if (activePatternResult13092 != null) {
-                            if (activePatternResult13092.tail != null) {
-                                if (activePatternResult13092.head[0] === "data") {
-                                    if (activePatternResult13092.tail.tail == null) {
-                                        if (segments.tail.tail.tail == null) {
+            if (!isEmpty(segments)) {
+                if (head(segments) === "ast") {
+                    if (!isEmpty(tail(segments))) {
+                        const activePatternResult13102 = Route_$007CQuery$007C_$007C(head(tail(segments)));
+                        if (activePatternResult13102 != null) {
+                            if (!isEmpty(activePatternResult13102)) {
+                                if (head(activePatternResult13102)[0] === "data") {
+                                    if (isEmpty(tail(activePatternResult13102))) {
+                                        if (isEmpty(tail(tail(segments)))) {
                                             pattern_matching_result_1 = 0;
                                         }
                                         else {
@@ -189,15 +191,15 @@ export function parseUrl(segments) {
                 }
                 case 1: {
                     let pattern_matching_result_2;
-                    if (segments.tail != null) {
-                        if (segments.head === "trivia") {
-                            if (segments.tail.tail != null) {
-                                const activePatternResult13091 = Route_$007CQuery$007C_$007C(segments.tail.head);
-                                if (activePatternResult13091 != null) {
-                                    if (activePatternResult13091.tail != null) {
-                                        if (activePatternResult13091.head[0] === "data") {
-                                            if (activePatternResult13091.tail.tail == null) {
-                                                if (segments.tail.tail.tail == null) {
+                    if (!isEmpty(segments)) {
+                        if (head(segments) === "trivia") {
+                            if (!isEmpty(tail(segments))) {
+                                const activePatternResult13101 = Route_$007CQuery$007C_$007C(head(tail(segments)));
+                                if (activePatternResult13101 != null) {
+                                    if (!isEmpty(activePatternResult13101)) {
+                                        if (head(activePatternResult13101)[0] === "data") {
+                                            if (isEmpty(tail(activePatternResult13101))) {
+                                                if (isEmpty(tail(tail(segments)))) {
                                                     pattern_matching_result_2 = 0;
                                                 }
                                                 else {
@@ -237,17 +239,17 @@ export function parseUrl(segments) {
                         }
                         case 1: {
                             let pattern_matching_result_3;
-                            if (segments.tail != null) {
-                                if (segments.head === "fantomas") {
-                                    if (segments.tail.tail != null) {
-                                        if (segments.tail.head === "v2") {
-                                            if (segments.tail.tail.tail != null) {
-                                                const activePatternResult13090 = Route_$007CQuery$007C_$007C(segments.tail.tail.head);
-                                                if (activePatternResult13090 != null) {
-                                                    if (activePatternResult13090.tail != null) {
-                                                        if (activePatternResult13090.head[0] === "data") {
-                                                            if (activePatternResult13090.tail.tail == null) {
-                                                                if (segments.tail.tail.tail.tail == null) {
+                            if (!isEmpty(segments)) {
+                                if (head(segments) === "fantomas") {
+                                    if (!isEmpty(tail(segments))) {
+                                        if (head(tail(segments)) === "v2") {
+                                            if (!isEmpty(tail(tail(segments)))) {
+                                                const activePatternResult13100 = Route_$007CQuery$007C_$007C(head(tail(tail(segments))));
+                                                if (activePatternResult13100 != null) {
+                                                    if (!isEmpty(activePatternResult13100)) {
+                                                        if (head(activePatternResult13100)[0] === "data") {
+                                                            if (isEmpty(tail(activePatternResult13100))) {
+                                                                if (isEmpty(tail(tail(tail(segments))))) {
                                                                     pattern_matching_result_3 = 0;
                                                                 }
                                                                 else {
@@ -295,17 +297,17 @@ export function parseUrl(segments) {
                                 }
                                 case 1: {
                                     let pattern_matching_result_4;
-                                    if (segments.tail != null) {
-                                        if (segments.head === "fantomas") {
-                                            if (segments.tail.tail != null) {
-                                                if (segments.tail.head === "v3") {
-                                                    if (segments.tail.tail.tail != null) {
-                                                        const activePatternResult13089 = Route_$007CQuery$007C_$007C(segments.tail.tail.head);
-                                                        if (activePatternResult13089 != null) {
-                                                            if (activePatternResult13089.tail != null) {
-                                                                if (activePatternResult13089.head[0] === "data") {
-                                                                    if (activePatternResult13089.tail.tail == null) {
-                                                                        if (segments.tail.tail.tail.tail == null) {
+                                    if (!isEmpty(segments)) {
+                                        if (head(segments) === "fantomas") {
+                                            if (!isEmpty(tail(segments))) {
+                                                if (head(tail(segments)) === "v3") {
+                                                    if (!isEmpty(tail(tail(segments)))) {
+                                                        const activePatternResult13099 = Route_$007CQuery$007C_$007C(head(tail(tail(segments))));
+                                                        if (activePatternResult13099 != null) {
+                                                            if (!isEmpty(activePatternResult13099)) {
+                                                                if (head(activePatternResult13099)[0] === "data") {
+                                                                    if (isEmpty(tail(activePatternResult13099))) {
+                                                                        if (isEmpty(tail(tail(tail(segments))))) {
                                                                             pattern_matching_result_4 = 0;
                                                                         }
                                                                         else {
@@ -353,17 +355,17 @@ export function parseUrl(segments) {
                                         }
                                         case 1: {
                                             let pattern_matching_result_5;
-                                            if (segments.tail != null) {
-                                                if (segments.head === "fantomas") {
-                                                    if (segments.tail.tail != null) {
-                                                        if (segments.tail.head === "v4") {
-                                                            if (segments.tail.tail.tail != null) {
-                                                                const activePatternResult13088 = Route_$007CQuery$007C_$007C(segments.tail.tail.head);
-                                                                if (activePatternResult13088 != null) {
-                                                                    if (activePatternResult13088.tail != null) {
-                                                                        if (activePatternResult13088.head[0] === "data") {
-                                                                            if (activePatternResult13088.tail.tail == null) {
-                                                                                if (segments.tail.tail.tail.tail == null) {
+                                            if (!isEmpty(segments)) {
+                                                if (head(segments) === "fantomas") {
+                                                    if (!isEmpty(tail(segments))) {
+                                                        if (head(tail(segments)) === "v4") {
+                                                            if (!isEmpty(tail(tail(segments)))) {
+                                                                const activePatternResult13098 = Route_$007CQuery$007C_$007C(head(tail(tail(segments))));
+                                                                if (activePatternResult13098 != null) {
+                                                                    if (!isEmpty(activePatternResult13098)) {
+                                                                        if (head(activePatternResult13098)[0] === "data") {
+                                                                            if (isEmpty(tail(activePatternResult13098))) {
+                                                                                if (isEmpty(tail(tail(tail(segments))))) {
                                                                                     pattern_matching_result_5 = 0;
                                                                                 }
                                                                                 else {
@@ -411,17 +413,17 @@ export function parseUrl(segments) {
                                                 }
                                                 case 1: {
                                                     let pattern_matching_result_6;
-                                                    if (segments.tail != null) {
-                                                        if (segments.head === "fantomas") {
-                                                            if (segments.tail.tail != null) {
-                                                                if (segments.tail.head === "preview") {
-                                                                    if (segments.tail.tail.tail != null) {
-                                                                        const activePatternResult13087 = Route_$007CQuery$007C_$007C(segments.tail.tail.head);
-                                                                        if (activePatternResult13087 != null) {
-                                                                            if (activePatternResult13087.tail != null) {
-                                                                                if (activePatternResult13087.head[0] === "data") {
-                                                                                    if (activePatternResult13087.tail.tail == null) {
-                                                                                        if (segments.tail.tail.tail.tail == null) {
+                                                    if (!isEmpty(segments)) {
+                                                        if (head(segments) === "fantomas") {
+                                                            if (!isEmpty(tail(segments))) {
+                                                                if (head(tail(segments)) === "preview") {
+                                                                    if (!isEmpty(tail(tail(segments)))) {
+                                                                        const activePatternResult13097 = Route_$007CQuery$007C_$007C(head(tail(tail(segments))));
+                                                                        if (activePatternResult13097 != null) {
+                                                                            if (!isEmpty(activePatternResult13097)) {
+                                                                                if (head(activePatternResult13097)[0] === "data") {
+                                                                                    if (isEmpty(tail(activePatternResult13097))) {
+                                                                                        if (isEmpty(tail(tail(tail(segments))))) {
                                                                                             pattern_matching_result_6 = 0;
                                                                                         }
                                                                                         else {

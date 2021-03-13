@@ -1,10 +1,10 @@
-import { Union } from "../fable-library.3.1.1/Types.js";
-import { union_type, list_type, class_type, obj_type, bool_type, string_type } from "../fable-library.3.1.1/Reflection.js";
+import { Union } from "../fable-library.3.1.7/Types.js";
+import { union_type, list_type, class_type, obj_type, bool_type, string_type } from "../fable-library.3.1.7/Reflection.js";
 import { FadeProps$reflection } from "./Fade.fs.js";
+import { singleton, map, reduce, isEmpty } from "../fable-library.3.1.7/Seq.js";
+import { keyValueList } from "../fable-library.3.1.7/MapUtil.js";
 import * as react from "../../../../_snowpack/pkg/react.js";
 import { Toast } from "../../../../_snowpack/pkg/reactstrap.js";
-import { singleton, map, reduce, isEmpty } from "../fable-library.3.1.1/Seq.js";
-import { keyValueList } from "../fable-library.3.1.1/MapUtil.js";
 
 export class ToastProps extends Union {
     constructor(tag, ...fields) {
@@ -22,20 +22,24 @@ export function ToastProps$reflection() {
 }
 
 export function toast(props, elems) {
-    return react.createElement(Toast, isEmpty(props) ? {} : reduce((a, b) => Object.assign(a, b), map((prop) => {
+    const toastProps = isEmpty(props) ? {} : reduce((a, b) => Object.assign(a, b), map((prop) => {
         switch (prop.tag) {
             case 3: {
+                const fade = prop.fields[0];
                 return {
-                    transition: keyValueList(prop.fields[0], 1),
+                    transition: keyValueList(fade, 1),
                 };
             }
             case 4: {
-                return keyValueList(prop.fields[0], 1);
+                const customProps = prop.fields[0];
+                return keyValueList(customProps, 1);
             }
             default: {
-                return keyValueList(singleton(prop), 1);
+                const prop_1 = prop;
+                return keyValueList(singleton(prop_1), 1);
             }
         }
-    }, props)), ...elems);
+    }, props));
+    return react.createElement(Toast, toastProps, ...elems);
 }
 

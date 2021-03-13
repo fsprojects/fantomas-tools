@@ -1,10 +1,14 @@
 import { value as value_2, defaultArg, some } from "./Option.js";
-import { min as min_1, compare, comparePrimitives, max as max_1 } from "./Util.js";
-import { Dictionary } from "./MutableMap.js";
-import { addToDict, addToSet, getItemFromDict, tryGetValue } from "./MapUtil.js";
-import { FSharpRef } from "./Types.js";
-import { HashSet } from "./MutableSet.js";
-import { iterate as iterate_1 } from "./Seq.js";
+import { min as min_1, compare, getEnumerator, comparePrimitives, max as max_1 } from "./Util.js";
+
+export function Helpers_allocateArrayFromCons(cons, len) {
+    if ((typeof cons) === "function") {
+        return new cons(len);
+    }
+    else {
+        return new Array(len);
+    }
+}
 
 function indexNotFound() {
     throw (new Error("An index satisfying the predicate was not found in the collection."));
@@ -17,7 +21,7 @@ function differentLengths() {
 export function append(array1, array2, cons) {
     const len1 = array1.length | 0;
     const len2 = array2.length | 0;
-    const newArray = new (cons || Array)((len1 + len2));
+    const newArray = Helpers_allocateArrayFromCons(cons, len1 + len2);
     for (let i = 0; i <= (len1 - 1); i++) {
         newArray[i] = array1[i];
     }
@@ -59,7 +63,7 @@ export function tryLast(array) {
 
 export function mapIndexed(f, source, cons) {
     const len = source.length | 0;
-    const target = new (cons || Array)(len);
+    const target = Helpers_allocateArrayFromCons(cons, len);
     for (let i = 0; i <= (len - 1); i++) {
         target[i] = f(i, source[i]);
     }
@@ -68,7 +72,7 @@ export function mapIndexed(f, source, cons) {
 
 export function map(f, source, cons) {
     const len = source.length | 0;
-    const target = new (cons || Array)(len);
+    const target = Helpers_allocateArrayFromCons(cons, len);
     for (let i = 0; i <= (len - 1); i++) {
         target[i] = f(source[i]);
     }
@@ -79,7 +83,7 @@ export function mapIndexed2(f, source1, source2, cons) {
     if (source1.length !== source2.length) {
         throw (new Error("Arrays had different lengths"));
     }
-    const result = new (cons || Array)(source1.length);
+    const result = Helpers_allocateArrayFromCons(cons, source1.length);
     for (let i = 0; i <= (source1.length - 1); i++) {
         result[i] = f(i, source1[i], source2[i]);
     }
@@ -90,7 +94,7 @@ export function map2(f, source1, source2, cons) {
     if (source1.length !== source2.length) {
         throw (new Error("Arrays had different lengths"));
     }
-    const result = new (cons || Array)(source1.length);
+    const result = Helpers_allocateArrayFromCons(cons, source1.length);
     for (let i = 0; i <= (source1.length - 1); i++) {
         result[i] = f(source1[i], source2[i]);
     }
@@ -101,7 +105,7 @@ export function mapIndexed3(f, source1, source2, source3, cons) {
     if ((source1.length !== source2.length) ? true : (source2.length !== source3.length)) {
         throw (new Error("Arrays had different lengths"));
     }
-    const result = new (cons || Array)(source1.length);
+    const result = Helpers_allocateArrayFromCons(cons, source1.length);
     for (let i = 0; i <= (source1.length - 1); i++) {
         result[i] = f(i, source1[i], source2[i], source3[i]);
     }
@@ -112,7 +116,7 @@ export function map3(f, source1, source2, source3, cons) {
     if ((source1.length !== source2.length) ? true : (source2.length !== source3.length)) {
         throw (new Error("Arrays had different lengths"));
     }
-    const result = new (cons || Array)(source1.length);
+    const result = Helpers_allocateArrayFromCons(cons, source1.length);
     for (let i = 0; i <= (source1.length - 1); i++) {
         result[i] = f(source1[i], source2[i], source3[i]);
     }
@@ -125,12 +129,15 @@ export function mapFold(mapping, state, array, cons) {
         return [[], state];
     }
     else {
+        const len = matchValue | 0;
         let acc = state;
-        const res = new (cons || Array)(matchValue);
+        const res = Helpers_allocateArrayFromCons(cons, len);
         for (let i = 0; i <= (array.length - 1); i++) {
             const patternInput = mapping(acc, array[i]);
-            res[i] = patternInput[0];
-            acc = patternInput[1];
+            const s = patternInput[1];
+            const h = patternInput[0];
+            res[i] = h;
+            acc = s;
         }
         return [res, acc];
     }
@@ -142,12 +149,15 @@ export function mapFoldBack(mapping, array, state, cons) {
         return [[], state];
     }
     else {
+        const len = matchValue | 0;
         let acc = state;
-        const res = new (cons || Array)(matchValue);
+        const res = Helpers_allocateArrayFromCons(cons, len);
         for (let i = array.length - 1; i >= 0; i--) {
             const patternInput = mapping(array[i], acc);
-            res[i] = patternInput[0];
-            acc = patternInput[1];
+            const s = patternInput[1];
+            const h = patternInput[0];
+            res[i] = h;
+            acc = s;
         }
         return [res, acc];
     }
@@ -163,7 +173,7 @@ export function indexed(source) {
 }
 
 export function truncate(count, array) {
-    const count_1 = max_1(comparePrimitives, 0, count) | 0;
+    const count_1 = max_1((x, y) => comparePrimitives(x, y), 0, count) | 0;
     const start = 0;
     return array.slice(start, (start + count_1));
 }
@@ -173,7 +183,7 @@ export function concat(arrays, cons) {
     const matchValue = arrays_1.length | 0;
     switch (matchValue) {
         case 0: {
-            return new (cons || Array)(0);
+            return Helpers_allocateArrayFromCons(cons, 0);
         }
         case 1: {
             return arrays_1[0];
@@ -185,7 +195,7 @@ export function concat(arrays, cons) {
                 const arr_1 = arrays_1[idx];
                 totalLength = (totalLength + arr_1.length);
             }
-            const result = new (cons || Array)(totalLength);
+            const result = Helpers_allocateArrayFromCons(cons, totalLength);
             for (let idx_1 = 0; idx_1 <= (arrays_1.length - 1); idx_1++) {
                 const arr_2 = arrays_1[idx_1];
                 for (let j = 0; j <= (arr_2.length - 1); j++) {
@@ -199,38 +209,8 @@ export function concat(arrays, cons) {
 }
 
 export function collect(mapping, array, cons) {
-    return concat(map(mapping, array, null), cons);
-}
-
-export function countBy(projection, array, eq) {
-    const dict = new Dictionary([], eq);
-    const keys = [];
-    for (let idx = 0; idx <= (array.length - 1); idx++) {
-        const key = projection(array[idx]);
-        let matchValue;
-        let outArg = 0;
-        matchValue = [tryGetValue(dict, key, new FSharpRef(() => outArg, (v) => {
-            outArg = v;
-        })), outArg];
-        if (matchValue[0]) {
-            dict.set(key, matchValue[1] + 1);
-        }
-        else {
-            dict.set(key, 1);
-            const value_1 = keys.push(key);
-            void value_1;
-        }
-    }
-    return map((key_1) => [key_1, getItemFromDict(dict, key_1)], keys, null);
-}
-
-export function distinctBy(projection, array, eq) {
-    const hashSet = new HashSet([], eq);
-    return filter((arg) => addToSet(projection(arg), hashSet), array);
-}
-
-export function distinct(array, eq) {
-    return distinctBy((x) => x, array, eq);
+    const mapped = map(mapping, array, null);
+    return concat(mapped, cons);
 }
 
 export function where(predicate, array) {
@@ -258,45 +238,12 @@ export function contains(value, array, eq) {
     return loop(0);
 }
 
-export function except(itemsToExclude, array, eq) {
-    if (array.length === 0) {
-        return array;
-    }
-    else {
-        const cached = new HashSet(itemsToExclude, eq);
-        return array.filter(((arg00) => addToSet(arg00, cached)));
-    }
-}
-
-export function groupBy(projection, array, eq) {
-    const dict = new Dictionary([], eq);
-    const keys = [];
-    for (let idx = 0; idx <= (array.length - 1); idx++) {
-        const v = array[idx];
-        const key = projection(v);
-        let matchValue;
-        let outArg = null;
-        matchValue = [tryGetValue(dict, key, new FSharpRef(() => outArg, (v_1) => {
-            outArg = v_1;
-        })), outArg];
-        if (matchValue[0]) {
-            void (matchValue[1].push(v));
-        }
-        else {
-            addToDict(dict, key, [v]);
-            const value = keys.push(key);
-            void value;
-        }
-    }
-    return map((key_1) => [key_1, Array.from(getItemFromDict(dict, key_1))], keys, null);
-}
-
 export function empty(cons) {
-    return new (cons || Array)(0);
+    return Helpers_allocateArrayFromCons(cons, 0);
 }
 
 export function singleton(value, cons) {
-    const ar = new (cons || Array)(1);
+    const ar = Helpers_allocateArrayFromCons(cons, 1);
     ar[0] = value;
     return ar;
 }
@@ -305,7 +252,7 @@ export function initialize(count, initializer, cons) {
     if (count < 0) {
         throw (new Error("The input must be non-negative\\nParameter name: count"));
     }
-    const result = new (cons || Array)(count);
+    const result = Helpers_allocateArrayFromCons(cons, count);
     for (let i = 0; i <= (count - 1); i++) {
         result[i] = initializer(i);
     }
@@ -330,7 +277,7 @@ export function replicate(count, initial, cons) {
     if (count < 0) {
         throw (new Error("The input must be non-negative\\nParameter name: count"));
     }
-    const result = new (cons || Array)(count);
+    const result = Helpers_allocateArrayFromCons(cons, count);
     for (let i = 0; i <= (result.length - 1); i++) {
         result[i] = initial;
     }
@@ -347,7 +294,7 @@ export function reverse(array) {
 }
 
 export function scan(folder, state, array, cons) {
-    const res = new (cons || Array)((array.length + 1));
+    const res = Helpers_allocateArrayFromCons(cons, array.length + 1);
     res[0] = state;
     for (let i = 0; i <= (array.length - 1); i++) {
         res[i + 1] = folder(res[i], array[i]);
@@ -356,7 +303,7 @@ export function scan(folder, state, array, cons) {
 }
 
 export function scanBack(folder, array, state, cons) {
-    const res = new (cons || Array)((array.length + 1));
+    const res = Helpers_allocateArrayFromCons(cons, array.length + 1);
     res[array.length] = state;
     for (let i = array.length - 1; i >= 0; i--) {
         res[i] = folder(array[i], res[i + 1]);
@@ -369,7 +316,7 @@ export function skip(count, array, cons) {
         throw (new Error("count is greater than array length\\nParameter name: count"));
     }
     if (count === array.length) {
-        return new (cons || Array)(0);
+        return Helpers_allocateArrayFromCons(cons, 0);
     }
     else {
         const count_1 = ((count < 0) ? 0 : count) | 0;
@@ -383,7 +330,7 @@ export function skipWhile(predicate, array, cons) {
         count = (count + 1);
     }
     if (count === array.length) {
-        return new (cons || Array)(0);
+        return Helpers_allocateArrayFromCons(cons, 0);
     }
     else {
         const count_1 = count | 0;
@@ -399,7 +346,7 @@ export function take(count, array, cons) {
         throw (new Error("count is greater than array length\\nParameter name: count"));
     }
     if (count === 0) {
-        return new (cons || Array)(0);
+        return Helpers_allocateArrayFromCons(cons, 0);
     }
     else {
         const start = 0;
@@ -413,7 +360,7 @@ export function takeWhile(predicate, array, cons) {
         count = (count + 1);
     }
     if (count === 0) {
-        return new (cons || Array)(0);
+        return Helpers_allocateArrayFromCons(cons, 0);
     }
     else {
         const start = 0;
@@ -423,22 +370,26 @@ export function takeWhile(predicate, array, cons) {
 }
 
 export function addInPlace(x, array) {
-    const value = array.push(x);
-    void value;
+    void (array.push(x));
 }
 
 export function addRangeInPlace(range, array) {
-    iterate_1((x) => {
-        const value = array.push(x);
-        void value;
-    }, range);
+    const enumerator = getEnumerator(range);
+    try {
+        while (enumerator["System.Collections.IEnumerator.MoveNext"]()) {
+            const x = enumerator["System.Collections.Generic.IEnumerator`1.get_Current"]();
+            addInPlace(x, array);
+        }
+    }
+    finally {
+        enumerator.Dispose();
+    }
 }
 
 export function removeInPlace(item_1, array) {
     const i = array.indexOf(item_1, 0);
     if (i > -1) {
-        const value = array.splice(i, 1);
-        void value;
+        void (array.splice(i, 1));
         return true;
     }
     else {
@@ -450,8 +401,7 @@ export function removeAllInPlace(predicate, array) {
     const countRemoveAll = (count) => {
         const i = array.findIndex(predicate);
         if (i > -1) {
-            const value = array.splice(i, 1);
-            void value;
+            void (array.splice(i, 1));
             return (countRemoveAll(count) + 1) | 0;
         }
         else {
@@ -468,6 +418,15 @@ export function copyTo(source, sourceIndex, target, targetIndex, count) {
     }
 }
 
+export function copyToTypedArray(source, sourceIndex, target, targetIndex, count) {
+    try {
+        target.set(source.subarray(sourceIndex, sourceIndex + count), targetIndex);
+    }
+    catch (matchValue) {
+        copyTo(source, sourceIndex, target, targetIndex, count);
+    }
+}
+
 export function indexOf(array, item_1, start, count) {
     const start_1 = defaultArg(start, 0) | 0;
     const i = array.indexOf(item_1, start_1);
@@ -481,8 +440,8 @@ export function indexOf(array, item_1, start, count) {
 
 export function partition(f, source, cons) {
     const len = source.length | 0;
-    const res1 = new (cons || Array)(len);
-    const res2 = new (cons || Array)(len);
+    const res1 = Helpers_allocateArrayFromCons(cons, len);
+    const res2 = Helpers_allocateArrayFromCons(cons, len);
     let iTrue = 0;
     let iFalse = 0;
     for (let i = 0; i <= (len - 1); i++) {
@@ -504,7 +463,8 @@ export function find(predicate, array) {
         return indexNotFound();
     }
     else {
-        return value_2(matchValue);
+        const res = value_2(matchValue);
+        return res;
     }
 }
 
@@ -513,19 +473,23 @@ export function tryFind(predicate, array) {
 }
 
 export function findIndex(predicate, array) {
+    let index;
     const matchValue = array.findIndex(predicate);
-    if (matchValue > -1) {
-        return matchValue | 0;
+    if (index = (matchValue | 0), index > -1) {
+        const index_1 = matchValue | 0;
+        return index_1 | 0;
     }
     else {
-        return indexNotFound() | 0;
+        return indexNotFound();
     }
 }
 
 export function tryFindIndex(predicate, array) {
+    let index;
     const matchValue = array.findIndex(predicate);
-    if (matchValue > -1) {
-        return matchValue;
+    if (index = (matchValue | 0), index > -1) {
+        const index_1 = matchValue | 0;
+        return index_1;
     }
     else {
         return void 0;
@@ -543,7 +507,8 @@ export function pick(chooser, array) {
             else {
                 const matchValue = chooser(array[i]);
                 if (matchValue != null) {
-                    return value_2(matchValue);
+                    const res = value_2(matchValue);
+                    return res;
                 }
                 else {
                     i_mut = (i + 1);
@@ -571,7 +536,8 @@ export function tryPick(chooser, array) {
                     continue loop;
                 }
                 else {
-                    return matchValue;
+                    const res = matchValue;
+                    return res;
                 }
             }
             break;
@@ -649,7 +615,7 @@ export function findIndexBack(predicate, array) {
         while (true) {
             const i = i_mut;
             if (i < 0) {
-                return indexNotFound() | 0;
+                return indexNotFound();
             }
             else if (predicate(array[i])) {
                 return i | 0;
@@ -686,7 +652,20 @@ export function tryFindIndexBack(predicate, array) {
 }
 
 export function choose(chooser, array, cons) {
-    return map((x_1) => value_2(chooser(x_1)), array.filter(((x) => (chooser(x) != null))), cons);
+    const res = [];
+    for (let i = 0; i <= (array.length - 1); i++) {
+        const matchValue = chooser(array[i]);
+        if (matchValue != null) {
+            const y = value_2(matchValue);
+            void (res.push(y));
+        }
+    }
+    if ((typeof cons) === "function") {
+        return map((x) => x, res, cons);
+    }
+    else {
+        return res;
+    }
 }
 
 export function foldIndexed(folder, state, array) {
@@ -694,7 +673,7 @@ export function foldIndexed(folder, state, array) {
 }
 
 export function fold(folder, state, array) {
-    return array.reduce((folder), state);
+    return array.reduce(((delegateArg0, delegateArg1) => folder(delegateArg0, delegateArg1)), state);
 }
 
 export function iterate(action, array) {
@@ -747,7 +726,8 @@ export function permute(f, array) {
         res[j] = x;
         checkFlags[j] = 1;
     }, array);
-    if (!(checkFlags.every(((y) => (1 === y))))) {
+    const isValid = checkFlags.every(((y) => (1 === y)));
+    if (!isValid) {
         throw (new Error("Not a valid permutation"));
     }
     return res;
@@ -801,6 +781,18 @@ export function sortWith(comparer, xs) {
     return xs_1;
 }
 
+export function allPairs(xs, ys) {
+    const len1 = xs.length | 0;
+    const len2 = ys.length | 0;
+    const res = new Array((len1 * len2));
+    for (let i = 0; i <= (xs.length - 1); i++) {
+        for (let j = 0; j <= (ys.length - 1); j++) {
+            res[(i * len2) + j] = [xs[i], ys[j]];
+        }
+    }
+    return res;
+}
+
 export function unfold(generator, state) {
     const res = [];
     const loop = (state_1_mut) => {
@@ -811,8 +803,7 @@ export function unfold(generator, state) {
             if (matchValue != null) {
                 const x = matchValue[0];
                 const s = matchValue[1];
-                const value = res.push(x);
-                void value;
+                void (res.push(x));
                 state_1_mut = s;
                 continue loop;
             }
@@ -828,8 +819,10 @@ export function unzip(array) {
     const res1 = new Array(len);
     const res2 = new Array(len);
     iterateIndexed((i, tupledArg) => {
-        res1[i] = tupledArg[0];
-        res2[i] = tupledArg[1];
+        const item1 = tupledArg[0];
+        const item2 = tupledArg[1];
+        res1[i] = item1;
+        res2[i] = item2;
     }, array);
     return [res1, res2];
 }
@@ -840,9 +833,12 @@ export function unzip3(array) {
     const res2 = new Array(len);
     const res3 = new Array(len);
     iterateIndexed((i, tupledArg) => {
-        res1[i] = tupledArg[0];
-        res2[i] = tupledArg[1];
-        res3[i] = tupledArg[2];
+        const item1 = tupledArg[0];
+        const item2 = tupledArg[1];
+        const item3 = tupledArg[2];
+        res1[i] = item1;
+        res2[i] = item2;
+        res3[i] = item3;
     }, array);
     return [res1, res2, res3];
 }
@@ -879,11 +875,11 @@ export function chunkBySize(chunkSize, array) {
     else {
         const result = [];
         for (let x = 0; x <= ((~(~Math.ceil(array.length / chunkSize))) - 1); x++) {
+            const start = (x * chunkSize) | 0;
             let slice;
-            const start_1 = (x * chunkSize) | 0;
+            const start_1 = start | 0;
             slice = (array.slice(start_1, (start_1 + chunkSize)));
-            const value = result.push(slice);
-            void value;
+            void (result.push(slice));
         }
         return result;
     }
@@ -934,7 +930,7 @@ export function compareWith(comparer, array1, array2) {
 }
 
 export function equalsWith(comparer, array1, array2) {
-    return compareWith(compare, array1, array2) === 0;
+    return compareWith((e1, e2) => compare(e1, e2), array1, array2) === 0;
 }
 
 export function exactlyOne(array) {
@@ -946,6 +942,15 @@ export function exactlyOne(array) {
     }
     else {
         throw (new Error("Input array too long\\nParameter name: array"));
+    }
+}
+
+export function tryExactlyOne(array) {
+    if (array.length === 1) {
+        return some(array[0]);
+    }
+    else {
+        return void 0;
     }
 }
 
@@ -1157,7 +1162,7 @@ export function windowed(windowSize, source) {
         throw (new Error("windowSize must be positive"));
     }
     let res;
-    const len = max_1(comparePrimitives, 0, source.length - windowSize) | 0;
+    const len = max_1((x, y) => comparePrimitives(x, y), 0, source.length - windowSize) | 0;
     res = (new Array(len));
     for (let i = windowSize; i <= source.length; i++) {
         res[i - windowSize] = source.slice(i - windowSize, (i - 1) + 1);
@@ -1174,16 +1179,16 @@ export function splitInto(chunks, array) {
     }
     else {
         const result = [];
-        const chunks_1 = min_1(comparePrimitives, chunks, array.length) | 0;
+        const chunks_1 = min_1((x, y) => comparePrimitives(x, y), chunks, array.length) | 0;
         const minChunkSize = (~(~(array.length / chunks_1))) | 0;
         const chunksWithExtraItem = (array.length % chunks_1) | 0;
         for (let i = 0; i <= (chunks_1 - 1); i++) {
             const chunkSize = ((i < chunksWithExtraItem) ? (minChunkSize + 1) : minChunkSize) | 0;
+            const start = ((i * minChunkSize) + min_1((x_1, y_1) => comparePrimitives(x_1, y_1), chunksWithExtraItem, i)) | 0;
             let slice;
-            const start_1 = ((i * minChunkSize) + min_1(comparePrimitives, chunksWithExtraItem, i)) | 0;
+            const start_1 = start | 0;
             slice = (array.slice(start_1, (start_1 + chunkSize)));
-            const value = result.push(slice);
-            void value;
+            void (result.push(slice));
         }
         return result;
     }
@@ -1196,13 +1201,14 @@ export function transpose(arrays, cons) {
         return new Array(0);
     }
     else {
-        const lenInner = arrays_1[0].length | 0;
+        const firstArray = arrays_1[0];
+        const lenInner = firstArray.length | 0;
         if (!forAll((a) => (a.length === lenInner), arrays_1)) {
             differentLengths();
         }
         const result = new Array(lenInner);
         for (let i = 0; i <= (lenInner - 1); i++) {
-            result[i] = (new (cons || Array)(len));
+            result[i] = Helpers_allocateArrayFromCons(cons, len);
             for (let j = 0; j <= (len - 1); j++) {
                 result[i][j] = arrays_1[j][i];
             }
