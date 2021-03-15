@@ -762,10 +762,10 @@
     "@types/mocha" "^8.2.0"
     "@web/test-runner-core" "^0.10.8"
 
-"@web/test-runner@^0.12.16":
-  version "0.12.16"
-  resolved "https://registry.yarnpkg.com/@web/test-runner/-/test-runner-0.12.16.tgz#e5f863ae1d8e37646dca79ea51842842e764c715"
-  integrity sha512-Lz1lFgLsjOYaS0jcZs54TeWkq/qFUzuKNrmgO36RYr1AtReFbv/sDHEBCWL7uzpxBCHA0sT6KDkvuVaZWuinGA==
+"@web/test-runner@^0.12.17":
+  version "0.12.17"
+  resolved "https://registry.yarnpkg.com/@web/test-runner/-/test-runner-0.12.17.tgz#37994ddc53e0dab8c282f1d595826ac309db89fe"
+  integrity sha512-wTpczsz+GLh6QRGWNLDTYhXtcj/lr8rsEVHSXvFUDmVzhoGrt0AZJktnPiNJHplgFJ/LbSIiQvXKWk48ogZY5g==
   dependencies:
     "@web/browser-logs" "^0.2.0"
     "@web/config-loader" "^0.1.3"
