@@ -288,10 +288,10 @@
     dotenv "^8.2.0"
     dotenv-expand "^5.1.0"
 
-"@snowpack/plugin-react-refresh@2.4.0":
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/@snowpack/plugin-react-refresh/-/plugin-react-refresh-2.4.0.tgz#a91ae1285621763438d759a75a04b0a7bf26fc23"
-  integrity sha512-qz2BzdWa5DPK7teTRrh8/SY81mWt//NZmRUUzrQZS2I9d9St8GfSAbFgeJunpBCpPXW9QaaI7huNaoTx/+1/Ag==
+"@snowpack/plugin-react-refresh@2.4.1":
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/@snowpack/plugin-react-refresh/-/plugin-react-refresh-2.4.1.tgz#950b5519c5104ad8d822db55a4db3c71987bc8cd"
+  integrity sha512-Y/rOJg3i51w9aTkRCadSZvlPWHbc7H4EM4NDFt/TCdReDD98z7PsRviUXtXGImPV66cNpIcp1IusgU+qXwaNCg==
   dependencies:
     "@babel/core" "^7.0.0"
     "@babel/plugin-syntax-class-properties" "^7.10.0"
