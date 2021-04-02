@@ -280,10 +280,10 @@
     estree-walker "^1.0.1"
     picomatch "^2.2.2"
 
-"@snowpack/plugin-dotenv@2.0.5":
-  version "2.0.5"
-  resolved "https://registry.yarnpkg.com/@snowpack/plugin-dotenv/-/plugin-dotenv-2.0.5.tgz#e8bcc5cb59c951f7d560e36397960dd2252a56ee"
-  integrity sha512-y54lwYRDpTfDTU3uopHLND0DKIjjyWiYxhvOPfZvC4OpOd7UIRwMdSOd5XLZJPEBJ4BD38lDLiXh+ODfNDqhnQ==
+"@snowpack/plugin-dotenv@2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@snowpack/plugin-dotenv/-/plugin-dotenv-2.1.0.tgz#dac77007bf657f999d222318506a850fd7d16875"
+  integrity sha512-NvwB+kQuxKheZLWrRvOgXB8i0cXhuIkljbgCn02fRGCIOigPIDk1jZrnn3x9skqqtul/XvW9dNulVi6Fa7CN6g==
   dependencies:
     dotenv "^8.2.0"
     dotenv-expand "^5.1.0"
