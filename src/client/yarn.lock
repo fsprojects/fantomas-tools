@@ -1071,6 +1071,11 @@ cli-cursor@^3.1.0:
   dependencies:
     restore-cursor "^3.1.0"
 
+cli-spinners@^2.5.0:
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/cli-spinners/-/cli-spinners-2.6.0.tgz#36c7dc98fb6a9a76bd6238ec3f77e2425627e939"
+  integrity sha512-t+4/y50K/+4xcCRosKkA7W4gTr1MySvLV0q+PxmG7FJ5g+66ChKurYjxBCjHggHH3HA5Hh9cy+lcUGWDqVH+4Q==
+
 clone@^2.1.2:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/clone/-/clone-2.1.2.tgz#1b7f4b9f591f1e8f83670401600345a02887435f"
@@ -1417,10 +1422,10 @@ es-to-primitive@^1.2.1:
     is-date-object "^1.0.1"
     is-symbol "^1.0.2"
 
-esbuild@^0.8.7:
-  version "0.8.18"
-  resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.8.18.tgz#4a8c70df8fffa27164a26daa3ec58ce6f1315446"
-  integrity sha512-EPbCSr7Ems1loeoy1faUGnJOwTwSrGcoYVQ4f4T4JMKjxJxrWAg+zqXkZK7GvqxfvokPp3HV6Raqn6rqAuW7+Q==
+esbuild@^0.9.3:
+  version "0.9.7"
+  resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.9.7.tgz#ea0d639cbe4b88ec25fbed4d6ff00c8d788ef70b"
+  integrity sha512-VtUf6aQ89VTmMLKrWHYG50uByMF4JQlVysb8dmg6cOgW8JnFCipmz7p+HNBl+RR3LLCuBxFGVauAe2wfnF9bLg==
 
 escape-html@^1.0.3:
   version "1.0.3"
@@ -1493,6 +1498,11 @@ fd-slicer@~1.1.0:
   integrity sha1-JcfInLH5B3+IkbvmHY85Dq4lbx4=
   dependencies:
     pend "~1.2.0"
+
+fdir@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/fdir/-/fdir-5.0.0.tgz#a40b5d9adfb530daeca55558e8ad87ec14a44769"
+  integrity sha512-cteqwWMA43lEmgwOg5HSdvhVFD39vHjQDhZkRMlKmeoNPtSSgUw1nUypydiY2upMdGiBFBZvNBDbnoBh0yCzaQ==
 
 fill-range@^7.0.1:
   version "7.0.1"
@@ -2677,14 +2687,17 @@ slice-ansi@^4.0.0:
     astral-regex "^2.0.0"
     is-fullwidth-code-point "^3.0.0"
 
-snowpack@3.0.13:
-  version "3.0.13"
-  resolved "https://registry.yarnpkg.com/snowpack/-/snowpack-3.0.13.tgz#25e6434b186d916f69b0bae6325bda4f1451c035"
-  integrity sha512-USTcpfJ68rbuFvUygw+3n9qS1CC/tGsr/JNVc6FNk0ZRfGBE4OmB+Mmk5nWtdxi546GeCr/GvveJenYLen/WpA==
+snowpack@3.2.2:
+  version "3.2.2"
+  resolved "https://registry.yarnpkg.com/snowpack/-/snowpack-3.2.2.tgz#e4d7b8fd96c5cfbfb8c596ee47de2f7118cc7fea"
+  integrity sha512-lt2FEFpvrWSBhFPlQxDr2hG7hnyucLEh7QSJqUUcAljrt8UoWJjTZlvZ4shGiJLkNjxMgGrJKj37y08/9OvXMw==
   dependencies:
+    cli-spinners "^2.5.0"
     default-browser-id "^2.0.0"
-    esbuild "^0.8.7"
+    esbuild "^0.9.3"
+    fdir "^5.0.0"
     open "^7.0.4"
+    picomatch "^2.2.2"
     resolve "^1.20.0"
     rollup "^2.34.0"
   optionalDependencies:
