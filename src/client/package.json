@@ -1,6 +1,7 @@
 {
   "scripts": {
     "start": "snowpack dev",
+    "prebuild": "dotnet fable ./src/FantomasTools/FantomasTools.fsproj --outDir ./src/bin",
     "build": "snowpack build",
     "postbuild": "node postbuild.mjs",
     "test": "web-test-runner \"src/**/*.test.jsx\"",
