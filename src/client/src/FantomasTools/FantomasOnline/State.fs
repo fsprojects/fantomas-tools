@@ -191,8 +191,9 @@ let update isActiveTab code msg model =
                 optionsListToMap options, model.IsFsi
 
         let cmd =
-            if not (System.String.IsNullOrWhiteSpace code)
-               && isActiveTab then
+            if
+                not (System.String.IsNullOrWhiteSpace code) && isActiveTab
+            then
                 Cmd.ofMsg Format
             else
                 Cmd.none

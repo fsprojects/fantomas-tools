@@ -187,7 +187,8 @@ Fantomas %s
 
 
 let private createGitHubIssue code model =
-    let description = """Please describe here the Fantomas problem you encountered.
+    let description =
+        """Please describe here the Fantomas problem you encountered.
                     Check out our [Contribution Guidelines](https://github.com/fsprojects/fantomas/blob/master/CONTRIBUTING.md#bug-reports)."""
 
     let bh, bc, ah, ac =
