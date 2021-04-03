@@ -280,18 +280,18 @@
     estree-walker "^1.0.1"
     picomatch "^2.2.2"
 
-"@snowpack/plugin-dotenv@2.0.5":
-  version "2.0.5"
-  resolved "https://registry.yarnpkg.com/@snowpack/plugin-dotenv/-/plugin-dotenv-2.0.5.tgz#e8bcc5cb59c951f7d560e36397960dd2252a56ee"
-  integrity sha512-y54lwYRDpTfDTU3uopHLND0DKIjjyWiYxhvOPfZvC4OpOd7UIRwMdSOd5XLZJPEBJ4BD38lDLiXh+ODfNDqhnQ==
+"@snowpack/plugin-dotenv@2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@snowpack/plugin-dotenv/-/plugin-dotenv-2.1.0.tgz#dac77007bf657f999d222318506a850fd7d16875"
+  integrity sha512-NvwB+kQuxKheZLWrRvOgXB8i0cXhuIkljbgCn02fRGCIOigPIDk1jZrnn3x9skqqtul/XvW9dNulVi6Fa7CN6g==
   dependencies:
     dotenv "^8.2.0"
     dotenv-expand "^5.1.0"
 
-"@snowpack/plugin-react-refresh@2.4.1":
-  version "2.4.1"
-  resolved "https://registry.yarnpkg.com/@snowpack/plugin-react-refresh/-/plugin-react-refresh-2.4.1.tgz#950b5519c5104ad8d822db55a4db3c71987bc8cd"
-  integrity sha512-Y/rOJg3i51w9aTkRCadSZvlPWHbc7H4EM4NDFt/TCdReDD98z7PsRviUXtXGImPV66cNpIcp1IusgU+qXwaNCg==
+"@snowpack/plugin-react-refresh@2.4.2":
+  version "2.4.2"
+  resolved "https://registry.yarnpkg.com/@snowpack/plugin-react-refresh/-/plugin-react-refresh-2.4.2.tgz#6b301e9563deb5af82a0d159bd2a77575282b357"
+  integrity sha512-crZwoSt2+KyzFGCca6mFUb+7yf76uvynvYqc+ovn4Aln0otaV/MakzCaaHmucjW/UdmH9G1rH2PiXma3jUCKoA==
   dependencies:
     "@babel/core" "^7.0.0"
     "@babel/plugin-syntax-class-properties" "^7.10.0"
@@ -763,10 +763,10 @@
     "@types/mocha" "^8.2.0"
     "@web/test-runner-core" "^0.10.8"
 
-"@web/test-runner@^0.12.17":
-  version "0.12.17"
-  resolved "https://registry.yarnpkg.com/@web/test-runner/-/test-runner-0.12.17.tgz#37994ddc53e0dab8c282f1d595826ac309db89fe"
-  integrity sha512-wTpczsz+GLh6QRGWNLDTYhXtcj/lr8rsEVHSXvFUDmVzhoGrt0AZJktnPiNJHplgFJ/LbSIiQvXKWk48ogZY5g==
+"@web/test-runner@0.12.18":
+  version "0.12.18"
+  resolved "https://registry.yarnpkg.com/@web/test-runner/-/test-runner-0.12.18.tgz#d360792d747963ccf158ba0bd0cef85653e1a9c3"
+  integrity sha512-TfDuqM+4DfIxb4GzTlOoA4JEX15IXDkuVNzHYphChJCVkK+3GJxl173z0ZVjiUYXfudVM8LrKwR72XY3piv/8w==
   dependencies:
     "@web/browser-logs" "^0.2.0"
     "@web/config-loader" "^0.1.3"
@@ -780,7 +780,6 @@
     command-line-args "^5.1.1"
     command-line-usage "^6.1.1"
     convert-source-map "^1.7.0"
-    deepmerge "^4.2.2"
     diff "^5.0.0"
     globby "^11.0.1"
     portfinder "^1.0.28"
@@ -978,7 +977,7 @@ camelcase@^6.2.0:
   resolved "https://registry.yarnpkg.com/camelcase/-/camelcase-6.2.0.tgz#924af881c9d525ac9d87f40d964e5cea982a1809"
   integrity sha512-c7wVvbw3f37nuobQNtgsgG9POC9qMbNuMQmTCqZv23b6MIz0fcYpBiOlv9gEN/hdLdnZTDQhg6e9Dq5M1vKvfg==
 
-chai@^4.3.4:
+chai@4.3.4:
   version "4.3.4"
   resolved "https://registry.yarnpkg.com/chai/-/chai-4.3.4.tgz#b55e655b31e1eac7099be4c08c21964fce2e6c49"
   integrity sha512-yS5H68VYOCtN1cjfwumDSuzn/9c+yza4f3reKXlE5rUg7SFcCEy90gJvydNgOYtblyf4Zi6jIWRnXOgErta0KA==
