@@ -1,3 +1,7 @@
+blink {
+  font-weight: bolder;
+}
+
 #ast-content {
   display: flex;
   flex-direction: column;

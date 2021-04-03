@@ -1,4 +1,8 @@
 @charset "UTF-8";
+blink {
+  font-weight: bolder;
+}
+
 :root {
   --blue: #007bff;
   --indigo: #6610f2;
@@ -8755,6 +8759,10 @@ a.text-dark:hover, a.text-dark:focus {
   overflow-y: auto;
 }
 
+blink {
+  font-weight: bolder;
+}
+
 .settings {
   position: fixed;
   height: 100vh;
@@ -8799,6 +8807,10 @@ a.text-dark:hover, a.text-dark:focus {
 #commands .btn {
   border-radius: 0;
   margin-right: 0.5rem;
+}
+
+blink {
+  font-weight: bolder;
 }
 
 .tag {
@@ -9104,6 +9116,10 @@ pre code {
   color: #dc3545;
 }
 
+blink {
+  font-weight: bolder;
+}
+
 #trivia-settings .btn-group .btn {
   color: #5fcde3;
   border-color: #5fcde3;
@@ -9327,6 +9343,10 @@ tr.trivia-candidate-main-node td, tr.trivia-candidate-token-node td {
   max-height: calc(100vh - 154px);
 }
 
+blink {
+  font-weight: bolder;
+}
+
 #ast-content {
   display: flex;
   flex-direction: column;
@@ -9353,6 +9373,10 @@ tr.trivia-candidate-main-node td, tr.trivia-candidate-token-node td {
 #ast-errors li strong {
   font-size: 0.9em;
   margin-right: 5px;
+}
+
+blink {
+  font-weight: bolder;
 }
 
 .flex-1 {

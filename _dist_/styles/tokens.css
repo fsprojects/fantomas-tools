@@ -1,3 +1,7 @@
+blink {
+  font-weight: bolder;
+}
+
 .tag {
   border-radius: 4px;
   display: inline-flex;
