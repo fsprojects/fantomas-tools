@@ -11,7 +11,7 @@ module.exports = {
         "@snowpack/plugin-dotenv",
         "@snowpack/plugin-sass",
         ["@snowpack/plugin-run-script", {
-            "cmd": "dotnet fable ./src/FantomasTools/FantomasTools.fsproj --outDir ./src/bin",
+            "cmd": "echo 'Fable already built'",
             "watch": "dotnet fable watch ./src/FantomasTools/FantomasTools.fsproj --outDir ./src/bin"
         }]
     ],

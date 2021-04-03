@@ -1,6 +1,7 @@
 {
   "scripts": {
     "start": "snowpack dev",
+    "prebuild": "dotnet fable ./src/FantomasTools/FantomasTools.fsproj --outDir ./src/bin",
     "build": "snowpack build",
     "postbuild": "node postbuild.mjs",
     "test": "web-test-runner \"src/**/*.test.jsx\"",
@@ -18,15 +19,15 @@
     "monaco-editor": "0.21.3"
   },
   "devDependencies": {
-    "@snowpack/plugin-react-refresh": "2.4.1",
-    "@snowpack/plugin-dotenv": "2.0.5",
+    "@snowpack/plugin-react-refresh": "2.4.2",
+    "@snowpack/plugin-dotenv": "2.1.0",
     "@snowpack/web-test-runner-plugin": "0.2.2",
     "@snowpack/plugin-sass": "1.4.0",
     "@snowpack/plugin-run-script": "2.3.0",
     "@testing-library/react": "11.2.6",
-    "@web/test-runner": "^0.12.17",
-    "chai": "^4.3.4",
+    "@web/test-runner": "0.12.18",
+    "chai": "4.3.4",
     "prettier": "2.2.1",
-    "snowpack": "3.0.13"
+    "snowpack": "3.2.2"
   }
 }
