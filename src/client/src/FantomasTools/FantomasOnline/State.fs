@@ -192,7 +192,8 @@ let update isActiveTab code msg model =
 
         let cmd =
             if
-                not (System.String.IsNullOrWhiteSpace code) && isActiveTab
+                not (System.String.IsNullOrWhiteSpace code)
+                && isActiveTab
             then
                 Cmd.ofMsg Format
             else
