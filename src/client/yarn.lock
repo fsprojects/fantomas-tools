@@ -3532,10 +3532,10 @@ smart-buffer@^4.1.0:
   resolved "https://registry.yarnpkg.com/smart-buffer/-/smart-buffer-4.1.0.tgz#91605c25d91652f4661ea69ccf45f1b331ca21ba"
   integrity sha512-iVICrxOzCynf/SNaBQCw34eM9jROU/s5rzIhpOvzhzuYHfJR/DhZfDkXiZSgKXfgv26HT3Yni3AV/DGw0cGnnw==
 
-snowpack@3.3.0:
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/snowpack/-/snowpack-3.3.0.tgz#8eaf17f6aa43a14d72be8e2de71433c1efccb032"
-  integrity sha512-LXoWtVQ9SGD7XhkFS9ixOoGO4eofJW/yj8gUYBopYhYIcOSeuokzJWkW0gF5M6pM7Vw9TMO8gK9KSfc2wAwTDw==
+snowpack@3.3.3:
+  version "3.3.3"
+  resolved "https://registry.yarnpkg.com/snowpack/-/snowpack-3.3.3.tgz#016f815cf9bb3fa1dc152212ca0fa1ecb785cee4"
+  integrity sha512-ASPyveGfzAbhyp1k5XmLtZoS0J6PpY8jArGm6JLM8ztuB4AWA2z1Qg/QiTOIguOhZN0QKKUe6slkYfSWteIzFA==
   dependencies:
     cli-spinners "^2.5.0"
     default-browser-id "^2.0.0"
