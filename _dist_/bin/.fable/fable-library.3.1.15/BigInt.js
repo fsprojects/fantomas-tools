@@ -2,7 +2,7 @@ import { BigInteger_op_Inequality_56F059C0, BigInteger_op_Equality_56F059C0, Big
 import { fromInteger } from "./Long.js";
 import { comparePrimitives, min, compare as compare_1, equals as equals_1, safeHash } from "./Util.js";
 import { toString as toString_1 } from "./Types.js";
-import { fold, empty, ofArrayWithTail, toArray, cons, head, skipWhile } from "./List.js";
+import { fold, empty, ofArrayWithTail, cons, toArray, head, skipWhile } from "./List.js";
 import { fill, reverse } from "./Array.js";
 
 export function isBigInt(x) {
@@ -21,10 +21,8 @@ export function tryParse(str, res) {
 
 export function divRem(x, y, remainder) {
     const patternInput = BigInteger_DivRem_56F059C0(x, y);
-    const remainder$0027 = patternInput[1];
-    const quotient = patternInput[0];
-    remainder.contents = remainder$0027;
-    return quotient;
+    remainder.contents = patternInput[1];
+    return patternInput[0];
 }
 
 export function parse(arg00) {
@@ -231,8 +229,7 @@ function flipTwosComplement(currByte, lowBitFound) {
         return [0, false];
     }
     else {
-        const firstBitIndex = (new Int32Array([0, 1, 2, 3, 4, 5, 6, 7])).find((i) => ((currByte & (1 << i)) > 0)) | 0;
-        return [(currByte ^ (254 << firstBitIndex)) & 255, true];
+        return [(currByte ^ (254 << (new Int32Array([0, 1, 2, 3, 4, 5, 6, 7])).find((i) => ((currByte & (1 << i)) > 0)))) & 255, true];
     }
 }
 
@@ -245,15 +242,14 @@ export function toByteArray(value) {
         const value_1 = isPositive ? value : BigInteger_op_Multiply_56F059C0(BigInteger_$ctor_Z524259A4(-1), value);
         const mask32 = fromInt64(fromInteger(4294967295, false, 6));
         const loop = (accumBytes_mut, consumeValue_mut, lowBitFound_mut) => {
-            let value_8, value_9, value_10;
+            let value_6, value_8, value_9, value_10;
             loop:
             while (true) {
                 const accumBytes = accumBytes_mut, consumeValue = consumeValue_mut, lowBitFound = lowBitFound_mut;
                 if (compare_1(consumeValue, zero) <= 0) {
                     const accumBytes_1 = isPositive ? skipWhile((b) => (b === 0), accumBytes) : skipWhile((b_1) => (b_1 === 255), accumBytes);
                     const isHighBitOne = (head(accumBytes_1) & 128) !== 0;
-                    const accumBytes_2 = (isPositive ? isHighBitOne : false) ? cons(0, accumBytes_1) : (((!isPositive) ? (!isHighBitOne) : false) ? cons(255, accumBytes_1) : accumBytes_1);
-                    return reverse(toArray(accumBytes_2));
+                    return reverse(toArray((isPositive ? isHighBitOne : false) ? cons(0, accumBytes_1) : (((!isPositive) ? (!isHighBitOne) : false) ? cons(255, accumBytes_1) : accumBytes_1)));
                 }
                 else {
                     const currValue = toUInt32(BigInteger_op_BitwiseAnd_56F059C0(consumeValue, mask32));
@@ -265,30 +261,19 @@ export function toByteArray(value) {
                         let b2;
                         const value_5 = currValue >>> 16;
                         b2 = (value_5 & 0xFF);
-                        let b3;
-                        const value_6 = currValue >>> 24;
-                        b3 = (value_6 & 0xFF);
-                        accumBytes_mut = ofArrayWithTail([b3, b2, b1, b0], accumBytes);
+                        accumBytes_mut = ofArrayWithTail([(value_6 = (currValue >>> 24), value_6 & 0xFF), b2, b1, b0], accumBytes);
                         consumeValue_mut = BigInteger_op_RightShift_62E082A2(consumeValue, 32);
                         lowBitFound_mut = false;
                         continue loop;
                     }
                     else {
                         const patternInput = flipTwosComplement(currValue & 0xFF, lowBitFound);
-                        const lowBitFound_1 = patternInput[1];
-                        const b0_1 = patternInput[0];
-                        const patternInput_1 = flipTwosComplement((value_8 = (currValue >>> 8), value_8 & 0xFF), lowBitFound_1);
-                        const lowBitFound_2 = patternInput_1[1];
-                        const b1_1 = patternInput_1[0];
-                        const patternInput_2 = flipTwosComplement((value_9 = (currValue >>> 16), value_9 & 0xFF), lowBitFound_2);
-                        const lowBitFound_3 = patternInput_2[1];
-                        const b2_1 = patternInput_2[0];
-                        const patternInput_3 = flipTwosComplement((value_10 = (currValue >>> 24), value_10 & 0xFF), lowBitFound_3);
-                        const lowBitFound_4 = patternInput_3[1];
-                        const b3_1 = patternInput_3[0];
-                        accumBytes_mut = ofArrayWithTail([b3_1, b2_1, b1_1, b0_1], accumBytes);
+                        const patternInput_1 = flipTwosComplement((value_8 = (currValue >>> 8), value_8 & 0xFF), patternInput[1]);
+                        const patternInput_2 = flipTwosComplement((value_9 = (currValue >>> 16), value_9 & 0xFF), patternInput_1[1]);
+                        const patternInput_3 = flipTwosComplement((value_10 = (currValue >>> 24), value_10 & 0xFF), patternInput_2[1]);
+                        accumBytes_mut = ofArrayWithTail([patternInput_3[0], patternInput_2[0], patternInput_1[0], patternInput[0]], accumBytes);
                         consumeValue_mut = BigInteger_op_RightShift_62E082A2(consumeValue, 32);
-                        lowBitFound_mut = lowBitFound_4;
+                        lowBitFound_mut = patternInput_3[1];
                         continue loop;
                     }
                 }
@@ -329,8 +314,7 @@ export function fromByteArray(bytes) {
                     }
                     if (isPositive) {
                         fill(buffer, bytesToProcess, 4 - bytesToProcess, 0);
-                        const value_3 = (((((buffer[0] | ((buffer[1] << 8) >>> 0)) >>> 0) | ((buffer[2] << 16) >>> 0)) >>> 0) | ((buffer[3] << 24) >>> 0)) >>> 0;
-                        accumUInt32_mut = cons(value_3, accumUInt32);
+                        accumUInt32_mut = cons((((((buffer[0] | ((buffer[1] << 8) >>> 0)) >>> 0) | ((buffer[2] << 16) >>> 0)) >>> 0) | ((buffer[3] << 24) >>> 0)) >>> 0, accumUInt32);
                         currIndex_mut = (currIndex + bytesToProcess);
                         bytesRemaining_mut = (bytesRemaining - bytesToProcess);
                         lowBitFound_mut = false;
@@ -339,22 +323,13 @@ export function fromByteArray(bytes) {
                     else {
                         fill(buffer, bytesToProcess, 4 - bytesToProcess, 255);
                         const patternInput = flipTwosComplement(buffer[0], lowBitFound);
-                        const lowBitFound_1 = patternInput[1];
-                        const b0 = patternInput[0];
-                        const patternInput_1 = flipTwosComplement(buffer[1], lowBitFound_1);
-                        const lowBitFound_2 = patternInput_1[1];
-                        const b1 = patternInput_1[0];
-                        const patternInput_2 = flipTwosComplement(buffer[2], lowBitFound_2);
-                        const lowBitFound_3 = patternInput_2[1];
-                        const b2 = patternInput_2[0];
-                        const patternInput_3 = flipTwosComplement(buffer[3], lowBitFound_3);
-                        const lowBitFound_4 = patternInput_3[1];
-                        const b3 = patternInput_3[0];
-                        const value_4 = (((((b0 | ((b1 << 8) >>> 0)) >>> 0) | ((b2 << 16) >>> 0)) >>> 0) | ((b3 << 24) >>> 0)) >>> 0;
-                        accumUInt32_mut = cons(value_4, accumUInt32);
+                        const patternInput_1 = flipTwosComplement(buffer[1], patternInput[1]);
+                        const patternInput_2 = flipTwosComplement(buffer[2], patternInput_1[1]);
+                        const patternInput_3 = flipTwosComplement(buffer[3], patternInput_2[1]);
+                        accumUInt32_mut = cons((((((patternInput[0] | ((patternInput_1[0] << 8) >>> 0)) >>> 0) | ((patternInput_2[0] << 16) >>> 0)) >>> 0) | ((patternInput_3[0] << 24) >>> 0)) >>> 0, accumUInt32);
                         currIndex_mut = (currIndex + bytesToProcess);
                         bytesRemaining_mut = (bytesRemaining - bytesToProcess);
-                        lowBitFound_mut = lowBitFound_4;
+                        lowBitFound_mut = patternInput_3[1];
                         continue loop;
                     }
                 }

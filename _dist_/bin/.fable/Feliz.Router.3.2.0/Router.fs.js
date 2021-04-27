@@ -1,18 +1,18 @@
-import { trimEnd, isNullOrWhiteSpace, substring, join, endsWith } from "../fable-library.3.1.7/String.js";
-import { ofArray, singleton, empty, collect, map } from "../fable-library.3.1.7/List.js";
-import { equalsWith } from "../fable-library.3.1.7/Array.js";
-import { comparePrimitives } from "../fable-library.3.1.7/Util.js";
-import { useReact_useEffect_Z5ECA432F, React_createDisposable_3A5B6456, useReact_useMemo_CF4EA67, useReact_useCallbackRef_7C4B0DD6, React_memo_62A0F746 } from "../Feliz.1.28.0/React.fs.js";
-import { defaultArg } from "../fable-library.3.1.7/Option.js";
+import { trimEnd, isNullOrWhiteSpace, substring, join, endsWith } from "../fable-library.3.1.15/String.js";
+import { ofArray, singleton, empty, collect, map } from "../fable-library.3.1.15/List.js";
+import { equalsWith } from "../fable-library.3.1.15/Array.js";
+import { comparePrimitives } from "../fable-library.3.1.15/Util.js";
+import { React_createDisposable_3A5B6456, useReact_useEffect_Z5ECA432F, useReact_useMemo_CF4EA67, useReact_useCallbackRef_7C4B0DD6, React_memo_62A0F746 } from "../Feliz.1.28.0/React.fs.js";
+import { defaultArg } from "../fable-library.3.1.15/Option.js";
 import { Impl_createRemoveOptions, Impl_adjustPassive } from "../Feliz.UseListener.0.6.3/Listener.fs.js";
-import { tryParse } from "../fable-library.3.1.7/Int32.js";
-import { FSharpRef } from "../fable-library.3.1.7/Types.js";
-import { tryParse as tryParse_1, fromInt } from "../fable-library.3.1.7/Long.js";
-import { tryParse as tryParse_2 } from "../fable-library.3.1.7/Guid.js";
-import { tryParse as tryParse_3 } from "../fable-library.3.1.7/Double.js";
-import { tryParse as tryParse_4 } from "../fable-library.3.1.7/Decimal.js";
-import Decimal from "../fable-library.3.1.7/Decimal.js";
-import { map as map_1, delay, toList } from "../fable-library.3.1.7/Seq.js";
+import { tryParse } from "../fable-library.3.1.15/Int32.js";
+import { FSharpRef } from "../fable-library.3.1.15/Types.js";
+import { tryParse as tryParse_1, fromInt } from "../fable-library.3.1.15/Long.js";
+import { tryParse as tryParse_2 } from "../fable-library.3.1.15/Guid.js";
+import { tryParse as tryParse_3 } from "../fable-library.3.1.15/Double.js";
+import { tryParse as tryParse_4 } from "../fable-library.3.1.15/Decimal.js";
+import Decimal from "../fable-library.3.1.15/Decimal.js";
+import { map as map_1, delay, toList } from "../fable-library.3.1.15/Seq.js";
 
 export function RouterModule_String_$007CPrefix$007C(prefix, str) {
     if (str.indexOf(prefix) === 0) {
@@ -33,46 +33,36 @@ export function RouterModule_String_$007CSuffix$007C(suffix, str) {
 }
 
 export function RouterModule_encodeQueryString(queryStringPairs) {
-    const _arg1 = join("\u0026", map((tupledArg) => {
-        const key = tupledArg[0];
-        const value = tupledArg[1];
-        return join("=", [encodeURIComponent(key), encodeURIComponent(value)]);
-    }, queryStringPairs));
+    const _arg1 = join("\u0026", map((tupledArg) => join("=", [encodeURIComponent(tupledArg[0]), encodeURIComponent(tupledArg[1])]), queryStringPairs));
     if (_arg1 === "") {
         return "";
     }
     else {
-        const pairs = _arg1;
-        return "?" + pairs;
+        return "?" + _arg1;
     }
 }
 
 export function RouterModule_encodeQueryStringInts(queryStringIntPairs) {
-    const _arg1 = join("\u0026", map((tupledArg) => {
-        const key = tupledArg[0];
-        const value = tupledArg[1] | 0;
-        return join("=", [encodeURIComponent(key), value]);
-    }, queryStringIntPairs));
+    const _arg1 = join("\u0026", map((tupledArg) => join("=", [encodeURIComponent(tupledArg[0]), tupledArg[1]]), queryStringIntPairs));
     if (_arg1 === "") {
         return "";
     }
     else {
-        const pairs = _arg1;
-        return "?" + pairs;
+        return "?" + _arg1;
     }
 }
 
 function RouterModule_normalizeRoute(routeMode) {
     if (routeMode === 1) {
         return (_arg1) => {
-            let activePatternResult9395, path, activePatternResult9396, path_1, activePatternResult9397, path_2, path_3;
-            return activePatternResult9395 = RouterModule_String_$007CPrefix$007C("/", _arg1), (activePatternResult9395 != null) ? (path = activePatternResult9395, "#" + path) : (activePatternResult9396 = RouterModule_String_$007CPrefix$007C("#/", _arg1), (activePatternResult9396 != null) ? (path_1 = activePatternResult9396, path_1) : (activePatternResult9397 = RouterModule_String_$007CPrefix$007C("#", _arg1), (activePatternResult9397 != null) ? (path_2 = activePatternResult9397, "#/" + substring(path_2, 1, path_2.length - 1)) : (path_3 = _arg1, "#/" + path_3)));
+            let activePatternResult9385, path, activePatternResult9386, path_1, activePatternResult9387, path_2;
+            return activePatternResult9385 = RouterModule_String_$007CPrefix$007C("/", _arg1), (activePatternResult9385 != null) ? (path = activePatternResult9385, "#" + path) : (activePatternResult9386 = RouterModule_String_$007CPrefix$007C("#/", _arg1), (activePatternResult9386 != null) ? (path_1 = activePatternResult9386, path_1) : (activePatternResult9387 = RouterModule_String_$007CPrefix$007C("#", _arg1), (activePatternResult9387 != null) ? (path_2 = activePatternResult9387, "#/" + substring(path_2, 1, path_2.length - 1)) : ("#/" + _arg1)));
         };
     }
     else {
         return (_arg2) => {
-            let activePatternResult9400, path_4, path_5;
-            return activePatternResult9400 = RouterModule_String_$007CPrefix$007C("/", _arg2), (activePatternResult9400 != null) ? (path_4 = activePatternResult9400, path_4) : (path_5 = _arg2, "/" + path_5);
+            let activePatternResult9390, path_4;
+            return activePatternResult9390 = RouterModule_String_$007CPrefix$007C("/", _arg2), (activePatternResult9390 != null) ? (path_4 = activePatternResult9390, path_4) : ("/" + _arg2);
         };
     }
 }
@@ -146,8 +136,7 @@ export const RouterModule_router = React_memo_62A0F746((input) => {
     const onChange = useReact_useCallbackRef_7C4B0DD6((ev) => {
         const urlChanged = defaultArg(input.onUrlChanged, (value) => {
         });
-        const routeMode = defaultArg(input.hashMode, 1) | 0;
-        return RouterModule_onUrlChange(routeMode, urlChanged, ev);
+        RouterModule_onUrlChange(defaultArg(input.hashMode, 1), urlChanged, ev);
     });
     if (((window.navigator.userAgent).indexOf("Trident") >= 0) ? true : ((window.navigator.userAgent).indexOf("MSIE") >= 0)) {
         const eventType = "hashchange";
@@ -160,25 +149,22 @@ export const RouterModule_router = React_memo_62A0F746((input) => {
         const fn = useReact_useMemo_CF4EA67(() => ((arg) => {
             action_1(arg);
         }), [action_1]);
-        const listener = useReact_useCallbackRef_7C4B0DD6(() => {
+        useReact_useEffect_Z5ECA432F(useReact_useCallbackRef_7C4B0DD6(() => {
             if (addOptions == null) {
                 window.addEventListener(eventType, fn);
             }
             else {
-                const options_2 = addOptions;
-                window.addEventListener(eventType, fn, options_2);
+                window.addEventListener(eventType, fn, addOptions);
             }
             return React_createDisposable_3A5B6456(() => {
                 if (removeOptions == null) {
                     window.removeEventListener(eventType, fn);
                 }
                 else {
-                    const options_3 = removeOptions;
-                    window.removeEventListener(eventType, fn, options_3);
+                    window.removeEventListener(eventType, fn, removeOptions);
                 }
             });
-        });
-        useReact_useEffect_Z5ECA432F(listener);
+        }));
     }
     else {
         const eventType_1 = "popstate";
@@ -189,25 +175,22 @@ export const RouterModule_router = React_memo_62A0F746((input) => {
         const fn_1 = useReact_useMemo_CF4EA67(() => ((arg_1) => {
             action_3(arg_1);
         }), [action_3]);
-        const listener_1 = useReact_useCallbackRef_7C4B0DD6(() => {
+        useReact_useEffect_Z5ECA432F(useReact_useCallbackRef_7C4B0DD6(() => {
             if (addOptions_1 == null) {
                 window.addEventListener(eventType_1, fn_1);
             }
             else {
-                const options_6 = addOptions_1;
-                window.addEventListener(eventType_1, fn_1, options_6);
+                window.addEventListener(eventType_1, fn_1, addOptions_1);
             }
             return React_createDisposable_3A5B6456(() => {
                 if (removeOptions_1 == null) {
                     window.removeEventListener(eventType_1, fn_1);
                 }
                 else {
-                    const options_7 = removeOptions_1;
-                    window.removeEventListener(eventType_1, fn_1, options_7);
+                    window.removeEventListener(eventType_1, fn_1, removeOptions_1);
                 }
             });
-        });
-        useReact_useEffect_Z5ECA432F(listener_1);
+        }));
     }
     const eventType_2 = "CUSTOM_NAVIGATION_EVENT";
     const action_4 = onChange;
@@ -217,44 +200,34 @@ export const RouterModule_router = React_memo_62A0F746((input) => {
     const fn_2 = useReact_useMemo_CF4EA67(() => ((arg_2) => {
         action_4(arg_2);
     }), [action_4]);
-    const listener_2 = useReact_useCallbackRef_7C4B0DD6(() => {
+    useReact_useEffect_Z5ECA432F(useReact_useCallbackRef_7C4B0DD6(() => {
         if (addOptions_2 == null) {
             window.addEventListener(eventType_2, fn_2);
         }
         else {
-            const options_9 = addOptions_2;
-            window.addEventListener(eventType_2, fn_2, options_9);
+            window.addEventListener(eventType_2, fn_2, addOptions_2);
         }
         return React_createDisposable_3A5B6456(() => {
             if (removeOptions_2 == null) {
                 window.removeEventListener(eventType_2, fn_2);
             }
             else {
-                const options_10 = removeOptions_2;
-                window.removeEventListener(eventType_2, fn_2, options_10);
+                window.removeEventListener(eventType_2, fn_2, removeOptions_2);
             }
         });
-    });
-    useReact_useEffect_Z5ECA432F(listener_2);
+    }));
     const matchValue = input.application;
-    if (matchValue == null) {
-        return null;
-    }
-    else {
-        const elem = matchValue;
-        return elem;
-    }
+    return (matchValue == null) ? null : matchValue;
 });
 
 export function Route_$007CInt$007C_$007C(input) {
     let matchValue;
     let outArg = 0;
     matchValue = [tryParse(input, 511, false, 32, new FSharpRef(() => outArg, (v) => {
-        outArg = v;
+        outArg = (v | 0);
     })), outArg];
     if (matchValue[0]) {
-        const value = matchValue[1] | 0;
-        return value;
+        return matchValue[1];
     }
     else {
         return void 0;
@@ -268,8 +241,7 @@ export function Route_$007CInt64$007C_$007C(input) {
         outArg = v;
     })), outArg];
     if (matchValue[0]) {
-        const value = matchValue[1];
-        return value;
+        return matchValue[1];
     }
     else {
         return void 0;
@@ -283,8 +255,7 @@ export function Route_$007CGuid$007C_$007C(input) {
         outArg = v;
     })), outArg];
     if (matchValue[0]) {
-        const value = matchValue[1];
-        return value;
+        return matchValue[1];
     }
     else {
         return void 0;
@@ -298,8 +269,7 @@ export function Route_$007CNumber$007C_$007C(input) {
         outArg = v;
     })), outArg];
     if (matchValue[0]) {
-        const value = matchValue[1];
-        return value;
+        return matchValue[1];
     }
     else {
         return void 0;
@@ -313,8 +283,7 @@ export function Route_$007CDecimal$007C_$007C(input) {
         outArg = v;
     })), outArg];
     if (matchValue[0]) {
-        const value = matchValue[1];
-        return value;
+        return matchValue[1];
     }
     else {
         return void 0;

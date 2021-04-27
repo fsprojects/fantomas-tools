@@ -1,18 +1,18 @@
-import { isMatch } from "../.fable/fable-library.3.1.7/RegExp.js";
-import { parse } from "../.fable/fable-library.3.1.7/Int32.js";
-import { FantomasMode, Model__get_SettingsChangedByTheUser, Msg } from "./Model.js";
-import { getOptionKey, optionValue, sortByOption, FantomasOption$reflection, FantomasOption } from "../shared/FantomasOnlineShared.js";
-import { MultiButtonSettings, multiButton, toggleButton, input } from "../SettingControls.js";
 import * as react from "../../../_snowpack/pkg/react.js";
-import { singleton, mapIndexed, empty, ofArray, isEmpty, map, toArray, sortBy } from "../.fable/fable-library.3.1.7/List.js";
-import { toList } from "../.fable/fable-library.3.1.7/Map.js";
-import { escapeDataString, equals, comparePrimitives } from "../.fable/fable-library.3.1.7/Util.js";
-import { toString, Record } from "../.fable/fable-library.3.1.7/Types.js";
-import { record_type, bool_type, class_type, list_type, string_type } from "../.fable/fable-library.3.1.7/Reflection.js";
-import { map as map_1, zip, toArray as toArray_1, choose, toList as toList_1 } from "../.fable/fable-library.3.1.7/Seq.js";
-import { isNullOrWhiteSpace, printf, toText, join } from "../.fable/fable-library.3.1.7/String.js";
+import { MultiButtonSettings, multiButton, toggleButton, input } from "../SettingControls.js";
+import { isMatch } from "../.fable/fable-library.3.1.15/RegExp.js";
+import { parse } from "../.fable/fable-library.3.1.15/Int32.js";
+import { getOptionKey, optionValue, sortByOption, FantomasOption$reflection, FantomasOption } from "../shared/FantomasOnlineShared.js";
+import { FantomasMode, Model__get_SettingsChangedByTheUser, Msg } from "./Model.js";
+import { singleton, mapIndexed, empty, ofArray, isEmpty, sortBy, map, toArray } from "../.fable/fable-library.3.1.15/List.js";
+import { toList } from "../.fable/fable-library.3.1.15/Map.js";
+import { escapeDataString, equals, comparePrimitives } from "../.fable/fable-library.3.1.15/Util.js";
+import { toString, Record } from "../.fable/fable-library.3.1.15/Types.js";
+import { record_type, bool_type, class_type, list_type, string_type } from "../.fable/fable-library.3.1.15/Reflection.js";
+import { map as map_1, zip, toArray as toArray_1, choose, toList as toList_1 } from "../.fable/fable-library.3.1.15/Seq.js";
+import { isNullOrWhiteSpace, printf, toText, join } from "../.fable/fable-library.3.1.15/String.js";
 import { DOMAttr, HTMLAttr } from "../.fable/Fable.React.7.0.1/Fable.React.Props.fs.js";
-import { defaultArg } from "../.fable/fable-library.3.1.7/Option.js";
+import { defaultArg } from "../.fable/fable-library.3.1.15/Option.js";
 import { ButtonProps, button } from "../.fable/Fable.Reactstrap.0.5.1/Button.fs.js";
 import { BadgeProps, badge } from "../.fable/Fable.Reactstrap.0.5.1/Badge.fs.js";
 import { loader } from "../Loader.js";
@@ -21,61 +21,33 @@ import { SpinnerProps, spinner } from "../.fable/Fable.Reactstrap.0.5.1/Spinner.
 import { versionBar } from "../VersionBar.js";
 
 function mapToOption(dispatch, key, fantomasOption) {
-    let editor;
-    switch (fantomasOption.tag) {
-        case 0: {
-            const v_1 = fantomasOption.fields[2] | 0;
-            const o_1 = fantomasOption.fields[0] | 0;
-            const onChange = (nv) => {
-                if (isMatch(nv, "\\d+")) {
-                    const v_2 = parse(nv, 511, false, 32) | 0;
-                    dispatch(new Msg(5, [key, new FantomasOption(0, o_1, key, v_2)]));
-                }
-            };
-            editor = input(key, onChange, key, "integer", v_1);
-            break;
-        }
-        case 2: {
-            const v_3 = fantomasOption.fields[2];
-            const o_2 = fantomasOption.fields[0] | 0;
-            editor = toggleButton((_arg3) => {
-                dispatch(new Msg(5, [key, new FantomasOption(2, o_2, key, "character_width")]));
-            }, (_arg4) => {
-                dispatch(new Msg(5, [key, new FantomasOption(2, o_2, key, "number_of_items")]));
-            }, "CharacterWidth", "NumberOfItems", key, v_3 === "character_width");
-            break;
-        }
-        case 3: {
-            const v_4 = fantomasOption.fields[2];
-            const o_3 = fantomasOption.fields[0] | 0;
-            editor = toggleButton((_arg5) => {
-                dispatch(new Msg(5, [key, new FantomasOption(2, o_3, key, "crlr")]));
-            }, (_arg6) => {
-                dispatch(new Msg(5, [key, new FantomasOption(2, o_3, key, "lf")]));
-            }, "CRLF", "LF", key, v_4 === "crlf");
-            break;
-        }
-        default: {
-            const v = fantomasOption.fields[2];
-            const o = fantomasOption.fields[0] | 0;
-            editor = toggleButton((_arg1) => {
-                dispatch(new Msg(5, [key, new FantomasOption(1, o, key, true)]));
-            }, (_arg2) => {
-                dispatch(new Msg(5, [key, new FantomasOption(1, o, key, false)]));
-            }, "true", "false", key, v);
-        }
-    }
+    let o_2, o_3, o;
     return react.createElement("div", {
         key: key,
         className: "fantomas-setting",
-    }, editor);
+    }, (fantomasOption.tag === 0) ? input(key, (nv) => {
+        if (isMatch(nv, "\\d+")) {
+            dispatch(new Msg(5, [key, new FantomasOption(0, fantomasOption.fields[0], key, parse(nv, 511, false, 32))]));
+        }
+    }, key, "integer", fantomasOption.fields[2]) : ((fantomasOption.tag === 2) ? (o_2 = (fantomasOption.fields[0] | 0), toggleButton((_arg3) => {
+        dispatch(new Msg(5, [key, new FantomasOption(2, o_2, key, "character_width")]));
+    }, (_arg4) => {
+        dispatch(new Msg(5, [key, new FantomasOption(2, o_2, key, "number_of_items")]));
+    }, "CharacterWidth", "NumberOfItems", key, fantomasOption.fields[2] === "character_width")) : ((fantomasOption.tag === 3) ? (o_3 = (fantomasOption.fields[0] | 0), toggleButton((_arg5) => {
+        dispatch(new Msg(5, [key, new FantomasOption(2, o_3, key, "crlr")]));
+    }, (_arg6) => {
+        dispatch(new Msg(5, [key, new FantomasOption(2, o_3, key, "lf")]));
+    }, "CRLF", "LF", key, fantomasOption.fields[2] === "crlf")) : (o = (fantomasOption.fields[0] | 0), toggleButton((_arg1) => {
+        dispatch(new Msg(5, [key, new FantomasOption(1, o, key, true)]));
+    }, (_arg2) => {
+        dispatch(new Msg(5, [key, new FantomasOption(1, o, key, false)]));
+    }, "true", "false", key, fantomasOption.fields[2])))));
 }
 
 export function options(model, dispatch) {
-    const optionList = sortBy((tuple) => tuple[0], toList(model.UserOptions), {
+    return toArray(map((tupledArg) => mapToOption(dispatch, tupledArg[0], tupledArg[1]), sortBy((tuple) => tuple[0], toList(model.UserOptions), {
         Compare: (x, y) => comparePrimitives(x, y),
-    });
-    return toArray(map((tupledArg) => mapToOption(dispatch, tupledArg[0], tupledArg[1]), optionList));
+    })));
 }
 
 export class GithubIssue extends Record {
@@ -101,23 +73,20 @@ export function GithubIssue$reflection() {
 export function githubIssueUri(githubIssue) {
     let arg10_3;
     const location = window.location;
-    const config = sortBy((_arg1) => sortByOption(_arg1), map((tuple) => tuple[1], toList(githubIssue.UserOptions)), {
-        Compare: (x, y) => comparePrimitives(x, y),
-    });
-    const defaultValues = sortBy((_arg1_1) => sortByOption(_arg1_1), githubIssue.DefaultOptions, {
-        Compare: (x_1, y_1) => comparePrimitives(x_1, y_1),
-    });
     let options_1;
     const changedOptions = toList_1(choose((tupledArg) => {
         const userV = tupledArg[0];
-        const defV = tupledArg[1];
-        if (!equals(userV, defV)) {
+        if (!equals(userV, tupledArg[1])) {
             return userV;
         }
         else {
             return void 0;
         }
-    }, toArray_1(zip(config, defaultValues))));
+    }, toArray_1(zip(sortBy((_arg1) => sortByOption(_arg1), map((tuple) => tuple[1], toList(githubIssue.UserOptions)), {
+        Compare: (x, y) => comparePrimitives(x, y),
+    }), sortBy((_arg1_1) => sortByOption(_arg1_1), githubIssue.DefaultOptions, {
+        Compare: (x_1, y_1) => comparePrimitives(x_1, y_1),
+    })))));
     if (isEmpty(changedOptions)) {
         options_1 = "Default Fantomas configuration";
     }
@@ -131,22 +100,17 @@ export function githubIssueUri(githubIssue) {
     }
     const codeTemplate = (header, code) => toText(printf("\n#### %s\n\n```fsharp\n%s\n```\n            "))(header)(code);
     const patternInput = [codeTemplate(githubIssue.BeforeHeader, githubIssue.BeforeContent), codeTemplate(githubIssue.AfterHeader, githubIssue.AfterContent)];
-    const right = patternInput[1];
-    const left = patternInput[0];
     const fileType = githubIssue.IsFsi ? "\n*Signature file*" : "";
-    const body = escapeDataString((arg10_3 = location.href, toText(printf("\n\u003c!--\n\n    Please only use this to create issues.\n    If you wish to suggest a feature,\n    please fill in the feature request template at https://github.com/fsprojects/fantomas/issues/new/choose\n\n--\u003e\nIssue created from [fantomas-online](%s)\n\n%s\n%s\n#### Problem description\n\n%s\n\n#### Extra information\n\n- [ ] The formatted result breaks by code.\n- [ ] The formatted result gives compiler warnings.\n- [ ] I or my company would be willing to help fix this.\n\n#### Options\n\nFantomas %s\n\n%s\n%s\n\n\u003csub\u003eDid you know that you can ignore files when formatting from fantomas-tool or the FAKE targets by using a [.fantomasignore file](https://github.com/fsprojects/fantomas/blob/master/docs/Documentation.md#ignore-files-fantomasignore)?\u003c/sub\u003e\n        "))(arg10_3)(left)(right)(githubIssue.Description)(githubIssue.Version)(options_1)(fileType)));
-    const uri = toText(printf("https://github.com/fsprojects/fantomas/issues/new?title=%s\u0026body=%s"))(githubIssue.Title)(body);
-    return new HTMLAttr(94, uri);
+    const body = escapeDataString((arg10_3 = location.href, toText(printf("\n\u003c!--\n\n    Please only use this to create issues.\n    If you wish to suggest a feature,\n    please fill in the feature request template at https://github.com/fsprojects/fantomas/issues/new/choose\n\n--\u003e\nIssue created from [fantomas-online](%s)\n\n%s\n%s\n#### Problem description\n\n%s\n\n#### Extra information\n\n- [ ] The formatted result breaks by code.\n- [ ] The formatted result gives compiler warnings.\n- [ ] I or my company would be willing to help fix this.\n\n#### Options\n\nFantomas %s\n\n%s\n%s\n\n\u003csub\u003eDid you know that you can ignore files when formatting from fantomas-tool or the FAKE targets by using a [.fantomasignore file](https://github.com/fsprojects/fantomas/blob/master/docs/Documentation.md#ignore-files-fantomasignore)?\u003c/sub\u003e\n        "))(arg10_3)(patternInput[0])(patternInput[1])(githubIssue.Description)(githubIssue.Version)(options_1)(fileType)));
+    return new HTMLAttr(94, toText(printf("https://github.com/fsprojects/fantomas/issues/new?title=%s\u0026body=%s"))(githubIssue.Title)(body));
 }
 
 function createGitHubIssue(code, model) {
-    const description = "Please describe here the Fantomas problem you encountered.\n                    Check out our [Contribution Guidelines](https://github.com/fsprojects/fantomas/blob/master/CONTRIBUTING.md#bug-reports).";
     let patternInput;
     const matchValue = model.State;
     switch (matchValue.tag) {
         case 4: {
-            const e = matchValue.fields[0];
-            patternInput = ["Code", code, "Error", e];
+            patternInput = ["Code", code, "Error", matchValue.fields[0]];
             break;
         }
         case 3: {
@@ -158,10 +122,6 @@ function createGitHubIssue(code, model) {
             patternInput = ["Code", code, "", ""];
         }
     }
-    const bh = patternInput[0];
-    const bc = patternInput[1];
-    const ah = patternInput[2];
-    const ac = patternInput[3];
     let pattern_matching_result;
     if (model.Mode.tag === 3) {
         if (!isNullOrWhiteSpace(code)) {
@@ -176,8 +136,7 @@ function createGitHubIssue(code, model) {
     }
     switch (pattern_matching_result) {
         case 0: {
-            const githubIssue = new GithubIssue(bh, bc, ah, ac, description, "\u003cInsert meaningful title\u003e", model.DefaultOptions, model.UserOptions, model.Version, model.IsFsi);
-            return button([new ButtonProps(1, "danger"), new ButtonProps(2, true), new ButtonProps(9, ofArray([githubIssueUri(githubIssue), new HTMLAttr(157, "_blank"), new HTMLAttr(64, "rounded-0")]))], ["Looks wrong? Create an issue!"]);
+            return button([new ButtonProps(1, "danger"), new ButtonProps(2, true), new ButtonProps(9, ofArray([githubIssueUri(new GithubIssue(patternInput[0], patternInput[1], patternInput[2], patternInput[3], "Please describe here the Fantomas problem you encountered.\n                    Check out our [Contribution Guidelines](https://github.com/fsprojects/fantomas/blob/master/CONTRIBUTING.md#bug-reports).", "\u003cInsert meaningful title\u003e", model.DefaultOptions, model.UserOptions, model.Version, model.IsFsi)), new HTMLAttr(157, "_blank"), new HTMLAttr(64, "rounded-0")]))], ["Looks wrong? Create an issue!"]);
         }
         case 1: {
             return react.createElement("span", {
@@ -188,46 +147,20 @@ function createGitHubIssue(code, model) {
 }
 
 function viewErrors(model, result, isIdempotent, errors) {
-    let o, o_1;
-    let errors_2;
-    if (isEmpty(errors)) {
-        errors_2 = empty();
-    }
-    else {
-        const errors_1 = errors;
-        const badgeColor = (e) => {
-            const matchValue = e.Severity;
-            switch (matchValue.tag) {
-                case 0: {
-                    return "danger";
-                }
-                case 1: {
-                    return "warning";
-                }
-                default: {
-                    return "info";
-                }
-            }
-        };
-        errors_2 = mapIndexed((i, e_1) => react.createElement("li", {
+    let o, githubIssue;
+    const errors_2 = isEmpty(errors) ? empty() : mapIndexed((i, e_1) => {
+        let matchValue;
+        return react.createElement("li", {
             key: toText(printf("ast-error-%i"))(i),
-        }, react.createElement("strong", {}, toText(printf("(%i,%i) (%i, %i)"))(e_1.Range.StartLine)(e_1.Range.StartCol)(e_1.Range.EndLine)(e_1.Range.EndCol)), badge([new BadgeProps(1, badgeColor(e_1))], [toString(e_1.Severity)]), badge([new BadgeProps(1, "dark"), new BadgeProps(5, singleton(new HTMLAttr(158, "ErrorNumber")))], [e_1.ErrorNumber]), badge([new BadgeProps(1, "light"), new BadgeProps(5, singleton(new HTMLAttr(158, "SubCategory")))], [e_1.SubCategory]), react.createElement("p", {}, e_1.Message)), errors_1);
-    }
-    let idempotency;
-    if (isIdempotent) {
-        idempotency = (void 0);
-    }
-    else {
-        const githubIssue = new GithubIssue("Formatted code", result.FirstFormat, "Reformatted code", defaultArg(result.SecondFormat, result.FirstFormat), "Fantomas was not able to produce the same code after reformatting the result.", "Idempotency problem when \u003cadd use-case\u003e", model.DefaultOptions, model.UserOptions, model.Version, model.IsFsi);
-        idempotency = react.createElement("div", {
-            className: "idempotent-error",
-        }, react.createElement("h6", {}, "The result was not idempotent"), "Fantomas was able to format the code, but when formatting the result again, the code changed.", react.createElement("br", {}), "The result after the first format is being displayed.", react.createElement("br", {}), button([new ButtonProps(1, "danger"), new ButtonProps(9, ofArray([githubIssueUri(githubIssue), new HTMLAttr(157, "_blank"), new HTMLAttr(64, "rounded-0")]))], ["Report idempotancy issue"]));
-    }
+        }, react.createElement("strong", {}, toText(printf("(%i,%i) (%i, %i)"))(e_1.Range.StartLine)(e_1.Range.StartCol)(e_1.Range.EndLine)(e_1.Range.EndCol)), badge([new BadgeProps(1, (matchValue = e_1.Severity, (matchValue.tag === 0) ? "danger" : ((matchValue.tag === 1) ? "warning" : "info")))], [toString(e_1.Severity)]), badge([new BadgeProps(1, "dark"), new BadgeProps(5, singleton(new HTMLAttr(158, "ErrorNumber")))], [e_1.ErrorNumber]), badge([new BadgeProps(1, "light"), new BadgeProps(5, singleton(new HTMLAttr(158, "SubCategory")))], [e_1.SubCategory]), react.createElement("p", {}, e_1.Message));
+    }, errors);
     if ((!isIdempotent) ? true : (!isEmpty(errors_2))) {
         return react.createElement("ul", {
             id: "ast-errors",
             className: "",
-        }, (o = idempotency, (o == null) ? null : (o_1 = o, o_1)), toArray(errors_2));
+        }, (o = (isIdempotent ? (void 0) : (githubIssue = (new GithubIssue("Formatted code", result.FirstFormat, "Reformatted code", defaultArg(result.SecondFormat, result.FirstFormat), "Fantomas was not able to produce the same code after reformatting the result.", "Idempotency problem when \u003cadd use-case\u003e", model.DefaultOptions, model.UserOptions, model.Version, model.IsFsi)), react.createElement("div", {
+            className: "idempotent-error",
+        }, react.createElement("h6", {}, "The result was not idempotent"), "Fantomas was able to format the code, but when formatting the result again, the code changed.", react.createElement("br", {}), "The result after the first format is being displayed.", react.createElement("br", {}), button([new ButtonProps(1, "danger"), new ButtonProps(9, ofArray([githubIssueUri(githubIssue), new HTMLAttr(157, "_blank"), new HTMLAttr(64, "rounded-0")]))], ["Report idempotancy issue"])))), (o == null) ? null : o), toArray(errors_2));
     }
     else {
         return void 0;
@@ -235,7 +168,7 @@ function viewErrors(model, result, isIdempotent, errors) {
 }
 
 export function view(model) {
-    let sf, o, o_1;
+    let o;
     const matchValue = model.State;
     switch (matchValue.tag) {
         case 0: {
@@ -250,7 +183,7 @@ export function view(model) {
             const matchValue_1 = result.SecondFormat;
             let pattern_matching_result, sf_1;
             if (matchValue_1 != null) {
-                if (sf = matchValue_1, sf === result.FirstFormat) {
+                if (matchValue_1 === result.FirstFormat) {
                     pattern_matching_result = 0;
                     sf_1 = matchValue_1;
                 }
@@ -271,24 +204,20 @@ export function view(model) {
                     break;
                 }
             }
-            const isIdempotent = patternInput[1];
-            const formattedCode = patternInput[0];
-            const astErrors = patternInput[2];
             return react.createElement("div", {
                 className: "tab-result fantomas-result",
             }, react.createElement("div", {
                 className: "fantomas-editor-container",
             }, react.createElement(Editor, {
-                value: formattedCode,
+                value: patternInput[0],
                 isReadOnly: true,
-            })), (o = viewErrors(model, result, isIdempotent, astErrors), (o == null) ? null : (o_1 = o, o_1)));
+            })), (o = viewErrors(model, result, patternInput[1], patternInput[2]), (o == null) ? null : o));
         }
         case 4: {
-            const error = matchValue.fields[0];
             return react.createElement("div", {
                 className: "tab-result",
             }, react.createElement(Editor, {
-                value: error,
+                value: matchValue.fields[0],
                 isReadOnly: true,
             }));
         }
@@ -303,14 +232,14 @@ function userChangedSettings(model) {
 }
 
 export function commands(code, model, dispatch) {
-    let matchValue, o, o_1, o_2, o_3;
+    let matchValue, o, o_2;
     const formatButton = button([new ButtonProps(1, "primary"), new ButtonProps(9, singleton(new DOMAttr(40, (_arg1) => {
         dispatch(new Msg(3));
     })))], ["Format"]);
     const copySettingButton = userChangedSettings(model) ? button([new ButtonProps(1, "secondary"), new ButtonProps(9, ofArray([new HTMLAttr(64, "text-white"), new DOMAttr(40, (_arg2) => {
         dispatch(new Msg(8));
     })]))], ["Copy settings"]) : (void 0);
-    return react.createElement(react.Fragment, {}, ...(matchValue = model.State, (matchValue.tag === 2) ? ofArray([formatButton, (o = copySettingButton, (o == null) ? null : (o_1 = o, o_1))]) : ((matchValue.tag === 1) ? ofArray([createGitHubIssue(code, model), formatButton, (o_2 = copySettingButton, (o_2 == null) ? null : (o_3 = o_2, o_3))]) : ((matchValue.tag === 3) ? ofArray([createGitHubIssue(code, model), formatButton, (o_2 = copySettingButton, (o_2 == null) ? null : (o_3 = o_2, o_3))]) : ((matchValue.tag === 4) ? ofArray([createGitHubIssue(code, model), formatButton, (o_2 = copySettingButton, (o_2 == null) ? null : (o_3 = o_2, o_3))]) : empty())))));
+    return react.createElement(react.Fragment, {}, ...(matchValue = model.State, (matchValue.tag === 2) ? ofArray([formatButton, (o = copySettingButton, (o == null) ? null : o)]) : ((matchValue.tag === 1) ? ofArray([createGitHubIssue(code, model), formatButton, (o_2 = copySettingButton, (o_2 == null) ? null : o_2)]) : ((matchValue.tag === 3) ? ofArray([createGitHubIssue(code, model), formatButton, (o_2 = copySettingButton, (o_2 == null) ? null : o_2)]) : ((matchValue.tag === 4) ? ofArray([createGitHubIssue(code, model), formatButton, (o_2 = copySettingButton, (o_2 == null) ? null : o_2)]) : empty())))));
 }
 
 export function settings(model, dispatch) {
@@ -320,8 +249,7 @@ export function settings(model, dispatch) {
     else {
         const fantomasMode = multiButton("Mode", map((tupledArg) => {
             const m = tupledArg[0];
-            const l = tupledArg[1];
-            return new MultiButtonSettings(l, (_arg1) => {
+            return new MultiButtonSettings(tupledArg[1], (_arg1) => {
                 dispatch(new Msg(6, m));
             }, equals(model.Mode, m));
         }, ofArray([[new FantomasMode(0), "2.x"], [new FantomasMode(1), "3.x"], [new FantomasMode(2), "4.x"], [new FantomasMode(3), "Preview"]])));

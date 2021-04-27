@@ -95,14 +95,13 @@ export function StringBuilder__AppendLine_Z721C83C5(x, s) {
 export function StringBuilder__get_Length(x) {
     let len = 0;
     for (let i = x.buf.length - 1; i >= 0; i--) {
-        len = (len + x.buf[i].length);
+        len = ((len + x.buf[i].length) | 0);
     }
     return len | 0;
 }
 
 export function StringBuilder__ToString_Z37302880(x, firstIndex, length) {
-    const str = toString(x);
-    return substring(str, firstIndex, length);
+    return substring(toString(x), firstIndex, length);
 }
 
 export function StringBuilder__Clear(x) {

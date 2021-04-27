@@ -1,8 +1,8 @@
-import { Union } from "../fable-library.3.1.7/Types.js";
-import { union_type, list_type, obj_type, lambda_type, unit_type, class_type, int32_type, bool_type, string_type } from "../fable-library.3.1.7/Reflection.js";
-import { keyValueList } from "../fable-library.3.1.7/MapUtil.js";
-import { choose, collect } from "../fable-library.3.1.7/Seq.js";
-import { empty } from "../fable-library.3.1.7/List.js";
+import { Union } from "../fable-library.3.1.15/Types.js";
+import { union_type, list_type, obj_type, lambda_type, unit_type, class_type, int32_type, bool_type, string_type } from "../fable-library.3.1.15/Reflection.js";
+import { keyValueList } from "../fable-library.3.1.15/MapUtil.js";
+import { choose, collect } from "../fable-library.3.1.15/Seq.js";
+import { empty } from "../fable-library.3.1.15/List.js";
 import * as react from "../../../../_snowpack/pkg/react.js";
 import { Input } from "../../../../_snowpack/pkg/reactstrap.js";
 
@@ -24,8 +24,7 @@ export function InputProps$reflection() {
 export function input(props) {
     const customProps = keyValueList(collect((_arg1) => {
         if (_arg1.tag === 13) {
-            const props_1 = _arg1.fields[0];
-            return props_1;
+            return _arg1.fields[0];
         }
         else {
             return empty();
@@ -36,11 +35,9 @@ export function input(props) {
             return void 0;
         }
         else {
-            const prop = _arg2;
-            return prop;
+            return _arg2;
         }
     }, props), 1);
-    const props_2 = Object.assign({}, customProps, typeProps);
-    return react.createElement(Input, props_2);
+    return react.createElement(Input, Object.assign({}, customProps, typeProps));
 }
 

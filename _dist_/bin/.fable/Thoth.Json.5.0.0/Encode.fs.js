@@ -1,16 +1,16 @@
-import { toString as toString_1 } from "../fable-library.3.1.7/Decimal.js";
-import { Lazy, mapCurriedArgs, uncurry, getEnumerator } from "../fable-library.3.1.7/Util.js";
-import { empty, map as map_3, tryFind, add, toList } from "../fable-library.3.1.7/Map.js";
-import { toString as toString_2 } from "../fable-library.3.1.7/BigInt.js";
-import { toString as toString_3 } from "../fable-library.3.1.7/Date.js";
-import { toString as toString_4 } from "../fable-library.3.1.7/TimeSpan.js";
-import { defaultArg, value as value_34, map, defaultArgWith, some } from "../fable-library.3.1.7/Option.js";
-import { toString as toString_5, FSharpRef } from "../fable-library.3.1.7/Types.js";
-import { class_type, getGenerics, getGenericTypeDefinition, getTupleFields, getTupleElements, isTuple, isGenericType, getEnumUnderlyingType, isEnum, getElementType, isArray, getUnionCaseFields, getUnionFields, isUnion, getRecordElements, getRecordField, name, isRecord, fullName } from "../fable-library.3.1.7/Reflection.js";
-import { fill, map as map_1 } from "../fable-library.3.1.7/Array.js";
+import { toString as toString_1 } from "../fable-library.3.1.15/Decimal.js";
+import { Lazy, mapCurriedArgs, uncurry, getEnumerator } from "../fable-library.3.1.15/Util.js";
+import { empty, map as map_3, tryFind, add, toList } from "../fable-library.3.1.15/Map.js";
+import { toString as toString_2 } from "../fable-library.3.1.15/BigInt.js";
+import { toString as toString_3 } from "../fable-library.3.1.15/Date.js";
+import { toString as toString_4 } from "../fable-library.3.1.15/TimeSpan.js";
+import { defaultArg, value as value_34, map, defaultArgWith, some } from "../fable-library.3.1.15/Option.js";
+import { toString as toString_5, FSharpRef } from "../fable-library.3.1.15/Types.js";
+import { class_type, getGenerics, getGenericTypeDefinition, getTupleFields, getTupleElements, isTuple, isGenericType, getEnumUnderlyingType, isEnum, getElementType, isArray, getUnionCaseFields, getUnionFields, isUnion, getRecordElements, getRecordField, name, isRecord, fullName } from "../fable-library.3.1.15/Reflection.js";
+import { fill, map as map_1 } from "../fable-library.3.1.15/Array.js";
 import { Util_CachedEncoders, Util_Cache$1__GetOrAdd_43981464, CaseStrategy, Util_Casing_convert } from "./Types.fs.js";
-import { mapIndexed, map as map_2, fold } from "../fable-library.3.1.7/Seq.js";
-import { toFail, printf, toText } from "../fable-library.3.1.7/String.js";
+import { mapIndexed, map as map_2, fold } from "../fable-library.3.1.15/Seq.js";
+import { toFail, printf, toText } from "../fable-library.3.1.15/String.js";
 
 export function guid(value) {
     return value;
@@ -28,9 +28,7 @@ export function object(values) {
     try {
         while (enumerator["System.Collections.IEnumerator.MoveNext"]()) {
             const forLoopVar = enumerator["System.Collections.Generic.IEnumerator`1.get_Current"]();
-            const value = forLoopVar[1];
-            const key = forLoopVar[0];
-            o[key] = value;
+            o[forLoopVar[0]] = forLoopVar[1];
         }
     }
     finally {
@@ -266,10 +264,8 @@ function autoEncoder(extra, caseStrategy, skipNullField, t) {
                     const valueEncoder = autoEncoder(extra, caseStrategy, skipNullField, getGenerics(t)[1]);
                     if ((fullName(keyType) === "System.String") ? true : (fullName(keyType) === "System.Guid")) {
                         return (value_12) => fold((target, _arg1) => {
-                            const activePatternResult11774 = _arg1;
-                            const v_1 = activePatternResult11774[1];
-                            const k = activePatternResult11774[0];
-                            target[k]=valueEncoder(v_1);
+                            const activePatternResult11764 = _arg1;
+                            target[activePatternResult11764[0]]=valueEncoder(activePatternResult11764[1]);
                             return target;
                         }, {}, value_12);
                     }
@@ -278,10 +274,8 @@ function autoEncoder(extra, caseStrategy, skipNullField, t) {
                         const clo4 = autoEncoder(extra, caseStrategy, skipNullField, keyType);
                         keyEncoder = ((arg40) => clo4(arg40));
                         return (value_13) => seq(map_2((_arg2) => {
-                            const activePatternResult11778 = _arg2;
-                            const v_2 = activePatternResult11778[1];
-                            const k_1 = activePatternResult11778[0];
-                            return [keyEncoder(k_1), valueEncoder(v_2)];
+                            const activePatternResult11768 = _arg2;
+                            return [keyEncoder(activePatternResult11768[0]), valueEncoder(activePatternResult11768[1])];
                         }, value_13));
                     }
                 }
@@ -350,11 +344,7 @@ function autoEncoder(extra, caseStrategy, skipNullField, t) {
 
 function makeExtra(extra) {
     if (extra != null) {
-        const e = extra;
-        return map_3((_arg2, tupledArg) => {
-            const enc = tupledArg[0];
-            return new FSharpRef(enc);
-        }, e.Coders);
+        return map_3((_arg2, tupledArg) => (new FSharpRef(tupledArg[0])), extra.Coders);
     }
     else {
         return empty();
@@ -371,15 +361,11 @@ export function Auto$reflection() {
 }
 
 export function Auto_generateEncoderCached_Z127D9D79(caseStrategy, extra, skipNullField, resolver) {
+    let y_1, y;
     const t = value_34(resolver).ResolveType();
     const caseStrategy_1 = defaultArg(caseStrategy, new CaseStrategy(0));
     const skipNullField_1 = defaultArg(skipNullField, true);
-    let key;
-    let y_1;
-    const y = fullName(t);
-    y_1 = (toString_5(caseStrategy_1) + y);
-    key = (defaultArg(map((e) => e.Hash, extra), "") + y_1);
-    return Util_Cache$1__GetOrAdd_43981464(Util_CachedEncoders, key, () => autoEncoder(makeExtra(extra), caseStrategy_1, skipNullField_1, t));
+    return Util_Cache$1__GetOrAdd_43981464(Util_CachedEncoders, (y_1 = (y = fullName(t), toString_5(caseStrategy_1) + y), defaultArg(map((e) => e.Hash, extra), "") + y_1), () => autoEncoder(makeExtra(extra), caseStrategy_1, skipNullField_1, t));
 }
 
 export function Auto_generateEncoder_Z127D9D79(caseStrategy, extra, skipNullField, resolver) {
@@ -390,8 +376,7 @@ export function Auto_generateEncoder_Z127D9D79(caseStrategy, extra, skipNullFiel
 }
 
 export function Auto_toString_5A41365E(space, value, caseStrategy, extra, skipNullField, resolver) {
-    const encoder = Auto_generateEncoder_Z127D9D79(caseStrategy, extra, skipNullField, resolver);
-    return toString(space, encoder(value));
+    return toString(space, Auto_generateEncoder_Z127D9D79(caseStrategy, extra, skipNullField, resolver)(value));
 }
 
 export function encode(space, value) {

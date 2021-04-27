@@ -1,17 +1,16 @@
-import { isNullOrWhiteSpace } from "./.fable/fable-library.3.1.7/String.js";
+import { isNullOrWhiteSpace } from "./.fable/fable-library.3.1.15/String.js";
 import { Cmd_none, Cmd_batch, Cmd_OfFunc_result, Cmd_map } from "./.fable/Fable.Elmish.3.1.0/cmd.fs.js";
 import { ActiveTab, Msg } from "./Model.js";
 import { Msg as Msg_1 } from "./FSharpTokens/Model.js";
 import { Msg as Msg_2 } from "./ASTViewer/Model.js";
 import { Msg as Msg_3 } from "./Trivia/Model.js";
-import { equals } from "./.fable/fable-library.3.1.7/Util.js";
+import { equals } from "./.fable/fable-library.3.1.15/Util.js";
 import { getVersionCmd, getOptionsCmd } from "./FantomasOnline/State.js";
-import { tail, head, isEmpty, ofArray } from "./.fable/fable-library.3.1.7/List.js";
+import { tail, head, isEmpty, ofArray } from "./.fable/fable-library.3.1.15/List.js";
 import { FantomasMode, Msg as Msg_4 } from "./FantomasOnline/Model.js";
 import { Route_$007CQuery$007C_$007C } from "./.fable/Feliz.Router.3.2.0/Router.fs.js";
 
 export function cmdForCurrentTab(tab, model) {
-    let mode;
     if (!isNullOrWhiteSpace(model.SourceCode)) {
         if (tab.tag === 1) {
             return Cmd_map((arg0) => (new Msg(3, arg0)), Cmd_OfFunc_result(new Msg_1(0)));
@@ -23,9 +22,8 @@ export function cmdForCurrentTab(tab, model) {
             return Cmd_map((arg0_2) => (new Msg(2, arg0_2)), Cmd_OfFunc_result(new Msg_3(1)));
         }
         else if (tab.tag === 4) {
-            if (mode = tab.fields[0], !equals(mode, model.FantomasModel.Mode)) {
-                const mode_1 = tab.fields[0];
-                return Cmd_batch(ofArray([Cmd_map((arg0_3) => (new Msg(5, arg0_3)), getOptionsCmd(mode_1)), Cmd_map((arg0_4) => (new Msg(5, arg0_4)), getVersionCmd(mode_1))]));
+            if (!equals(tab.fields[0], model.FantomasModel.Mode)) {
+                return Cmd_batch(ofArray([Cmd_map((arg0_3) => (new Msg(5, arg0_3)), getOptionsCmd(tab.fields[0])), Cmd_map((arg0_4) => (new Msg(5, arg0_4)), getVersionCmd(tab.fields[0]))]));
             }
             else {
                 let pattern_matching_result;
@@ -98,11 +96,11 @@ export function parseUrl(segments) {
     if (!isEmpty(segments)) {
         if (head(segments) === "tokens") {
             if (!isEmpty(tail(segments))) {
-                const activePatternResult13103 = Route_$007CQuery$007C_$007C(head(tail(segments)));
-                if (activePatternResult13103 != null) {
-                    if (!isEmpty(activePatternResult13103)) {
-                        if (head(activePatternResult13103)[0] === "data") {
-                            if (isEmpty(tail(activePatternResult13103))) {
+                const activePatternResult13093 = Route_$007CQuery$007C_$007C(head(tail(segments)));
+                if (activePatternResult13093 != null) {
+                    if (!isEmpty(activePatternResult13093)) {
+                        if (head(activePatternResult13093)[0] === "data") {
+                            if (isEmpty(tail(activePatternResult13093))) {
                                 if (isEmpty(tail(tail(segments)))) {
                                     pattern_matching_result = 0;
                                 }
@@ -146,11 +144,11 @@ export function parseUrl(segments) {
             if (!isEmpty(segments)) {
                 if (head(segments) === "ast") {
                     if (!isEmpty(tail(segments))) {
-                        const activePatternResult13102 = Route_$007CQuery$007C_$007C(head(tail(segments)));
-                        if (activePatternResult13102 != null) {
-                            if (!isEmpty(activePatternResult13102)) {
-                                if (head(activePatternResult13102)[0] === "data") {
-                                    if (isEmpty(tail(activePatternResult13102))) {
+                        const activePatternResult13092 = Route_$007CQuery$007C_$007C(head(tail(segments)));
+                        if (activePatternResult13092 != null) {
+                            if (!isEmpty(activePatternResult13092)) {
+                                if (head(activePatternResult13092)[0] === "data") {
+                                    if (isEmpty(tail(activePatternResult13092))) {
                                         if (isEmpty(tail(tail(segments)))) {
                                             pattern_matching_result_1 = 0;
                                         }
@@ -194,11 +192,11 @@ export function parseUrl(segments) {
                     if (!isEmpty(segments)) {
                         if (head(segments) === "trivia") {
                             if (!isEmpty(tail(segments))) {
-                                const activePatternResult13101 = Route_$007CQuery$007C_$007C(head(tail(segments)));
-                                if (activePatternResult13101 != null) {
-                                    if (!isEmpty(activePatternResult13101)) {
-                                        if (head(activePatternResult13101)[0] === "data") {
-                                            if (isEmpty(tail(activePatternResult13101))) {
+                                const activePatternResult13091 = Route_$007CQuery$007C_$007C(head(tail(segments)));
+                                if (activePatternResult13091 != null) {
+                                    if (!isEmpty(activePatternResult13091)) {
+                                        if (head(activePatternResult13091)[0] === "data") {
+                                            if (isEmpty(tail(activePatternResult13091))) {
                                                 if (isEmpty(tail(tail(segments)))) {
                                                     pattern_matching_result_2 = 0;
                                                 }
@@ -244,11 +242,11 @@ export function parseUrl(segments) {
                                     if (!isEmpty(tail(segments))) {
                                         if (head(tail(segments)) === "v2") {
                                             if (!isEmpty(tail(tail(segments)))) {
-                                                const activePatternResult13100 = Route_$007CQuery$007C_$007C(head(tail(tail(segments))));
-                                                if (activePatternResult13100 != null) {
-                                                    if (!isEmpty(activePatternResult13100)) {
-                                                        if (head(activePatternResult13100)[0] === "data") {
-                                                            if (isEmpty(tail(activePatternResult13100))) {
+                                                const activePatternResult13090 = Route_$007CQuery$007C_$007C(head(tail(tail(segments))));
+                                                if (activePatternResult13090 != null) {
+                                                    if (!isEmpty(activePatternResult13090)) {
+                                                        if (head(activePatternResult13090)[0] === "data") {
+                                                            if (isEmpty(tail(activePatternResult13090))) {
                                                                 if (isEmpty(tail(tail(tail(segments))))) {
                                                                     pattern_matching_result_3 = 0;
                                                                 }
@@ -302,11 +300,11 @@ export function parseUrl(segments) {
                                             if (!isEmpty(tail(segments))) {
                                                 if (head(tail(segments)) === "v3") {
                                                     if (!isEmpty(tail(tail(segments)))) {
-                                                        const activePatternResult13099 = Route_$007CQuery$007C_$007C(head(tail(tail(segments))));
-                                                        if (activePatternResult13099 != null) {
-                                                            if (!isEmpty(activePatternResult13099)) {
-                                                                if (head(activePatternResult13099)[0] === "data") {
-                                                                    if (isEmpty(tail(activePatternResult13099))) {
+                                                        const activePatternResult13089 = Route_$007CQuery$007C_$007C(head(tail(tail(segments))));
+                                                        if (activePatternResult13089 != null) {
+                                                            if (!isEmpty(activePatternResult13089)) {
+                                                                if (head(activePatternResult13089)[0] === "data") {
+                                                                    if (isEmpty(tail(activePatternResult13089))) {
                                                                         if (isEmpty(tail(tail(tail(segments))))) {
                                                                             pattern_matching_result_4 = 0;
                                                                         }
@@ -360,11 +358,11 @@ export function parseUrl(segments) {
                                                     if (!isEmpty(tail(segments))) {
                                                         if (head(tail(segments)) === "v4") {
                                                             if (!isEmpty(tail(tail(segments)))) {
-                                                                const activePatternResult13098 = Route_$007CQuery$007C_$007C(head(tail(tail(segments))));
-                                                                if (activePatternResult13098 != null) {
-                                                                    if (!isEmpty(activePatternResult13098)) {
-                                                                        if (head(activePatternResult13098)[0] === "data") {
-                                                                            if (isEmpty(tail(activePatternResult13098))) {
+                                                                const activePatternResult13088 = Route_$007CQuery$007C_$007C(head(tail(tail(segments))));
+                                                                if (activePatternResult13088 != null) {
+                                                                    if (!isEmpty(activePatternResult13088)) {
+                                                                        if (head(activePatternResult13088)[0] === "data") {
+                                                                            if (isEmpty(tail(activePatternResult13088))) {
                                                                                 if (isEmpty(tail(tail(tail(segments))))) {
                                                                                     pattern_matching_result_5 = 0;
                                                                                 }
@@ -418,11 +416,11 @@ export function parseUrl(segments) {
                                                             if (!isEmpty(tail(segments))) {
                                                                 if (head(tail(segments)) === "preview") {
                                                                     if (!isEmpty(tail(tail(segments)))) {
-                                                                        const activePatternResult13097 = Route_$007CQuery$007C_$007C(head(tail(tail(segments))));
-                                                                        if (activePatternResult13097 != null) {
-                                                                            if (!isEmpty(activePatternResult13097)) {
-                                                                                if (head(activePatternResult13097)[0] === "data") {
-                                                                                    if (isEmpty(tail(activePatternResult13097))) {
+                                                                        const activePatternResult13087 = Route_$007CQuery$007C_$007C(head(tail(tail(segments))));
+                                                                        if (activePatternResult13087 != null) {
+                                                                            if (!isEmpty(activePatternResult13087)) {
+                                                                                if (head(activePatternResult13087)[0] === "data") {
+                                                                                    if (isEmpty(tail(activePatternResult13087))) {
                                                                                         if (isEmpty(tail(tail(tail(segments))))) {
                                                                                             pattern_matching_result_6 = 0;
                                                                                         }

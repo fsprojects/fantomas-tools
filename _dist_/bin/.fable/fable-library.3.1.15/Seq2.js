@@ -33,16 +33,14 @@ export function countBy(projection, xs, comparer) {
         const enumerator = getEnumerator(xs);
         try {
             while (enumerator["System.Collections.IEnumerator.MoveNext"]()) {
-                const x = enumerator["System.Collections.Generic.IEnumerator`1.get_Current"]();
-                const key = projection(x);
+                const key = projection(enumerator["System.Collections.Generic.IEnumerator`1.get_Current"]());
                 let matchValue;
                 let outArg = 0;
                 matchValue = [tryGetValue(dict, key, new FSharpRef(() => outArg, (v) => {
-                    outArg = v;
+                    outArg = (v | 0);
                 })), outArg];
                 if (matchValue[0]) {
-                    const prev = matchValue[1] | 0;
-                    dict.set(key, prev + 1);
+                    dict.set(key, matchValue[1] + 1);
                 }
                 else {
                     dict.set(key, 1);
@@ -72,8 +70,7 @@ export function groupBy(projection, xs, comparer) {
                     outArg = v;
                 })), outArg];
                 if (matchValue[0]) {
-                    const prev = matchValue[1];
-                    void (prev.push(x));
+                    void (matchValue[1].push(x));
                 }
                 else {
                     addToDict(dict, key, [x]);
@@ -105,11 +102,7 @@ export function Array_countBy(projection, xs, comparer) {
 }
 
 export function Array_groupBy(projection, xs, comparer) {
-    return toArray(map((tupledArg) => {
-        const key = tupledArg[0];
-        const values = tupledArg[1];
-        return [key, toArray(values)];
-    }, groupBy(projection, xs, comparer)));
+    return toArray(map((tupledArg) => [tupledArg[0], toArray(tupledArg[1])], groupBy(projection, xs, comparer)));
 }
 
 export function List_distinct(xs, comparer) {
@@ -129,10 +122,6 @@ export function List_countBy(projection, xs, comparer) {
 }
 
 export function List_groupBy(projection, xs, comparer) {
-    return toList(map((tupledArg) => {
-        const key = tupledArg[0];
-        const values = tupledArg[1];
-        return [key, toList(values)];
-    }, groupBy(projection, xs, comparer)));
+    return toList(map((tupledArg) => [tupledArg[0], toList(tupledArg[1])], groupBy(projection, xs, comparer)));
 }
 

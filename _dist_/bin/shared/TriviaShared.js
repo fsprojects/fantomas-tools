@@ -1,5 +1,5 @@
-import { Record, Union } from "../.fable/fable-library.3.1.7/Types.js";
-import { option_type, list_type, bool_type, record_type, int32_type, union_type, string_type } from "../.fable/fable-library.3.1.7/Reflection.js";
+import { Record, Union } from "../.fable/fable-library.3.1.15/Types.js";
+import { option_type, list_type, bool_type, record_type, int32_type, union_type, string_type } from "../.fable/fable-library.3.1.15/Reflection.js";
 
 export class TriviaNodeType extends Union {
     constructor(tag, ...fields) {
@@ -52,12 +52,12 @@ export class TriviaContent extends Union {
         this.fields = fields;
     }
     cases() {
-        return ["Keyword", "Number", "StringContent", "IdentOperatorAsWord", "IdentBetweenTicks", "Comment", "Newline", "Directive", "NewlineAfter", "CharContent", "EmbeddedIL"];
+        return ["Keyword", "Number", "StringContent", "IdentOperatorAsWord", "IdentBetweenTicks", "Comment", "Newline", "Directive", "NewlineAfter", "CharContent", "EmbeddedIL", "KeywordString"];
     }
 }
 
 export function TriviaContent$reflection() {
-    return union_type("TriviaViewer.Shared.TriviaContent", [], TriviaContent, () => [[["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", Comment$$reflection()]], [], [["directive", string_type]], [], [["Item", string_type]], [["Item", string_type]]]);
+    return union_type("TriviaViewer.Shared.TriviaContent", [], TriviaContent, () => [[["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]], [["Item", Comment$$reflection()]], [], [["directive", string_type]], [], [["Item", string_type]], [["Item", string_type]], [["Item", string_type]]]);
 }
 
 export class TriviaNode extends Record {

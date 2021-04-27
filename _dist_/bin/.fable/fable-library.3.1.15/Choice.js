@@ -19,34 +19,28 @@ export function FSharpResult$2$reflection(gen0, gen1) {
 
 export function Result_Map(mapping, result) {
     if (result.tag === 0) {
-        const x = result.fields[0];
-        return new FSharpResult$2(0, mapping(x));
+        return new FSharpResult$2(0, mapping(result.fields[0]));
     }
     else {
-        const e = result.fields[0];
-        return new FSharpResult$2(1, e);
+        return new FSharpResult$2(1, result.fields[0]);
     }
 }
 
 export function Result_MapError(mapping, result) {
     if (result.tag === 0) {
-        const x = result.fields[0];
-        return new FSharpResult$2(0, x);
+        return new FSharpResult$2(0, result.fields[0]);
     }
     else {
-        const e = result.fields[0];
-        return new FSharpResult$2(1, mapping(e));
+        return new FSharpResult$2(1, mapping(result.fields[0]));
     }
 }
 
 export function Result_Bind(binder, result) {
     if (result.tag === 0) {
-        const x = result.fields[0];
-        return binder(x);
+        return binder(result.fields[0]);
     }
     else {
-        const e = result.fields[0];
-        return new FSharpResult$2(1, e);
+        return new FSharpResult$2(1, result.fields[0]);
     }
 }
 
@@ -150,8 +144,7 @@ export function Choice_makeChoice2Of2(x) {
 
 export function Choice_tryValueIfChoice1Of2(x) {
     if (x.tag === 0) {
-        const x_1 = x.fields[0];
-        return some(x_1);
+        return some(x.fields[0]);
     }
     else {
         return void 0;
@@ -160,8 +153,7 @@ export function Choice_tryValueIfChoice1Of2(x) {
 
 export function Choice_tryValueIfChoice2Of2(x) {
     if (x.tag === 1) {
-        const x_1 = x.fields[0];
-        return some(x_1);
+        return some(x.fields[0]);
     }
     else {
         return void 0;

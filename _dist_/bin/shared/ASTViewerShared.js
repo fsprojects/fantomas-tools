@@ -1,5 +1,5 @@
-import { Record } from "../.fable/fable-library.3.1.7/Types.js";
-import { bool_type, array_type, string_type, record_type, int32_type } from "../.fable/fable-library.3.1.7/Reflection.js";
+import { Record } from "../.fable/fable-library.3.1.15/Types.js";
+import { bool_type, array_type, string_type, record_type, int32_type } from "../.fable/fable-library.3.1.15/Reflection.js";
 
 export class Range$ extends Record {
     constructor(StartLine, StartCol, EndLine, EndCol) {

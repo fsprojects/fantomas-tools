@@ -1,6 +1,6 @@
-import { toArray, mapIndexed } from "../.fable/fable-library.3.1.7/List.js";
+import { toArray, mapIndexed } from "../.fable/fable-library.3.1.15/List.js";
 import * as react from "../../../_snowpack/pkg/react.js";
-import { printf, toText } from "../.fable/fable-library.3.1.7/String.js";
+import { printf, toText } from "../.fable/fable-library.3.1.15/String.js";
 
 export function view(model, _dispatch) {
     const nodes = mapIndexed((idx, node) => react.createElement("tr", {

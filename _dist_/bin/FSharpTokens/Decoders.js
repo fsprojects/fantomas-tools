@@ -1,5 +1,5 @@
 import { array, fromString, int, string, object } from "../.fable/Thoth.Json.5.0.0/Decode.fs.js";
-import { uncurry } from "../.fable/fable-library.3.1.7/Util.js";
+import { uncurry } from "../.fable/fable-library.3.1.15/Util.js";
 import { Model, Token, TokenInfo } from "./Model.js";
 
 const decodeTokenInfo = (path_4) => ((v) => object((get$) => (new TokenInfo(get$.Required.Field("colorClass", (path, value) => string(path, value)), get$.Required.Field("charClass", (path_1, value_1) => string(path_1, value_1)), get$.Required.Field("fsharpTokenTriggerClass", (path_2, value_2) => string(path_2, value_2)), get$.Required.Field("tokenName", (path_3, value_3) => string(path_3, value_3)), get$.Required.Field("leftColumn", uncurry(2, int)), get$.Required.Field("rightColumn", uncurry(2, int)), get$.Required.Field("tag", uncurry(2, int)), get$.Required.Field("fullMatchedLength", uncurry(2, int)))), path_4, v));

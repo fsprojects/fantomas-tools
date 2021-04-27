@@ -1,5 +1,5 @@
 import { equals, toIterator, getEnumerator } from "./Util.js";
-import { iterate, map, iterateIndexed, concat } from "./Seq.js";
+import { iterate, map, delay, toArray, iterateIndexed, concat } from "./Seq.js";
 import { FSharpRef } from "./Types.js";
 import { class_type } from "./Reflection.js";
 import { getItemFromDict, tryGetValue } from "./MapUtil.js";
@@ -26,14 +26,17 @@ export class Dictionary {
     get [Symbol.toStringTag]() {
         return "Dictionary";
     }
+    toJSON(_key) {
+        const this$ = this;
+        return Array.from(this$);
+    }
     ["System.Collections.IEnumerable.GetEnumerator"]() {
         const this$ = this;
         return getEnumerator(this$);
     }
     GetEnumerator() {
         const this$ = this;
-        const elems = concat(this$.hashMap.values());
-        return getEnumerator(elems);
+        return getEnumerator(concat(this$.hashMap.values()));
     }
     [Symbol.iterator]() {
         return toIterator(this.GetEnumerator());
@@ -47,12 +50,11 @@ export class Dictionary {
         Dictionary__Clear(this$);
     }
     ["System.Collections.Generic.ICollection`1.Contains2B595"](item) {
-        let p;
         const this$ = this;
         const matchValue = Dictionary__TryFind_2B595(this$, item[0]);
         let pattern_matching_result;
         if (matchValue != null) {
-            if (p = matchValue, equals(p[1], item[1])) {
+            if (equals(matchValue[1], item[1])) {
                 pattern_matching_result = 0;
             }
             else {
@@ -88,8 +90,7 @@ export class Dictionary {
         const this$ = this;
         const matchValue = Dictionary__TryFind_2B595(this$, item[0]);
         if (matchValue != null) {
-            const pair = matchValue;
-            if (equals(pair[1], item[1])) {
+            if (equals(matchValue[1], item[1])) {
                 void Dictionary__Remove_2B595(this$, item[0]);
             }
             return true;
@@ -97,6 +98,46 @@ export class Dictionary {
         else {
             return false;
         }
+    }
+    ["System.Collections.Generic.IDictionary`2.Add5BDDA1"](key, value) {
+        const this$ = this;
+        Dictionary__Add_5BDDA1(this$, key, value);
+    }
+    ["System.Collections.Generic.IDictionary`2.ContainsKey2B595"](key) {
+        const this$ = this;
+        return Dictionary__ContainsKey_2B595(this$, key);
+    }
+    ["System.Collections.Generic.IDictionary`2.get_Item2B595"](key) {
+        const this$ = this;
+        return Dictionary__get_Item_2B595(this$, key);
+    }
+    ["System.Collections.Generic.IDictionary`2.set_Item5BDDA1"](key, v) {
+        const this$ = this;
+        Dictionary__set_Item_5BDDA1(this$, key, v);
+    }
+    ["System.Collections.Generic.IDictionary`2.get_Keys"]() {
+        const this$ = this;
+        return toArray(delay(() => map((pair) => pair[0], this$)));
+    }
+    ["System.Collections.Generic.IDictionary`2.Remove2B595"](key) {
+        const this$ = this;
+        return Dictionary__Remove_2B595(this$, key);
+    }
+    ["System.Collections.Generic.IDictionary`2.TryGetValue23A0B95A"](key, value) {
+        const this$ = this;
+        const matchValue = Dictionary__TryFind_2B595(this$, key);
+        if (matchValue != null) {
+            const pair = matchValue;
+            value.contents = pair[1];
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    ["System.Collections.Generic.IDictionary`2.get_Values"]() {
+        const this$ = this;
+        return toArray(delay(() => map((pair) => pair[1], this$)));
     }
     get size() {
         const this$ = this;
@@ -159,8 +200,7 @@ function Dictionary__TryFindIndex_2B595(this$, k) {
         outArg = v;
     })), outArg];
     if (matchValue[0]) {
-        const pairs = matchValue[1];
-        return [true, h, pairs.findIndex((pair) => this$.comparer.Equals(k, pair[0]))];
+        return [true, h, matchValue[1].findIndex((pair) => this$.comparer.Equals(k, pair[0]))];
     }
     else {
         return [false, h, -1];
@@ -168,11 +208,10 @@ function Dictionary__TryFindIndex_2B595(this$, k) {
 }
 
 export function Dictionary__TryFind_2B595(this$, k) {
-    let i, h;
     const matchValue = Dictionary__TryFindIndex_2B595(this$, k);
     let pattern_matching_result;
     if (matchValue[0]) {
-        if (i = (matchValue[2] | 0), (h = (matchValue[1] | 0), i > -1)) {
+        if (matchValue[2] > -1) {
             pattern_matching_result = 0;
         }
         else {
@@ -184,9 +223,7 @@ export function Dictionary__TryFind_2B595(this$, k) {
     }
     switch (pattern_matching_result) {
         case 0: {
-            const i_1 = matchValue[2] | 0;
-            const h_1 = matchValue[1] | 0;
-            return getItemFromDict(this$.hashMap, h_1)[i_1];
+            return getItemFromDict(this$.hashMap, matchValue[1])[matchValue[2]];
         }
         case 1: {
             return void 0;
@@ -208,7 +245,7 @@ export function Dictionary__get_Count(this$) {
     try {
         while (enumerator["System.Collections.IEnumerator.MoveNext"]()) {
             const pairs = enumerator["System.Collections.Generic.IEnumerator`1.get_Current"]();
-            count = (count + pairs.length);
+            count = ((count + pairs.length) | 0);
         }
     }
     finally {
@@ -220,8 +257,7 @@ export function Dictionary__get_Count(this$) {
 export function Dictionary__get_Item_2B595(this$, k) {
     const matchValue = Dictionary__TryFind_2B595(this$, k);
     if (matchValue != null) {
-        const pair = matchValue;
-        return pair[1];
+        return matchValue[1];
     }
     else {
         throw (new Error("The item was not found in collection"));
@@ -229,11 +265,10 @@ export function Dictionary__get_Item_2B595(this$, k) {
 }
 
 export function Dictionary__set_Item_5BDDA1(this$, k, v) {
-    let i, h;
     const matchValue = Dictionary__TryFindIndex_2B595(this$, k);
     let pattern_matching_result;
     if (matchValue[0]) {
-        if (i = (matchValue[2] | 0), (h = (matchValue[1] | 0), i > -1)) {
+        if (matchValue[2] > -1) {
             pattern_matching_result = 0;
         }
         else {
@@ -245,19 +280,15 @@ export function Dictionary__set_Item_5BDDA1(this$, k, v) {
     }
     switch (pattern_matching_result) {
         case 0: {
-            const i_1 = matchValue[2] | 0;
-            const h_1 = matchValue[1] | 0;
-            getItemFromDict(this$.hashMap, h_1)[i_1] = [k, v];
+            getItemFromDict(this$.hashMap, matchValue[1])[matchValue[2]] = [k, v];
             break;
         }
         case 1: {
             if (matchValue[0]) {
-                const h_2 = matchValue[1] | 0;
-                const value = void (getItemFromDict(this$.hashMap, h_2).push([k, v]));
+                const value = void (getItemFromDict(this$.hashMap, matchValue[1]).push([k, v]));
             }
             else {
-                const h_3 = matchValue[1] | 0;
-                this$.hashMap.set(h_3, [[k, v]]);
+                this$.hashMap.set(matchValue[1], [[k, v]]);
             }
             break;
         }
@@ -265,11 +296,10 @@ export function Dictionary__set_Item_5BDDA1(this$, k, v) {
 }
 
 export function Dictionary__Add_5BDDA1(this$, k, v) {
-    let i, h;
     const matchValue = Dictionary__TryFindIndex_2B595(this$, k);
     let pattern_matching_result;
     if (matchValue[0]) {
-        if (i = (matchValue[2] | 0), (h = (matchValue[1] | 0), i > -1)) {
+        if (matchValue[2] > -1) {
             pattern_matching_result = 0;
         }
         else {
@@ -281,20 +311,16 @@ export function Dictionary__Add_5BDDA1(this$, k, v) {
     }
     switch (pattern_matching_result) {
         case 0: {
-            const i_1 = matchValue[2] | 0;
-            const h_1 = matchValue[1] | 0;
             const msg = format("An item with the same key has already been added. Key: {0}", k);
             throw (new Error(msg));
             break;
         }
         case 1: {
             if (matchValue[0]) {
-                const h_2 = matchValue[1] | 0;
-                const value = void (getItemFromDict(this$.hashMap, h_2).push([k, v]));
+                const value = void (getItemFromDict(this$.hashMap, matchValue[1]).push([k, v]));
             }
             else {
-                const h_3 = matchValue[1] | 0;
-                this$.hashMap.set(h_3, [[k, v]]);
+                this$.hashMap.set(matchValue[1], [[k, v]]);
             }
             break;
         }
@@ -302,11 +328,10 @@ export function Dictionary__Add_5BDDA1(this$, k, v) {
 }
 
 export function Dictionary__ContainsKey_2B595(this$, k) {
-    let i, h;
     const matchValue = Dictionary__TryFindIndex_2B595(this$, k);
     let pattern_matching_result;
     if (matchValue[0]) {
-        if (i = (matchValue[2] | 0), (h = (matchValue[1] | 0), i > -1)) {
+        if (matchValue[2] > -1) {
             pattern_matching_result = 0;
         }
         else {
@@ -318,8 +343,6 @@ export function Dictionary__ContainsKey_2B595(this$, k) {
     }
     switch (pattern_matching_result) {
         case 0: {
-            const i_1 = matchValue[2] | 0;
-            const h_1 = matchValue[1] | 0;
             return true;
         }
         case 1: {
@@ -329,11 +352,10 @@ export function Dictionary__ContainsKey_2B595(this$, k) {
 }
 
 export function Dictionary__Remove_2B595(this$, k) {
-    let i, h;
     const matchValue = Dictionary__TryFindIndex_2B595(this$, k);
     let pattern_matching_result;
     if (matchValue[0]) {
-        if (i = (matchValue[2] | 0), (h = (matchValue[1] | 0), i > -1)) {
+        if (matchValue[2] > -1) {
             pattern_matching_result = 0;
         }
         else {
@@ -345,9 +367,7 @@ export function Dictionary__Remove_2B595(this$, k) {
     }
     switch (pattern_matching_result) {
         case 0: {
-            const i_1 = matchValue[2] | 0;
-            const h_1 = matchValue[1] | 0;
-            getItemFromDict(this$.hashMap, h_1).splice(i_1, 1);
+            getItemFromDict(this$.hashMap, matchValue[1]).splice(matchValue[2], 1);
             return true;
         }
         case 1: {

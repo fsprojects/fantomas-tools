@@ -1,9 +1,9 @@
-import { Record, Union } from "../.fable/fable-library.3.1.7/Types.js";
-import { record_type, class_type, bool_type, tuple_type, list_type, string_type, union_type } from "../.fable/fable-library.3.1.7/Reflection.js";
+import { Record, Union } from "../.fable/fable-library.3.1.15/Types.js";
+import { record_type, class_type, bool_type, tuple_type, list_type, string_type, union_type } from "../.fable/fable-library.3.1.15/Reflection.js";
 import { sortByOption, FormatResponse$reflection, FantomasOption$reflection } from "../shared/FantomasOnlineShared.js";
-import { zip, filter, map, sortBy } from "../.fable/fable-library.3.1.7/List.js";
-import { equals, comparePrimitives } from "../.fable/fable-library.3.1.7/Util.js";
-import { toList } from "../.fable/fable-library.3.1.7/Map.js";
+import { sortBy, zip, filter, map } from "../.fable/fable-library.3.1.15/List.js";
+import { comparePrimitives, equals } from "../.fable/fable-library.3.1.15/Util.js";
+import { toList } from "../.fable/fable-library.3.1.15/Map.js";
 
 export class FantomasMode extends Union {
     constructor(tag, ...fields) {
@@ -67,16 +67,10 @@ export function Model$reflection() {
 }
 
 export function Model__get_SettingsChangedByTheUser(this$) {
-    const defaultValues = sortBy((_arg1) => sortByOption(_arg1), this$.DefaultOptions, {
+    return map((tuple_1) => tuple_1[1], filter((tupledArg) => (!equals(tupledArg[0], tupledArg[1])), zip(sortBy((_arg1) => sortByOption(_arg1), this$.DefaultOptions, {
         Compare: (x, y) => comparePrimitives(x, y),
-    });
-    const userValues = sortBy((_arg1_1) => sortByOption(_arg1_1), map((tuple) => tuple[1], toList(this$.UserOptions)), {
+    }), sortBy((_arg1_1) => sortByOption(_arg1_1), map((tuple) => tuple[1], toList(this$.UserOptions)), {
         Compare: (x_1, y_1) => comparePrimitives(x_1, y_1),
-    });
-    return map((tuple_1) => tuple_1[1], filter((tupledArg) => {
-        const dv = tupledArg[0];
-        const uv = tupledArg[1];
-        return !equals(dv, uv);
-    }, zip(defaultValues, userValues)));
+    }))));
 }
 

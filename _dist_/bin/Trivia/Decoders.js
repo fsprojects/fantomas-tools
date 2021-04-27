@@ -1,7 +1,7 @@
 import { bool, fromString, string, option as option_2, list, Auto_generateDecoderCached_7848D058, int, object } from "../.fable/Thoth.Json.5.0.0/Decode.fs.js";
-import { uncurry } from "../.fable/fable-library.3.1.7/Util.js";
+import { uncurry } from "../.fable/fable-library.3.1.15/Util.js";
 import { ParseResult, TriviaNodeCandidate, TriviaNode, TriviaNodeType$reflection, Trivia, TriviaContent$reflection, Range$ } from "../shared/TriviaShared.js";
-import { defaultArg } from "../.fable/fable-library.3.1.7/Option.js";
+import { defaultArg } from "../.fable/fable-library.3.1.15/Option.js";
 import { Model } from "./Model.js";
 
 const decodeRange = (path) => ((v) => object((get$) => (new Range$(get$.Required.Field("startLine", uncurry(2, int)), get$.Required.Field("startColumn", uncurry(2, int)), get$.Required.Field("endLine", uncurry(2, int)), get$.Required.Field("endColumn", uncurry(2, int)))), path, v));
@@ -31,10 +31,6 @@ export function decodeVersion(json) {
 }
 
 export function decodeUrlModel(initialModel) {
-    return (path_2) => ((v) => object((get$) => {
-        const defines = defaultArg(get$.Optional.Field("defines", (path, value) => string(path, value)), "");
-        const isFsi = defaultArg(get$.Optional.Field("isFsi", (path_1, value_2) => bool(path_1, value_2)), initialModel.IsFsi);
-        return new Model(initialModel.ActiveTab, initialModel.Trivia, initialModel.TriviaNodeCandidates, initialModel.TriviaNodes, initialModel.Error, initialModel.IsLoading, initialModel.ActiveByTriviaNodeIndex, initialModel.ActiveByTriviaIndex, defines, initialModel.Version, isFsi);
-    }, path_2, v));
+    return (path_2) => ((v) => object((get$) => (new Model(initialModel.ActiveTab, initialModel.Trivia, initialModel.TriviaNodeCandidates, initialModel.TriviaNodes, initialModel.Error, initialModel.IsLoading, initialModel.ActiveByTriviaNodeIndex, initialModel.ActiveByTriviaIndex, defaultArg(get$.Optional.Field("defines", (path, value) => string(path, value)), ""), initialModel.Version, defaultArg(get$.Optional.Field("isFsi", (path_1, value_2) => bool(path_1, value_2)), initialModel.IsFsi))), path_2, v));
 }
 

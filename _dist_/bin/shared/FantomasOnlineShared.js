@@ -1,6 +1,6 @@
-import { Record, toString, Union } from "../.fable/fable-library.3.1.7/Types.js";
-import { option_type, record_type, list_type, union_type, bool_type, string_type, int32_type } from "../.fable/fable-library.3.1.7/Reflection.js";
-import { int32ToString } from "../.fable/fable-library.3.1.7/Util.js";
+import { Record, toString, Union } from "../.fable/fable-library.3.1.15/Types.js";
+import { option_type, record_type, list_type, union_type, bool_type, string_type, int32_type } from "../.fable/fable-library.3.1.15/Reflection.js";
+import { int32ToString } from "../.fable/fable-library.3.1.15/Util.js";
 
 export class FantomasOption extends Union {
     constructor(tag, ...fields) {
@@ -97,12 +97,10 @@ export function optionValue(_arg1) {
         default: pattern_matching_result = 0}
     switch (pattern_matching_result) {
         case 0: {
-            const i = _arg1.fields[2] | 0;
-            return int32ToString(i);
+            return int32ToString(_arg1.fields[2]);
         }
         case 1: {
-            const b = _arg1.fields[2];
-            return toString(b);
+            return toString(_arg1.fields[2]);
         }
         case 2: {
             return v;

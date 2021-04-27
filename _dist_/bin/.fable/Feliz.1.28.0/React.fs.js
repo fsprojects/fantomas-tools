@@ -1,9 +1,9 @@
 import { useLayoutEffectWithDeps, useLayoutEffect, useEffectWithDeps, useEffect, useDebugValue } from "./ReactInterop.js";
-import { class_type } from "../fable-library.3.1.7/Reflection.js";
-import { iterate } from "../fable-library.3.1.7/Seq.js";
-import { defaultArg, some, toArray } from "../fable-library.3.1.7/Option.js";
+import { class_type } from "../fable-library.3.1.15/Reflection.js";
+import { iterate } from "../fable-library.3.1.15/Seq.js";
+import { defaultArg, some, toArray } from "../fable-library.3.1.15/Option.js";
 import { reactApi } from "./Interop.fs.js";
-import { curry, uncurry } from "../fable-library.3.1.7/Util.js";
+import { curry, uncurry } from "../fable-library.3.1.15/Util.js";
 import { useState } from "../../../../_snowpack/pkg/react.js";
 import * as react from "../../../../_snowpack/pkg/react.js";
 
@@ -38,10 +38,7 @@ export function Internal_functionComponent_Z1B155329(renderElement, name, withKe
         renderElement.displayName = name_1;
     }, toArray(name));
     console.warn(some("Feliz: using React.functionComponent in Fable 3 is obsolete, please consider using the [\u003cReactComponent\u003e] attribute instead which makes Feliz output better Javascript code that is compatible with react-refresh"));
-    return (props) => {
-        const props_2 = Internal_propsWithKey(withKey, props);
-        return reactApi.createElement(renderElement, props_2);
-    };
+    return (props) => reactApi.createElement(renderElement, Internal_propsWithKey(withKey, props));
 }
 
 export function Internal_memo_Z603636D8(renderElement, name, areEqual, withKey) {
@@ -49,10 +46,7 @@ export function Internal_memo_Z603636D8(renderElement, name, areEqual, withKey) 
     iterate((name_1) => {
         renderElement.displayName = name_1;
     }, toArray(name));
-    return (props) => {
-        const props_2 = Internal_propsWithKey(withKey, props);
-        return reactApi.createElement(memoElementType, props_2);
-    };
+    return (props) => reactApi.createElement(memoElementType, Internal_propsWithKey(withKey, props));
 }
 
 function Internal_propsWithKey(withKey, props) {
@@ -272,11 +266,9 @@ export function React_forwardRef_3790D881(render) {
     const forwardRefType = reactApi.forwardRef((props, ref) => render([props, ref]));
     return (tupledArg) => {
         let o;
-        const props_1 = tupledArg[0];
-        const ref_1 = tupledArg[1];
         return reactApi.createElement(forwardRefType, (o = {
-            props: props_1,
-            ref: ref_1,
+            props: tupledArg[0],
+            ref: tupledArg[1],
         }, Object.assign({}, o)));
     };
 }
@@ -286,11 +278,9 @@ export function React_forwardRef_7DC3DB1A(name, render) {
     render.displayName = name;
     return (tupledArg) => {
         let o;
-        const props_1 = tupledArg[0];
-        const ref_1 = tupledArg[1];
         return reactApi.createElement(forwardRefType, (o = {
-            props: props_1,
-            ref: ref_1,
+            props: tupledArg[0],
+            ref: tupledArg[1],
         }, Object.assign({}, o)));
     };
 }

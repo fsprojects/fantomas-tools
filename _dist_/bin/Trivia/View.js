@@ -1,7 +1,7 @@
-import { equals } from "../.fable/fable-library.3.1.7/Util.js";
+import { equals } from "../.fable/fable-library.3.1.15/Util.js";
 import { TabPaneProps, tabPane } from "../.fable/Fable.Reactstrap.0.5.1/TabPane.fs.js";
 import { DOMAttr, HTMLAttr } from "../.fable/Fable.React.7.0.1/Fable.React.Props.fs.js";
-import { ofArray, singleton } from "../.fable/fable-library.3.1.7/List.js";
+import { ofArray, singleton } from "../.fable/fable-library.3.1.15/List.js";
 import { Msg, ActiveTab } from "./Model.js";
 import { view as view_1 } from "./ByTriviaNodes.js";
 import { view as view_2 } from "./ByTriviaNodeCandidates.js";
@@ -15,7 +15,7 @@ import { loader } from "../Loader.js";
 import Editor from "../../js/Editor.js";
 import { ButtonProps, button } from "../.fable/Fable.Reactstrap.0.5.1/Button.fs.js";
 import { versionBar } from "../VersionBar.js";
-import { printf, toText } from "../.fable/fable-library.3.1.7/String.js";
+import { printf, toText } from "../.fable/fable-library.3.1.15/String.js";
 import { toggleButton, input } from "../SettingControls.js";
 
 function tabToId(tab_1) {
@@ -33,15 +33,7 @@ function tabToId(tab_1) {
 }
 
 function tab(activeTab, tabType, tabContent) {
-    let t;
-    let tabClassName;
-    if (t = activeTab, equals(t, tabType)) {
-        const t_1 = activeTab;
-        tabClassName = "active show";
-    }
-    else {
-        tabClassName = "";
-    }
+    const tabClassName = equals(activeTab, tabType) ? "active show" : "";
     return tabPane([new TabPaneProps(1, tabToId(tabType)), new TabPaneProps(3, singleton(new HTMLAttr(64, tabClassName)))], [tabContent]);
 }
 
@@ -58,12 +50,9 @@ function byTrivia(model, dispatch) {
 }
 
 function results(model, dispatch) {
-    const tabHeader = (label, tabType) => {
-        const isActive = equals(tabType, model.ActiveTab);
-        return navItem([new NavItemProps(2, ofArray([new DOMAttr(40, (_arg1) => {
-            dispatch(new Msg(0, tabType));
-        }), new HTMLAttr(64, "pointer")]))], [navLink([new NavLinkProps(0, isActive), new NavLinkProps(3, singleton(new HTMLAttr(64, "rounded-0")))], [label])]);
-    };
+    const tabHeader = (label, tabType) => navItem([new NavItemProps(2, ofArray([new DOMAttr(40, (_arg1) => {
+        dispatch(new Msg(0, tabType));
+    }), new HTMLAttr(64, "pointer")]))], [navLink([new NavLinkProps(0, equals(tabType, model.ActiveTab)), new NavLinkProps(3, singleton(new HTMLAttr(64, "rounded-0")))], [label])]);
     return react.createElement("div", {
         id: "results",
     }, nav([new NavProps(0, true), new NavProps(1, true), new NavProps(9, singleton(new HTMLAttr(64, "border-bottom border-primary")))], [tabHeader("Trivia nodes", new ActiveTab(0)), tabHeader("Trivia node candidates", new ActiveTab(2)), tabHeader("Trivia", new ActiveTab(1))]), tabContent_1([new TabContentProps(3, singleton(new HTMLAttr(99, "trivia-result-content"))), new TabContentProps(1, tabToId(model.ActiveTab))], [byTriviaNodes(model, dispatch), byTriviaNodeCandidates(model, dispatch), byTrivia(model, dispatch)]));

@@ -1,9 +1,9 @@
 import { map, list, array as array_2, fromString, bool, int, tuple3, string, object } from "../.fable/Thoth.Json.5.0.0/Decode.fs.js";
-import { comparePrimitives, uncurry } from "../.fable/fable-library.3.1.7/Util.js";
+import { comparePrimitives, uncurry } from "../.fable/fable-library.3.1.15/Util.js";
 import { FormatResponse, ASTError, ASTErrorSeverity, Range$, sortByOption, FantomasOption } from "../shared/FantomasOnlineShared.js";
-import { Result_Map } from "../.fable/fable-library.3.1.7/Choice.js";
-import { ofArray } from "../.fable/fable-library.3.1.7/List.js";
-import { sortBy } from "../.fable/fable-library.3.1.7/Array.js";
+import { Result_Map } from "../.fable/fable-library.3.1.15/Choice.js";
+import { ofArray } from "../.fable/fable-library.3.1.15/List.js";
+import { sortBy } from "../.fable/fable-library.3.1.15/Array.js";
 
 const optionDecoder = (path_8) => ((v) => object((get$) => {
     const t = get$.Required.Field("$type", (path, value) => string(path, value));
@@ -31,11 +31,7 @@ export function decodeOptions(json) {
     })), fromString((path, value) => array_2(uncurry(2, optionDecoder), path, value), json));
 }
 
-export const decodeOptionsFromUrl = (path_2) => ((v) => object((get$) => {
-    const settings = get$.Required.Field("settings", (path, value) => list(uncurry(2, optionDecoder), path, value));
-    const isFSI = get$.Required.Field("isFsi", (path_1, value_1) => bool(path_1, value_1));
-    return [settings, isFSI];
-}, path_2, v));
+export const decodeOptionsFromUrl = (path_2) => ((v) => object((get$) => [get$.Required.Field("settings", (path, value) => list(uncurry(2, optionDecoder), path, value)), get$.Required.Field("isFsi", (path_1, value_1) => bool(path_1, value_1))], path_2, v));
 
 const decodeRange = (path) => ((v) => object((get$) => (new Range$(get$.Required.Field("startLine", uncurry(2, int)), get$.Required.Field("startCol", uncurry(2, int)), get$.Required.Field("endLine", uncurry(2, int)), get$.Required.Field("endCol", uncurry(2, int)))), path, v));
 

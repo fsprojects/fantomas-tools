@@ -35,47 +35,23 @@ export function toString(x, callStack = 0) {
     }
     return String(x);
 }
-// function compareList<T>(self: List<T>, other: List<T>): number {
-//   if (self === other) {
-//     return 0;
-//   } else {
-//     if (other == null) {
-//       return -1;
-//     }
-//     while (self.tail != null) {
-//       if (other.tail == null) { return 1; }
-//       const res = compare(self.head, other.head);
-//       if (res !== 0) { return res; }
-//       self = self.tail;
-//       other = other.tail;
-//     }
-//     return other.tail == null ? 0 : -1;
-//   }
-// }
-// export class List<T> implements IEquatable<List<T>>, IComparable<List<T>>, Iterable<T> {
-//   public head: T;
-//   public tail?: List<T>;
-//   constructor(head?: T, tail?: List<T>) {
-//     this.head = head as T;
-//     this.tail = tail;
-//   }
-//   public [Symbol.iterator](): Iterator<T> {
-//     let cur: List<T> | undefined = this;
-//     return {
-//       next: (): IteratorResult<T> => {
-//         const value = cur?.head as T;
-//         const done = cur?.tail == null;
-//         cur = cur?.tail;
-//         return { done, value };
-//       },
-//     };
-//   }
-//   public toJSON() { return Array.from(this); }
-//   public toString() { return seqToString(this); }
-//   public GetHashCode() { return combineHashCodes(Array.from(this).map(structuralHash)); }
-//   public Equals(other: List<T>): boolean { return compareList(this, other) === 0; }
-//   public CompareTo(other: List<T>): number { return compareList(this, other); }
-// }
+export function unionToString(name, fields) {
+    if (fields.length === 0) {
+        return name;
+    }
+    else {
+        let fieldStr = "";
+        let withParens = true;
+        if (fields.length === 1) {
+            fieldStr = toString(fields[0]);
+            withParens = fieldStr.indexOf(" ") >= 0;
+        }
+        else {
+            fieldStr = fields.map((x) => toString(x)).join(", ");
+        }
+        return name + (withParens ? " (" : " ") + fieldStr + (withParens ? ")" : "");
+    }
+}
 export class Union {
     get name() {
         return this.cases()[this.tag];
@@ -84,22 +60,7 @@ export class Union {
         return this.fields.length === 0 ? this.name : [this.name].concat(this.fields);
     }
     toString() {
-        if (this.fields.length === 0) {
-            return this.name;
-        }
-        else {
-            let fields = "";
-            let withParens = true;
-            if (this.fields.length === 1) {
-                const field = toString(this.fields[0]);
-                withParens = field.indexOf(" ") >= 0;
-                fields = field;
-            }
-            else {
-                fields = this.fields.map((x) => toString(x)).join(", ");
-            }
-            return this.name + (withParens ? " (" : " ") + fields + (withParens ? ")" : "");
-        }
+        return unionToString(this.name, this.fields);
     }
     GetHashCode() {
         const hashes = this.fields.map((x) => structuralHash(x));

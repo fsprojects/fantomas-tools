@@ -1,5 +1,5 @@
-import { Record, Union } from "../fable-library.3.1.7/Types.js";
-import { record_type, union_type, lambda_type, unit_type, int32_type, class_type, string_type, bool_type } from "../fable-library.3.1.7/Reflection.js";
+import { Record, Union } from "../fable-library.3.1.15/Types.js";
+import { record_type, union_type, lambda_type, unit_type, int32_type, class_type, string_type, bool_type } from "../fable-library.3.1.15/Reflection.js";
 
 export class TransitionProps extends Union {
     constructor(tag, ...fields) {

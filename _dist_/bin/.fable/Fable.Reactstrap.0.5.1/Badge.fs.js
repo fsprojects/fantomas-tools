@@ -1,9 +1,9 @@
-import { Union } from "../fable-library.3.1.7/Types.js";
-import { union_type, list_type, class_type, string_type, obj_type } from "../fable-library.3.1.7/Reflection.js";
+import { Union } from "../fable-library.3.1.15/Types.js";
+import { union_type, list_type, class_type, string_type, obj_type } from "../fable-library.3.1.15/Reflection.js";
 import { TransitionProps$reflection } from "./Common.fs.js";
-import { keyValueList } from "../fable-library.3.1.7/MapUtil.js";
-import { choose, collect } from "../fable-library.3.1.7/Seq.js";
-import { empty } from "../fable-library.3.1.7/List.js";
+import { keyValueList } from "../fable-library.3.1.15/MapUtil.js";
+import { choose, collect } from "../fable-library.3.1.15/Seq.js";
+import { empty } from "../fable-library.3.1.15/List.js";
 import * as react from "../../../../_snowpack/pkg/react.js";
 import { Badge } from "../../../../_snowpack/pkg/reactstrap.js";
 
@@ -25,8 +25,7 @@ export function BadgeProps$reflection() {
 export function badge(props, elems) {
     const customProps = keyValueList(collect((_arg1) => {
         if (_arg1.tag === 5) {
-            const props_1 = _arg1.fields[0];
-            return props_1;
+            return _arg1.fields[0];
         }
         else {
             return empty();
@@ -37,11 +36,9 @@ export function badge(props, elems) {
             return void 0;
         }
         else {
-            const prop = _arg2;
-            return prop;
+            return _arg2;
         }
     }, props), 1);
-    const props_2 = Object.assign({}, customProps, typeProps);
-    return react.createElement(Badge, props_2, ...elems);
+    return react.createElement(Badge, Object.assign({}, customProps, typeProps), ...elems);
 }
 

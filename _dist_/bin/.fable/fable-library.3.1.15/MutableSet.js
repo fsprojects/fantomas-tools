@@ -15,8 +15,7 @@ export class HashSet {
         const enumerator = getEnumerator(items);
         try {
             while (enumerator["System.Collections.IEnumerator.MoveNext"]()) {
-                const item = enumerator["System.Collections.Generic.IEnumerator`1.get_Current"]();
-                void HashSet__Add_2B595(this$.contents, item);
+                void HashSet__Add_2B595(this$.contents, enumerator["System.Collections.Generic.IEnumerator`1.get_Current"]());
             }
         }
         finally {
@@ -26,14 +25,17 @@ export class HashSet {
     get [Symbol.toStringTag]() {
         return "HashSet";
     }
+    toJSON(_key) {
+        const this$ = this;
+        return Array.from(this$);
+    }
     ["System.Collections.IEnumerable.GetEnumerator"]() {
         const this$ = this;
         return getEnumerator(this$);
     }
     GetEnumerator() {
         const this$ = this;
-        const elems = concat(this$.hashMap.values());
-        return getEnumerator(elems);
+        return getEnumerator(concat(this$.hashMap.values()));
     }
     [Symbol.iterator]() {
         return toIterator(this.GetEnumerator());
@@ -124,8 +126,7 @@ function HashSet__TryFindIndex_2B595(this$, k) {
         outArg = v;
     })), outArg];
     if (matchValue[0]) {
-        const values = matchValue[1];
-        return [true, h, values.findIndex((v_1) => this$.comparer.Equals(k, v_1))];
+        return [true, h, matchValue[1].findIndex((v_1) => this$.comparer.Equals(k, v_1))];
     }
     else {
         return [false, h, -1];
@@ -133,11 +134,10 @@ function HashSet__TryFindIndex_2B595(this$, k) {
 }
 
 function HashSet__TryFind_2B595(this$, k) {
-    let i, h;
     const matchValue = HashSet__TryFindIndex_2B595(this$, k);
     let pattern_matching_result;
     if (matchValue[0]) {
-        if (i = (matchValue[2] | 0), (h = (matchValue[1] | 0), i > -1)) {
+        if (matchValue[2] > -1) {
             pattern_matching_result = 0;
         }
         else {
@@ -149,9 +149,7 @@ function HashSet__TryFind_2B595(this$, k) {
     }
     switch (pattern_matching_result) {
         case 0: {
-            const i_1 = matchValue[2] | 0;
-            const h_1 = matchValue[1] | 0;
-            return some(getItemFromDict(this$.hashMap, h_1)[i_1]);
+            return some(getItemFromDict(this$.hashMap, matchValue[1])[matchValue[2]]);
         }
         case 1: {
             return void 0;
@@ -173,7 +171,7 @@ export function HashSet__get_Count(this$) {
     try {
         while (enumerator["System.Collections.IEnumerator.MoveNext"]()) {
             const items = enumerator["System.Collections.Generic.IEnumerator`1.get_Current"]();
-            count = (count + items.length);
+            count = ((count + items.length) | 0);
         }
     }
     finally {
@@ -183,11 +181,10 @@ export function HashSet__get_Count(this$) {
 }
 
 export function HashSet__Add_2B595(this$, k) {
-    let i, h;
     const matchValue = HashSet__TryFindIndex_2B595(this$, k);
     let pattern_matching_result;
     if (matchValue[0]) {
-        if (i = (matchValue[2] | 0), (h = (matchValue[1] | 0), i > -1)) {
+        if (matchValue[2] > -1) {
             pattern_matching_result = 0;
         }
         else {
@@ -199,19 +196,15 @@ export function HashSet__Add_2B595(this$, k) {
     }
     switch (pattern_matching_result) {
         case 0: {
-            const i_1 = matchValue[2] | 0;
-            const h_1 = matchValue[1] | 0;
             return false;
         }
         case 1: {
             if (matchValue[0]) {
-                const h_2 = matchValue[1] | 0;
-                const value = void (getItemFromDict(this$.hashMap, h_2).push(k));
+                const value = void (getItemFromDict(this$.hashMap, matchValue[1]).push(k));
                 return true;
             }
             else {
-                const h_3 = matchValue[1] | 0;
-                this$.hashMap.set(h_3, [k]);
+                this$.hashMap.set(matchValue[1], [k]);
                 return true;
             }
         }
@@ -219,11 +212,10 @@ export function HashSet__Add_2B595(this$, k) {
 }
 
 export function HashSet__Contains_2B595(this$, k) {
-    let i, h;
     const matchValue = HashSet__TryFindIndex_2B595(this$, k);
     let pattern_matching_result;
     if (matchValue[0]) {
-        if (i = (matchValue[2] | 0), (h = (matchValue[1] | 0), i > -1)) {
+        if (matchValue[2] > -1) {
             pattern_matching_result = 0;
         }
         else {
@@ -235,8 +227,6 @@ export function HashSet__Contains_2B595(this$, k) {
     }
     switch (pattern_matching_result) {
         case 0: {
-            const i_1 = matchValue[2] | 0;
-            const h_1 = matchValue[1] | 0;
             return true;
         }
         case 1: {
@@ -246,11 +236,10 @@ export function HashSet__Contains_2B595(this$, k) {
 }
 
 export function HashSet__Remove_2B595(this$, k) {
-    let i, h;
     const matchValue = HashSet__TryFindIndex_2B595(this$, k);
     let pattern_matching_result;
     if (matchValue[0]) {
-        if (i = (matchValue[2] | 0), (h = (matchValue[1] | 0), i > -1)) {
+        if (matchValue[2] > -1) {
             pattern_matching_result = 0;
         }
         else {
@@ -262,9 +251,7 @@ export function HashSet__Remove_2B595(this$, k) {
     }
     switch (pattern_matching_result) {
         case 0: {
-            const i_1 = matchValue[2] | 0;
-            const h_1 = matchValue[1] | 0;
-            getItemFromDict(this$.hashMap, h_1).splice(i_1, 1);
+            getItemFromDict(this$.hashMap, matchValue[1]).splice(matchValue[2], 1);
             return true;
         }
         case 1: {

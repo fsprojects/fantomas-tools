@@ -1,24 +1,24 @@
-import { toFail, printf, toText, join } from "../fable-library.3.1.7/String.js";
-import { Result_Map, FSharpResult$2 } from "../fable-library.3.1.7/Choice.js";
+import { toFail, printf, toText, join } from "../fable-library.3.1.15/String.js";
+import { Result_Map, FSharpResult$2 } from "../fable-library.3.1.15/Choice.js";
 import { Util_CachedDecoders, Util_Cache$1__GetOrAdd_43981464, CaseStrategy, Util_Casing_convert, ErrorReason } from "./Types.fs.js";
-import { tryParse as tryParse_2 } from "../fable-library.3.1.7/Guid.js";
-import { toString as toString_12, FSharpRef } from "../fable-library.3.1.7/Types.js";
-import { tryParse as tryParse_3 } from "../fable-library.3.1.7/Int32.js";
-import { tryParse as tryParse_4, fromInt, fromNumber, toNumber, fromBits } from "../fable-library.3.1.7/Long.js";
-import { parse, fromInt32 } from "../fable-library.3.1.7/BigInt.js";
-import { tryParse as tryParse_5 } from "../fable-library.3.1.7/Decimal.js";
-import Decimal from "../fable-library.3.1.7/Decimal.js";
-import { toUniversalTime, tryParse as tryParse_6, minValue } from "../fable-library.3.1.7/Date.js";
-import { tryParse as tryParse_7, minValue as minValue_1 } from "../fable-library.3.1.7/DateOffset.js";
-import { tryParse as tryParse_8 } from "../fable-library.3.1.7/TimeSpan.js";
-import { map as map_4, value as value_40, defaultArg, some } from "../fable-library.3.1.7/Option.js";
-import { ofArray, toArray, map as map_1, length, singleton, append as append_1, head as head_1, tail as tail_1, isEmpty, ofSeq, empty, reverse, fold, tryLast, cons } from "../fable-library.3.1.7/List.js";
-import { int16ToString, numberHash, mapCurriedArgs, compare, int32ToString, uncurry } from "../fable-library.3.1.7/Util.js";
-import { map as map_2, tryFind, foldBack2, foldBack, fill, fold as fold_1 } from "../fable-library.3.1.7/Array.js";
-import { contains, fold as fold_2, toList, append, reverse as reverse_1 } from "../fable-library.3.1.7/Seq.js";
-import { empty as empty_1, map as map_3, tryFind as tryFind_1, add, ofSeq as ofSeq_1, ofList } from "../fable-library.3.1.7/Map.js";
-import { getGenerics, getGenericTypeDefinition, makeTuple, getTupleElements, isTuple, isGenericType, parseEnum, getEnumValues, getEnumUnderlyingType, isEnum, getElementType, isArray, isUnion, makeRecord, getRecordElements, isRecord, fullName, getUnionCaseFields, makeUnion as makeUnion_1, getUnionCases, name as name_3, class_type } from "../fable-library.3.1.7/Reflection.js";
-import { ofSeq as ofSeq_2 } from "../fable-library.3.1.7/Set.js";
+import { tryParse as tryParse_2 } from "../fable-library.3.1.15/Guid.js";
+import { toString as toString_12, FSharpRef } from "../fable-library.3.1.15/Types.js";
+import { tryParse as tryParse_3 } from "../fable-library.3.1.15/Int32.js";
+import { tryParse as tryParse_4, fromInt, fromNumber, toNumber, fromBits } from "../fable-library.3.1.15/Long.js";
+import { parse, fromInt32 } from "../fable-library.3.1.15/BigInt.js";
+import { tryParse as tryParse_5 } from "../fable-library.3.1.15/Decimal.js";
+import Decimal from "../fable-library.3.1.15/Decimal.js";
+import { toUniversalTime, tryParse as tryParse_6, minValue } from "../fable-library.3.1.15/Date.js";
+import { tryParse as tryParse_7, minValue as minValue_1 } from "../fable-library.3.1.15/DateOffset.js";
+import { tryParse as tryParse_8 } from "../fable-library.3.1.15/TimeSpan.js";
+import { map as map_4, value as value_40, defaultArg, some } from "../fable-library.3.1.15/Option.js";
+import { ofArray, toArray, map as map_1, length, singleton, append as append_1, tail as tail_1, head as head_1, isEmpty, ofSeq, empty, reverse, fold, tryLast, cons } from "../fable-library.3.1.15/List.js";
+import { int16ToString, numberHash, mapCurriedArgs, compare, int32ToString, uncurry } from "../fable-library.3.1.15/Util.js";
+import { map as map_2, tryFind, foldBack2, foldBack, fill, fold as fold_1 } from "../fable-library.3.1.15/Array.js";
+import { contains, fold as fold_2, toList, append, reverse as reverse_1 } from "../fable-library.3.1.15/Seq.js";
+import { empty as empty_1, map as map_3, tryFind as tryFind_1, add, ofSeq as ofSeq_1, ofList } from "../fable-library.3.1.15/Map.js";
+import { getGenerics, getGenericTypeDefinition, makeTuple, getTupleElements, isTuple, isGenericType, parseEnum, getEnumValues, getEnumUnderlyingType, isEnum, getElementType, isArray, isUnion, makeRecord, getRecordElements, isRecord, fullName, getUnionCaseFields, makeUnion as makeUnion_1, getUnionCases, name as name_3, class_type } from "../fable-library.3.1.15/Reflection.js";
+import { ofSeq as ofSeq_2 } from "../fable-library.3.1.15/Set.js";
 
 export function Helpers_isUndefined(o) {
     return (typeof o) === "undefined";
@@ -34,56 +34,7 @@ function genericMsg(msg, value_1, newLine) {
 }
 
 function errorToString(path, error) {
-    let reason_1;
-    switch (error.tag) {
-        case 2: {
-            const value_2 = error.fields[1];
-            const msg_1 = error.fields[0];
-            reason_1 = genericMsg(msg_1, value_2, true);
-            break;
-        }
-        case 1: {
-            const value_3 = error.fields[1];
-            const reason = error.fields[2];
-            const msg_2 = error.fields[0];
-            reason_1 = ((genericMsg(msg_2, value_3, false) + "\nReason: ") + reason);
-            break;
-        }
-        case 3: {
-            const value_4 = error.fields[1];
-            const msg_3 = error.fields[0];
-            reason_1 = genericMsg(msg_3, value_4, true);
-            break;
-        }
-        case 4: {
-            const value_5 = error.fields[1];
-            const msg_4 = error.fields[0];
-            const fieldName = error.fields[2];
-            reason_1 = (genericMsg(msg_4, value_5, true) + (("\nNode `" + fieldName) + "` is unkown."));
-            break;
-        }
-        case 5: {
-            const value_6 = error.fields[1];
-            const msg_5 = error.fields[0];
-            reason_1 = ((("Expecting " + msg_5) + ".\n") + (JSON.stringify(value_6, null, 4) + ''));
-            break;
-        }
-        case 7: {
-            const messages = error.fields[0];
-            reason_1 = ("The following errors were found:\n\n" + join("\n\n", messages));
-            break;
-        }
-        case 6: {
-            const msg_6 = error.fields[0];
-            reason_1 = ("The following `failure` occurred with the decoder: " + msg_6);
-            break;
-        }
-        default: {
-            const value_1 = error.fields[1];
-            const msg = error.fields[0];
-            reason_1 = genericMsg(msg, value_1, false);
-        }
-    }
+    const reason_1 = (error.tag === 2) ? genericMsg(error.fields[0], error.fields[1], true) : ((error.tag === 1) ? ((genericMsg(error.fields[0], error.fields[1], false) + "\nReason: ") + error.fields[2]) : ((error.tag === 3) ? genericMsg(error.fields[0], error.fields[1], true) : ((error.tag === 4) ? (genericMsg(error.fields[0], error.fields[1], true) + (("\nNode `" + error.fields[2]) + "` is unkown.")) : ((error.tag === 5) ? ((("Expecting " + error.fields[0]) + ".\n") + (JSON.stringify(error.fields[1], null, 4) + '')) : ((error.tag === 7) ? ("The following errors were found:\n\n" + join("\n\n", error.fields[0])) : ((error.tag === 6) ? ("The following `failure` occurred with the decoder: " + error.fields[0]) : genericMsg(error.fields[0], error.fields[1], false)))))));
     if (error.tag === 7) {
         return reason_1;
     }
@@ -99,21 +50,17 @@ export function fromValue(path, decoder, value_1) {
         return new FSharpResult$2(1, errorToString(error[0], error[1]));
     }
     else {
-        const success = matchValue.fields[0];
-        return new FSharpResult$2(0, success);
+        return new FSharpResult$2(0, matchValue.fields[0]);
     }
 }
 
 export function fromString(decoder, value_1) {
-    let ex;
     try {
-        const json = JSON.parse(value_1);
-        return fromValue("$", decoder, json);
+        return fromValue("$", decoder, JSON.parse(value_1));
     }
     catch (matchValue) {
-        if (ex = matchValue, ex instanceof SyntaxError) {
-            const ex_1 = matchValue;
-            return new FSharpResult$2(1, "Given an invalid JSON: " + ex_1.message);
+        if (matchValue instanceof SyntaxError) {
+            return new FSharpResult$2(1, "Given an invalid JSON: " + matchValue.message);
         }
         else {
             throw matchValue;
@@ -124,12 +71,10 @@ export function fromString(decoder, value_1) {
 export function unsafeFromString(decoder, value_1) {
     const matchValue = fromString(decoder, value_1);
     if (matchValue.tag === 1) {
-        const msg = matchValue.fields[0];
-        throw (new Error(msg));
+        throw (new Error(matchValue.fields[0]));
     }
     else {
-        const x = matchValue.fields[0];
-        return x;
+        return matchValue.fields[0];
     }
 }
 
@@ -160,8 +105,7 @@ export function guid(path, value_1) {
             outArg = v;
         })), outArg];
         if (matchValue[0]) {
-            const x = matchValue[1];
-            return new FSharpResult$2(0, x);
+            return new FSharpResult$2(0, matchValue[1]);
         }
         else {
             return new FSharpResult$2(1, [path, new ErrorReason(0, "a guid", value_1)]);
@@ -193,15 +137,9 @@ export const sbyte = (path) => ((value_2) => {
         let matchValue;
         let outArg = 0;
         matchValue = [tryParse_3(value_3, 511, false, 8, new FSharpRef(() => outArg, (v) => {
-            outArg = v;
+            outArg = (v | 0);
         })), outArg];
-        if (matchValue[0]) {
-            const x = matchValue[1] | 0;
-            return new FSharpResult$2(0, x);
-        }
-        else {
-            return new FSharpResult$2(1, [path_1, new ErrorReason(0, name_1, value_3)]);
-        }
+        return matchValue[0] ? (new FSharpResult$2(0, matchValue[1])) : (new FSharpResult$2(1, [path_1, new ErrorReason(0, name_1, value_3)]));
     }
     else {
         return new FSharpResult$2(1, [path_1, new ErrorReason(0, name_1, value_3)]);
@@ -222,13 +160,7 @@ export const byte = (path) => ((value_2) => {
         matchValue = [tryParse_3(value_3, 511, true, 8, new FSharpRef(() => outArg, (v) => {
             outArg = v;
         })), outArg];
-        if (matchValue[0]) {
-            const x = matchValue[1];
-            return new FSharpResult$2(0, x);
-        }
-        else {
-            return new FSharpResult$2(1, [path_1, new ErrorReason(0, name_1, value_3)]);
-        }
+        return matchValue[0] ? (new FSharpResult$2(0, matchValue[1])) : (new FSharpResult$2(1, [path_1, new ErrorReason(0, name_1, value_3)]));
     }
     else {
         return new FSharpResult$2(1, [path_1, new ErrorReason(0, name_1, value_3)]);
@@ -247,15 +179,9 @@ export const int16 = (path) => ((value_2) => {
         let matchValue;
         let outArg = 0;
         matchValue = [tryParse_3(value_3, 511, false, 16, new FSharpRef(() => outArg, (v) => {
-            outArg = v;
+            outArg = (v | 0);
         })), outArg];
-        if (matchValue[0]) {
-            const x = matchValue[1] | 0;
-            return new FSharpResult$2(0, x);
-        }
-        else {
-            return new FSharpResult$2(1, [path_1, new ErrorReason(0, name_1, value_3)]);
-        }
+        return matchValue[0] ? (new FSharpResult$2(0, matchValue[1])) : (new FSharpResult$2(1, [path_1, new ErrorReason(0, name_1, value_3)]));
     }
     else {
         return new FSharpResult$2(1, [path_1, new ErrorReason(0, name_1, value_3)]);
@@ -276,13 +202,7 @@ export const uint16 = (path) => ((value_2) => {
         matchValue = [tryParse_3(value_3, 511, true, 16, new FSharpRef(() => outArg, (v) => {
             outArg = v;
         })), outArg];
-        if (matchValue[0]) {
-            const x = matchValue[1];
-            return new FSharpResult$2(0, x);
-        }
-        else {
-            return new FSharpResult$2(1, [path_1, new ErrorReason(0, name_1, value_3)]);
-        }
+        return matchValue[0] ? (new FSharpResult$2(0, matchValue[1])) : (new FSharpResult$2(1, [path_1, new ErrorReason(0, name_1, value_3)]));
     }
     else {
         return new FSharpResult$2(1, [path_1, new ErrorReason(0, name_1, value_3)]);
@@ -301,15 +221,9 @@ export const int = (path) => ((value_2) => {
         let matchValue;
         let outArg = 0;
         matchValue = [tryParse_3(value_3, 511, false, 32, new FSharpRef(() => outArg, (v) => {
-            outArg = v;
+            outArg = (v | 0);
         })), outArg];
-        if (matchValue[0]) {
-            const x = matchValue[1] | 0;
-            return new FSharpResult$2(0, x);
-        }
-        else {
-            return new FSharpResult$2(1, [path_1, new ErrorReason(0, name_1, value_3)]);
-        }
+        return matchValue[0] ? (new FSharpResult$2(0, matchValue[1])) : (new FSharpResult$2(1, [path_1, new ErrorReason(0, name_1, value_3)]));
     }
     else {
         return new FSharpResult$2(1, [path_1, new ErrorReason(0, name_1, value_3)]);
@@ -330,13 +244,7 @@ export const uint32 = (path) => ((value_2) => {
         matchValue = [tryParse_3(value_3, 511, true, 32, new FSharpRef(() => outArg, (v) => {
             outArg = v;
         })), outArg];
-        if (matchValue[0]) {
-            const x = matchValue[1];
-            return new FSharpResult$2(0, x);
-        }
-        else {
-            return new FSharpResult$2(1, [path_1, new ErrorReason(0, name_1, value_3)]);
-        }
+        return matchValue[0] ? (new FSharpResult$2(0, matchValue[1])) : (new FSharpResult$2(1, [path_1, new ErrorReason(0, name_1, value_3)]));
     }
     else {
         return new FSharpResult$2(1, [path_1, new ErrorReason(0, name_1, value_3)]);
@@ -360,13 +268,7 @@ export const int64 = (() => {
             matchValue = [tryParse_4(value_3, 511, false, 64, new FSharpRef(() => outArg, (v) => {
                 outArg = v;
             })), outArg];
-            if (matchValue[0]) {
-                const x = matchValue[1];
-                return new FSharpResult$2(0, x);
-            }
-            else {
-                return new FSharpResult$2(1, [path_1, new ErrorReason(0, name_1, value_3)]);
-            }
+            return matchValue[0] ? (new FSharpResult$2(0, matchValue[1])) : (new FSharpResult$2(1, [path_1, new ErrorReason(0, name_1, value_3)]));
         }
         else {
             return new FSharpResult$2(1, [path_1, new ErrorReason(0, name_1, value_3)]);
@@ -391,13 +293,7 @@ export const uint64 = (() => {
             matchValue = [tryParse_4(value_3, 511, true, 64, new FSharpRef(() => outArg, (v) => {
                 outArg = v;
             })), outArg];
-            if (matchValue[0]) {
-                const x = matchValue[1];
-                return new FSharpResult$2(0, x);
-            }
-            else {
-                return new FSharpResult$2(1, [path_1, new ErrorReason(0, name_1, value_3)]);
-            }
+            return matchValue[0] ? (new FSharpResult$2(0, matchValue[1])) : (new FSharpResult$2(1, [path_1, new ErrorReason(0, name_1, value_3)]));
         }
         else {
             return new FSharpResult$2(1, [path_1, new ErrorReason(0, name_1, value_3)]);
@@ -460,8 +356,7 @@ export function decimal(path, value_1) {
             outArg = v;
         })), outArg];
         if (matchValue[0]) {
-            const x = matchValue[1];
-            return new FSharpResult$2(0, x);
+            return new FSharpResult$2(0, matchValue[1]);
         }
         else {
             return new FSharpResult$2(1, [path, new ErrorReason(0, "a decimal", value_1)]);
@@ -480,8 +375,7 @@ export function datetime(path, value_1) {
             outArg = v;
         })), outArg];
         if (matchValue[0]) {
-            const x = matchValue[1];
-            return new FSharpResult$2(0, toUniversalTime(x));
+            return new FSharpResult$2(0, toUniversalTime(matchValue[1]));
         }
         else {
             return new FSharpResult$2(1, [path, new ErrorReason(0, "a datetime", value_1)]);
@@ -500,8 +394,7 @@ export function datetimeOffset(path, value_1) {
             outArg = v;
         })), outArg];
         if (matchValue[0]) {
-            const x = matchValue[1];
-            return new FSharpResult$2(0, x);
+            return new FSharpResult$2(0, matchValue[1]);
         }
         else {
             return new FSharpResult$2(1, [path, new ErrorReason(0, "a datetimeoffset", value_1)]);
@@ -520,8 +413,7 @@ export function timespan(path, value_1) {
             outArg = v;
         })), outArg];
         if (matchValue[0]) {
-            const x = matchValue[1];
-            return new FSharpResult$2(0, x);
+            return new FSharpResult$2(0, matchValue[1]);
         }
         else {
             return new FSharpResult$2(1, [path, new ErrorReason(0, "a timespan", value_1)]);
@@ -539,16 +431,14 @@ function decodeMaybeNull(path, decoder, value_1) {
             return new FSharpResult$2(0, void 0);
         }
         else if (matchValue.tag === 1) {
-            const er = matchValue.fields[0];
-            return new FSharpResult$2(1, er);
+            return new FSharpResult$2(1, matchValue.fields[0]);
         }
         else {
             throw (new Error("Match failure"));
         }
     }
     else {
-        const v = matchValue.fields[0];
-        return new FSharpResult$2(0, some(v));
+        return new FSharpResult$2(0, some(matchValue.fields[0]));
     }
 }
 
@@ -568,9 +458,7 @@ export function optional(fieldName, decoder, path, value_1) {
 }
 
 function badPathError(fieldNames, currentPath, value_1) {
-    const currentPath_1 = defaultArg(currentPath, join(".", cons("$", fieldNames)));
-    const msg = ("an object with path `" + join(".", fieldNames)) + "`";
-    return new FSharpResult$2(1, [currentPath_1, new ErrorReason(4, msg, value_1, defaultArg(tryLast(fieldNames), ""))]);
+    return new FSharpResult$2(1, [defaultArg(currentPath, join(".", cons("$", fieldNames))), new ErrorReason(4, ("an object with path `" + join(".", fieldNames)) + "`", value_1, defaultArg(tryLast(fieldNames), ""))]);
 }
 
 export function optionalAt(fieldNames, decoder, firstPath, firstValue) {
@@ -578,38 +466,19 @@ export function optionalAt(fieldNames, decoder, firstPath, firstValue) {
         const curPath = tupledArg[0];
         const curValue = tupledArg[1];
         const res = tupledArg[2];
-        return (field_1) => {
-            if (res == null) {
-                if (curValue == null) {
-                    return [curPath, curValue, new FSharpResult$2(0, void 0)];
-                }
-                else if (curValue === null ? false : (Object.getPrototypeOf(curValue || false) === Object.prototype)) {
-                    const curValue_1 = curValue[field_1];
-                    return [(curPath + ".") + field_1, curValue_1, void 0];
-                }
-                else {
-                    const res_1 = new FSharpResult$2(1, [curPath, new ErrorReason(2, "an object", curValue)]);
-                    return [curPath, curValue, res_1];
-                }
-            }
-            else {
-                return [curPath, curValue, res];
-            }
-        };
+        return (field_1) => ((res == null) ? ((curValue == null) ? [curPath, curValue, new FSharpResult$2(0, void 0)] : ((curValue === null ? false : (Object.getPrototypeOf(curValue || false) === Object.prototype)) ? [(curPath + ".") + field_1, curValue[field_1], void 0] : [curPath, curValue, new FSharpResult$2(1, [curPath, new ErrorReason(2, "an object", curValue)])])) : [curPath, curValue, res]);
     }), [firstPath, firstValue, void 0], fieldNames);
     if (_arg1[2] == null) {
         const lastValue = _arg1[1];
-        const lastPath = _arg1[0];
         if (Helpers_isUndefined(lastValue)) {
             return new FSharpResult$2(0, void 0);
         }
         else {
-            return decodeMaybeNull(lastPath, decoder, lastValue);
+            return decodeMaybeNull(_arg1[0], decoder, lastValue);
         }
     }
     else {
-        const res_2 = _arg1[2];
-        return res_2;
+        return _arg1[2];
     }
 }
 
@@ -636,22 +505,14 @@ export function at(fieldNames, decoder, firstPath, firstValue) {
         return (field_1) => {
             if (res == null) {
                 if (curValue == null) {
-                    const res_1 = badPathError(fieldNames, curPath, firstValue);
-                    return [curPath, curValue, res_1];
+                    return [curPath, curValue, badPathError(fieldNames, curPath, firstValue)];
                 }
                 else if (curValue === null ? false : (Object.getPrototypeOf(curValue || false) === Object.prototype)) {
                     const curValue_1 = curValue[field_1];
-                    if (Helpers_isUndefined(curValue_1)) {
-                        const res_2 = badPathError(fieldNames, void 0, firstValue);
-                        return [curPath, curValue_1, res_2];
-                    }
-                    else {
-                        return [(curPath + ".") + field_1, curValue_1, void 0];
-                    }
+                    return Helpers_isUndefined(curValue_1) ? [curPath, curValue_1, badPathError(fieldNames, void 0, firstValue)] : [(curPath + ".") + field_1, curValue_1, void 0];
                 }
                 else {
-                    const res_3 = new FSharpResult$2(1, [curPath, new ErrorReason(2, "an object", curValue)]);
-                    return [curPath, curValue, res_3];
+                    return [curPath, curValue, new FSharpResult$2(1, [curPath, new ErrorReason(2, "an object", curValue)])];
                 }
             }
             else {
@@ -660,13 +521,10 @@ export function at(fieldNames, decoder, firstPath, firstValue) {
         };
     }), [firstPath, firstValue, void 0], fieldNames);
     if (_arg1[2] == null) {
-        const lastValue = _arg1[1];
-        const lastPath = _arg1[0];
-        return decoder(lastPath, lastValue);
+        return decoder(_arg1[0], _arg1[1]);
     }
     else {
-        const res_4 = _arg1[2];
-        return res_4;
+        return _arg1[2];
     }
 }
 
@@ -679,8 +537,7 @@ export function index(requestedIndex, decoder, path, value_1) {
             return decoder(currentPath, vArray[requestedIndex]);
         }
         else {
-            const msg = ((("a longer array. Need index `" + int32ToString(requestedIndex)) + "` but there are only `") + (copyOfStruct = (vArray.length | 0), int32ToString(copyOfStruct))) + "` entries";
-            return new FSharpResult$2(1, [currentPath, new ErrorReason(5, msg, value_1)]);
+            return new FSharpResult$2(1, [currentPath, new ErrorReason(5, ((("a longer array. Need index `" + int32ToString(requestedIndex)) + "` but there are only `") + (copyOfStruct = vArray.length, int32ToString(copyOfStruct))) + "` entries", value_1)]);
         }
     }
     else {
@@ -700,25 +557,21 @@ export function option(decoder, path, value_1) {
 export function list(decoder, path, value_1) {
     if (Array.isArray(value_1)) {
         let i = -1;
-        const tokens = value_1;
         return Result_Map((list_1) => reverse(list_1), fold_1((acc, value_2) => {
-            i = (i + 1);
+            i = ((i + 1) | 0);
             if (acc.tag === 0) {
-                const acc_1 = acc.fields[0];
                 const matchValue = decoder(((path + ".[") + int32ToString(i)) + "]", value_2);
                 if (matchValue.tag === 0) {
-                    const value_3 = matchValue.fields[0];
-                    return new FSharpResult$2(0, cons(value_3, acc_1));
+                    return new FSharpResult$2(0, cons(matchValue.fields[0], acc.fields[0]));
                 }
                 else {
-                    const er = matchValue.fields[0];
-                    return new FSharpResult$2(1, er);
+                    return new FSharpResult$2(1, matchValue.fields[0]);
                 }
             }
             else {
                 return acc;
             }
-        }, new FSharpResult$2(0, empty()), tokens));
+        }, new FSharpResult$2(0, empty()), value_1));
     }
     else {
         return new FSharpResult$2(1, [path, new ErrorReason(0, "a list", value_1)]);
@@ -728,25 +581,21 @@ export function list(decoder, path, value_1) {
 export function seq(decoder, path, value_1) {
     if (Array.isArray(value_1)) {
         let i = -1;
-        const tokens = value_1;
         return Result_Map((source) => reverse_1(source), fold_1((acc, value_2) => {
-            i = (i + 1);
+            i = ((i + 1) | 0);
             if (acc.tag === 0) {
-                const acc_1 = acc.fields[0];
                 const matchValue = decoder(((path + ".[") + int32ToString(i)) + "]", value_2);
                 if (matchValue.tag === 0) {
-                    const value_3 = matchValue.fields[0];
-                    return new FSharpResult$2(0, append([value_3], acc_1));
+                    return new FSharpResult$2(0, append([matchValue.fields[0]], acc.fields[0]));
                 }
                 else {
-                    const er = matchValue.fields[0];
-                    return new FSharpResult$2(1, er);
+                    return new FSharpResult$2(1, matchValue.fields[0]);
                 }
             }
             else {
                 return acc;
             }
-        }, new FSharpResult$2(0, []), tokens));
+        }, new FSharpResult$2(0, []), value_1));
     }
     else {
         return new FSharpResult$2(1, [path, new ErrorReason(0, "a seq", value_1)]);
@@ -757,26 +606,23 @@ export function array(decoder, path, value_1) {
     if (Array.isArray(value_1)) {
         let i = -1;
         const tokens = value_1;
-        const arr = fill(new Array(tokens.length), 0, tokens.length, null);
         return fold_1((acc, value_2) => {
-            i = (i + 1);
+            i = ((i + 1) | 0);
             if (acc.tag === 0) {
                 const acc_1 = acc.fields[0];
                 const matchValue = decoder(((path + ".[") + int32ToString(i)) + "]", value_2);
                 if (matchValue.tag === 0) {
-                    const value_3 = matchValue.fields[0];
-                    acc_1[i] = value_3;
+                    acc_1[i] = matchValue.fields[0];
                     return new FSharpResult$2(0, acc_1);
                 }
                 else {
-                    const er = matchValue.fields[0];
-                    return new FSharpResult$2(1, er);
+                    return new FSharpResult$2(1, matchValue.fields[0]);
                 }
             }
             else {
                 return acc;
             }
-        }, new FSharpResult$2(0, arr), tokens);
+        }, new FSharpResult$2(0, fill(new Array(tokens.length), 0, tokens.length, null)), tokens);
     }
     else {
         return new FSharpResult$2(1, [path, new ErrorReason(0, "an array", value_1)]);
@@ -795,28 +641,23 @@ export function keys(path, value_1) {
 export function keyValuePairs(decoder, path, value_1) {
     const matchValue = keys(path, value_1);
     if (matchValue.tag === 1) {
-        const e = matchValue.fields[0];
-        return new FSharpResult$2(1, e);
+        return new FSharpResult$2(1, matchValue.fields[0]);
     }
     else {
-        const objectKeys = matchValue.fields[0];
         return Result_Map((list_2) => reverse(list_2), fold((acc, prop) => {
             if (acc.tag === 0) {
-                const acc_1 = acc.fields[0];
                 const matchValue_1 = decoder(path, value_1[prop]);
                 if (matchValue_1.tag === 0) {
-                    const value_2 = matchValue_1.fields[0];
-                    return new FSharpResult$2(0, cons([prop, value_2], acc_1));
+                    return new FSharpResult$2(0, cons([prop, matchValue_1.fields[0]], acc.fields[0]));
                 }
                 else {
-                    const er = matchValue_1.fields[0];
-                    return new FSharpResult$2(1, er);
+                    return new FSharpResult$2(1, matchValue_1.fields[0]);
                 }
             }
             else {
                 return acc;
             }
-        }, new FSharpResult$2(0, empty()), objectKeys));
+        }, new FSharpResult$2(0, empty()), matchValue.fields[0]));
     }
 }
 
@@ -829,18 +670,14 @@ export function oneOf(decoders, path, value_1) {
                 return new FSharpResult$2(1, [path, new ErrorReason(7, errors)]);
             }
             else {
-                const tail = tail_1(decoders_1);
-                const head = head_1(decoders_1);
-                const matchValue = fromValue(path, uncurry(2, head), value_1);
+                const matchValue = fromValue(path, uncurry(2, head_1(decoders_1)), value_1);
                 if (matchValue.tag === 1) {
-                    const error = matchValue.fields[0];
-                    decoders_1_mut = tail;
-                    errors_mut = append_1(errors, singleton(error));
+                    decoders_1_mut = tail_1(decoders_1);
+                    errors_mut = append_1(errors, singleton(matchValue.fields[0]));
                     continue runner;
                 }
                 else {
-                    const v = matchValue.fields[0];
-                    return new FSharpResult$2(0, v);
+                    return new FSharpResult$2(0, matchValue.fields[0]);
                 }
             }
             break;
@@ -873,12 +710,10 @@ export function fail(msg, path, _arg1) {
 export function andThen(cb, decoder, path, value_1) {
     const matchValue = decoder(path, value_1);
     if (matchValue.tag === 0) {
-        const result = matchValue.fields[0];
-        return cb(result, path, value_1);
+        return cb(matchValue.fields[0], path, value_1);
     }
     else {
-        const error = matchValue.fields[0];
-        return new FSharpResult$2(1, error);
+        return new FSharpResult$2(1, matchValue.fields[0]);
     }
 }
 
@@ -891,17 +726,13 @@ export function all(decoders, path, value_1) {
                 return new FSharpResult$2(0, values);
             }
             else {
-                const tail = tail_1(decoders_1);
-                const decoder = head_1(decoders_1);
-                const matchValue = decoder(path)(value_1);
+                const matchValue = head_1(decoders_1)(path)(value_1);
                 if (matchValue.tag === 1) {
-                    const error = matchValue.fields[0];
-                    return new FSharpResult$2(1, error);
+                    return new FSharpResult$2(1, matchValue.fields[0]);
                 }
                 else {
-                    const value_2 = matchValue.fields[0];
-                    decoders_1_mut = tail;
-                    values_mut = append_1(values, singleton(value_2));
+                    decoders_1_mut = tail_1(decoders_1);
+                    values_mut = append_1(values, singleton(matchValue.fields[0]));
                     continue runner;
                 }
             }
@@ -914,12 +745,10 @@ export function all(decoders, path, value_1) {
 export function map(ctor, d1, path, value_1) {
     const matchValue = d1(path, value_1);
     if (matchValue.tag === 1) {
-        const er = matchValue.fields[0];
-        return new FSharpResult$2(1, er);
+        return new FSharpResult$2(1, matchValue.fields[0]);
     }
     else {
-        const v1 = matchValue.fields[0];
-        return new FSharpResult$2(0, ctor(v1));
+        return new FSharpResult$2(0, ctor(matchValue.fields[0]));
     }
 }
 
@@ -927,19 +756,15 @@ export function map2(ctor, d1, d2, path, value_1) {
     const matchValue = [d1(path, value_1), d2(path, value_1)];
     const copyOfStruct = matchValue[0];
     if (copyOfStruct.tag === 1) {
-        const er = copyOfStruct.fields[0];
-        return new FSharpResult$2(1, er);
+        return new FSharpResult$2(1, copyOfStruct.fields[0]);
     }
     else {
         const copyOfStruct_1 = matchValue[1];
         if (copyOfStruct_1.tag === 1) {
-            const er_1 = copyOfStruct_1.fields[0];
-            return new FSharpResult$2(1, er_1);
+            return new FSharpResult$2(1, copyOfStruct_1.fields[0]);
         }
         else {
-            const v1 = copyOfStruct.fields[0];
-            const v2 = copyOfStruct_1.fields[0];
-            return new FSharpResult$2(0, ctor(v1, v2));
+            return new FSharpResult$2(0, ctor(copyOfStruct.fields[0], copyOfStruct_1.fields[0]));
         }
     }
 }
@@ -948,26 +773,20 @@ export function map3(ctor, d1, d2, d3, path, value_1) {
     const matchValue = [d1(path, value_1), d2(path, value_1), d3(path, value_1)];
     const copyOfStruct = matchValue[0];
     if (copyOfStruct.tag === 1) {
-        const er = copyOfStruct.fields[0];
-        return new FSharpResult$2(1, er);
+        return new FSharpResult$2(1, copyOfStruct.fields[0]);
     }
     else {
         const copyOfStruct_1 = matchValue[1];
         if (copyOfStruct_1.tag === 1) {
-            const er_1 = copyOfStruct_1.fields[0];
-            return new FSharpResult$2(1, er_1);
+            return new FSharpResult$2(1, copyOfStruct_1.fields[0]);
         }
         else {
             const copyOfStruct_2 = matchValue[2];
             if (copyOfStruct_2.tag === 1) {
-                const er_2 = copyOfStruct_2.fields[0];
-                return new FSharpResult$2(1, er_2);
+                return new FSharpResult$2(1, copyOfStruct_2.fields[0]);
             }
             else {
-                const v1 = copyOfStruct.fields[0];
-                const v2 = copyOfStruct_1.fields[0];
-                const v3 = copyOfStruct_2.fields[0];
-                return new FSharpResult$2(0, ctor(v1, v2, v3));
+                return new FSharpResult$2(0, ctor(copyOfStruct.fields[0], copyOfStruct_1.fields[0], copyOfStruct_2.fields[0]));
             }
         }
     }
@@ -977,33 +796,25 @@ export function map4(ctor, d1, d2, d3, d4, path, value_1) {
     const matchValue = [d1(path, value_1), d2(path, value_1), d3(path, value_1), d4(path, value_1)];
     const copyOfStruct = matchValue[0];
     if (copyOfStruct.tag === 1) {
-        const er = copyOfStruct.fields[0];
-        return new FSharpResult$2(1, er);
+        return new FSharpResult$2(1, copyOfStruct.fields[0]);
     }
     else {
         const copyOfStruct_1 = matchValue[1];
         if (copyOfStruct_1.tag === 1) {
-            const er_1 = copyOfStruct_1.fields[0];
-            return new FSharpResult$2(1, er_1);
+            return new FSharpResult$2(1, copyOfStruct_1.fields[0]);
         }
         else {
             const copyOfStruct_2 = matchValue[2];
             if (copyOfStruct_2.tag === 1) {
-                const er_2 = copyOfStruct_2.fields[0];
-                return new FSharpResult$2(1, er_2);
+                return new FSharpResult$2(1, copyOfStruct_2.fields[0]);
             }
             else {
                 const copyOfStruct_3 = matchValue[3];
                 if (copyOfStruct_3.tag === 1) {
-                    const er_3 = copyOfStruct_3.fields[0];
-                    return new FSharpResult$2(1, er_3);
+                    return new FSharpResult$2(1, copyOfStruct_3.fields[0]);
                 }
                 else {
-                    const v1 = copyOfStruct.fields[0];
-                    const v2 = copyOfStruct_1.fields[0];
-                    const v3 = copyOfStruct_2.fields[0];
-                    const v4 = copyOfStruct_3.fields[0];
-                    return new FSharpResult$2(0, ctor(v1, v2, v3, v4));
+                    return new FSharpResult$2(0, ctor(copyOfStruct.fields[0], copyOfStruct_1.fields[0], copyOfStruct_2.fields[0], copyOfStruct_3.fields[0]));
                 }
             }
         }
@@ -1014,40 +825,30 @@ export function map5(ctor, d1, d2, d3, d4, d5, path, value_1) {
     const matchValue = [d1(path, value_1), d2(path, value_1), d3(path, value_1), d4(path, value_1), d5(path, value_1)];
     const copyOfStruct = matchValue[0];
     if (copyOfStruct.tag === 1) {
-        const er = copyOfStruct.fields[0];
-        return new FSharpResult$2(1, er);
+        return new FSharpResult$2(1, copyOfStruct.fields[0]);
     }
     else {
         const copyOfStruct_1 = matchValue[1];
         if (copyOfStruct_1.tag === 1) {
-            const er_1 = copyOfStruct_1.fields[0];
-            return new FSharpResult$2(1, er_1);
+            return new FSharpResult$2(1, copyOfStruct_1.fields[0]);
         }
         else {
             const copyOfStruct_2 = matchValue[2];
             if (copyOfStruct_2.tag === 1) {
-                const er_2 = copyOfStruct_2.fields[0];
-                return new FSharpResult$2(1, er_2);
+                return new FSharpResult$2(1, copyOfStruct_2.fields[0]);
             }
             else {
                 const copyOfStruct_3 = matchValue[3];
                 if (copyOfStruct_3.tag === 1) {
-                    const er_3 = copyOfStruct_3.fields[0];
-                    return new FSharpResult$2(1, er_3);
+                    return new FSharpResult$2(1, copyOfStruct_3.fields[0]);
                 }
                 else {
                     const copyOfStruct_4 = matchValue[4];
                     if (copyOfStruct_4.tag === 1) {
-                        const er_4 = copyOfStruct_4.fields[0];
-                        return new FSharpResult$2(1, er_4);
+                        return new FSharpResult$2(1, copyOfStruct_4.fields[0]);
                     }
                     else {
-                        const v1 = copyOfStruct.fields[0];
-                        const v2 = copyOfStruct_1.fields[0];
-                        const v3 = copyOfStruct_2.fields[0];
-                        const v4 = copyOfStruct_3.fields[0];
-                        const v5 = copyOfStruct_4.fields[0];
-                        return new FSharpResult$2(0, ctor(v1, v2, v3, v4, v5));
+                        return new FSharpResult$2(0, ctor(copyOfStruct.fields[0], copyOfStruct_1.fields[0], copyOfStruct_2.fields[0], copyOfStruct_3.fields[0], copyOfStruct_4.fields[0]));
                     }
                 }
             }
@@ -1059,47 +860,35 @@ export function map6(ctor, d1, d2, d3, d4, d5, d6, path, value_1) {
     const matchValue = [d1(path, value_1), d2(path, value_1), d3(path, value_1), d4(path, value_1), d5(path, value_1), d6(path, value_1)];
     const copyOfStruct = matchValue[0];
     if (copyOfStruct.tag === 1) {
-        const er = copyOfStruct.fields[0];
-        return new FSharpResult$2(1, er);
+        return new FSharpResult$2(1, copyOfStruct.fields[0]);
     }
     else {
         const copyOfStruct_1 = matchValue[1];
         if (copyOfStruct_1.tag === 1) {
-            const er_1 = copyOfStruct_1.fields[0];
-            return new FSharpResult$2(1, er_1);
+            return new FSharpResult$2(1, copyOfStruct_1.fields[0]);
         }
         else {
             const copyOfStruct_2 = matchValue[2];
             if (copyOfStruct_2.tag === 1) {
-                const er_2 = copyOfStruct_2.fields[0];
-                return new FSharpResult$2(1, er_2);
+                return new FSharpResult$2(1, copyOfStruct_2.fields[0]);
             }
             else {
                 const copyOfStruct_3 = matchValue[3];
                 if (copyOfStruct_3.tag === 1) {
-                    const er_3 = copyOfStruct_3.fields[0];
-                    return new FSharpResult$2(1, er_3);
+                    return new FSharpResult$2(1, copyOfStruct_3.fields[0]);
                 }
                 else {
                     const copyOfStruct_4 = matchValue[4];
                     if (copyOfStruct_4.tag === 1) {
-                        const er_4 = copyOfStruct_4.fields[0];
-                        return new FSharpResult$2(1, er_4);
+                        return new FSharpResult$2(1, copyOfStruct_4.fields[0]);
                     }
                     else {
                         const copyOfStruct_5 = matchValue[5];
                         if (copyOfStruct_5.tag === 1) {
-                            const er_5 = copyOfStruct_5.fields[0];
-                            return new FSharpResult$2(1, er_5);
+                            return new FSharpResult$2(1, copyOfStruct_5.fields[0]);
                         }
                         else {
-                            const v1 = copyOfStruct.fields[0];
-                            const v2 = copyOfStruct_1.fields[0];
-                            const v3 = copyOfStruct_2.fields[0];
-                            const v4 = copyOfStruct_3.fields[0];
-                            const v5 = copyOfStruct_4.fields[0];
-                            const v6 = copyOfStruct_5.fields[0];
-                            return new FSharpResult$2(0, ctor(v1, v2, v3, v4, v5, v6));
+                            return new FSharpResult$2(0, ctor(copyOfStruct.fields[0], copyOfStruct_1.fields[0], copyOfStruct_2.fields[0], copyOfStruct_3.fields[0], copyOfStruct_4.fields[0], copyOfStruct_5.fields[0]));
                         }
                     }
                 }
@@ -1112,54 +901,40 @@ export function map7(ctor, d1, d2, d3, d4, d5, d6, d7, path, value_1) {
     const matchValue = [d1(path, value_1), d2(path, value_1), d3(path, value_1), d4(path, value_1), d5(path, value_1), d6(path, value_1), d7(path, value_1)];
     const copyOfStruct = matchValue[0];
     if (copyOfStruct.tag === 1) {
-        const er = copyOfStruct.fields[0];
-        return new FSharpResult$2(1, er);
+        return new FSharpResult$2(1, copyOfStruct.fields[0]);
     }
     else {
         const copyOfStruct_1 = matchValue[1];
         if (copyOfStruct_1.tag === 1) {
-            const er_1 = copyOfStruct_1.fields[0];
-            return new FSharpResult$2(1, er_1);
+            return new FSharpResult$2(1, copyOfStruct_1.fields[0]);
         }
         else {
             const copyOfStruct_2 = matchValue[2];
             if (copyOfStruct_2.tag === 1) {
-                const er_2 = copyOfStruct_2.fields[0];
-                return new FSharpResult$2(1, er_2);
+                return new FSharpResult$2(1, copyOfStruct_2.fields[0]);
             }
             else {
                 const copyOfStruct_3 = matchValue[3];
                 if (copyOfStruct_3.tag === 1) {
-                    const er_3 = copyOfStruct_3.fields[0];
-                    return new FSharpResult$2(1, er_3);
+                    return new FSharpResult$2(1, copyOfStruct_3.fields[0]);
                 }
                 else {
                     const copyOfStruct_4 = matchValue[4];
                     if (copyOfStruct_4.tag === 1) {
-                        const er_4 = copyOfStruct_4.fields[0];
-                        return new FSharpResult$2(1, er_4);
+                        return new FSharpResult$2(1, copyOfStruct_4.fields[0]);
                     }
                     else {
                         const copyOfStruct_5 = matchValue[5];
                         if (copyOfStruct_5.tag === 1) {
-                            const er_5 = copyOfStruct_5.fields[0];
-                            return new FSharpResult$2(1, er_5);
+                            return new FSharpResult$2(1, copyOfStruct_5.fields[0]);
                         }
                         else {
                             const copyOfStruct_6 = matchValue[6];
                             if (copyOfStruct_6.tag === 1) {
-                                const er_6 = copyOfStruct_6.fields[0];
-                                return new FSharpResult$2(1, er_6);
+                                return new FSharpResult$2(1, copyOfStruct_6.fields[0]);
                             }
                             else {
-                                const v1 = copyOfStruct.fields[0];
-                                const v2 = copyOfStruct_1.fields[0];
-                                const v3 = copyOfStruct_2.fields[0];
-                                const v4 = copyOfStruct_3.fields[0];
-                                const v5 = copyOfStruct_4.fields[0];
-                                const v6 = copyOfStruct_5.fields[0];
-                                const v7 = copyOfStruct_6.fields[0];
-                                return new FSharpResult$2(0, ctor(v1, v2, v3, v4, v5, v6, v7));
+                                return new FSharpResult$2(0, ctor(copyOfStruct.fields[0], copyOfStruct_1.fields[0], copyOfStruct_2.fields[0], copyOfStruct_3.fields[0], copyOfStruct_4.fields[0], copyOfStruct_5.fields[0], copyOfStruct_6.fields[0]));
                             }
                         }
                     }
@@ -1173,61 +948,45 @@ export function map8(ctor, d1, d2, d3, d4, d5, d6, d7, d8, path, value_1) {
     const matchValue = [d1(path, value_1), d2(path, value_1), d3(path, value_1), d4(path, value_1), d5(path, value_1), d6(path, value_1), d7(path, value_1), d8(path, value_1)];
     const copyOfStruct = matchValue[0];
     if (copyOfStruct.tag === 1) {
-        const er = copyOfStruct.fields[0];
-        return new FSharpResult$2(1, er);
+        return new FSharpResult$2(1, copyOfStruct.fields[0]);
     }
     else {
         const copyOfStruct_1 = matchValue[1];
         if (copyOfStruct_1.tag === 1) {
-            const er_1 = copyOfStruct_1.fields[0];
-            return new FSharpResult$2(1, er_1);
+            return new FSharpResult$2(1, copyOfStruct_1.fields[0]);
         }
         else {
             const copyOfStruct_2 = matchValue[2];
             if (copyOfStruct_2.tag === 1) {
-                const er_2 = copyOfStruct_2.fields[0];
-                return new FSharpResult$2(1, er_2);
+                return new FSharpResult$2(1, copyOfStruct_2.fields[0]);
             }
             else {
                 const copyOfStruct_3 = matchValue[3];
                 if (copyOfStruct_3.tag === 1) {
-                    const er_3 = copyOfStruct_3.fields[0];
-                    return new FSharpResult$2(1, er_3);
+                    return new FSharpResult$2(1, copyOfStruct_3.fields[0]);
                 }
                 else {
                     const copyOfStruct_4 = matchValue[4];
                     if (copyOfStruct_4.tag === 1) {
-                        const er_4 = copyOfStruct_4.fields[0];
-                        return new FSharpResult$2(1, er_4);
+                        return new FSharpResult$2(1, copyOfStruct_4.fields[0]);
                     }
                     else {
                         const copyOfStruct_5 = matchValue[5];
                         if (copyOfStruct_5.tag === 1) {
-                            const er_5 = copyOfStruct_5.fields[0];
-                            return new FSharpResult$2(1, er_5);
+                            return new FSharpResult$2(1, copyOfStruct_5.fields[0]);
                         }
                         else {
                             const copyOfStruct_6 = matchValue[6];
                             if (copyOfStruct_6.tag === 1) {
-                                const er_6 = copyOfStruct_6.fields[0];
-                                return new FSharpResult$2(1, er_6);
+                                return new FSharpResult$2(1, copyOfStruct_6.fields[0]);
                             }
                             else {
                                 const copyOfStruct_7 = matchValue[7];
                                 if (copyOfStruct_7.tag === 1) {
-                                    const er_7 = copyOfStruct_7.fields[0];
-                                    return new FSharpResult$2(1, er_7);
+                                    return new FSharpResult$2(1, copyOfStruct_7.fields[0]);
                                 }
                                 else {
-                                    const v1 = copyOfStruct.fields[0];
-                                    const v2 = copyOfStruct_1.fields[0];
-                                    const v3 = copyOfStruct_2.fields[0];
-                                    const v4 = copyOfStruct_3.fields[0];
-                                    const v5 = copyOfStruct_4.fields[0];
-                                    const v6 = copyOfStruct_5.fields[0];
-                                    const v7 = copyOfStruct_6.fields[0];
-                                    const v8 = copyOfStruct_7.fields[0];
-                                    return new FSharpResult$2(0, ctor(v1, v2, v3, v4, v5, v6, v7, v8));
+                                    return new FSharpResult$2(0, ctor(copyOfStruct.fields[0], copyOfStruct_1.fields[0], copyOfStruct_2.fields[0], copyOfStruct_3.fields[0], copyOfStruct_4.fields[0], copyOfStruct_5.fields[0], copyOfStruct_6.fields[0], copyOfStruct_7.fields[0]));
                                 }
                             }
                         }
@@ -1248,21 +1007,19 @@ export function dict(decoder) {
 function unwrapWith(errors, path, decoder, value_1) {
     const matchValue = decoder(path, value_1);
     if (matchValue.tag === 1) {
-        const er = matchValue.fields[0];
-        void (errors.push(er));
+        void (errors.push(matchValue.fields[0]));
         return null;
     }
     else {
-        const v = matchValue.fields[0];
-        return v;
+        return matchValue.fields[0];
     }
 }
 
 export class Getters$1 {
     constructor(path, v) {
+        let _this, _this_1;
         this.errors = [];
-        const _this = this;
-        this.required = {
+        this.required = (_this = this, {
             Field(fieldName, decoder) {
                 return unwrapWith(_this.errors, path, (path_1, value_1) => field(fieldName, decoder, path_1, value_1), v);
             },
@@ -1272,9 +1029,8 @@ export class Getters$1 {
             Raw(decoder_4) {
                 return unwrapWith(_this.errors, path, decoder_4, v);
             },
-        };
-        const _this_1 = this;
-        this.optional = {
+        });
+        this.optional = (_this_1 = this, {
             Field(fieldName_1, decoder_5) {
                 return unwrapWith(_this_1.errors, path, (path_2, value_2) => optional(fieldName_1, decoder_5, path_2, value_2), v);
             },
@@ -1334,11 +1090,10 @@ export class Getters$1 {
                     }
                 }
                 else {
-                    const v_1 = matchValue.fields[0];
-                    return some(v_1);
+                    return some(matchValue.fields[0]);
                 }
             },
-        };
+        });
     }
     get Required() {
         const __ = this;
@@ -1367,14 +1122,12 @@ export function object(builder, path, v) {
     const result = builder(getters);
     const matchValue = Getters$1__get_Errors(getters);
     if (!isEmpty(matchValue)) {
-        const fst = head_1(matchValue);
         const errors = matchValue;
         if (length(errors) > 1) {
-            const errors_1 = map_1((tupledArg) => errorToString(tupledArg[0], tupledArg[1]), errors);
-            return new FSharpResult$2(1, [path, new ErrorReason(7, errors_1)]);
+            return new FSharpResult$2(1, [path, new ErrorReason(7, map_1((tupledArg) => errorToString(tupledArg[0], tupledArg[1]), errors))]);
         }
         else {
-            return new FSharpResult$2(1, fst);
+            return new FSharpResult$2(1, head_1(matchValue));
         }
     }
     else {
@@ -1588,16 +1341,7 @@ function autoObject(decoderInfos, path, value_1) {
     else {
         return foldBack(uncurry(2, (tupledArg) => {
             const name = tupledArg[0];
-            const decoder = tupledArg[1];
-            return (acc) => {
-                if (acc.tag === 0) {
-                    const result = acc.fields[0];
-                    return Result_Map((v) => cons(v, result), decoder((path + ".") + name)(value_1[name]));
-                }
-                else {
-                    return acc;
-                }
-            };
+            return (acc) => ((acc.tag === 0) ? Result_Map((v) => cons(v, acc.fields[0]), tupledArg[1]((path + ".") + name)(value_1[name])) : acc);
         }), decoderInfos, new FSharpResult$2(0, empty()));
     }
 }
@@ -1609,23 +1353,18 @@ function autoObject2(keyDecoder, valueDecoder, path, value_1) {
     else {
         return fold_2((acc, name) => {
             if (acc.tag === 0) {
-                const acc_1 = acc.fields[0];
                 const matchValue = keyDecoder(path, name);
                 if (matchValue.tag === 0) {
-                    const k = matchValue.fields[0];
                     const _arg1 = valueDecoder((path + ".") + name, value_1[name]);
                     if (_arg1.tag === 0) {
-                        const v = _arg1.fields[0];
-                        return new FSharpResult$2(0, cons([k, v], acc_1));
+                        return new FSharpResult$2(0, cons([matchValue.fields[0], _arg1.fields[0]], acc.fields[0]));
                     }
                     else {
-                        const er_1 = _arg1.fields[0];
-                        return new FSharpResult$2(1, er_1);
+                        return new FSharpResult$2(1, _arg1.fields[0]);
                     }
                 }
                 else {
-                    const er = matchValue.fields[0];
-                    return new FSharpResult$2(1, er);
+                    return new FSharpResult$2(1, matchValue.fields[0]);
                 }
             }
             else {
@@ -1641,15 +1380,7 @@ function mixedArray(msg, decoders, path, values) {
         return new FSharpResult$2(1, [path, new ErrorReason(6, (arg30 = (values.length | 0), (arg10 = (decoders.length | 0), toText(printf("Expected %i %s but got %i"))(arg10)(msg)(arg30))))]);
     }
     else {
-        return foldBack2(uncurry(3, mapCurriedArgs((value_1) => ((decoder) => ((acc) => {
-            if (acc.tag === 0) {
-                const result = acc.fields[0];
-                return Result_Map((v) => cons(v, result), decoder(path, value_1));
-            }
-            else {
-                return acc;
-            }
-        })), [0, [0, 2], 0])), values, decoders, new FSharpResult$2(0, empty()));
+        return foldBack2(uncurry(3, mapCurriedArgs((value_1) => ((decoder) => ((acc) => ((acc.tag === 0) ? Result_Map((v) => cons(v, acc.fields[0]), decoder(path, value_1)) : acc))), [0, [0, 2], 0])), values, decoders, new FSharpResult$2(0, empty()));
     }
 }
 
@@ -1661,8 +1392,7 @@ function makeUnion(extra, caseStrategy, t, name, path, values) {
             return new FSharpResult$2(0, makeUnion_1(uci_1, [], true));
         }
         else {
-            const decoders = map_2((fi) => autoDecoder(extra, caseStrategy, false, fi[1]), getUnionCaseFields(uci_1));
-            return Result_Map((values_1) => makeUnion_1(uci_1, toArray(values_1), true), mixedArray("union fields", decoders, path, values));
+            return Result_Map((values_1) => makeUnion_1(uci_1, toArray(values_1), true), mixedArray("union fields", map_2((fi) => autoDecoder(extra, caseStrategy, false, fi[1]), getUnionCaseFields(uci_1)), path, values));
         }
     }
     else {
@@ -1675,22 +1405,17 @@ function autoDecodeRecordsAndUnions(extra, caseStrategy, isOptional, t) {
     const extra_1 = add(fullName(t), decoderRef, extra);
     let decoder;
     if (isRecord(t, true)) {
-        const decoders = map_2((fi) => {
-            const name = Util_Casing_convert(caseStrategy, name_3(fi));
-            return [name, autoDecoder(extra_1, caseStrategy, false, fi[1])];
-        }, getRecordElements(t, true));
+        const decoders = map_2((fi) => [Util_Casing_convert(caseStrategy, name_3(fi)), autoDecoder(extra_1, caseStrategy, false, fi[1])], getRecordElements(t, true));
         decoder = ((path) => ((value_1) => Result_Map((xs) => makeRecord(t, toArray(xs), true), autoObject(decoders, path, value_1))));
     }
     else if (isUnion(t, true)) {
         decoder = ((path_1) => ((value_2) => {
             if ((typeof value_2) === "string") {
-                const name_1 = value_2;
-                return makeUnion(extra_1, caseStrategy, t, name_1, path_1, []);
+                return makeUnion(extra_1, caseStrategy, t, value_2, path_1, []);
             }
             else if (Array.isArray(value_2)) {
                 const values = value_2;
-                const name_2 = values[0];
-                return makeUnion(extra_1, caseStrategy, t, name_2, path_1, values.slice(1, values.length));
+                return makeUnion(extra_1, caseStrategy, t, values[0], path_1, values.slice(1, values.length));
             }
             else {
                 return new FSharpResult$2(1, [path_1, new ErrorReason(0, "a string or array", value_2)]);
@@ -1728,11 +1453,10 @@ function autoDecoder(extra, caseStrategy, isOptional, t) {
                     const value_5 = value_4;
                     const matchValue_1 = sbyte(path_3)(value_5);
                     if (matchValue_1.tag === 1) {
-                        const msg = matchValue_1.fields[0];
-                        return new FSharpResult$2(1, msg);
+                        return new FSharpResult$2(1, matchValue_1.fields[0]);
                     }
                     else {
-                        const enumValue = matchValue_1.fields[0] | 0;
+                        const enumValue = matchValue_1.fields[0];
                         return contains(enumValue, getEnumValues(t_2), {
                             Equals: (x, y) => (x === y),
                             GetHashCode: (x) => numberHash(x),
@@ -1747,8 +1471,7 @@ function autoDecoder(extra, caseStrategy, isOptional, t) {
                     const value_8 = value_7;
                     const matchValue_2 = byte(path_5)(value_8);
                     if (matchValue_2.tag === 1) {
-                        const msg_1 = matchValue_2.fields[0];
-                        return new FSharpResult$2(1, msg_1);
+                        return new FSharpResult$2(1, matchValue_2.fields[0]);
                     }
                     else {
                         const enumValue_1 = matchValue_2.fields[0];
@@ -1766,11 +1489,10 @@ function autoDecoder(extra, caseStrategy, isOptional, t) {
                     const value_11 = value_10;
                     const matchValue_3 = int16(path_7)(value_11);
                     if (matchValue_3.tag === 1) {
-                        const msg_2 = matchValue_3.fields[0];
-                        return new FSharpResult$2(1, msg_2);
+                        return new FSharpResult$2(1, matchValue_3.fields[0]);
                     }
                     else {
-                        const enumValue_2 = matchValue_3.fields[0] | 0;
+                        const enumValue_2 = matchValue_3.fields[0];
                         return contains(enumValue_2, getEnumValues(t_4), {
                             Equals: (x_2, y_2) => (x_2 === y_2),
                             GetHashCode: (x_2) => numberHash(x_2),
@@ -1785,8 +1507,7 @@ function autoDecoder(extra, caseStrategy, isOptional, t) {
                     const value_14 = value_13;
                     const matchValue_4 = uint16(path_9)(value_14);
                     if (matchValue_4.tag === 1) {
-                        const msg_3 = matchValue_4.fields[0];
-                        return new FSharpResult$2(1, msg_3);
+                        return new FSharpResult$2(1, matchValue_4.fields[0]);
                     }
                     else {
                         const enumValue_3 = matchValue_4.fields[0];
@@ -1804,11 +1525,10 @@ function autoDecoder(extra, caseStrategy, isOptional, t) {
                     const value_17 = value_16;
                     const matchValue_5 = int(path_11)(value_17);
                     if (matchValue_5.tag === 1) {
-                        const msg_4 = matchValue_5.fields[0];
-                        return new FSharpResult$2(1, msg_4);
+                        return new FSharpResult$2(1, matchValue_5.fields[0]);
                     }
                     else {
-                        const enumValue_4 = matchValue_5.fields[0] | 0;
+                        const enumValue_4 = matchValue_5.fields[0];
                         return contains(enumValue_4, getEnumValues(t_6), {
                             Equals: (x_4, y_4) => (x_4 === y_4),
                             GetHashCode: (x_4) => numberHash(x_4),
@@ -1823,8 +1543,7 @@ function autoDecoder(extra, caseStrategy, isOptional, t) {
                     const value_20 = value_19;
                     const matchValue_6 = uint32(path_13)(value_20);
                     if (matchValue_6.tag === 1) {
-                        const msg_5 = matchValue_6.fields[0];
-                        return new FSharpResult$2(1, msg_5);
+                        return new FSharpResult$2(1, matchValue_6.fields[0]);
                     }
                     else {
                         const enumValue_5 = matchValue_6.fields[0];
@@ -1871,14 +1590,7 @@ function autoDecoder(extra, caseStrategy, isOptional, t) {
                     const decoder_16 = autoDecoder(extra, caseStrategy, false, getGenerics(t)[0]);
                     return (path_21) => ((value_29) => {
                         const matchValue_7 = array(uncurry(2, decoder_16), path_21, value_29);
-                        if (matchValue_7.tag === 0) {
-                            const ar_1 = matchValue_7.fields[0];
-                            return new FSharpResult$2(0, toSet(ar_1));
-                        }
-                        else {
-                            const er = matchValue_7.fields[0];
-                            return new FSharpResult$2(1, er);
-                        }
+                        return (matchValue_7.tag === 0) ? (new FSharpResult$2(0, toSet(matchValue_7.fields[0]))) : (new FSharpResult$2(1, matchValue_7.fields[0]));
                     });
                 }
                 else {
@@ -1946,11 +1658,7 @@ function autoDecoder(extra, caseStrategy, isOptional, t) {
 
 function makeExtra(extra) {
     if (extra != null) {
-        const e = extra;
-        return map_3((_arg2, tupledArg) => {
-            const dec = tupledArg[1];
-            return new FSharpRef(dec);
-        }, e.Coders);
+        return map_3((_arg2, tupledArg) => (new FSharpRef(tupledArg[1])), extra.Coders);
     }
     else {
         return empty_1();
@@ -1967,14 +1675,10 @@ export function Auto$reflection() {
 }
 
 export function Auto_generateDecoderCached_7848D058(caseStrategy, extra, resolver) {
+    let y_1, y;
     const t = value_40(resolver).ResolveType();
     const caseStrategy_1 = defaultArg(caseStrategy, new CaseStrategy(0));
-    let key;
-    let y_1;
-    const y = fullName(t);
-    y_1 = (toString_12(caseStrategy_1) + y);
-    key = (defaultArg(map_4((e) => e.Hash, extra), "") + y_1);
-    return Util_Cache$1__GetOrAdd_43981464(Util_CachedDecoders, key, () => autoDecoder(makeExtra(extra), caseStrategy_1, false, t));
+    return Util_Cache$1__GetOrAdd_43981464(Util_CachedDecoders, (y_1 = (y = fullName(t), toString_12(caseStrategy_1) + y), defaultArg(map_4((e) => e.Hash, extra), "") + y_1), () => autoDecoder(makeExtra(extra), caseStrategy_1, false, t));
 }
 
 export function Auto_generateDecoder_7848D058(caseStrategy, extra, resolver) {
@@ -1984,20 +1688,16 @@ export function Auto_generateDecoder_7848D058(caseStrategy, extra, resolver) {
 }
 
 export function Auto_fromString_Z5CB6BD(json, caseStrategy, extra, resolver) {
-    const decoder = Auto_generateDecoder_7848D058(caseStrategy, extra, resolver);
-    return fromString(uncurry(2, decoder), json);
+    return fromString(uncurry(2, Auto_generateDecoder_7848D058(caseStrategy, extra, resolver)), json);
 }
 
 export function Auto_unsafeFromString_Z5CB6BD(json, caseStrategy, extra, resolver) {
-    const decoder = Auto_generateDecoder_7848D058(caseStrategy, extra, resolver);
-    const matchValue = fromString(uncurry(2, decoder), json);
+    const matchValue = fromString(uncurry(2, Auto_generateDecoder_7848D058(caseStrategy, extra, resolver)), json);
     if (matchValue.tag === 1) {
-        const msg = matchValue.fields[0];
-        throw (new Error(msg));
+        throw (new Error(matchValue.fields[0]));
     }
     else {
-        const x = matchValue.fields[0];
-        return x;
+        return matchValue.fields[0];
     }
 }
 

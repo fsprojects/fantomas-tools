@@ -129,15 +129,12 @@ export function mapFold(mapping, state, array, cons) {
         return [[], state];
     }
     else {
-        const len = matchValue | 0;
         let acc = state;
-        const res = Helpers_allocateArrayFromCons(cons, len);
+        const res = Helpers_allocateArrayFromCons(cons, matchValue);
         for (let i = 0; i <= (array.length - 1); i++) {
             const patternInput = mapping(acc, array[i]);
-            const s = patternInput[1];
-            const h = patternInput[0];
-            res[i] = h;
-            acc = s;
+            res[i] = patternInput[0];
+            acc = patternInput[1];
         }
         return [res, acc];
     }
@@ -149,15 +146,12 @@ export function mapFoldBack(mapping, array, state, cons) {
         return [[], state];
     }
     else {
-        const len = matchValue | 0;
         let acc = state;
-        const res = Helpers_allocateArrayFromCons(cons, len);
+        const res = Helpers_allocateArrayFromCons(cons, matchValue);
         for (let i = array.length - 1; i >= 0; i--) {
             const patternInput = mapping(array[i], acc);
-            const s = patternInput[1];
-            const h = patternInput[0];
-            res[i] = h;
-            acc = s;
+            res[i] = patternInput[0];
+            acc = patternInput[1];
         }
         return [res, acc];
     }
@@ -193,14 +187,14 @@ export function concat(arrays, cons) {
             let totalLength = 0;
             for (let idx = 0; idx <= (arrays_1.length - 1); idx++) {
                 const arr_1 = arrays_1[idx];
-                totalLength = (totalLength + arr_1.length);
+                totalLength = ((totalLength + arr_1.length) | 0);
             }
             const result = Helpers_allocateArrayFromCons(cons, totalLength);
             for (let idx_1 = 0; idx_1 <= (arrays_1.length - 1); idx_1++) {
                 const arr_2 = arrays_1[idx_1];
                 for (let j = 0; j <= (arr_2.length - 1); j++) {
                     result[totalIdx] = arr_2[j];
-                    totalIdx = (totalIdx + 1);
+                    totalIdx = ((totalIdx + 1) | 0);
                 }
             }
             return result;
@@ -209,8 +203,7 @@ export function concat(arrays, cons) {
 }
 
 export function collect(mapping, array, cons) {
-    const mapped = map(mapping, array, null);
-    return concat(mapped, cons);
+    return concat(map(mapping, array, null), cons);
 }
 
 export function where(predicate, array) {
@@ -327,7 +320,7 @@ export function skip(count, array, cons) {
 export function skipWhile(predicate, array, cons) {
     let count = 0;
     while ((count < array.length) ? predicate(array[count]) : false) {
-        count = (count + 1);
+        count = ((count + 1) | 0);
     }
     if (count === array.length) {
         return Helpers_allocateArrayFromCons(cons, 0);
@@ -357,7 +350,7 @@ export function take(count, array, cons) {
 export function takeWhile(predicate, array, cons) {
     let count = 0;
     while ((count < array.length) ? predicate(array[count]) : false) {
-        count = (count + 1);
+        count = ((count + 1) | 0);
     }
     if (count === 0) {
         return Helpers_allocateArrayFromCons(cons, 0);
@@ -377,8 +370,23 @@ export function addRangeInPlace(range, array) {
     const enumerator = getEnumerator(range);
     try {
         while (enumerator["System.Collections.IEnumerator.MoveNext"]()) {
+            addInPlace(enumerator["System.Collections.Generic.IEnumerator`1.get_Current"](), array);
+        }
+    }
+    finally {
+        enumerator.Dispose();
+    }
+}
+
+export function insertRangeInPlace(index, range, array) {
+    let index_1;
+    let i = index;
+    const enumerator = getEnumerator(range);
+    try {
+        while (enumerator["System.Collections.IEnumerator.MoveNext"]()) {
             const x = enumerator["System.Collections.Generic.IEnumerator`1.get_Current"]();
-            addInPlace(x, array);
+            void (index_1 = (i | 0), array.splice(index_1, 0, x));
+            i = ((i + 1) | 0);
         }
     }
     finally {
@@ -447,11 +455,11 @@ export function partition(f, source, cons) {
     for (let i = 0; i <= (len - 1); i++) {
         if (f(source[i])) {
             res1[iTrue] = source[i];
-            iTrue = (iTrue + 1);
+            iTrue = ((iTrue + 1) | 0);
         }
         else {
             res2[iFalse] = source[i];
-            iFalse = (iFalse + 1);
+            iFalse = ((iFalse + 1) | 0);
         }
     }
     return [truncate(iTrue, res1), truncate(iFalse, res2)];
@@ -463,8 +471,7 @@ export function find(predicate, array) {
         return indexNotFound();
     }
     else {
-        const res = value_2(matchValue);
-        return res;
+        return value_2(matchValue);
     }
 }
 
@@ -473,23 +480,19 @@ export function tryFind(predicate, array) {
 }
 
 export function findIndex(predicate, array) {
-    let index;
     const matchValue = array.findIndex(predicate);
-    if (index = (matchValue | 0), index > -1) {
-        const index_1 = matchValue | 0;
-        return index_1 | 0;
+    if (matchValue > -1) {
+        return matchValue | 0;
     }
     else {
-        return indexNotFound();
+        return indexNotFound() | 0;
     }
 }
 
 export function tryFindIndex(predicate, array) {
-    let index;
     const matchValue = array.findIndex(predicate);
-    if (index = (matchValue | 0), index > -1) {
-        const index_1 = matchValue | 0;
-        return index_1;
+    if (matchValue > -1) {
+        return matchValue;
     }
     else {
         return void 0;
@@ -507,8 +510,7 @@ export function pick(chooser, array) {
             else {
                 const matchValue = chooser(array[i]);
                 if (matchValue != null) {
-                    const res = value_2(matchValue);
-                    return res;
+                    return value_2(matchValue);
                 }
                 else {
                     i_mut = (i + 1);
@@ -536,8 +538,7 @@ export function tryPick(chooser, array) {
                     continue loop;
                 }
                 else {
-                    const res = matchValue;
-                    return res;
+                    return matchValue;
                 }
             }
             break;
@@ -615,7 +616,7 @@ export function findIndexBack(predicate, array) {
         while (true) {
             const i = i_mut;
             if (i < 0) {
-                return indexNotFound();
+                return indexNotFound() | 0;
             }
             else if (predicate(array[i])) {
                 return i | 0;
@@ -726,8 +727,7 @@ export function permute(f, array) {
         res[j] = x;
         checkFlags[j] = 1;
     }, array);
-    const isValid = checkFlags.every(((y) => (1 === y)));
-    if (!isValid) {
+    if (!(checkFlags.every(((y) => (1 === y))))) {
         throw (new Error("Not a valid permutation"));
     }
     return res;
@@ -819,10 +819,8 @@ export function unzip(array) {
     const res1 = new Array(len);
     const res2 = new Array(len);
     iterateIndexed((i, tupledArg) => {
-        const item1 = tupledArg[0];
-        const item2 = tupledArg[1];
-        res1[i] = item1;
-        res2[i] = item2;
+        res1[i] = tupledArg[0];
+        res2[i] = tupledArg[1];
     }, array);
     return [res1, res2];
 }
@@ -833,12 +831,9 @@ export function unzip3(array) {
     const res2 = new Array(len);
     const res3 = new Array(len);
     iterateIndexed((i, tupledArg) => {
-        const item1 = tupledArg[0];
-        const item2 = tupledArg[1];
-        const item3 = tupledArg[2];
-        res1[i] = item1;
-        res2[i] = item2;
-        res3[i] = item3;
+        res1[i] = tupledArg[0];
+        res2[i] = tupledArg[1];
+        res3[i] = tupledArg[2];
     }, array);
     return [res1, res2, res3];
 }
@@ -875,9 +870,8 @@ export function chunkBySize(chunkSize, array) {
     else {
         const result = [];
         for (let x = 0; x <= ((~(~Math.ceil(array.length / chunkSize))) - 1); x++) {
-            const start = (x * chunkSize) | 0;
             let slice;
-            const start_1 = start | 0;
+            const start_1 = (x * chunkSize) | 0;
             slice = (array.slice(start_1, (start_1 + chunkSize)));
             void (result.push(slice));
         }
@@ -921,8 +915,8 @@ export function compareWith(comparer, array1, array2) {
         }
         else {
             while ((i < length1) ? (result === 0) : false) {
-                result = comparer(array1[i], array2[i]);
-                i = (i + 1);
+                result = (comparer(array1[i], array2[i]) | 0);
+                i = ((i + 1) | 0);
             }
             return result | 0;
         }
@@ -1184,9 +1178,8 @@ export function splitInto(chunks, array) {
         const chunksWithExtraItem = (array.length % chunks_1) | 0;
         for (let i = 0; i <= (chunks_1 - 1); i++) {
             const chunkSize = ((i < chunksWithExtraItem) ? (minChunkSize + 1) : minChunkSize) | 0;
-            const start = ((i * minChunkSize) + min_1((x_1, y_1) => comparePrimitives(x_1, y_1), chunksWithExtraItem, i)) | 0;
             let slice;
-            const start_1 = start | 0;
+            const start_1 = ((i * minChunkSize) + min_1((x_1, y_1) => comparePrimitives(x_1, y_1), chunksWithExtraItem, i)) | 0;
             slice = (array.slice(start_1, (start_1 + chunkSize)));
             void (result.push(slice));
         }
@@ -1201,8 +1194,7 @@ export function transpose(arrays, cons) {
         return new Array(0);
     }
     else {
-        const firstArray = arrays_1[0];
-        const lenInner = firstArray.length | 0;
+        const lenInner = arrays_1[0].length | 0;
         if (!forAll((a) => (a.length === lenInner), arrays_1)) {
             differentLengths();
         }
