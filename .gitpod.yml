@@ -1,4 +1,4 @@
-image: nojaf/fable-azure-functions:1.0
+image: nojaf/fable-azure-functions:1.1
 vscode:
   extensions:
     - muhammad-sammy.csharp
