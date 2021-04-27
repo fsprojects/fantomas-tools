@@ -19,6 +19,7 @@ let private contentToClassName c =
     | Directive _ -> "directive"
     | NewlineAfter -> "newline-after"
     | EmbeddedIL _ -> "embedded-il"
+    | KeywordString _ -> "keyword-string"
     |> sprintf "nav-link-%s"
 
 let private typeName c =
@@ -39,6 +40,7 @@ let private typeName c =
     | Directive _ -> "Directive"
     | NewlineAfter -> "Newline-after"
     | EmbeddedIL _ -> "EmbeddedIL"
+    | KeywordString _ -> "KeywordString"
 
 let private activeTrivia trivia =
     let title =
@@ -51,7 +53,9 @@ let private activeTrivia trivia =
         | CharContent i
         | IdentOperatorAsWord i
         | IdentBetweenTicks i
-        | Directive i -> Some i
+        | Directive i 
+        | EmbeddedIL i
+        | KeywordString i -> Some i
         | Comment c ->
             match c with
             | LineCommentAfterSourceCode c

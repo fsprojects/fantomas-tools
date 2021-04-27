@@ -27,6 +27,7 @@ type TriviaContent =
     | NewlineAfter
     | CharContent of string
     | EmbeddedIL of string
+    | KeywordString of string
 
 type TriviaNode =
     { Type: TriviaNodeType

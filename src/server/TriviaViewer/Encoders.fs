@@ -33,6 +33,7 @@ let private mapToTriviaContent (tc: TriviaContent) =
     | Newline -> Shared.Newline
     | Directive d -> Shared.Directive d
     | EmbeddedIL eil -> Shared.EmbeddedIL eil
+    | KeywordString ks -> Shared.KeywordString ks
 
 let private triviaContentEncoder =
     Encode.Auto.generateEncoder<Shared.TriviaContent> ()

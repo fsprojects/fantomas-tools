@@ -58,6 +58,7 @@ let private triviaContentToDetail tc =
     | NewlineAfter -> str "NewlineAfter"
     | Keyword kw -> fragment [] (wrap "Keyword" kw)
     | EmbeddedIL eil -> fragment [] (wrap "EmbeddedIL" eil)
+    | KeywordString ks -> fragment [] (wrap "KeywordString" ks)
 
 
 
