@@ -53,7 +53,7 @@ let private activeTrivia trivia =
         | CharContent i
         | IdentOperatorAsWord i
         | IdentBetweenTicks i
-        | Directive i 
+        | Directive i
         | EmbeddedIL i
         | KeywordString i -> Some i
         | Comment c ->
