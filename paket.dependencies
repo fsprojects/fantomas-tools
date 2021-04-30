@@ -94,6 +94,7 @@ source https://api.nuget.org/v3/index.json
 storage: none
 framework: netstandard2.0
 
+nuget Fable.Core 3.2.6
 nuget FSharp.Core
 nuget Fable.Reactstrap 0.5.1
 nuget Thoth.Json

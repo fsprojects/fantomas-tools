@@ -1,4 +1,5 @@
 group Client
+Fable.Core
 FSharp.Core
 Fable.Reactstrap
 Thoth.Json
