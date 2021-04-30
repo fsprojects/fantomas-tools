@@ -133,18 +133,18 @@ let private restoreUserOptionsFromUrl (defaultOptions: FantomasOption list) =
 [<Emit("navigator.clipboard.writeText($0)")>]
 let private writeText _text : JS.Promise<unit> = jsNative
 
-[<Import("Notyf", from="notyf")>]
+[<Import("Notyf", from = "notyf")>]
 type Notyf() =
     class
         abstract success : string -> unit
-        default this.success(_:string):unit = jsNative
+        default this.success(_: string) : unit = jsNative
         abstract error : string -> unit
-        default this.error(_:string): unit = jsNative
+        default this.error(_: string) : unit = jsNative
     end
 
 let private notify = Notyf()
-let private showSuccess message = notify.success(message)
-let private showError message = notify.error(message)
+let private showSuccess message = notify.success (message)
+let private showError message = notify.error (message)
 
 let private copySettings (model: Model) _ =
     let supportedProperties =

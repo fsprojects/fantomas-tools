@@ -21,10 +21,7 @@ let private getTokens (request: FSharpTokens.Shared.GetTokensRequest) : JS.Promi
 
     let json = Encode.toString 4 (encodeGetTokensRequest request)
 
-    fetch
-        url
-        [ Body(!^json)
-          Method HttpMethod.POST ]
+    fetch url [ Body(!^json); Method HttpMethod.POST ]
     |> Promise.bind (fun res -> res.text ())
 
 let private getVersion () =
@@ -80,7 +77,7 @@ let rec private scrollToImpl (index: int) (attempt: int) : unit =
             window.setTimeout ((fun () -> scrollToImpl index (attempt + 1)), 150)
             |> ignore
 
-let scrollTo (index:int) : unit = scrollToImpl index 0
+let scrollTo (index: int) : unit = scrollToImpl index 0
 
 let private modelToParseRequest sourceCode (model: Model) : FSharpTokens.Shared.GetTokensRequest =
     let defines = splitDefines model.Defines
