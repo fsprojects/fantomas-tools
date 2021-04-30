@@ -16,7 +16,7 @@ import { defaultArg } from "../.fable/fable-library.3.1.15/Option.js";
 import { ButtonProps, button } from "../.fable/Fable.Reactstrap.0.5.1/Button.fs.js";
 import { BadgeProps, badge } from "../.fable/Fable.Reactstrap.0.5.1/Badge.fs.js";
 import { loader } from "../Loader.js";
-import Editor from "../../js/Editor.js";
+import Editor from "../../../js/Editor.jsx";
 import { SpinnerProps, spinner } from "../.fable/Fable.Reactstrap.0.5.1/Spinner.fs.js";
 import { versionBar } from "../VersionBar.js";
 

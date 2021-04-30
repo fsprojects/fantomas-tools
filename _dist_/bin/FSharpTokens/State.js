@@ -9,7 +9,7 @@ import { getText } from "../Http.js";
 import { Msg, Model } from "./Model.js";
 import { string, list, object } from "../.fable/Thoth.Json.5.0.0/Decode.fs.js";
 import { GetTokensRequest } from "../shared/FSharpTokensShared.js";
-import { scrollTo as scrollTo_1 } from "../../js/scrollTo.js";
+import { scrollTo as scrollTo_1 } from "../../../js/scrollTo.js";
 import { restoreModelFromUrl, updateUrlWithData } from "../UrlTools.js";
 import { uncurry } from "../.fable/fable-library.3.1.15/Util.js";
 import { decodeTokens, decodeUrlModel } from "./Decoders.js";

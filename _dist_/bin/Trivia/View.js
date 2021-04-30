@@ -12,7 +12,7 @@ import * as react from "../../../_snowpack/pkg/react.js";
 import { NavProps, nav } from "../.fable/Fable.Reactstrap.0.5.1/Nav.fs.js";
 import { TabContentProps, tabContent as tabContent_1 } from "../.fable/Fable.Reactstrap.0.5.1/TabContent.fs.js";
 import { loader } from "../Loader.js";
-import Editor from "../../js/Editor.js";
+import Editor from "../../../js/Editor.jsx";
 import { ButtonProps, button } from "../.fable/Fable.Reactstrap.0.5.1/Button.fs.js";
 import { versionBar } from "../VersionBar.js";
 import { printf, toText } from "../.fable/fable-library.3.1.15/String.js";

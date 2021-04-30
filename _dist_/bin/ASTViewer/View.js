@@ -1,5 +1,5 @@
 import * as react from "../../../_snowpack/pkg/react.js";
-import Editor from "../../js/Editor.js";
+import Editor from "../../../js/Editor.jsx";
 import { bind } from "../.fable/fable-library.3.1.15/Option.js";
 import { mapIndexed } from "../.fable/fable-library.3.1.15/Array.js";
 import { printf, toText } from "../.fable/fable-library.3.1.15/String.js";

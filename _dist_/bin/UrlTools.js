@@ -1,4 +1,4 @@
-import { updateUrlBy as updateUrlBy_1, decompressFromEncodedURIComponent, compressToEncodedURIComponent, setGetParam as setGetParam_1 } from "../js/urlUtils.js";
+import { updateUrlBy as updateUrlBy_1, decompressFromEncodedURIComponent, compressToEncodedURIComponent, setGetParam as setGetParam_1 } from "../../js/urlUtils.js";
 import { printf, toConsole, isNullOrWhiteSpace } from "./.fable/fable-library.3.1.15/String.js";
 import { length } from "./.fable/fable-library.3.1.15/Seq.js";
 import { map, choose, tryHead } from "./.fable/fable-library.3.1.15/Array.js";

@@ -7,7 +7,7 @@ import * as react from "../../_snowpack/pkg/react.js";
 import { ButtonProps, button } from "./.fable/Fable.Reactstrap.0.5.1/Button.fs.js";
 import { ActiveTab, Msg } from "./Model.js";
 import { ColProps, mkCol, col } from "./.fable/Fable.Reactstrap.0.5.1/Col.fs.js";
-import Editor from "../js/Editor.js";
+import Editor from "../../js/Editor.jsx";
 import { jumbotron } from "./.fable/Fable.Reactstrap.0.5.1/Jumbotron.fs.js";
 import { commands as commands_1, settings as settings_1, view } from "./Trivia/View.js";
 import { commands as commands_2, settings as settings_2, view as view_1 } from "./FSharpTokens/View.js";

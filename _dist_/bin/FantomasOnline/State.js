@@ -14,7 +14,7 @@ import { restoreModelFromUrl, updateUrlWithData } from "../UrlTools.js";
 import { toString } from "../.fable/Thoth.Json.5.0.0/Encode.fs.js";
 import { Cmd_ofSub, Cmd_none, Cmd_OfFunc_result, Cmd_batch, Cmd_OfPromise_either } from "../.fable/Fable.Elmish.3.1.0/cmd.fs.js";
 import { getOptionKey, FantomasOption } from "../shared/FantomasOnlineShared.js";
-import { showSuccess as showSuccess_1 } from "../../js/notifications.js";
+import { showSuccess as showSuccess_1 } from "../../../js/notifications";
 import { map as map_1 } from "../.fable/fable-library.3.1.15/Seq.js";
 import { isUpper } from "../.fable/fable-library.3.1.15/Char.js";
 
