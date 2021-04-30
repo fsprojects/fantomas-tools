@@ -1,4 +1,4 @@
-import { decompressFromEncodedURIComponent } from "./js/urlUtils";
+import { decompressFromEncodedURIComponent } from "./src/js/urlUtils";
 
 window.addEventListener("load", () => {
     document.querySelector("button").addEventListener("click", () => {
