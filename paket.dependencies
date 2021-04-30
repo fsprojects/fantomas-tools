@@ -103,3 +103,4 @@ nuget Feliz 1.28.0
 nuget Feliz.Router 3.2.0
 nuget Feliz.UseElmish
 nuget Feliz.CompilerPlugins 1.2.0
+nuget Fable.Browser.Url

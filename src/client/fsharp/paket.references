@@ -7,3 +7,4 @@ Fable.Fetch
 Feliz.Router
 Feliz.UseElmish
 Feliz.CompilerPlugins
+Fable.Browser.Url

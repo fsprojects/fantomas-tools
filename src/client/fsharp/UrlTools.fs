@@ -3,21 +3,65 @@ module FantomasTools.Client.UrlTools
 open Fable.Core.JsInterop
 open Fable.Core
 open Thoth.Json
+open Browser.Types
+open Browser
+open System
 
-let private setGetParam _encodedJson : unit = import "setGetParam" "../src/js/urlUtils.js"
+let private setGetParam (encodedJson: string) : unit =
+    if not (isNullOrUndefined history.pushState) then
+        let hashPieces =
+            window.location.hash.Split([| '?' |], StringSplitOptions.RemoveEmptyEntries)
+
+        let hash =
+            if
+                not (isNullOrUndefined hashPieces)
+                && not (String.IsNullOrWhiteSpace(hashPieces.[0]))
+            then
+                hashPieces.[0]
+            else
+                ""
+
+        let ``params`` = URLSearchParams.Create()
+        ``params``.set ("data", encodedJson)
+
+        let newUrl =
+            $"{window.location.protocol}//{window.location.host}{window.location.pathname}{hash}?{``params``.ToString()}"
+
+        history.pushState ({| path = newUrl |}, "", newUrl)
 
 let private encodeUrl (_x: string) : string =
-    import "compressToEncodedURIComponent" "../src/js/urlUtils.js"
+    import "compressToEncodedURIComponent" "lz-string"
 
 let private decodeUrl (_x: string) : string =
-    import "decompressFromEncodedURIComponent" "../src/js/urlUtils.js"
+    import "decompressFromEncodedURIComponent" "lz-string"
 
-let updateUrlBy (_mapFn: string -> string) : unit = import "updateUrlBy" "../src/js/urlUtils.js"
+let private URLSearchParamsExist : bool = emitJsExpr () "'URLSearchParams' in window"
+
+let updateUrlBy (mapFn: string -> string) : unit =
+    if URLSearchParamsExist then
+        let hashPieces = window.location.hash.Split('?')
+        let ``params`` = URLSearchParams.Create(hashPieces.[1])
+
+        let safeHash =
+            if isNullOrUndefined (window.location.hash) then
+                ""
+            else
+                window.location.hash
+
+        let newHash = (mapFn (safeHash)).Split('?').[0]
+
+        let newUrl =
+            $"{window.location.protocol}//{window.location.host}{window.location.pathname}{newHash}?{
+                                                                                                         ``params``.ToString
+                                                                                                             ()
+            }"
+
+        history.pushState ({| path = newUrl |}, "", newUrl)
 
 let updateUrlWithData json = setGetParam (encodeUrl json)
 
 let private (|KeyValuesFromHash|_|) hash =
-    if System.String.IsNullOrWhiteSpace(hash) then
+    if String.IsNullOrWhiteSpace(hash) then
         None
     else
         let search = hash.Split('?')
