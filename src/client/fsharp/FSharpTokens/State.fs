@@ -6,6 +6,8 @@ open Fable.Core.JsInterop
 open Elmish
 open Fetch
 open Thoth.Json
+open Browser
+open Browser.Types
 open FantomasTools.Client.FSharpTokens.Model
 open FantomasTools.Client.FSharpTokens.Decoders
 open FantomasTools.Client.FSharpTokens.Encoders
@@ -21,8 +23,8 @@ let private getTokens (request: FSharpTokens.Shared.GetTokensRequest) : JS.Promi
 
     fetch
         url
-        [ RequestProperties.Body(!^json)
-          RequestProperties.Method HttpMethod.POST ]
+        [ Body(!^json)
+          Method HttpMethod.POST ]
     |> Promise.bind (fun res -> res.text ())
 
 let private getVersion () =
@@ -47,7 +49,38 @@ let private splitDefines (value: string) =
     value.Split([| ' '; ';' |], StringSplitOptions.RemoveEmptyEntries)
     |> List.ofArray
 
-let private scrollTo (_index: int) : unit = import "scrollTo" "../../src/js/scrollTo.js"
+let private nodeListToArray (nl: NodeListOf<Element>) : Element array =
+    emitJsStatement nl "Array.prototype.slice.call($0)"
+
+let private dollar (selector: string) : NodeListOf<Element> = document.querySelectorAll (selector)
+
+let private scrollIntoView (element: Element) : unit =
+    emitJsStatement
+        element
+        """
+$0.scrollIntoView({
+  behavior: "smooth",
+  block: "end",
+  inline: "center"
+});
+        """
+
+let rec private scrollToImpl (index: int) (attempt: int) : unit =
+    if attempt < 5 then
+        let details = dollar "#details .detail"
+        let elem = details.[index]
+
+        if not (isNullOrUndefined elem) then
+            scrollIntoView elem
+            elem.classList.add "lit"
+
+            window.setTimeout ((fun () -> elem.classList.remove "lit"), 1000)
+            |> ignore
+        else
+            window.setTimeout ((fun () -> scrollToImpl index (attempt + 1)), 150)
+            |> ignore
+
+let scrollTo (index:int) : unit = scrollToImpl index 0
 
 let private modelToParseRequest sourceCode (model: Model) : FSharpTokens.Shared.GetTokensRequest =
     let defines = splitDefines model.Defines

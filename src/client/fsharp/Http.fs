@@ -2,26 +2,26 @@ module FantomasTools.Client.Http
 
 open Fable.Core
 open Fable.Core.JsInterop
+open Fetch
 
-let postJson<'TResponse> (url:string) (body:string) : JS.Promise<int * 'TResponse> = 
-    emitJsStatement
-        (url, body)
-        """
-return fetch($0, {
-            headers: { "Content-Type": "application/json" },
-            body:$1,
-            method: "POST"
-        })
-        .then((res) => Promise.all([Promise.resolve(res.status), res.text()]));
-        """ 
+let postJson<'TResponse> (url: string) (body: string) : JS.Promise<int * string> =
+    let options =
+        requestProps [ requestHeaders [ ContentType "application/json" ]
+                       Method HttpMethod.POST
+                       Body !^body ]
 
-let getText (url: string) : JS.Promise<string> = 
-    emitJsStatement
-        url
-        """
-return fetch(url, {
-                headers: { "Content-Type": "application/json" },
-                method: "GET"
-        })
-        .then((res) => res.text());
-        """
+    GlobalFetch.fetch (RequestInfo.Url url, options)
+    |> Promise.bind
+        (fun res ->
+            promise {
+                let! text = res.text ()
+                return (res.Status, text)
+            })
+
+let getText (url: string) : JS.Promise<string> =
+    let options =
+        requestProps [ requestHeaders [ ContentType "application/json" ]
+                       Method HttpMethod.GET ]
+
+    GlobalFetch.fetch (RequestInfo.Url url, options)
+    |> Promise.bind (fun res -> res.text ())

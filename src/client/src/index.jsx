@@ -1,5 +1,3 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
 import './bin/App.js';
 import './styles/style.sass';
 import 'notyf/notyf.min.css';
