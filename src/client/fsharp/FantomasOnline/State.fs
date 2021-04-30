@@ -134,7 +134,7 @@ let private restoreUserOptionsFromUrl (defaultOptions: FantomasOption list) =
 let private writeText _text : JS.Promise<unit> = jsNative
 
 let private showSuccess _message = import "showSuccess" "../../src/js/notifications"
-let private showError _message = import "showSuccess" "../..//src/js/notifications"
+let private showError _message = import "showSuccess" "../../src/js/notifications"
 
 let private copySettings (model: Model) _ =
     let supportedProperties =
