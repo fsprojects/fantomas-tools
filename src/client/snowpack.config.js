@@ -12,7 +12,7 @@ module.exports = {
         "@snowpack/plugin-sass",
         ["@snowpack/plugin-run-script", {
             "cmd": "echo 'Fable already built'",
-            "watch": "dotnet fable watch ./src/FantomasTools/FantomasTools.fsproj --outDir ./src/bin"
+            "watch": "dotnet fable watch ./fsharp/FantomasTools.fsproj --outDir ./src/bin"
         }]
     ],
     packageOptions: {
