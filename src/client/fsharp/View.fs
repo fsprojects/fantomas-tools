@@ -6,6 +6,7 @@ open Fable.React
 open Fable.React.Props
 open FantomasTools.Client
 open FantomasTools.Client.Model
+open FantomasTools.Client.Editor
 open Reactstrap
 
 let navigation dispatch =
@@ -43,8 +44,10 @@ let editor model dispatch =
     Col.col [ Col.Xs(Col.mkCol !^5)
               Col.Custom [ ClassName "border-right h-100 d-flex flex-column" ] ] [
         div [ Id "source"; ClassName "flex-grow-1" ] [
-            Editor.editor [ Editor.OnChange(UpdateSourceCode >> dispatch)
-                            Editor.Value model.SourceCode ]
+            Editor
+                false
+                [ MonacoEditorProp.OnChange(UpdateSourceCode >> dispatch)
+                  MonacoEditorProp.DefaultValue model.SourceCode ]
         ]
     ]
 //

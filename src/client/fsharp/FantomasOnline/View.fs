@@ -5,6 +5,7 @@ open Fable.React
 open Fable.React.Props
 open FantomasOnline.Shared
 open FantomasTools.Client
+open FantomasTools.Client.Editor
 open FantomasTools.Client.FantomasOnline.Model
 open Reactstrap
 
@@ -318,16 +319,14 @@ let view model =
 
         div [ ClassName "tab-result fantomas-result" ] [
             div [ ClassName "fantomas-editor-container" ] [
-                Editor.editorInTab [ Editor.Value formattedCode
-                                     Editor.IsReadOnly true ]
+                Editor true [ MonacoEditorProp.DefaultValue formattedCode ]
             ]
             ofOption (viewErrors model result isIdempotent astErrors)
         ]
 
     | EditorState.FormatError error ->
         div [ ClassName "tab-result" ] [
-            Editor.editorInTab [ Editor.Value error
-                                 Editor.IsReadOnly true ]
+            Editor true [ MonacoEditorProp.DefaultValue error ]
         ]
 
 let private userChangedSettings (model: Model) =

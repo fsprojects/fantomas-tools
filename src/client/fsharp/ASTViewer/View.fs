@@ -7,18 +7,11 @@ open FantomasTools.Client.ASTViewer.Model
 open FantomasTools.Client.Editor
 open Reactstrap
 
-
-let private results model dispatch =
+let private results model =
     let result =
         match model.Parsed with
-        | Some (Ok parsed) ->
-            editorInTab [ Language "fsharp"
-                          IsReadOnly true
-                          Value parsed.String ]
-        | Some (Result.Error errors) ->
-            editorInTab [ Language "fsharp"
-                          IsReadOnly true
-                          Value errors ]
+        | Some (Ok parsed) -> Editor true [ MonacoEditorProp.DefaultValue parsed.String ]
+        | Some (Result.Error errors) -> Editor true [ MonacoEditorProp.DefaultValue errors ]
         | None -> str ""
 
     let astErrors =
@@ -80,7 +73,7 @@ let view model dispatch =
     if model.IsLoading then
         Loader.loader
     else
-        results model dispatch
+        results model
 
 let commands dispatch =
     fragment [] [

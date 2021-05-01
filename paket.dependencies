@@ -99,8 +99,8 @@ nuget FSharp.Core
 nuget Fable.Reactstrap 0.5.1
 nuget Thoth.Json
 nuget Fable.Fetch
-nuget Feliz 1.28.0
+nuget Feliz 1.43.0
 nuget Feliz.Router 3.2.0
 nuget Feliz.UseElmish
-nuget Feliz.CompilerPlugins 1.2.0
+nuget Feliz.CompilerPlugins 1.5.0
 nuget Fable.Browser.Url

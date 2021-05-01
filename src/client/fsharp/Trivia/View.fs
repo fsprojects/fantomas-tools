@@ -69,10 +69,7 @@ let view model dispatch =
     else
         match model.Error with
         | None -> results model dispatch
-        | Some errors ->
-            editorInTab [ EditorProp.Language "fsharp"
-                          EditorProp.IsReadOnly true
-                          EditorProp.Value errors ]
+        | Some errors -> Editor true [ MonacoEditorProp.DefaultValue errors ]
 
 let commands dispatch =
     Button.button [ Button.Color Primary
