@@ -51,7 +51,7 @@ export function Editor(editorInputProps) {
         lineNumbers: true,
         theme: "vs-light",
         renderWhitespace: "all",
-        miniMap: {
+        minimap: {
             enabled: false,
         },
     }), new MonacoEditorProp(4, (editor_1, _arg1) => {
