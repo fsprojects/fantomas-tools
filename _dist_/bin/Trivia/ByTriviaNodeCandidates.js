@@ -1,11 +1,17 @@
 import { toArray, mapIndexed } from "../.fable/fable-library.3.1.15/List.js";
 import * as react from "../../../_snowpack/pkg/react.js";
-import { printf, toText } from "../.fable/fable-library.3.1.15/String.js";
+import { interpolate, printf, toText } from "../.fable/fable-library.3.1.15/String.js";
+import { HighLightRange } from "../Editor.js";
+import { Msg } from "./Model.js";
 
-export function view(model, _dispatch) {
+export function view(model, dispatch) {
     const nodes = mapIndexed((idx, node) => react.createElement("tr", {
         key: toText(printf("node_%d"))(idx),
-        className: toText(printf("trivia-candidate-%s"))(node.Type),
+        className: toText(interpolate("trivia-candidate-%P() pointer", [node.Type])),
+        onClick: (_arg1) => {
+            let r;
+            dispatch(new Msg(8, (r = node.Range, new HighLightRange(r.StartLine, r.StartColumn, r.EndLine, r.EndColumn))));
+        },
     }, react.createElement("td", {}, node.Name), react.createElement("td", {
         className: "text-center",
     }, node.Range.StartLine), react.createElement("td", {

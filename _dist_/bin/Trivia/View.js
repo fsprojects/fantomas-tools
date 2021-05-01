@@ -8,11 +8,12 @@ import { view as view_2 } from "./ByTriviaNodeCandidates.js";
 import { view as view_3 } from "./ByTrivia.js";
 import { NavItemProps, navItem } from "../.fable/Fable.Reactstrap.0.5.1/NavItem.fs.js";
 import { NavLinkProps, navLink } from "../.fable/Fable.Reactstrap.0.5.1/NavLink.fs.js";
+import { createElement } from "../../../_snowpack/pkg/react.js";
 import * as react from "../../../_snowpack/pkg/react.js";
 import { NavProps, nav } from "../.fable/Fable.Reactstrap.0.5.1/Nav.fs.js";
 import { TabContentProps, tabContent as tabContent_1 } from "../.fable/Fable.Reactstrap.0.5.1/TabContent.fs.js";
 import { loader } from "../Loader.js";
-import Editor from "../../../js/Editor.jsx";
+import { MonacoEditorProp, Editor } from "../Editor.js";
 import { ButtonProps, button } from "../.fable/Fable.Reactstrap.0.5.1/Button.fs.js";
 import { versionBar } from "../VersionBar.js";
 import { printf, toText } from "../.fable/fable-library.3.1.15/String.js";
@@ -66,10 +67,9 @@ export function view(model, dispatch) {
         const matchValue = model.Error;
         if (matchValue != null) {
             const errors = matchValue;
-            return react.createElement(Editor, {
-                language: "fsharp",
+            return createElement(Editor, {
                 isReadOnly: true,
-                value: errors,
+                props: singleton(new MonacoEditorProp(2, errors)),
             });
         }
         else {

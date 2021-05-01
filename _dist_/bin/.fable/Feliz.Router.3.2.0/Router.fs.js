@@ -2,7 +2,7 @@ import { trimEnd, isNullOrWhiteSpace, substring, join, endsWith } from "../fable
 import { ofArray, singleton, empty, collect, map } from "../fable-library.3.1.15/List.js";
 import { equalsWith } from "../fable-library.3.1.15/Array.js";
 import { comparePrimitives } from "../fable-library.3.1.15/Util.js";
-import { React_createDisposable_3A5B6456, useReact_useEffect_Z5ECA432F, useReact_useMemo_CF4EA67, useReact_useCallbackRef_7C4B0DD6, React_memo_62A0F746 } from "../Feliz.1.28.0/React.fs.js";
+import { React_createDisposable_3A5B6456, useReact_useEffect_Z5ECA432F, useReact_useMemo_CF4EA67, useReact_useCallbackRef_7C4B0DD6, React_memo_62A0F746 } from "../Feliz.1.43.0/React.fs.js";
 import { defaultArg } from "../fable-library.3.1.15/Option.js";
 import { Impl_createRemoveOptions, Impl_adjustPassive } from "../Feliz.UseListener.0.6.3/Listener.fs.js";
 import { tryParse } from "../fable-library.3.1.15/Int32.js";
@@ -55,14 +55,14 @@ export function RouterModule_encodeQueryStringInts(queryStringIntPairs) {
 function RouterModule_normalizeRoute(routeMode) {
     if (routeMode === 1) {
         return (_arg1) => {
-            let activePatternResult9385, path, activePatternResult9386, path_1, activePatternResult9387, path_2;
-            return activePatternResult9385 = RouterModule_String_$007CPrefix$007C("/", _arg1), (activePatternResult9385 != null) ? (path = activePatternResult9385, "#" + path) : (activePatternResult9386 = RouterModule_String_$007CPrefix$007C("#/", _arg1), (activePatternResult9386 != null) ? (path_1 = activePatternResult9386, path_1) : (activePatternResult9387 = RouterModule_String_$007CPrefix$007C("#", _arg1), (activePatternResult9387 != null) ? (path_2 = activePatternResult9387, "#/" + substring(path_2, 1, path_2.length - 1)) : ("#/" + _arg1)));
+            let activePatternResult9543, path, activePatternResult9544, path_1, activePatternResult9545, path_2;
+            return activePatternResult9543 = RouterModule_String_$007CPrefix$007C("/", _arg1), (activePatternResult9543 != null) ? (path = activePatternResult9543, "#" + path) : (activePatternResult9544 = RouterModule_String_$007CPrefix$007C("#/", _arg1), (activePatternResult9544 != null) ? (path_1 = activePatternResult9544, path_1) : (activePatternResult9545 = RouterModule_String_$007CPrefix$007C("#", _arg1), (activePatternResult9545 != null) ? (path_2 = activePatternResult9545, "#/" + substring(path_2, 1, path_2.length - 1)) : ("#/" + _arg1)));
         };
     }
     else {
         return (_arg2) => {
-            let activePatternResult9390, path_4;
-            return activePatternResult9390 = RouterModule_String_$007CPrefix$007C("/", _arg2), (activePatternResult9390 != null) ? (path_4 = activePatternResult9390, path_4) : ("/" + _arg2);
+            let activePatternResult9548, path_4;
+            return activePatternResult9548 = RouterModule_String_$007CPrefix$007C("/", _arg2), (activePatternResult9548 != null) ? (path_4 = activePatternResult9548, path_4) : ("/" + _arg2);
         };
     }
 }

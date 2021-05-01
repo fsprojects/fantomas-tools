@@ -501,4 +501,6 @@ if(  module != null ) {
 }
 });
 
-export default lzString;
+var compressToEncodedURIComponent = lzString.compressToEncodedURIComponent;
+var decompressFromEncodedURIComponent = lzString.decompressFromEncodedURIComponent;
+export { compressToEncodedURIComponent, decompressFromEncodedURIComponent };

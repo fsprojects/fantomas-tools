@@ -1,11 +1,12 @@
+import { createElement } from "../../../_snowpack/pkg/react.js";
 import * as react from "../../../_snowpack/pkg/react.js";
-import Editor from "../../../js/Editor.jsx";
+import { MonacoEditorProp, Editor } from "../Editor.js";
+import { singleton } from "../.fable/fable-library.3.1.15/List.js";
 import { bind } from "../.fable/fable-library.3.1.15/Option.js";
 import { mapIndexed } from "../.fable/fable-library.3.1.15/Array.js";
 import { printf, toText } from "../.fable/fable-library.3.1.15/String.js";
 import { BadgeProps, badge } from "../.fable/Fable.Reactstrap.0.5.1/Badge.fs.js";
 import { DOMAttr, HTMLAttr } from "../.fable/Fable.React.7.0.1/Fable.React.Props.fs.js";
-import { singleton } from "../.fable/fable-library.3.1.15/List.js";
 import { isEmpty } from "../.fable/fable-library.3.1.15/Seq.js";
 import { loader } from "../Loader.js";
 import { ButtonProps, button } from "../.fable/Fable.Reactstrap.0.5.1/Button.fs.js";
@@ -13,7 +14,7 @@ import { Msg } from "./Model.js";
 import { versionBar } from "../VersionBar.js";
 import { toggleButton, input } from "../SettingControls.js";
 
-function results(model, dispatch) {
+function results(model) {
     let result;
     const matchValue = model.Parsed;
     if (matchValue == null) {
@@ -21,14 +22,12 @@ function results(model, dispatch) {
     }
     else {
         const copyOfStruct = matchValue;
-        result = ((copyOfStruct.tag === 1) ? react.createElement(Editor, {
-            language: "fsharp",
+        result = ((copyOfStruct.tag === 1) ? createElement(Editor, {
             isReadOnly: true,
-            value: copyOfStruct.fields[0],
-        }) : react.createElement(Editor, {
-            language: "fsharp",
+            props: singleton(new MonacoEditorProp(2, copyOfStruct.fields[0])),
+        }) : createElement(Editor, {
             isReadOnly: true,
-            value: copyOfStruct.fields[0].String,
+            props: singleton(new MonacoEditorProp(2, copyOfStruct.fields[0].String)),
         }));
     }
     let astErrors;
@@ -72,7 +71,7 @@ export function view(model, dispatch) {
         return loader;
     }
     else {
-        return results(model, dispatch);
+        return results(model);
     }
 }
 

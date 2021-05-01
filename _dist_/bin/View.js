@@ -3,11 +3,12 @@ import { Prop, DOMAttr, HTMLAttr } from "./.fable/Fable.React.7.0.1/Fable.React.
 import { toArray, ofArray, singleton } from "./.fable/fable-library.3.1.15/List.js";
 import { NavbarBrandProps, navbarBrand } from "./.fable/Fable.Reactstrap.0.5.1/NavbarBrand.fs.js";
 import { printf, toText } from "./.fable/fable-library.3.1.15/String.js";
+import { createElement } from "../../_snowpack/pkg/react.js";
 import * as react from "../../_snowpack/pkg/react.js";
 import { ButtonProps, button } from "./.fable/Fable.Reactstrap.0.5.1/Button.fs.js";
 import { ActiveTab, Msg } from "./Model.js";
 import { ColProps, mkCol, col } from "./.fable/Fable.Reactstrap.0.5.1/Col.fs.js";
-import Editor from "../../js/Editor.jsx";
+import { MonacoEditorProp, Editor } from "./Editor.js";
 import { jumbotron } from "./.fable/Fable.Reactstrap.0.5.1/Jumbotron.fs.js";
 import { commands as commands_1, settings as settings_1, view } from "./Trivia/View.js";
 import { commands as commands_2, settings as settings_2, view as view_1 } from "./FSharpTokens/View.js";
@@ -38,11 +39,11 @@ export function editor(model, dispatch) {
     return col([new ColProps(1, mkCol(5)), new ColProps(7, singleton(new HTMLAttr(64, "border-right h-100 d-flex flex-column")))], [react.createElement("div", {
         id: "source",
         className: "flex-grow-1",
-    }, react.createElement(Editor, {
-        onChange: (arg) => {
+    }, createElement(Editor, {
+        isReadOnly: false,
+        props: ofArray([new MonacoEditorProp(3, (arg) => {
             dispatch(new Msg(1, arg));
-        },
-        value: model.SourceCode,
+        }), new MonacoEditorProp(2, model.SourceCode)]),
     }))]);
 }
 

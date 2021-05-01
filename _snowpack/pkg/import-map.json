@@ -4,7 +4,6 @@
     "lz-string": "./lz-string.js",
     "notyf": "./notyf.js",
     "notyf/notyf.min.css": "./notyf/notyf.min.css",
-    "prop-types": "./prop-types.js",
     "react": "./react.js",
     "react-dom": "./react-dom.js",
     "reactstrap": "./reactstrap.js"

@@ -1,3 +1,4 @@
+import { createElement } from "../../../_snowpack/pkg/react.js";
 import * as react from "../../../_snowpack/pkg/react.js";
 import { MultiButtonSettings, multiButton, toggleButton, input } from "../SettingControls.js";
 import { isMatch } from "../.fable/fable-library.3.1.15/RegExp.js";
@@ -16,7 +17,7 @@ import { defaultArg } from "../.fable/fable-library.3.1.15/Option.js";
 import { ButtonProps, button } from "../.fable/Fable.Reactstrap.0.5.1/Button.fs.js";
 import { BadgeProps, badge } from "../.fable/Fable.Reactstrap.0.5.1/Badge.fs.js";
 import { loader } from "../Loader.js";
-import Editor from "../../../js/Editor.jsx";
+import { MonacoEditorProp, Editor } from "../Editor.js";
 import { SpinnerProps, spinner } from "../.fable/Fable.Reactstrap.0.5.1/Spinner.fs.js";
 import { versionBar } from "../VersionBar.js";
 
@@ -208,17 +209,17 @@ export function view(model) {
                 className: "tab-result fantomas-result",
             }, react.createElement("div", {
                 className: "fantomas-editor-container",
-            }, react.createElement(Editor, {
-                value: patternInput[0],
+            }, createElement(Editor, {
                 isReadOnly: true,
+                props: singleton(new MonacoEditorProp(2, patternInput[0])),
             })), (o = viewErrors(model, result, patternInput[1], patternInput[2]), (o == null) ? null : o));
         }
         case 4: {
             return react.createElement("div", {
                 className: "tab-result",
-            }, react.createElement(Editor, {
-                value: matchValue.fields[0],
+            }, createElement(Editor, {
                 isReadOnly: true,
+                props: singleton(new MonacoEditorProp(2, matchValue.fields[0])),
             }));
         }
         default: {

@@ -9,7 +9,6 @@ import { getText } from "../Http.js";
 import { Msg, Model } from "./Model.js";
 import { string, list, object } from "../.fable/Thoth.Json.5.0.0/Decode.fs.js";
 import { GetTokensRequest } from "../shared/FSharpTokensShared.js";
-import { scrollTo as scrollTo_1 } from "../../../js/scrollTo.js";
 import { restoreModelFromUrl, updateUrlWithData } from "../UrlTools.js";
 import { uncurry } from "../.fable/fable-library.3.1.15/Util.js";
 import { decodeTokens, decodeUrlModel } from "./Decoders.js";
@@ -36,7 +35,44 @@ function splitDefines(value) {
     return ofArray(split(value, [" ", ";"], null, 1));
 }
 
-const scrollTo = scrollTo_1;
+function nodeListToArray(nl) {
+    Array.prototype.slice.call(nl);
+}
+
+function dollar(selector) {
+    return document.querySelectorAll(selector);
+}
+
+function scrollIntoView(element) {
+    element.scrollIntoView({
+    behavior: "smooth",
+    block: "end",
+    inline: "center"
+    });
+}
+
+function scrollToImpl(index, attempt) {
+    if (attempt < 5) {
+        const details = dollar("#details .detail");
+        const elem = details[index];
+        if (!(elem == null)) {
+            scrollIntoView(elem);
+            elem.classList.add("lit");
+            void window.setTimeout(() => {
+                elem.classList.remove("lit");
+            }, 1000);
+        }
+        else {
+            void window.setTimeout(() => {
+                scrollToImpl(index, attempt + 1);
+            }, 150);
+        }
+    }
+}
+
+export function scrollTo(index) {
+    scrollToImpl(index, 0);
+}
 
 function modelToParseRequest(sourceCode, model) {
     return new GetTokensRequest(splitDefines(model.Defines), sourceCode);

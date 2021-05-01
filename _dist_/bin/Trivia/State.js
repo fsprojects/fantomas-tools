@@ -9,7 +9,7 @@ import { tryItem, ofArray, empty } from "../.fable/fable-library.3.1.15/List.js"
 import { ParseRequest } from "../shared/TriviaShared.js";
 import { updateUrlWithData, restoreModelFromUrl } from "../UrlTools.js";
 import { uncurry } from "../.fable/fable-library.3.1.15/Util.js";
-import { Cmd_none, Cmd_ofSub, Cmd_batch, Cmd_OfPromise_either } from "../.fable/Fable.Elmish.3.1.0/cmd.fs.js";
+import { Cmd_OfFunc_result, Cmd_none, Cmd_ofSub, Cmd_batch, Cmd_OfPromise_either } from "../.fable/Fable.Elmish.3.1.0/cmd.fs.js";
 import { toString } from "../.fable/Thoth.Json.5.0.0/Encode.fs.js";
 import { defaultArg, map } from "../.fable/fable-library.3.1.15/Option.js";
 import { selectRange, HighLightRange } from "../Editor.js";
@@ -69,12 +69,7 @@ export function update(code, msg, model) {
             const tab_1 = msg.fields[0];
             const index = msg.fields[1] | 0;
             const patternInput = (tab_1.tag === 0) ? [new Model(model.ActiveTab, model.Trivia, model.TriviaNodeCandidates, model.TriviaNodes, model.Error, model.IsLoading, index, model.ActiveByTriviaIndex, model.Defines, model.Version, model.IsFsi), map((t) => t.Range, tryItem(index, model.TriviaNodes))] : ((tab_1.tag === 1) ? [new Model(model.ActiveTab, model.Trivia, model.TriviaNodeCandidates, model.TriviaNodes, model.Error, model.IsLoading, model.ActiveByTriviaNodeIndex, index, model.Defines, model.Version, model.IsFsi), map((tv) => tv.Range, tryItem(index, model.Trivia))] : [model, void 0]);
-            return [patternInput[0], defaultArg(map((r) => {
-                const highLightRange = new HighLightRange(r.StartLine, r.StartColumn, r.EndLine, r.EndColumn);
-                return Cmd_ofSub((arg10$0040) => {
-                    selectRange(highLightRange, arg10$0040);
-                });
-            }, patternInput[1]), Cmd_none())];
+            return [patternInput[0], defaultArg(map((r) => Cmd_OfFunc_result(new Msg(8, new HighLightRange(r.StartLine, r.StartColumn, r.EndLine, r.EndColumn))), patternInput[1]), Cmd_none())];
         }
         case 4: {
             return [new Model(model.ActiveTab, model.Trivia, model.TriviaNodeCandidates, model.TriviaNodes, model.Error, model.IsLoading, model.ActiveByTriviaNodeIndex, model.ActiveByTriviaIndex, msg.fields[0], model.Version, model.IsFsi), Cmd_none()];
@@ -84,6 +79,11 @@ export function update(code, msg, model) {
         }
         case 6: {
             return [new Model(model.ActiveTab, model.Trivia, model.TriviaNodeCandidates, model.TriviaNodes, model.Error, model.IsLoading, model.ActiveByTriviaNodeIndex, model.ActiveByTriviaIndex, model.Defines, model.Version, msg.fields[0]), Cmd_none()];
+        }
+        case 8: {
+            return [model, Cmd_ofSub((arg10$0040) => {
+                selectRange(msg.fields[0], arg10$0040);
+            })];
         }
         default: {
             return [new Model(msg.fields[0], model.Trivia, model.TriviaNodeCandidates, model.TriviaNodes, model.Error, model.IsLoading, model.ActiveByTriviaNodeIndex, model.ActiveByTriviaIndex, model.Defines, model.Version, model.IsFsi), Cmd_none()];

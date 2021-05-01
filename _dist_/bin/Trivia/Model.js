@@ -1,6 +1,7 @@
 import { Record, Union } from "../.fable/fable-library.3.1.15/Types.js";
 import { record_type, int32_type, bool_type, option_type, string_type, list_type, union_type } from "../.fable/fable-library.3.1.15/Reflection.js";
 import { ParseResult$reflection, TriviaNode$reflection, TriviaNodeCandidate$reflection, Trivia$reflection } from "../shared/TriviaShared.js";
+import { HighLightRange$reflection } from "../Editor.js";
 
 export class ActiveTab extends Union {
     constructor(tag, ...fields) {
@@ -57,11 +58,11 @@ export class Msg extends Union {
         this.fields = fields;
     }
     cases() {
-        return ["SelectTab", "GetTrivia", "TriviaReceived", "ActiveItemChange", "DefinesUpdated", "FSCVersionReceived", "SetFsiFile", "Error"];
+        return ["SelectTab", "GetTrivia", "TriviaReceived", "ActiveItemChange", "DefinesUpdated", "FSCVersionReceived", "SetFsiFile", "Error", "HighLight"];
     }
 }
 
 export function Msg$reflection() {
-    return union_type("FantomasTools.Client.Trivia.Model.Msg", [], Msg, () => [[["Item", ActiveTab$reflection()]], [], [["Item", ParseResult$reflection()]], [["Item1", ActiveTab$reflection()], ["Item2", int32_type]], [["Item", string_type]], [["Item", string_type]], [["Item", bool_type]], [["Item", string_type]]]);
+    return union_type("FantomasTools.Client.Trivia.Model.Msg", [], Msg, () => [[["Item", ActiveTab$reflection()]], [], [["Item", ParseResult$reflection()]], [["Item1", ActiveTab$reflection()], ["Item2", int32_type]], [["Item", string_type]], [["Item", string_type]], [["Item", bool_type]], [["Item", string_type]], [["Item", HighLightRange$reflection()]]]);
 }
 

@@ -2,7 +2,7 @@ import { useLayoutEffectWithDeps, useLayoutEffect, useEffectWithDeps, useEffect,
 import { class_type } from "../fable-library.3.1.15/Reflection.js";
 import { iterate } from "../fable-library.3.1.15/Seq.js";
 import { defaultArg, some, toArray } from "../fable-library.3.1.15/Option.js";
-import { reactApi } from "./Interop.fs.js";
+import { Interop_reactApi } from "./Interop.fs.js";
 import { curry, uncurry } from "../fable-library.3.1.15/Util.js";
 import { useState } from "../../../../_snowpack/pkg/react.js";
 import * as react from "../../../../_snowpack/pkg/react.js";
@@ -38,15 +38,15 @@ export function Internal_functionComponent_Z1B155329(renderElement, name, withKe
         renderElement.displayName = name_1;
     }, toArray(name));
     console.warn(some("Feliz: using React.functionComponent in Fable 3 is obsolete, please consider using the [\u003cReactComponent\u003e] attribute instead which makes Feliz output better Javascript code that is compatible with react-refresh"));
-    return (props) => reactApi.createElement(renderElement, Internal_propsWithKey(withKey, props));
+    return (props) => Interop_reactApi.createElement(renderElement, Internal_propsWithKey(withKey, props));
 }
 
 export function Internal_memo_Z603636D8(renderElement, name, areEqual, withKey) {
-    const memoElementType = reactApi.memo(renderElement, uncurry(2, defaultArg(curry(2, areEqual), null)));
+    const memoElementType = Interop_reactApi.memo(renderElement, uncurry(2, defaultArg(curry(2, areEqual), null)));
     iterate((name_1) => {
         renderElement.displayName = name_1;
     }, toArray(name));
-    return (props) => reactApi.createElement(memoElementType, Internal_propsWithKey(withKey, props));
+    return (props) => Interop_reactApi.createElement(memoElementType, Internal_propsWithKey(withKey, props));
 }
 
 function Internal_propsWithKey(withKey, props) {
@@ -78,11 +78,11 @@ export function React_createDisposable_3A5B6456(dispose) {
 }
 
 export function useReact_useState_FCFD9EF(initializer) {
-    return reactApi.useState(initializer);
+    return Interop_reactApi.useState(initializer);
 }
 
 export function useReact_useReducer_2B9E6EA0(update, initialState) {
-    return reactApi.useReducer(update, initialState);
+    return Interop_reactApi.useReducer(update, initialState);
 }
 
 export function useReact_useEffect_Z5ECA432F(effect) {
@@ -164,11 +164,11 @@ export function useReact_useDebugValue_77A55D6D(value, formatter) {
 }
 
 export function useReact_useCallback_93353E(callbackFunction, dependencies) {
-    return reactApi.useCallback(callbackFunction, defaultArg(dependencies, []));
+    return Interop_reactApi.useCallback(callbackFunction, defaultArg(dependencies, []));
 }
 
 export function useReact_useRef_1505(initialValue) {
-    return reactApi.useRef(initialValue);
+    return Interop_reactApi.useRef(initialValue);
 }
 
 export function useReact_useInputRef() {
@@ -184,7 +184,7 @@ export function useReact_useElementRef() {
 }
 
 export function useReact_useMemo_CF4EA67(createFunction, dependencies) {
-    return reactApi.useMemo(createFunction, defaultArg(dependencies, []));
+    return Interop_reactApi.useMemo(createFunction, defaultArg(dependencies, []));
 }
 
 export function React_functionComponent_2F9D7239(render, withKey) {
@@ -220,7 +220,7 @@ export function React_memo_Z4FCC584A(name, render, withKey, areEqual) {
 }
 
 export function React_createContext_1AE444D8(name, defaultValue) {
-    const contextObject = reactApi.createContext(defaultArg(defaultValue, void 0));
+    const contextObject = Interop_reactApi.createContext(defaultArg(defaultValue, void 0));
     iterate((name_1) => {
         contextObject.displayName = name_1;
     }, toArray(name));
@@ -228,27 +228,27 @@ export function React_createContext_1AE444D8(name, defaultValue) {
 }
 
 export function React_contextProvider_34D9BBBD(contextObject, contextValue, child) {
-    return reactApi.createElement(contextObject.Provider, {
+    return Interop_reactApi.createElement(contextObject.Provider, {
         value: contextValue,
     }, child);
 }
 
 export function React_contextProvider_138D2F56(contextObject, contextValue, children) {
-    return reactApi.createElement(contextObject.Provider, {
+    return Interop_reactApi.createElement(contextObject.Provider, {
         value: contextValue,
     }, ...children);
 }
 
 export function React_contextConsumer_Z68910595(contextObject, render) {
-    return reactApi.createElement(contextObject.Consumer, null, render);
+    return Interop_reactApi.createElement(contextObject.Consumer, null, render);
 }
 
 export function React_contextConsumer_56D53A40(contextObject, render) {
-    return reactApi.createElement(contextObject.Consumer, null, (arg) => react.createElement(react.Fragment, {}, ...render(arg)));
+    return Interop_reactApi.createElement(contextObject.Consumer, null, (arg) => react.createElement(react.Fragment, {}, ...render(arg)));
 }
 
 export function useReact_useContext_37FA55CF(contextObject) {
-    return reactApi.useContext(contextObject);
+    return Interop_reactApi.useContext(contextObject);
 }
 
 export function useReact_useCallbackRef_7C4B0DD6(callback) {
@@ -263,10 +263,10 @@ export function useReact_useCallbackRef_7C4B0DD6(callback) {
 export const React_useStateWithUpdater_1505 = useState;
 
 export function React_forwardRef_3790D881(render) {
-    const forwardRefType = reactApi.forwardRef((props, ref) => render([props, ref]));
+    const forwardRefType = Interop_reactApi.forwardRef((props, ref) => render([props, ref]));
     return (tupledArg) => {
         let o;
-        return reactApi.createElement(forwardRefType, (o = {
+        return Interop_reactApi.createElement(forwardRefType, (o = {
             props: tupledArg[0],
             ref: tupledArg[1],
         }, Object.assign({}, o)));
@@ -274,11 +274,11 @@ export function React_forwardRef_3790D881(render) {
 }
 
 export function React_forwardRef_7DC3DB1A(name, render) {
-    const forwardRefType = reactApi.forwardRef((props, ref) => render([props, ref]));
+    const forwardRefType = Interop_reactApi.forwardRef((props, ref) => render([props, ref]));
     render.displayName = name;
     return (tupledArg) => {
         let o;
-        return reactApi.createElement(forwardRefType, (o = {
+        return Interop_reactApi.createElement(forwardRefType, (o = {
             props: tupledArg[0],
             ref: tupledArg[1],
         }, Object.assign({}, o)));
@@ -286,41 +286,41 @@ export function React_forwardRef_7DC3DB1A(name, render) {
 }
 
 export function React_strictMode_6E3A73D(children) {
-    return reactApi.createElement(reactApi.StrictMode, void 0, ...children);
+    return Interop_reactApi.createElement(Interop_reactApi.StrictMode, void 0, ...children);
 }
 
 export function React_lazy$0027_4712D3AE(dynamicImport, props) {
-    return reactApi.createElement(reactApi.lazy((() => dynamicImport)), props);
+    return Interop_reactApi.createElement(Interop_reactApi.lazy((() => dynamicImport)), props);
 }
 
 export function React_lazy$0027_Z3D8450FC(dynamicImport, props) {
-    return reactApi.createElement(reactApi.lazy(dynamicImport), props);
+    return Interop_reactApi.createElement(Interop_reactApi.lazy(dynamicImport), props);
 }
 
 export function React_suspense_6E3A73D(children) {
     let o;
-    return reactApi.createElement(reactApi.Suspense, (o = {
+    return Interop_reactApi.createElement(Interop_reactApi.Suspense, (o = {
         fallback: null,
     }, Object.assign({}, o)), ...children);
 }
 
 export function React_suspense_Z3796A576(children, fallback) {
     let o;
-    return reactApi.createElement(reactApi.Suspense, (o = {
+    return Interop_reactApi.createElement(Interop_reactApi.Suspense, (o = {
         fallback: fallback,
     }, Object.assign({}, o)), ...children);
 }
 
 export function useReact_useImperativeHandle_596DDC25(ref, createHandle) {
-    reactApi.useImperativeHandle(ref, createHandle);
+    Interop_reactApi.useImperativeHandle(ref, createHandle);
 }
 
 export function useReact_useImperativeHandle_Z12F09548(ref, createHandle, dependencies) {
-    reactApi.useImperativeHandle(ref, createHandle, dependencies);
+    Interop_reactApi.useImperativeHandle(ref, createHandle, dependencies);
 }
 
 export function useFeliz_React__React_useState_Static_1505(initial) {
-    return reactApi.useState(initial);
+    return Interop_reactApi.useState(initial);
 }
 
 export const Feliz_React__React_useStateWithUpdater_Static_FCFD9EF = useState;

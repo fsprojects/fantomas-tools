@@ -14,7 +14,7 @@ import { restoreModelFromUrl, updateUrlWithData } from "../UrlTools.js";
 import { toString } from "../.fable/Thoth.Json.5.0.0/Encode.fs.js";
 import { Cmd_ofSub, Cmd_none, Cmd_OfFunc_result, Cmd_batch, Cmd_OfPromise_either } from "../.fable/Fable.Elmish.3.1.0/cmd.fs.js";
 import { getOptionKey, FantomasOption } from "../shared/FantomasOnlineShared.js";
-import { showSuccess as showSuccess_1 } from "../../../js/notifications";
+import { Notyf } from "../../../_snowpack/pkg/notyf.js";
 import { map as map_1 } from "../.fable/fable-library.3.1.15/Seq.js";
 import { isUpper } from "../.fable/fable-library.3.1.15/Char.js";
 
@@ -144,9 +144,15 @@ function restoreUserOptionsFromUrl(defaultOptions) {
     }, defaultOptions)), patternInput[1]];
 }
 
-const showSuccess = showSuccess_1;
+const notify = new Notyf();
 
-const showError = showSuccess_1;
+function showSuccess(message) {
+    notify.success(message);
+}
+
+function showError(message) {
+    notify.error(message);
+}
 
 function copySettings(model, _arg1) {
     const toEditorConfigName = (value) => {

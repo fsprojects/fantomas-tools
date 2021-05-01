@@ -264,8 +264,8 @@ function autoEncoder(extra, caseStrategy, skipNullField, t) {
                     const valueEncoder = autoEncoder(extra, caseStrategy, skipNullField, getGenerics(t)[1]);
                     if ((fullName(keyType) === "System.String") ? true : (fullName(keyType) === "System.Guid")) {
                         return (value_12) => fold((target, _arg1) => {
-                            const activePatternResult11764 = _arg1;
-                            target[activePatternResult11764[0]]=valueEncoder(activePatternResult11764[1]);
+                            const activePatternResult11922 = _arg1;
+                            target[activePatternResult11922[0]]=valueEncoder(activePatternResult11922[1]);
                             return target;
                         }, {}, value_12);
                     }
@@ -274,8 +274,8 @@ function autoEncoder(extra, caseStrategy, skipNullField, t) {
                         const clo4 = autoEncoder(extra, caseStrategy, skipNullField, keyType);
                         keyEncoder = ((arg40) => clo4(arg40));
                         return (value_13) => seq(map_2((_arg2) => {
-                            const activePatternResult11768 = _arg2;
-                            return [keyEncoder(activePatternResult11768[0]), valueEncoder(activePatternResult11768[1])];
+                            const activePatternResult11926 = _arg2;
+                            return [keyEncoder(activePatternResult11926[0]), valueEncoder(activePatternResult11926[1])];
                         }, value_13));
                     }
                 }

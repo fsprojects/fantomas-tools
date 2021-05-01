@@ -1,16 +1,41 @@
-import { updateUrlBy as updateUrlBy_1, decompressFromEncodedURIComponent, compressToEncodedURIComponent, setGetParam as setGetParam_1 } from "../../js/urlUtils.js";
-import { printf, toConsole, isNullOrWhiteSpace } from "./.fable/fable-library.3.1.15/String.js";
+import { printf, toConsole, interpolate, toText, isNullOrWhiteSpace, split } from "./.fable/fable-library.3.1.15/String.js";
+import { toString } from "./.fable/fable-library.3.1.15/Types.js";
+import { decompressFromEncodedURIComponent, compressToEncodedURIComponent } from "../../_snowpack/pkg/lz-string.js";
 import { length } from "./.fable/fable-library.3.1.15/Seq.js";
 import { map, choose, tryHead } from "./.fable/fable-library.3.1.15/Array.js";
 import { fromString } from "./.fable/Thoth.Json.5.0.0/Decode.fs.js";
 
-const setGetParam = setGetParam_1;
+function setGetParam(encodedJson) {
+    if (!(((arg00) => {
+        history.pushState(arg00);
+    }) == null)) {
+        const hashPieces = split(window.location.hash, ["?"], null, 1);
+        const hash = ((!(hashPieces == null)) ? (!isNullOrWhiteSpace(hashPieces[0])) : false) ? hashPieces[0] : "";
+        const params = new URLSearchParams();
+        params.set("data", encodedJson);
+        const newUrl = toText(interpolate("%P()//%P()%P()%P()?%P()", [window.location.protocol, window.location.host, window.location.pathname, hash, toString(params)]));
+        history.pushState({
+            path: newUrl,
+        }, "", newUrl);
+    }
+}
 
 const encodeUrl = compressToEncodedURIComponent;
 
 const decodeUrl = decompressFromEncodedURIComponent;
 
-export const updateUrlBy = updateUrlBy_1;
+const URLSearchParamsExist = 'URLSearchParams' in window;
+
+export function updateUrlBy(mapFn) {
+    if (URLSearchParamsExist) {
+        const hashPieces = window.location.hash.split("?");
+        const params = new URLSearchParams(hashPieces[1]);
+        const newUrl = toText(interpolate("%P()//%P()%P()%P()?%P()", [window.location.protocol, window.location.host, window.location.pathname, mapFn((window.location.hash == null) ? "" : window.location.hash).split("?")[0], toString(params)]));
+        history.pushState({
+            path: newUrl,
+        }, "", newUrl);
+    }
+}
 
 export function updateUrlWithData(json) {
     setGetParam(encodeUrl(json));
@@ -40,9 +65,9 @@ function $007CKeyValuesFromHash$007C_$007C(hash) {
 
 export function restoreModelFromUrl(decoder, defaultValue) {
     const matchValue = window.location.hash;
-    const activePatternResult12182 = $007CKeyValuesFromHash$007C_$007C(matchValue);
-    if (activePatternResult12182 != null) {
-        const v = activePatternResult12182;
+    const activePatternResult12351 = $007CKeyValuesFromHash$007C_$007C(matchValue);
+    if (activePatternResult12351 != null) {
+        const v = activePatternResult12351;
         const modelResult = fromString(decoder, decodeUrl(decodeURIComponent(v)));
         if (modelResult.tag === 1) {
             toConsole(printf("%A"))(modelResult.fields[0]);
