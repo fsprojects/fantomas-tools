@@ -32,3 +32,4 @@ type Msg =
     | FSCVersionReceived of string
     | SetFsiFile of bool
     | Error of string
+    | HighLight of FantomasTools.Client.Editor.HighLightRange

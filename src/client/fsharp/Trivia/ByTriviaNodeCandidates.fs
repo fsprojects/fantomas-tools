@@ -5,13 +5,20 @@ open Fable.React
 open Fable.React.Props
 open TriviaViewer.Shared
 
-let view (model: Model) _dispatch =
+let view (model: Model) dispatch =
     let nodes =
         model.TriviaNodeCandidates
         |> List.mapi
             (fun idx node ->
+                let mapRange (r: Range) : FantomasTools.Client.Editor.HighLightRange =
+                    { StartLine = r.StartLine
+                      StartColumn = r.StartColumn
+                      EndLine = r.EndLine
+                      EndColumn = r.EndColumn }
+
                 tr [ Key(sprintf "node_%d" idx)
-                     ClassName(sprintf "trivia-candidate-%s" node.Type) ] [
+                     ClassName($"trivia-candidate-{node.Type} pointer")
+                     OnClick(fun _ -> HighLight(mapRange node.Range) |> dispatch) ] [
                     td [] [ str node.Name ]
                     td [ ClassName "text-center" ] [
                         ofInt node.Range.StartLine

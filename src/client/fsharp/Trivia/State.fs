@@ -127,7 +127,7 @@ let update code msg model =
                           EndLine = r.EndLine
                           EndColumn = r.EndColumn }
 
-                    Cmd.ofSub (Editor.selectRange highLightRange))
+                    Cmd.ofMsg (HighLight highLightRange))
             |> Option.defaultValue Cmd.none
 
         model, cmd
@@ -138,3 +138,4 @@ let update code msg model =
               IsLoading = false },
         Cmd.none
     | SetFsiFile v -> { model with IsFsi = v }, Cmd.none
+    | HighLight hlr -> model, Cmd.ofSub (FantomasTools.Client.Editor.selectRange hlr)
