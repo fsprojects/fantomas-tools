@@ -64,7 +64,7 @@ let Editor (isReadOnly: bool) (props: MonacoEditorProp list) =
                     "lineNumbers" ==> true
                     "theme" ==> "vs-light"
                     "renderWhitespace" ==> "all"
-                    "miniMap" ==> createObj [ "enabled" ==> false ] ]
+                    "minimap" ==> createObj [ "enabled" ==> false ] ]
 
     let defaultProps : MonacoEditorProp list =
         [ MonacoEditorProp.Height "100%"
