@@ -1,6 +1,9 @@
 group V2
 FSharp.Compiler.Service
 Fantomas
-Microsoft.NET.Sdk.Functions
+Microsoft.Azure.Functions.Worker
+Microsoft.Azure.Functions.Worker.Extensions.Http
+Microsoft.Azure.Functions.Worker.Sdk
 FSharp.Core
 Thoth.Json.Net
+Ply

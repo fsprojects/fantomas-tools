@@ -4,10 +4,8 @@ open Fantomas
 open Fantomas.FormatConfig
 open FantomasOnline.Server.Shared
 open FantomasOnline.Shared
-open FantomasOnline.Server.Shared.Http
-open Microsoft.AspNetCore.Http
-open Microsoft.Azure.WebJobs
-open Microsoft.Azure.WebJobs.Extensions.Http
+open Microsoft.Azure.Functions.Worker.Http
+open Microsoft.Azure.Functions.Worker
 open Microsoft.Extensions.Logging
 open System.Net
 open FSharp.Compiler.SourceCodeServices
@@ -109,10 +107,12 @@ module FormatCode =
 
         sprintf "Master at %s" date
 
-    [<FunctionName("FormatCode")>]
+    [<Function "FormatCode">]
     let run
-        ([<HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "{*any}")>] req: HttpRequest)
-        (log: ILogger)
+        (
+            [<HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "{*any}")>] req: HttpRequestData,
+            executionContext: FunctionContext
+        )
         =
+        let log : ILogger = executionContext.GetLogger("FormatCode")
         Http.main getFantomasVersion getOptions mapFantomasOptionsToRecord format validate log req
-        |> Async.StartAsTask

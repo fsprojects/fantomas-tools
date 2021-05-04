@@ -1,15 +1,15 @@
 namespace ASTViewer.Server
 
-open Microsoft.AspNetCore.Http
-open Microsoft.Azure.WebJobs
-open Microsoft.Azure.WebJobs.Extensions.Http
+open Microsoft.Azure.Functions.Worker.Http
+open Microsoft.Azure.Functions.Worker
 open Microsoft.Extensions.Logging
 open System.IO
+open System.Threading.Tasks
 open FSharp.Compiler.SourceCodeServices
-open FSharp.Compiler.SyntaxTree
 open System.Net
 open System.Net.Http
 open Thoth.Json.Net
+open FSharp.Control.Tasks
 open ASTViewer.Shared
 open ASTViewer.Server
 
@@ -35,86 +35,60 @@ module Reflection =
         FSharpValue.MakeRecord(typeof<'t>, values) :?> 't
 
 module GetAST =
-    let private assemblies =
-        [| "System.Collections.dll"
-           "System.Core.dll"
-           "System.Data.dll"
-           "System.dll"
-           "System.Drawing.dll"
-           "System.IO.dll"
-           "System.Linq.dll"
-           "System.Linq.Expressions.dll"
-           "System.Net.Requests.dll"
-           "System.Numerics.dll"
-           "System.Reflection.dll"
-           "System.Runtime.dll"
-           "System.Runtime.Numerics.dll"
-           "System.Runtime.Remoting.dll"
-           "System.Runtime.Serialization.Formatters.Soap.dll"
-           "System.Threading.dll"
-           "System.Threading.Tasks.dll"
-           "System.Web.dll"
-           "System.Web.Services.dll"
-           "System.Windows.Forms.dll"
-           "System.Xml.dll" |]
-
-    let private additionalRefs =
-        let refs =
-            Directory.EnumerateFiles(Path.GetDirectoryName(typeof<System.Object>.Assembly.Location))
-            |> Seq.filter (fun path -> Array.contains (Path.GetFileName(path)) assemblies)
-            |> Seq.map (sprintf "-r:%s")
-
-        [| "--simpleresolution"
-           "--noframework"
-           yield! refs |]
-
     let private sharedChecker =
         lazy (FSharpChecker.Create(keepAssemblyContents = true))
 
-    let private sendJson json =
-        new HttpResponseMessage(
-            HttpStatusCode.OK,
-            Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json")
-        )
+    let private sendJson json (res: HttpResponseData) : Task<HttpResponseData> =
+        task {
+            res.StatusCode <- HttpStatusCode.OK
+            do! res.WriteStringAsync(json)
+            res.Headers.Add("Content-Type", "application/json")
+            return res
+        }
 
-    let private sendText text =
-        new HttpResponseMessage(
-            HttpStatusCode.OK,
-            Content = new StringContent(text, System.Text.Encoding.UTF8, "application/text")
-        )
+    let private sendText (text: string) (res: HttpResponseData) : Task<HttpResponseData> =
+        task {
+            do! res.WriteStringAsync(text, System.Text.Encoding.UTF8)
+            res.StatusCode <- HttpStatusCode.OK
+            res.Headers.Add("Content-Type", "text/plain")
+            return res
+        }
 
-    let private sendInternalError err =
-        new HttpResponseMessage(
-            HttpStatusCode.InternalServerError,
-            Content = new StringContent(err, System.Text.Encoding.UTF8, "application/text")
-        )
+    let private sendInternalError (error: string) (res: HttpResponseData) : Task<HttpResponseData> =
+        task {
+            do! res.WriteStringAsync(error)
+            res.Headers.Add("Content-Type", "application/text")
+            res.StatusCode <- HttpStatusCode.InternalServerError
+            return res
+        }
 
-    let private sendTooLargeError () =
-        new HttpResponseMessage(
-            HttpStatusCode.RequestEntityTooLarge,
-            Content = new StringContent("File was too large", System.Text.Encoding.UTF8, "application/text")
-        )
+    let private sendTooLargeError (res: HttpResponseData) : Task<HttpResponseData> =
+        task {
+            do! res.WriteStringAsync("File was too large")
+            res.Headers.Add("Content-Type", "application/text")
+            res.StatusCode <- HttpStatusCode.RequestEntityTooLarge
+            return res
+        }
 
-    let private sendBadRequest error =
-        new HttpResponseMessage(
-            HttpStatusCode.BadRequest,
-            Content = new StringContent(error, System.Text.Encoding.UTF8, "application/text")
-        )
+    let private sendBadRequest (error: string) (res: HttpResponseData) : Task<HttpResponseData> =
+        task {
+            do! res.WriteStringAsync(error)
+            res.Headers.Add("Content-Type", "application/text")
+            res.StatusCode <- HttpStatusCode.BadRequest
+            return res
+        }
 
-    let private notFound () =
-        let json = Encode.string "Not found" |> Encode.toString 4
-
-        new HttpResponseMessage(
-            HttpStatusCode.NotFound,
-            Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json")
-        )
+    let private notFound (res: HttpResponseData) : Task<HttpResponseData> =
+        task {
+            let json = Encode.string "Not found" |> Encode.toString 4
+            do! res.WriteStringAsync(json)
+            res.StatusCode <- HttpStatusCode.NotFound
+            return res
+        }
 
     let getProjectOptionsFromScript file source defines (checker: FSharpChecker) =
         async {
-            let otherFlags =
-                defines
-                |> Array.map (sprintf "-d:%s")
-                |> Array.append additionalRefs
+            let otherFlags = defines |> Array.map (sprintf "-d:%s")
 
             let! (opts, errors) =
                 checker.GetProjectOptionsFromScript(
@@ -130,14 +104,14 @@ module GetAST =
             | errs -> return failwithf "Errors getting project options: %A" errs
         }
 
-    let private getVersion () =
+    let private getVersion (res: HttpResponseData) : Task<HttpResponseData> =
         let version =
             let assembly = typeof<FSharpChecker>.Assembly
 
             let version = assembly.GetName().Version
             sprintf "%i.%i.%i" version.Major version.Minor version.Revision
 
-        sendText version
+        sendText version res
 
     let parseAST
         (log: ILogger)
@@ -172,8 +146,8 @@ module GetAST =
             | _ -> return Error Array.empty // Not sure this branch can be reached.
         }
 
-    let private getAST log (req: HttpRequest) =
-        async {
+    let private getAST log (req: HttpRequestData) (res: HttpResponseData) : Task<HttpResponseData> =
+        task {
             use stream = new StreamReader(req.Body)
             let! json = stream.ReadToEndAsync() |> Async.AwaitTask
             let parseRequest = Decoders.decodeInputRequest json
@@ -188,10 +162,10 @@ module GetAST =
                         Encoders.encodeResponse (sprintf "%A" ast) errors
                         |> Encode.toString 2
 
-                    return sendJson responseJson
-                | Error error -> return sendBadRequest (sprintf "%A" error)
-            | Ok _ -> return sendTooLargeError ()
-            | Error err -> return sendInternalError (sprintf "%A" err)
+                    return! sendJson responseJson res
+                | Error error -> return! sendBadRequest (sprintf "%A" error) res
+            | Ok _ -> return! sendTooLargeError res
+            | Error err -> return! sendInternalError (sprintf "%A" err) res
         }
 
     let private parseTypedAST
@@ -227,8 +201,8 @@ module GetAST =
         }
 
 
-    let private getTypedAST (req: HttpRequest) =
-        async {
+    let private getTypedAST (req: HttpRequestData) (res: HttpResponseData) : Task<HttpResponseData> =
+        task {
             use stream = new StreamReader(req.Body)
             let! json = stream.ReadToEndAsync() |> Async.AwaitTask
             let parseRequest = Decoders.decodeInputRequest json
@@ -243,29 +217,30 @@ module GetAST =
                         Encoders.encodeResponse (sprintf "%A" tast) errors
                         |> Encode.toString 2
 
-                    return sendJson responseJson
+                    return! sendJson responseJson res
 
-                | Error error -> return sendInternalError (sprintf "%A" error)
+                | Error error -> return! sendInternalError (sprintf "%A" error) res
 
-            | Result.Ok _ -> return sendTooLargeError ()
+            | Result.Ok _ -> return! sendTooLargeError res
 
-            | Error err -> return sendInternalError (sprintf "%A" err)
+            | Error err -> return! sendInternalError (sprintf "%A" err) res
         }
 
-    [<FunctionName("GetAST")>]
+    [<Function "GetAST">]
     let run
-        ([<HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "{*any}")>] req: HttpRequest)
-        (log: ILogger)
+        (
+            [<HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "{*any}")>] req: HttpRequestData,
+            executionContext: FunctionContext
+        )
         =
-        async {
-            log.LogInformation("F# HTTP trigger function processed a request.")
-            let path = req.Path.Value.ToLower()
-            let method = req.Method.ToUpper()
+        let log : ILogger = executionContext.GetLogger("GetAST")
+        log.LogInformation("F# HTTP trigger function processed a request.")
+        let path = req.Url.LocalPath.ToLower()
+        let method = req.Method.ToUpper()
+        let res = req.CreateResponse()
 
-            match method, path with
-            | "GET", "/api/version" -> return getVersion ()
-            | "POST", "/api/untyped-ast" -> return! getAST log req
-            | "POST", "/api/typed-ast" -> return! getTypedAST req
-            | _ -> return notFound ()
-        }
-        |> Async.StartAsTask
+        match method, path with
+        | "GET", "/api/version" -> getVersion res
+        | "POST", "/api/untyped-ast" -> getAST log req res
+        | "POST", "/api/typed-ast" -> getTypedAST req res
+        | _ -> notFound res

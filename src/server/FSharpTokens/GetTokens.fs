@@ -5,42 +5,87 @@ open FSharpTokens.Shared
 open System.IO
 open System.Net
 open System.Net.Http
+open System.Threading.Tasks
+open FSharp.Control.Tasks
 open Thoth.Json.Net
 open Microsoft.Extensions.Logging
-open Microsoft.AspNetCore.Http
-open Microsoft.Azure.WebJobs
-open Microsoft.Azure.WebJobs.Extensions.Http
+open Microsoft.Azure.Functions.Worker.Http
+open Microsoft.Azure.Functions.Worker
 open FSharpTokens.Server.Decoders
 open FSharpTokens.Server.Encoders
 
 module GetTokens =
-    let getTokens (req: HttpRequest) =
-        let content =
-            using (new StreamReader(req.Body)) (fun stream -> stream.ReadToEnd())
+    let private sendJson json (res: HttpResponseData) : Task<HttpResponseData> =
+        task {
+            res.StatusCode <- HttpStatusCode.OK
+            do! res.WriteStringAsync(json)
+            res.Headers.Add("Content-Type", "application/json")
+            return res
+        }
 
-        let model = Decode.fromString decodeTokenRequest content
+    let private sendText (text: string) (res: HttpResponseData) : Task<HttpResponseData> =
+        task {
+            do! res.WriteStringAsync(text, System.Text.Encoding.UTF8)
+            res.StatusCode <- HttpStatusCode.OK
+            res.Headers.Add("Content-Type", "text/plain")
+            return res
+        }
 
-        match model with
-        | Ok model ->
-            let _, defineHashTokens = TokenParser.getDefines content
+    let private sendInternalError (error: string) (res: HttpResponseData) : Task<HttpResponseData> =
+        task {
+            do! res.WriteStringAsync(error)
+            res.Headers.Add("Content-Type", "application/text")
+            res.StatusCode <- HttpStatusCode.InternalServerError
+            return res
+        }
 
-            let json =
-                TokenParser.tokenize model.Defines defineHashTokens model.SourceCode
-                |> toJson
+    let private sendTooLargeError (res: HttpResponseData) : Task<HttpResponseData> =
+        task {
+            do! res.WriteStringAsync("File was too large")
+            res.Headers.Add("Content-Type", "application/text")
+            res.StatusCode <- HttpStatusCode.RequestEntityTooLarge
+            return res
+        }
 
-            new HttpResponseMessage(
-                HttpStatusCode.OK,
-                Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json")
-            )
-        | Error err ->
-            printfn "Failed to decode: %A" err
+    let private sendBadRequest (error: string) (res: HttpResponseData) : Task<HttpResponseData> =
+        task {
+            do! res.WriteStringAsync(error)
+            res.Headers.Add("Content-Type", "application/text")
+            res.StatusCode <- HttpStatusCode.BadRequest
+            return res
+        }
 
-            new HttpResponseMessage(
-                HttpStatusCode.BadRequest,
-                Content = new StringContent(err, System.Text.Encoding.UTF8, "text/plain")
-            )
+    let private notFound (res: HttpResponseData) : Task<HttpResponseData> =
+        task {
+            let json = Encode.string "Not found" |> Encode.toString 4
+            do! res.WriteStringAsync(json)
+            res.StatusCode <- HttpStatusCode.NotFound
+            return res
+        }
 
-    let getVersion () =
+    let getTokens (log: ILogger) (req: HttpRequestData) (res: HttpResponseData) : Task<HttpResponseData> =
+        task {
+            use stream = new StreamReader(req.Body)
+            let! content = stream.ReadToEndAsync() |> Async.AwaitTask
+
+            let model = Decode.fromString decodeTokenRequest content
+
+            match model with
+            | Ok model ->
+                let _, defineHashTokens = TokenParser.getDefines content
+
+                let json =
+                    TokenParser.tokenize model.Defines defineHashTokens model.SourceCode
+                    |> toJson
+
+                return! sendJson json res
+            | Error err ->
+                log.LogError($"Failed to decode: {err}")
+                return! sendBadRequest err res
+        }
+
+
+    let getVersion (res: HttpResponseData) : Task<HttpResponseData> =
         let version =
             let assembly =
                 typeof<FSharp.Compiler.SourceCodeServices.FSharpChecker>
@@ -49,29 +94,22 @@ module GetTokens =
             let version = assembly.GetName().Version
             sprintf "%i.%i.%i" version.Major version.Minor version.Revision
 
-        new HttpResponseMessage(
-            HttpStatusCode.OK,
-            Content = new StringContent(version, System.Text.Encoding.UTF8, "application/text")
-        )
+        sendText version res
 
-    let notFound () =
-        let json = Encode.string "Not found" |> Encode.toString 4
-
-        new HttpResponseMessage(
-            HttpStatusCode.NotFound,
-            Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json")
-        )
-
-    [<FunctionName("Tokens")>]
+    [<Function "Tokens">]
     let run
-        ([<HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "{*any}")>] req: HttpRequest)
-        (log: ILogger)
+        (
+            [<HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "{*any}")>] req: HttpRequestData,
+            executionContext: FunctionContext
+        )
         =
+        let log : ILogger = executionContext.GetLogger("Tokens")
         log.LogInformation("F# HTTP trigger function processed a request..")
-        let path = req.Path.Value.ToLower()
+        let path = req.Url.LocalPath.ToLower()
         let method = req.Method.ToUpper()
+        let res = req.CreateResponse()
 
         match method, path with
-        | "POST", "/api/get-tokens" -> getTokens req
-        | "GET", "/api/version" -> getVersion ()
-        | _ -> notFound ()
+        | "POST", "/api/get-tokens" -> getTokens log req res
+        | "GET", "/api/version" -> getVersion res
+        | _ -> notFound res

@@ -32,7 +32,9 @@ module Func =
               "--cors"
               hostOptions.Cors
               "--port"
-              hostOptions.Port.ToString() ]
+              hostOptions.Port.ToString()
+              "--worker-runtime"
+              "dotnetIsolated" ]
 
         CreateProcess.fromRawCommand funcPath parameters
         |> CreateProcess.withWorkingDirectory hostOptions.WorkingDirectory

@@ -1,6 +1,8 @@
 group Server
 FSharp.Core
-Microsoft.NET.Sdk.Functions
+Microsoft.Azure.Functions.Worker
+Microsoft.Azure.Functions.Worker.Extensions.Http
+Microsoft.Azure.Functions.Worker.Sdk
 FSharp.Compiler.Service
 Thoth.Json.Net
-Microsoft.Build.Utilities.Core
+Ply

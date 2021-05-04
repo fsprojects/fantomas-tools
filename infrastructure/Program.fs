@@ -145,7 +145,7 @@ let infra () =
 
                 let functionAppSettings =
                     inputMap
-                        [ "FUNCTIONS_WORKER_RUNTIME", input "DotNet"
+                        [ "FUNCTIONS_WORKER_RUNTIME", input "dotnet-isolated"
                           "APPINSIGHTS_INSTRUMENTATIONKEY", io applicationsInsight.InstrumentationKey
                           "WEBSITE_RUN_FROM_PACKAGE", io codeBlobUrl
                           yield! lastCommitAppSettings ]

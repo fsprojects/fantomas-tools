@@ -1,21 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
+    <OutputType>Exe</OutputType>
     <AzureFunctionsVersion>v3</AzureFunctionsVersion>
     <AssemblyName>FSharpTokens.Server</AssemblyName>
     <RootNamespace>FSharpTokens.Server</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="host.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <None Update="local.settings.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
+    <None Include="paket.references" />
     <Compile Include="../../../.deps/fantomas/src/Fantomas/SourceOrigin.fs" />
     <Compile Include="../../../.deps/fantomas/src/Fantomas/Version.fs" />
     <Compile Include="../../../.deps/fantomas/src/Fantomas/Dbg.fs" />
@@ -28,7 +21,8 @@
     <Compile Include="Decoders.fs" />
     <Compile Include="Encoders.fs" />
     <Compile Include="GetTokens.fs" />
-    <None Include="paket.references" />
+    <Compile Include="Program.fs" />
+    <None Include="host.json" CopyToOutputDirectory="Always" />
   </ItemGroup>
   <Import Project="..\..\..\.paket\Paket.Restore.targets" />
 </Project>

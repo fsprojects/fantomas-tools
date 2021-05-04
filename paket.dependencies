@@ -36,57 +36,60 @@ group Server
 
 source https://api.nuget.org/v3/index.json
 storage: none
-framework: netcore3.1
+framework: net5.0
 
 nuget FSharp.Core
-nuget Microsoft.NET.Sdk.Functions
-# workaround for https://github.com/Azure/azure-functions-host/issues/5786
-nuget Microsoft.Azure.WebJobs.Script.ExtensionsMetadataGenerator 1.1.5
+nuget Microsoft.Azure.Functions.Worker
+nuget Microsoft.Azure.Functions.Worker.Extensions.Http
+nuget Microsoft.Azure.Functions.Worker.Sdk
 nuget FSharp.Compiler.Service 39.0.0
 nuget Thoth.Json.Net 5.0.0
-nuget Microsoft.Build.Utilities.Core
+nuget Ply
 
 group V4
 
 source https://api.nuget.org/v3/index.json
 storage: none
-framework: netcore3.1
+framework: net5.0
 
 nuget FSharp.Core 5.0
-nuget Microsoft.NET.Sdk.Functions
-# workaround for https://github.com/Azure/azure-functions-host/issues/5786
-nuget Microsoft.Azure.WebJobs.Script.ExtensionsMetadataGenerator 1.1.5
+nuget Microsoft.Azure.Functions.Worker
+nuget Microsoft.Azure.Functions.Worker.Extensions.Http
+nuget Microsoft.Azure.Functions.Worker.Sdk
 nuget FSharp.Compiler.Service 38.0.2
 nuget Microsoft.Build.Utilities.Core
 nuget Thoth.Json.Net 5.0.0
 nuget Fantomas.Extras 4.4.0
+nuget Ply
 
 group V3
 
 source https://api.nuget.org/v3/index.json
 storage: none
-framework: netcore3.1
+framework: net5.0
 
 nuget FSharp.Core 4.7.0
-nuget Microsoft.NET.Sdk.Functions
-# workaround for https://github.com/Azure/azure-functions-host/issues/5786
-nuget Microsoft.Azure.WebJobs.Script.ExtensionsMetadataGenerator 1.1.5
+nuget Microsoft.Azure.Functions.Worker
+nuget Microsoft.Azure.Functions.Worker.Extensions.Http
+nuget Microsoft.Azure.Functions.Worker.Sdk
 nuget Thoth.Json.Net 4.1.0
 nuget FSharp.Compiler.Service 34.1.0
 nuget Fantomas 3.3.0
+nuget Ply
 
 group V2
 
 source https://api.nuget.org/v3/index.json
 storage: none
-framework: netcore3.1
+framework: net5.0
 
-nuget Microsoft.NET.Sdk.Functions
-# workaround for https://github.com/Azure/azure-functions-host/issues/5786
-nuget Microsoft.Azure.WebJobs.Script.ExtensionsMetadataGenerator 1.1.5
+nuget Microsoft.Azure.Functions.Worker
+nuget Microsoft.Azure.Functions.Worker.Extensions.Http
+nuget Microsoft.Azure.Functions.Worker.Sdk
 nuget Thoth.Json.Net 5.0.0
 nuget FSharp.Compiler.Service 25.0.1
 nuget Fantomas 2.9.2
+nuget Ply
 
 group Client
 

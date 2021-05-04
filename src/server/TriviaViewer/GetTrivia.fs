@@ -1,47 +1,68 @@
 namespace TriviaViewer.Server
 
-open Microsoft.AspNetCore.Http
-open Microsoft.Azure.WebJobs
-open Microsoft.Azure.WebJobs.Extensions.Http
+open Microsoft.Azure.Functions.Worker.Http
+open Microsoft.Azure.Functions.Worker
 open Microsoft.Extensions.Logging
 open System.IO
 open FSharp.Compiler.SourceCodeServices
 open FSharp.Compiler.SyntaxTree
 open System.Net
-open System.Net.Http
+open System.Threading.Tasks
+open FSharp.Control.Tasks
 open Fantomas
 open Fantomas.AstTransformer
-open Fantomas.TriviaTypes
 open Thoth.Json.Net
 open TriviaViewer.Shared
 open TriviaViewer.Server
 
-
 module GetTrivia =
+    let private sendJson json (res: HttpResponseData) : Task<HttpResponseData> =
+        task {
+            res.StatusCode <- HttpStatusCode.OK
+            do! res.WriteStringAsync(json)
+            res.Headers.Add("Content-Type", "application/json")
+            return res
+        }
 
-    let private sendJson json =
-        new HttpResponseMessage(
-            HttpStatusCode.OK,
-            Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json")
-        )
+    let private sendText (text: string) (res: HttpResponseData) : Task<HttpResponseData> =
+        task {
+            do! res.WriteStringAsync(text, System.Text.Encoding.UTF8)
+            res.StatusCode <- HttpStatusCode.OK
+            res.Headers.Add("Content-Type", "text/plain")
+            return res
+        }
 
-    let private sendText text =
-        new HttpResponseMessage(
-            HttpStatusCode.OK,
-            Content = new StringContent(text, System.Text.Encoding.UTF8, "application/text")
-        )
+    let private sendInternalError (error: string) (res: HttpResponseData) : Task<HttpResponseData> =
+        task {
+            do! res.WriteStringAsync(error)
+            res.Headers.Add("Content-Type", "application/text")
+            res.StatusCode <- HttpStatusCode.InternalServerError
+            return res
+        }
 
-    let private sendInternalError err =
-        new HttpResponseMessage(
-            HttpStatusCode.InternalServerError,
-            Content = new StringContent(err, System.Text.Encoding.UTF8, "application/text")
-        )
+    let private sendTooLargeError (res: HttpResponseData) : Task<HttpResponseData> =
+        task {
+            do! res.WriteStringAsync("File was too large")
+            res.Headers.Add("Content-Type", "application/text")
+            res.StatusCode <- HttpStatusCode.RequestEntityTooLarge
+            return res
+        }
 
-    let private sendBadRequest error =
-        new HttpResponseMessage(
-            HttpStatusCode.BadRequest,
-            Content = new StringContent(error, System.Text.Encoding.UTF8, "application/text")
-        )
+    let private sendBadRequest (error: string) (res: HttpResponseData) : Task<HttpResponseData> =
+        task {
+            do! res.WriteStringAsync(error)
+            res.Headers.Add("Content-Type", "application/text")
+            res.StatusCode <- HttpStatusCode.BadRequest
+            return res
+        }
+
+    let private notFound (res: HttpResponseData) : Task<HttpResponseData> =
+        task {
+            let json = Encode.string "Not found" |> Encode.toString 4
+            do! res.WriteStringAsync(json)
+            res.StatusCode <- HttpStatusCode.NotFound
+            return res
+        }
 
     let private getProjectOptionsFromScript file source defines (checker: FSharpChecker) =
         async {
@@ -55,7 +76,6 @@ module GetTrivia =
 
             return opts
         }
-
 
     let private collectAST (log: ILogger) fileName defines source =
         async {
@@ -86,21 +106,13 @@ module GetTrivia =
                 | _ -> return Error Array.empty // Not sure this branch can be reached.
         }
 
-    let private getVersion () =
+    let private getVersion (res: HttpResponseData) : Task<HttpResponseData> =
         let version =
             let assembly = typeof<FSharpChecker>.Assembly
             let version = assembly.GetName().Version
             sprintf "%i.%i.%i" version.Major version.Minor version.Revision
 
-        sendText version
-
-    let private notFound () =
-        let json = Encode.string "Not found" |> Encode.toString 4
-
-        new HttpResponseMessage(
-            HttpStatusCode.NotFound,
-            Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json")
-        )
+        sendText version res
 
     let private collectTriviaCandidates tokens ast =
         let triviaNodesFromAST =
@@ -122,10 +134,10 @@ module GetTrivia =
         triviaNodesFromAST @ triviaNodesFromTokens
         |> List.sortBy (fun n -> n.Range.Start.Line, n.Range.Start.Column)
 
-    let private getTrivia (log: ILogger) (req: HttpRequest) =
-        async {
+    let private getTrivia (log: ILogger) (req: HttpRequestData) (res: HttpResponseData) : Task<HttpResponseData> =
+        task {
             use stream = new StreamReader(req.Body)
-            let! json = stream.ReadToEndAsync() |> Async.AwaitTask
+            let! json = stream.ReadToEndAsync()
             let parseRequest = Decoders.decodeParseRequest json
 
             match parseRequest with
@@ -157,25 +169,25 @@ module GetTrivia =
                     let json =
                         Encoders.encodeParseResult trivias triviaNodes triviaCandidates
 
-                    return sendJson json
-                | Error err -> return sendBadRequest (sprintf "%A" err)
-            | Error err -> return sendBadRequest (sprintf "%A" err)
+                    return! sendJson json res
+                | Error err -> return! sendBadRequest (sprintf "%A" err) res
+            | Error err -> return! sendBadRequest (sprintf "%A" err) res
         }
 
-    [<FunctionName("GetTrivia")>]
+    [<Function "GetTrivia">]
     let run
-        ([<HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "{*any}")>] req: HttpRequest)
-        (log: ILogger)
+        (
+            [<HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "{*any}")>] req: HttpRequestData,
+            executionContext: FunctionContext
+        )
         =
-        async {
-            log.LogInformation("F# HTTP trigger function processed a request.")
+        let log : ILogger = executionContext.GetLogger("GetTrivia")
+        log.LogInformation("F# HTTP trigger function processed a request.")
+        let path = req.Url.LocalPath.ToLower()
+        let method = req.Method.ToUpper()
+        let res = req.CreateResponse()
 
-            let path = req.Path.Value.ToLower()
-            let method = req.Method.ToUpper()
-
-            match method, path with
-            | "POST", "/api/get-trivia" -> return! getTrivia log req
-            | "GET", "/api/version" -> return getVersion ()
-            | _ -> return notFound ()
-        }
-        |> Async.StartAsTask
+        match method, path with
+        | "POST", "/api/get-trivia" -> getTrivia log req res
+        | "GET", "/api/version" -> getVersion res
+        | _ -> notFound res
