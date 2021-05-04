@@ -17,14 +17,11 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-
-      - name: Setup .NET Core
-        uses: actions/setup-dotnet@v1
+      
+      - uses: addnab/docker-run-action@v3
         with:
-          dotnet-version: 5.0.202
-
-      - name: Restore local tools
-        run: dotnet tool restore
-
-      - name: FAKE
-        run: dotnet fake run build.fsx -t PR
+          image: nojaf/fable-azure-functions:1.1
+          options: -v ${{ github.workspace }}:/workspace -w /workspace
+          run: |
+            dotnet tool restore
+            dotnet fake run build.fsx -t PR
