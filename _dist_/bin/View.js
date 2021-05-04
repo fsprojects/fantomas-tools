@@ -1,5 +1,5 @@
 import { NavbarProps, navbar } from "./.fable/Fable.Reactstrap.0.5.1/Navbar.fs.js";
-import { Prop, DOMAttr, HTMLAttr } from "./.fable/Fable.React.7.0.1/Fable.React.Props.fs.js";
+import { Prop, DOMAttr, HTMLAttr } from "./.fable/Fable.React.7.4.0/Fable.React.Props.fs.js";
 import { toArray, ofArray, singleton } from "./.fable/fable-library.3.1.15/List.js";
 import { NavbarBrandProps, navbarBrand } from "./.fable/Fable.Reactstrap.0.5.1/NavbarBrand.fs.js";
 import { printf, toText } from "./.fable/fable-library.3.1.15/String.js";

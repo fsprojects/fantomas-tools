@@ -1,6 +1,6 @@
 import { equals } from "../.fable/fable-library.3.1.15/Util.js";
 import { TabPaneProps, tabPane } from "../.fable/Fable.Reactstrap.0.5.1/TabPane.fs.js";
-import { DOMAttr, HTMLAttr } from "../.fable/Fable.React.7.0.1/Fable.React.Props.fs.js";
+import { DOMAttr, HTMLAttr } from "../.fable/Fable.React.7.4.0/Fable.React.Props.fs.js";
 import { ofArray, singleton } from "../.fable/fable-library.3.1.15/List.js";
 import { Msg, ActiveTab } from "./Model.js";
 import { view as view_1 } from "./ByTriviaNodes.js";

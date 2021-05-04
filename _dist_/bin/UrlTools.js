@@ -3,7 +3,7 @@ import { toString } from "./.fable/fable-library.3.1.15/Types.js";
 import { decompressFromEncodedURIComponent, compressToEncodedURIComponent } from "../../_snowpack/pkg/lz-string.js";
 import { length } from "./.fable/fable-library.3.1.15/Seq.js";
 import { map, choose, tryHead } from "./.fable/fable-library.3.1.15/Array.js";
-import { fromString } from "./.fable/Thoth.Json.5.0.0/Decode.fs.js";
+import { fromString } from "./.fable/Thoth.Json.5.1.0/Decode.fs.js";
 
 function setGetParam(encodedJson) {
     if (!(((arg00) => {
@@ -65,9 +65,9 @@ function $007CKeyValuesFromHash$007C_$007C(hash) {
 
 export function restoreModelFromUrl(decoder, defaultValue) {
     const matchValue = window.location.hash;
-    const activePatternResult12351 = $007CKeyValuesFromHash$007C_$007C(matchValue);
-    if (activePatternResult12351 != null) {
-        const v = activePatternResult12351;
+    const activePatternResult12427 = $007CKeyValuesFromHash$007C_$007C(matchValue);
+    if (activePatternResult12427 != null) {
+        const v = activePatternResult12427;
         const modelResult = fromString(decoder, decodeUrl(decodeURIComponent(v)));
         if (modelResult.tag === 1) {
             toConsole(printf("%A"))(modelResult.fields[0]);

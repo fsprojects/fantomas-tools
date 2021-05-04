@@ -1,4 +1,4 @@
-import { fromString, array, int, bool, string, object } from "../.fable/Thoth.Json.5.0.0/Decode.fs.js";
+import { fromString, array, int, bool, string, object } from "../.fable/Thoth.Json.5.1.0/Decode.fs.js";
 import { Model } from "./Model.js";
 import { uncurry } from "../.fable/fable-library.3.1.15/Util.js";
 import { Response, ASTError, Range$ } from "../shared/ASTViewerShared.js";

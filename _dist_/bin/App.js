@@ -1,10 +1,10 @@
-import { useFeliz_React__React_useElmish_Static_645B1FB7 } from "./.fable/Feliz.UseElmish.1.5.0/UseElmish.fs.js";
+import { useFeliz_React__React_useElmish_Static_645B1FB7 } from "./.fable/Feliz.UseElmish.1.5.1/UseElmish.fs.js";
 import { update, init } from "./State.js";
 import { editor, navigation, tabs } from "./View.js";
 import { createElement } from "../../_snowpack/pkg/react.js";
 import * as react from "../../_snowpack/pkg/react.js";
 import { RowProps, row } from "./.fable/Fable.Reactstrap.0.5.1/Row.fs.js";
-import { HTMLAttr } from "./.fable/Fable.React.7.0.1/Fable.React.Props.fs.js";
+import { HTMLAttr } from "./.fable/Fable.React.7.4.0/Fable.React.Props.fs.js";
 import { ofArray } from "./.fable/fable-library.3.1.15/List.js";
 import { RouterModule_router } from "./.fable/Feliz.Router.3.2.0/Router.fs.js";
 import { parseUrl } from "./Navigation.js";

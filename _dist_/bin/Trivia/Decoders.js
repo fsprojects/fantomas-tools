@@ -1,4 +1,4 @@
-import { bool, fromString, string, option as option_2, list, Auto_generateDecoderCached_7848D058, int, object } from "../.fable/Thoth.Json.5.0.0/Decode.fs.js";
+import { bool, fromString, string, option as option_2, list, Auto_generateDecoderCached_7848D058, int, object } from "../.fable/Thoth.Json.5.1.0/Decode.fs.js";
 import { uncurry } from "../.fable/fable-library.3.1.15/Util.js";
 import { ParseResult, TriviaNodeCandidate, TriviaNode, TriviaNodeType$reflection, Trivia, TriviaContent$reflection, Range$ } from "../shared/TriviaShared.js";
 import { defaultArg } from "../.fable/fable-library.3.1.15/Option.js";

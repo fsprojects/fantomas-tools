@@ -7,7 +7,7 @@ import { Array_groupBy } from "../.fable/fable-library.3.1.15/Seq2.js";
 import { map as map_1 } from "../.fable/fable-library.3.1.15/Option.js";
 import { loader } from "../Loader.js";
 import { ButtonProps, button } from "../.fable/Fable.Reactstrap.0.5.1/Button.fs.js";
-import { DOMAttr } from "../.fable/Fable.React.7.0.1/Fable.React.Props.fs.js";
+import { DOMAttr } from "../.fable/Fable.React.7.4.0/Fable.React.Props.fs.js";
 import { singleton } from "../.fable/fable-library.3.1.15/List.js";
 import { versionBar } from "../VersionBar.js";
 import { input } from "../SettingControls.js";

@@ -1,5 +1,5 @@
 import { updateUrlBy, restoreModelFromUrl } from "./UrlTools.js";
-import { string, object } from "./.fable/Thoth.Json.5.0.0/Decode.fs.js";
+import { string, object } from "./.fable/Thoth.Json.5.1.0/Decode.fs.js";
 import { cmdForCurrentTab, parseUrl } from "./Navigation.js";
 import { RouterModule_urlSegments } from "./.fable/Feliz.Router.3.2.0/Router.fs.js";
 import { update as update_1, init as init_1 } from "./Trivia/State.js";

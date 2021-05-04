@@ -2,7 +2,7 @@ import { Union } from "../fable-library.3.1.15/Types.js";
 import { bool_type, class_type, union_type, obj_type, int32_type, string_type } from "../fable-library.3.1.15/Reflection.js";
 import { int32ToString } from "../fable-library.3.1.15/Util.js";
 import { keyValueList } from "../fable-library.3.1.15/MapUtil.js";
-import { result } from "../Fable.Promise.2.1.0/Promise.fs.js";
+import { result } from "../Fable.Promise.2.2.0/Promise.fs.js";
 import { singleton } from "../fable-library.3.1.15/List.js";
 
 export class Types_HttpRequestHeaders extends Union {

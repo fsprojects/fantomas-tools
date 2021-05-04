@@ -1,4 +1,4 @@
-import { map, list, array as array_2, fromString, bool, int, tuple3, string, object } from "../.fable/Thoth.Json.5.0.0/Decode.fs.js";
+import { map, list, array as array_2, fromString, bool, int, tuple3, string, object } from "../.fable/Thoth.Json.5.1.0/Decode.fs.js";
 import { comparePrimitives, uncurry } from "../.fable/fable-library.3.1.15/Util.js";
 import { FormatResponse, ASTError, ASTErrorSeverity, Range$, sortByOption, FantomasOption } from "../shared/FantomasOnlineShared.js";
 import { Result_Map } from "../.fable/fable-library.3.1.15/Choice.js";

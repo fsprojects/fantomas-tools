@@ -6,7 +6,7 @@ import { bind } from "../.fable/fable-library.3.1.15/Option.js";
 import { mapIndexed } from "../.fable/fable-library.3.1.15/Array.js";
 import { printf, toText } from "../.fable/fable-library.3.1.15/String.js";
 import { BadgeProps, badge } from "../.fable/Fable.Reactstrap.0.5.1/Badge.fs.js";
-import { DOMAttr, HTMLAttr } from "../.fable/Fable.React.7.0.1/Fable.React.Props.fs.js";
+import { DOMAttr, HTMLAttr } from "../.fable/Fable.React.7.4.0/Fable.React.Props.fs.js";
 import { isEmpty } from "../.fable/fable-library.3.1.15/Seq.js";
 import { loader } from "../Loader.js";
 import { ButtonProps, button } from "../.fable/Fable.Reactstrap.0.5.1/Button.fs.js";

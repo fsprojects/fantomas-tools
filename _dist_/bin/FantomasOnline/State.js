@@ -8,10 +8,10 @@ import { isNullOrWhiteSpace, toConsole, join, trimStart, toFail, printf, toText 
 import { Types_RequestProperties, fetch$ } from "../.fable/Fable.Fetch.2.2.0/Fetch.fs.js";
 import { decodeOptionsFromUrl, decodeFormatResponse, decodeOptions } from "./Decoders.js";
 import { encodeUrlModel, encodeRequest } from "./Encoders.js";
-import { fromString } from "../.fable/Thoth.Json.5.0.0/Decode.fs.js";
+import { fromString } from "../.fable/Thoth.Json.5.1.0/Decode.fs.js";
 import { stringHash, uncurry } from "../.fable/fable-library.3.1.15/Util.js";
 import { restoreModelFromUrl, updateUrlWithData } from "../UrlTools.js";
-import { toString } from "../.fable/Thoth.Json.5.0.0/Encode.fs.js";
+import { toString } from "../.fable/Thoth.Json.5.1.0/Encode.fs.js";
 import { Cmd_ofSub, Cmd_none, Cmd_OfFunc_result, Cmd_batch, Cmd_OfPromise_either } from "../.fable/Fable.Elmish.3.1.0/cmd.fs.js";
 import { getOptionKey, FantomasOption } from "../shared/FantomasOnlineShared.js";
 import { Notyf } from "../../../_snowpack/pkg/notyf.js";

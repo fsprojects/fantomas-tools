@@ -10,7 +10,7 @@ import { ParseRequest } from "../shared/TriviaShared.js";
 import { updateUrlWithData, restoreModelFromUrl } from "../UrlTools.js";
 import { uncurry } from "../.fable/fable-library.3.1.15/Util.js";
 import { Cmd_OfFunc_result, Cmd_none, Cmd_ofSub, Cmd_batch, Cmd_OfPromise_either } from "../.fable/Fable.Elmish.3.1.0/cmd.fs.js";
-import { toString } from "../.fable/Thoth.Json.5.0.0/Encode.fs.js";
+import { toString } from "../.fable/Thoth.Json.5.1.0/Encode.fs.js";
 import { defaultArg, map } from "../.fable/fable-library.3.1.15/Option.js";
 import { selectRange, HighLightRange } from "../Editor.js";
 

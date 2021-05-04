@@ -55,14 +55,14 @@ export function RouterModule_encodeQueryStringInts(queryStringIntPairs) {
 function RouterModule_normalizeRoute(routeMode) {
     if (routeMode === 1) {
         return (_arg1) => {
-            let activePatternResult9543, path, activePatternResult9544, path_1, activePatternResult9545, path_2;
-            return activePatternResult9543 = RouterModule_String_$007CPrefix$007C("/", _arg1), (activePatternResult9543 != null) ? (path = activePatternResult9543, "#" + path) : (activePatternResult9544 = RouterModule_String_$007CPrefix$007C("#/", _arg1), (activePatternResult9544 != null) ? (path_1 = activePatternResult9544, path_1) : (activePatternResult9545 = RouterModule_String_$007CPrefix$007C("#", _arg1), (activePatternResult9545 != null) ? (path_2 = activePatternResult9545, "#/" + substring(path_2, 1, path_2.length - 1)) : ("#/" + _arg1)));
+            let activePatternResult9603, path, activePatternResult9604, path_1, activePatternResult9605, path_2;
+            return activePatternResult9603 = RouterModule_String_$007CPrefix$007C("/", _arg1), (activePatternResult9603 != null) ? (path = activePatternResult9603, "#" + path) : (activePatternResult9604 = RouterModule_String_$007CPrefix$007C("#/", _arg1), (activePatternResult9604 != null) ? (path_1 = activePatternResult9604, path_1) : (activePatternResult9605 = RouterModule_String_$007CPrefix$007C("#", _arg1), (activePatternResult9605 != null) ? (path_2 = activePatternResult9605, "#/" + substring(path_2, 1, path_2.length - 1)) : ("#/" + _arg1)));
         };
     }
     else {
         return (_arg2) => {
-            let activePatternResult9548, path_4;
-            return activePatternResult9548 = RouterModule_String_$007CPrefix$007C("/", _arg2), (activePatternResult9548 != null) ? (path_4 = activePatternResult9548, path_4) : ("/" + _arg2);
+            let activePatternResult9608, path_4;
+            return activePatternResult9608 = RouterModule_String_$007CPrefix$007C("/", _arg2), (activePatternResult9608 != null) ? (path_4 = activePatternResult9608, path_4) : ("/" + _arg2);
         };
     }
 }

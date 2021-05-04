@@ -4,7 +4,7 @@ import { Util_CachedDecoders, Util_Cache$1__GetOrAdd_43981464, CaseStrategy, Uti
 import { tryParse as tryParse_2 } from "../fable-library.3.1.15/Guid.js";
 import { toString as toString_12, FSharpRef } from "../fable-library.3.1.15/Types.js";
 import { tryParse as tryParse_3 } from "../fable-library.3.1.15/Int32.js";
-import { tryParse as tryParse_4, fromInt, fromNumber, toNumber, fromBits } from "../fable-library.3.1.15/Long.js";
+import { tryParse as tryParse_4, fromInt, fromNumber, fromBits, toNumber } from "../fable-library.3.1.15/Long.js";
 import { parse, fromInt32 } from "../fable-library.3.1.15/BigInt.js";
 import { tryParse as tryParse_5 } from "../fable-library.3.1.15/Decimal.js";
 import Decimal from "../fable-library.3.1.15/Decimal.js";
@@ -251,55 +251,47 @@ export const uint32 = (path) => ((value_2) => {
     }
 });
 
-export const int64 = (() => {
-    const min = fromBits(0, 2147483648, false);
-    const max = fromBits(4294967295, 2147483647, false);
-    return (path) => ((value_2) => {
-        const name_1 = "an int64";
-        const path_1 = path;
-        const value_3 = value_2;
-        if ((typeof value_3) === "number") {
-            const value_4 = value_3;
-            return (isFinite(value_4) && Math.floor(value_4) === value_4) ? (((toNumber(min) <= value_4) ? (value_4 <= toNumber(max)) : false) ? (new FSharpResult$2(0, fromNumber(value_4, false))) : (new FSharpResult$2(1, [path_1, new ErrorReason(1, name_1, value_4, "Value was either too large or too small for " + name_1)]))) : (new FSharpResult$2(1, [path_1, new ErrorReason(1, name_1, value_4, "Value is not an integral value")]));
-        }
-        else if ((typeof value_3) === "string") {
-            let matchValue;
-            let outArg = fromInt(0);
-            matchValue = [tryParse_4(value_3, 511, false, 64, new FSharpRef(() => outArg, (v) => {
-                outArg = v;
-            })), outArg];
-            return matchValue[0] ? (new FSharpResult$2(0, matchValue[1])) : (new FSharpResult$2(1, [path_1, new ErrorReason(0, name_1, value_3)]));
-        }
-        else {
-            return new FSharpResult$2(1, [path_1, new ErrorReason(0, name_1, value_3)]);
-        }
-    });
-})();
+export const int64 = (path) => ((value_2) => {
+    const name_1 = "an int64";
+    const path_1 = path;
+    const value_3 = value_2;
+    if ((typeof value_3) === "number") {
+        const value_4 = value_3;
+        return (isFinite(value_4) && Math.floor(value_4) === value_4) ? (((toNumber(fromBits(0, 2147483648, false)) <= value_4) ? (value_4 <= toNumber(fromBits(4294967295, 2147483647, false))) : false) ? (new FSharpResult$2(0, fromNumber(value_4, false))) : (new FSharpResult$2(1, [path_1, new ErrorReason(1, name_1, value_4, "Value was either too large or too small for " + name_1)]))) : (new FSharpResult$2(1, [path_1, new ErrorReason(1, name_1, value_4, "Value is not an integral value")]));
+    }
+    else if ((typeof value_3) === "string") {
+        let matchValue;
+        let outArg = fromInt(0);
+        matchValue = [tryParse_4(value_3, 511, false, 64, new FSharpRef(() => outArg, (v) => {
+            outArg = v;
+        })), outArg];
+        return matchValue[0] ? (new FSharpResult$2(0, matchValue[1])) : (new FSharpResult$2(1, [path_1, new ErrorReason(0, name_1, value_3)]));
+    }
+    else {
+        return new FSharpResult$2(1, [path_1, new ErrorReason(0, name_1, value_3)]);
+    }
+});
 
-export const uint64 = (() => {
-    const min = fromBits(0, 0, true);
-    const max = fromBits(4294967295, 4294967295, true);
-    return (path) => ((value_2) => {
-        const name_1 = "an uint64";
-        const path_1 = path;
-        const value_3 = value_2;
-        if ((typeof value_3) === "number") {
-            const value_4 = value_3;
-            return (isFinite(value_4) && Math.floor(value_4) === value_4) ? (((toNumber(min) <= value_4) ? (value_4 <= toNumber(max)) : false) ? (new FSharpResult$2(0, fromNumber(value_4, true))) : (new FSharpResult$2(1, [path_1, new ErrorReason(1, name_1, value_4, "Value was either too large or too small for " + name_1)]))) : (new FSharpResult$2(1, [path_1, new ErrorReason(1, name_1, value_4, "Value is not an integral value")]));
-        }
-        else if ((typeof value_3) === "string") {
-            let matchValue;
-            let outArg = fromInt(0);
-            matchValue = [tryParse_4(value_3, 511, true, 64, new FSharpRef(() => outArg, (v) => {
-                outArg = v;
-            })), outArg];
-            return matchValue[0] ? (new FSharpResult$2(0, matchValue[1])) : (new FSharpResult$2(1, [path_1, new ErrorReason(0, name_1, value_3)]));
-        }
-        else {
-            return new FSharpResult$2(1, [path_1, new ErrorReason(0, name_1, value_3)]);
-        }
-    });
-})();
+export const uint64 = (path) => ((value_2) => {
+    const name_1 = "an uint64";
+    const path_1 = path;
+    const value_3 = value_2;
+    if ((typeof value_3) === "number") {
+        const value_4 = value_3;
+        return (isFinite(value_4) && Math.floor(value_4) === value_4) ? (((toNumber(fromBits(0, 0, true)) <= value_4) ? (value_4 <= toNumber(fromBits(4294967295, 4294967295, true))) : false) ? (new FSharpResult$2(0, fromNumber(value_4, true))) : (new FSharpResult$2(1, [path_1, new ErrorReason(1, name_1, value_4, "Value was either too large or too small for " + name_1)]))) : (new FSharpResult$2(1, [path_1, new ErrorReason(1, name_1, value_4, "Value is not an integral value")]));
+    }
+    else if ((typeof value_3) === "string") {
+        let matchValue;
+        let outArg = fromInt(0);
+        matchValue = [tryParse_4(value_3, 511, true, 64, new FSharpRef(() => outArg, (v) => {
+            outArg = v;
+        })), outArg];
+        return matchValue[0] ? (new FSharpResult$2(0, matchValue[1])) : (new FSharpResult$2(1, [path_1, new ErrorReason(0, name_1, value_3)]));
+    }
+    else {
+        return new FSharpResult$2(1, [path_1, new ErrorReason(0, name_1, value_3)]);
+    }
+});
 
 export function bigint(path, value_1) {
     if ((typeof value_1) === "number") {

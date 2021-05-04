@@ -1,8 +1,8 @@
 import { Types_RequestProperties } from "./.fable/Fable.Fetch.2.2.0/Fetch.fs.js";
 import { ofArray } from "./.fable/fable-library.3.1.15/List.js";
 import { keyValueList } from "./.fable/fable-library.3.1.15/MapUtil.js";
-import { PromiseBuilder__Delay_62FBFDE1, PromiseBuilder__Run_212F1D4B } from "./.fable/Fable.Promise.2.1.0/Promise.fs.js";
-import { promise } from "./.fable/Fable.Promise.2.1.0/PromiseImpl.fs.js";
+import { PromiseBuilder__Delay_62FBFDE1, PromiseBuilder__Run_212F1D4B } from "./.fable/Fable.Promise.2.2.0/Promise.fs.js";
+import { promise } from "./.fable/Fable.Promise.2.2.0/PromiseImpl.fs.js";
 
 export function postJson(url, body) {
     let props;

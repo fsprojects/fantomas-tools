@@ -12,7 +12,7 @@ import { toString, Record } from "../.fable/fable-library.3.1.15/Types.js";
 import { record_type, bool_type, class_type, list_type, string_type } from "../.fable/fable-library.3.1.15/Reflection.js";
 import { map as map_1, zip, toArray as toArray_1, choose, toList as toList_1 } from "../.fable/fable-library.3.1.15/Seq.js";
 import { isNullOrWhiteSpace, printf, toText, join } from "../.fable/fable-library.3.1.15/String.js";
-import { DOMAttr, HTMLAttr } from "../.fable/Fable.React.7.0.1/Fable.React.Props.fs.js";
+import { DOMAttr, HTMLAttr } from "../.fable/Fable.React.7.4.0/Fable.React.Props.fs.js";
 import { defaultArg } from "../.fable/fable-library.3.1.15/Option.js";
 import { ButtonProps, button } from "../.fable/Fable.Reactstrap.0.5.1/Button.fs.js";
 import { BadgeProps, badge } from "../.fable/Fable.Reactstrap.0.5.1/Badge.fs.js";

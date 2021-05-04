@@ -1,4 +1,4 @@
-import { toString, list as list_2, object, tuple3 } from "../.fable/Thoth.Json.5.0.0/Encode.fs.js";
+import { toString, list as list_2, object, tuple3 } from "../.fable/Thoth.Json.5.1.0/Encode.fs.js";
 import { sortBy, map } from "../.fable/fable-library.3.1.15/List.js";
 import { getOptionKey, sortByOption } from "../shared/FantomasOnlineShared.js";
 import { toList } from "../.fable/fable-library.3.1.15/Map.js";

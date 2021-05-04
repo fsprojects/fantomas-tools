@@ -1,4 +1,4 @@
-import { array, fromString, int, string, object } from "../.fable/Thoth.Json.5.0.0/Decode.fs.js";
+import { array, fromString, int, string, object } from "../.fable/Thoth.Json.5.1.0/Decode.fs.js";
 import { uncurry } from "../.fable/fable-library.3.1.15/Util.js";
 import { Model, Token, TokenInfo } from "./Model.js";
 

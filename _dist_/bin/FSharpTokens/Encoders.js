@@ -1,4 +1,4 @@
-import { object } from "../.fable/Thoth.Json.5.0.0/Encode.fs.js";
+import { object } from "../.fable/Thoth.Json.5.1.0/Encode.fs.js";
 import { map, toArray } from "../.fable/fable-library.3.1.15/List.js";
 
 export function encodeGetTokensRequest(value) {
