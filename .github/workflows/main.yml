@@ -28,7 +28,6 @@ jobs:
         dotnet-version: 5.0.202
 
     - name: Azure Core tools
-      uses: actions/setup-node@v2
       run: npm i -g azure-functions-core-tools@3 --unsafe-perm true
 
     - name: Restore local tools
