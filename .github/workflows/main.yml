@@ -27,14 +27,18 @@ jobs:
       with:
         dotnet-version: 5.0.202
 
-    - name: Azure Core tools
-      run: npm i -g azure-functions-core-tools@3 --unsafe-perm true
-
     - name: Restore local tools
       run: dotnet tool restore
 
-    - name: FAKE
-      run: dotnet fake run build.fsx -t CI
+    - uses: addnab/docker-run-action@v3
+      with:
+        image: nojaf/fable-azure-functions:1.1
+        options: -v ${{ github.workspace }}:/workspace --w /workspace
+        run: |
+          dotnet tool restore
+          dotnet fake run build.fsx -t CI
+    # - name: FAKE
+    #   run: dotnet fake run build.fsx -t CI
 
     - name: Deploy Frontend
       uses: peaceiris/actions-gh-pages@v3
