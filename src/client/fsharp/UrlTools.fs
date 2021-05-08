@@ -51,10 +51,7 @@ let updateUrlBy (mapFn: string -> string) : unit =
         let newHash = (mapFn (safeHash)).Split('?').[0]
 
         let newUrl =
-            $"{window.location.protocol}//{window.location.host}{window.location.pathname}{newHash}?{
-                                                                                                         ``params``.ToString
-                                                                                                             ()
-            }"
+            $"{window.location.protocol}//{window.location.host}{window.location.pathname}{newHash}?{``params``.ToString()}"
 
         history.pushState ({| path = newUrl |}, "", newUrl)
 

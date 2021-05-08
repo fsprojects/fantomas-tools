@@ -97,12 +97,7 @@ module GetTokens =
         sendText version res
 
     [<Function "Tokens">]
-    let run
-        (
-            [<HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "{*any}")>] req: HttpRequestData,
-            executionContext: FunctionContext
-        )
-        =
+    let run ([<HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "{*any}")>] req: HttpRequestData, executionContext: FunctionContext) =
         let log : ILogger = executionContext.GetLogger("Tokens")
         log.LogInformation("F# HTTP trigger function processed a request..")
         let path = req.Url.LocalPath.ToLower()
