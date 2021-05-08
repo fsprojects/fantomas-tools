@@ -90,19 +90,8 @@ export function optionsListToMap(options) {
 
 function updateOptionValue(defaultOption, userOption) {
     const matchValue = [defaultOption, userOption];
-    let pattern_matching_result, k, o, v, k_1, o_1, v_1;
-    if (matchValue[0].tag === 0) {
-        if (matchValue[1].tag === 0) {
-            pattern_matching_result = 0;
-            k = matchValue[0].fields[1];
-            o = matchValue[0].fields[0];
-            v = matchValue[1].fields[2];
-        }
-        else {
-            pattern_matching_result = 2;
-        }
-    }
-    else if (matchValue[0].tag === 1) {
+    let pattern_matching_result, k, o, v, k_1, o_1, v_1, k_2, o_2, v_2, k_3, o_3, v_3;
+    if (matchValue[0].tag === 1) {
         if (matchValue[1].tag === 1) {
             pattern_matching_result = 1;
             k_1 = matchValue[0].fields[1];
@@ -110,11 +99,39 @@ function updateOptionValue(defaultOption, userOption) {
             v_1 = matchValue[1].fields[2];
         }
         else {
-            pattern_matching_result = 2;
+            pattern_matching_result = 4;
         }
     }
+    else if (matchValue[0].tag === 2) {
+        if (matchValue[1].tag === 2) {
+            pattern_matching_result = 2;
+            k_2 = matchValue[0].fields[1];
+            o_2 = matchValue[0].fields[0];
+            v_2 = matchValue[1].fields[2];
+        }
+        else {
+            pattern_matching_result = 4;
+        }
+    }
+    else if (matchValue[0].tag === 3) {
+        if (matchValue[1].tag === 3) {
+            pattern_matching_result = 3;
+            k_3 = matchValue[0].fields[1];
+            o_3 = matchValue[0].fields[0];
+            v_3 = matchValue[1].fields[2];
+        }
+        else {
+            pattern_matching_result = 4;
+        }
+    }
+    else if (matchValue[1].tag === 0) {
+        pattern_matching_result = 0;
+        k = matchValue[0].fields[1];
+        o = matchValue[0].fields[0];
+        v = matchValue[1].fields[2];
+    }
     else {
-        pattern_matching_result = 2;
+        pattern_matching_result = 4;
     }
     switch (pattern_matching_result) {
         case 0: {
@@ -124,6 +141,12 @@ function updateOptionValue(defaultOption, userOption) {
             return new FantomasOption(1, o_1, k_1, v_1);
         }
         case 2: {
+            return new FantomasOption(2, o_2, k_2, v_2);
+        }
+        case 3: {
+            return new FantomasOption(3, o_3, k_3, v_3);
+        }
+        case 4: {
             return defaultOption;
         }
     }

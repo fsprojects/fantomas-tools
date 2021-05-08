@@ -35,9 +35,9 @@ function mapToOption(dispatch, key, fantomasOption) {
     }, (_arg4) => {
         dispatch(new Msg(5, [key, new FantomasOption(2, o_2, key, "number_of_items")]));
     }, "CharacterWidth", "NumberOfItems", key, fantomasOption.fields[2] === "character_width")) : ((fantomasOption.tag === 3) ? (o_3 = (fantomasOption.fields[0] | 0), toggleButton((_arg5) => {
-        dispatch(new Msg(5, [key, new FantomasOption(2, o_3, key, "crlr")]));
+        dispatch(new Msg(5, [key, new FantomasOption(3, o_3, key, "crlf")]));
     }, (_arg6) => {
-        dispatch(new Msg(5, [key, new FantomasOption(2, o_3, key, "lf")]));
+        dispatch(new Msg(5, [key, new FantomasOption(3, o_3, key, "lf")]));
     }, "CRLF", "LF", key, fantomasOption.fields[2] === "crlf")) : (o = (fantomasOption.fields[0] | 0), toggleButton((_arg1) => {
         dispatch(new Msg(5, [key, new FantomasOption(1, o, key, true)]));
     }, (_arg2) => {
