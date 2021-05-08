@@ -49,10 +49,10 @@ let private mapToOption dispatch (key, fantomasOption) =
         | FantomasOption.EndOfLineStyleOption (o, _, v) ->
             SettingControls.toggleButton
                 (fun _ ->
-                    UpdateOption(key, MultilineFormatterTypeOption(o, key, "crlr"))
+                    UpdateOption(key, EndOfLineStyleOption(o, key, "crlf"))
                     |> dispatch)
                 (fun _ ->
-                    UpdateOption(key, MultilineFormatterTypeOption(o, key, "lf"))
+                    UpdateOption(key, EndOfLineStyleOption(o, key, "lf"))
                     |> dispatch)
                 "CRLF"
                 "LF"

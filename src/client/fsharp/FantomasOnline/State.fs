@@ -104,6 +104,9 @@ let private updateOptionValue defaultOption userOption =
     match defaultOption, userOption with
     | IntOption (o, k, _), IntOption (_, _, v) -> IntOption(o, k, v)
     | BoolOption (o, k, _), BoolOption (_, _, v) -> BoolOption(o, k, v)
+    | MultilineFormatterTypeOption (o, k, _), MultilineFormatterTypeOption (_, _, v) ->
+        MultilineFormatterTypeOption(o, k, v)
+    | EndOfLineStyleOption (o, k, _), EndOfLineStyleOption (_, _, v) -> EndOfLineStyleOption(o, k, v)
     | _ -> defaultOption
 
 let private restoreUserOptionsFromUrl (defaultOptions: FantomasOption list) =

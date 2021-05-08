@@ -5,7 +5,7 @@ vscode:
     - ionide.ionide-fsharp
     - syler.sass-indented
 tasks:
-  - init: dotnet tool restore && dotnet fake run build.fsx -t Install -p 2
+  - command: rm paket-files/ -rf && dotnet tool restore && dotnet fake run build.fsx -t Install -p 2
 ports:
   - port: 9060
     onOpen: open-browser 
