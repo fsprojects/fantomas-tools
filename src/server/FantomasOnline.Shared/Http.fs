@@ -114,7 +114,8 @@ let private formatResponse<'options>
                     |> Encode.toString 4
 
                 return! sendJson response res
-            with exn -> return! sendBadRequest (sprintf "%A" exn) res
+            with
+            | exn -> return! sendBadRequest (sprintf "%A" exn) res
         | Error err -> return! sendInternalError err res
     }
 

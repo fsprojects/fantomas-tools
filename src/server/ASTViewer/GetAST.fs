@@ -20,7 +20,8 @@ module Result =
     let attempt f =
         try
             Result.Ok <| f ()
-        with e -> Error e
+        with
+        | e -> Error e
 
 module Async =
     let inline map f a = async.Bind(a, f >> async.Return)
