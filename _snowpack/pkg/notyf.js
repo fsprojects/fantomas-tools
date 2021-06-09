@@ -118,7 +118,7 @@ var NotyfView = /** @class */ (function () {
         };
         // Creates the main notifications container
         var docFrag = document.createDocumentFragment();
-        var notyfContainer = this._createHTLMElement({ tagName: 'div', className: 'notyf' });
+        var notyfContainer = this._createHTMLElement({ tagName: 'div', className: 'notyf' });
         docFrag.appendChild(notyfContainer);
         document.body.appendChild(docFrag);
         this.container = notyfContainer;
@@ -201,49 +201,47 @@ var NotyfView = /** @class */ (function () {
     };
     NotyfView.prototype._buildNotificationCard = function (notification) {
         var _this = this;
-        var _a;
         var options = notification.options;
         var iconOpts = options.icon;
         // Adjust container according to position (e.g. top-left, bottom-center, etc)
         this.adjustContainerAlignment(options);
         // Create elements
-        var notificationElem = this._createHTLMElement({ tagName: 'div', className: 'notyf__toast' });
-        var ripple = this._createHTLMElement({ tagName: 'div', className: 'notyf__ripple' });
-        var wrapper = this._createHTLMElement({ tagName: 'div', className: 'notyf__wrapper' });
-        var message = this._createHTLMElement({ tagName: 'div', className: 'notyf__message' });
+        var notificationElem = this._createHTMLElement({ tagName: 'div', className: 'notyf__toast' });
+        var ripple = this._createHTMLElement({ tagName: 'div', className: 'notyf__ripple' });
+        var wrapper = this._createHTMLElement({ tagName: 'div', className: 'notyf__wrapper' });
+        var message = this._createHTMLElement({ tagName: 'div', className: 'notyf__message' });
         message.innerHTML = options.message || '';
-        var color = options.background || options.backgroundColor;
+        var mainColor = options.background || options.backgroundColor;
         // Build the icon and append it to the card
-        if (iconOpts && typeof iconOpts === 'object') {
-            var iconContainer = this._createHTLMElement({ tagName: 'div', className: 'notyf__icon' });
-            var icon = this._createHTLMElement({
-                tagName: iconOpts.tagName || 'i',
-                className: iconOpts.className,
-                text: iconOpts.text,
-            });
-            var iconColor = (_a = iconOpts.color) !== null && _a !== void 0 ? _a : color;
-            if (iconColor) {
-                icon.style.color = iconColor;
+        if (iconOpts) {
+            var iconContainer = this._createHTMLElement({ tagName: 'div', className: 'notyf__icon' });
+            if (typeof iconOpts === 'string' || iconOpts instanceof String)
+                iconContainer.innerHTML = new String(iconOpts).valueOf();
+            if (typeof iconOpts === 'object') {
+                var _a = iconOpts.tagName, tagName = _a === void 0 ? 'i' : _a, className_1 = iconOpts.className, text = iconOpts.text, _b = iconOpts.color, color = _b === void 0 ? mainColor : _b;
+                var iconElement = this._createHTMLElement({ tagName: tagName, className: className_1, text: text });
+                if (color)
+                    iconElement.style.color = color;
+                iconContainer.appendChild(iconElement);
             }
-            iconContainer.appendChild(icon);
             wrapper.appendChild(iconContainer);
         }
         wrapper.appendChild(message);
         notificationElem.appendChild(wrapper);
         // Add ripple if applicable, else just paint the full toast
-        if (color) {
+        if (mainColor) {
             if (options.ripple) {
-                ripple.style.background = color;
+                ripple.style.background = mainColor;
                 notificationElem.appendChild(ripple);
             }
             else {
-                notificationElem.style.background = color;
+                notificationElem.style.background = mainColor;
             }
         }
         // Add dismiss button
         if (options.dismissible) {
-            var dismissWrapper = this._createHTLMElement({ tagName: 'div', className: 'notyf__dismiss' });
-            var dismissButton = this._createHTLMElement({
+            var dismissWrapper = this._createHTMLElement({ tagName: 'div', className: 'notyf__dismiss' });
+            var dismissButton = this._createHTMLElement({
                 tagName: 'button',
                 className: 'notyf__dismiss-btn',
             });
@@ -262,7 +260,7 @@ var NotyfView = /** @class */ (function () {
         notificationElem.classList.add("notyf__toast--" + className);
         return notificationElem;
     };
-    NotyfView.prototype._createHTLMElement = function (_a) {
+    NotyfView.prototype._createHTMLElement = function (_a) {
         var tagName = _a.tagName, className = _a.className, text = _a.text;
         var elem = document.createElement(tagName);
         if (className) {
@@ -276,7 +274,7 @@ var NotyfView = /** @class */ (function () {
      * screen readers
      */
     NotyfView.prototype._createA11yContainer = function () {
-        var a11yContainer = this._createHTLMElement({ tagName: 'div', className: 'notyf-announcer' });
+        var a11yContainer = this._createHTMLElement({ tagName: 'div', className: 'notyf-announcer' });
         a11yContainer.setAttribute('aria-atomic', 'true');
         a11yContainer.setAttribute('aria-live', 'polite');
         // Set the a11y container to be visible hidden. Can't use display: none as
