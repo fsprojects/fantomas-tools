@@ -803,10 +803,10 @@
     "@types/mocha" "^8.2.0"
     "@web/test-runner-core" "^0.10.8"
 
-"@web/test-runner@0.13.7":
-  version "0.13.7"
-  resolved "https://registry.yarnpkg.com/@web/test-runner/-/test-runner-0.13.7.tgz#ae34a4f3f41523453103e8d570c0950bb6e19072"
-  integrity sha512-v/WwdGX8XWKL2E8opJJTlHsZLp6Tor5xmvobBfd9nqZGmw+LolOv7UeBEw+nCYYT0Q/Wq19p66vQBx9owggNIQ==
+"@web/test-runner@0.13.8":
+  version "0.13.8"
+  resolved "https://registry.yarnpkg.com/@web/test-runner/-/test-runner-0.13.8.tgz#c019f9be812bd631bf3b327cd5f947dec8d5f599"
+  integrity sha512-6l+5hQx+gdQaRqxs/PJxOZ3MtCQw/SdhoAtpsntgQhtfyBOdah4W1sDteJ4+i3T4URG6CPEboPMYS3NC+y4hpw==
   dependencies:
     "@web/browser-logs" "^0.2.2"
     "@web/config-loader" "^0.1.3"
