@@ -4,8 +4,8 @@ open Microsoft.Azure.Functions.Worker.Http
 open Microsoft.Azure.Functions.Worker
 open Microsoft.Extensions.Logging
 open System.IO
-open FSharp.Compiler.SourceCodeServices
-open FSharp.Compiler.SyntaxTree
+open FSharp.Compiler.CodeAnalysis
+open FSharp.Compiler.Syntax
 open System.Net
 open System.Threading.Tasks
 open FSharp.Control.Tasks
@@ -14,6 +14,7 @@ open Fantomas.AstTransformer
 open Thoth.Json.Net
 open TriviaViewer.Shared
 open TriviaViewer.Server
+open FSharp.Compiler.Diagnostics
 
 module GetTrivia =
     let private sendJson json (res: HttpResponseData) : Task<HttpResponseData> =
@@ -93,17 +94,15 @@ module GetTrivia =
 
             if ast.ParseHadErrors then
                 let errors =
-                    ast.Errors
+                    ast.Diagnostics
                     |> Array.filter (fun e -> e.Severity = FSharpDiagnosticSeverity.Error)
 
                 if not <| Array.isEmpty errors then
                     log.LogError(sprintf "Parsing failed with errors: %A\nAnd options: %A" errors checkOptions)
 
-                return Error ast.Errors
+                return Error ast.Diagnostics
             else
-                match ast.ParseTree with
-                | Some tree -> return Result.Ok tree
-                | _ -> return Error Array.empty // Not sure this branch can be reached.
+                return Ok ast.ParseTree
         }
 
     let private getVersion (res: HttpResponseData) : Task<HttpResponseData> =
@@ -125,8 +124,8 @@ module GetTrivia =
         let mkRange (sl, sc) (el, ec) =
             FSharp.Compiler.Text.Range.mkRange
                 ast.Range.FileName
-                (FSharp.Compiler.Text.Pos.mkPos sl sc)
-                (FSharp.Compiler.Text.Pos.mkPos el ec)
+                (FSharp.Compiler.Text.Position.mkPos sl sc)
+                (FSharp.Compiler.Text.Position.mkPos el ec)
 
         let triviaNodesFromTokens =
             TokenParser.getTriviaNodesFromTokens mkRange tokens
@@ -159,8 +158,8 @@ module GetTrivia =
                     let mkRange (sl, sc) (el, ec) =
                         FSharp.Compiler.Text.Range.mkRange
                             ast.Range.FileName
-                            (FSharp.Compiler.Text.Pos.mkPos sl sc)
-                            (FSharp.Compiler.Text.Pos.mkPos el ec)
+                            (FSharp.Compiler.Text.Position.mkPos sl sc)
+                            (FSharp.Compiler.Text.Position.mkPos el ec)
 
                     let trivias = TokenParser.getTriviaFromTokens mkRange tokens
                     let triviaCandidates = collectTriviaCandidates tokens ast

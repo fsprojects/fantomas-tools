@@ -1,14 +1,15 @@
 namespace FantomasOnlineLatest.Server
 
+open System.Net
+open Microsoft.Azure.Functions.Worker.Http
+open Microsoft.Azure.Functions.Worker
+open Microsoft.Extensions.Logging
+open FSharp.Compiler.CodeAnalysis
+open FSharp.Compiler.Diagnostics
 open Fantomas
 open Fantomas.FormatConfig
 open FantomasOnline.Server.Shared
 open FantomasOnline.Shared
-open Microsoft.Azure.Functions.Worker.Http
-open Microsoft.Azure.Functions.Worker
-open Microsoft.Extensions.Logging
-open System.Net
-open FSharp.Compiler.SourceCodeServices
 
 module FormatCode =
 
@@ -69,7 +70,7 @@ module FormatCode =
             let! result = checker.ParseFile(fileName, sourceCode, options)
 
             return
-                result.Errors
+                result.Diagnostics
                 |> Array.map
                     (fun e ->
                         { SubCategory = e.Subcategory

@@ -3,7 +3,7 @@ source https://api.nuget.org/v3/index.json
 storage: none
 framework: netstandard2.0
 # for the local Fantomas build
-nuget FSharp.Compiler.Service 39.0.0
+nuget FSharp.Compiler.Service 40.0.0
 nuget editorconfig
 nuget MAB.DotIgnore
 
@@ -42,7 +42,7 @@ nuget FSharp.Core
 nuget Microsoft.Azure.Functions.Worker
 nuget Microsoft.Azure.Functions.Worker.Extensions.Http
 nuget Microsoft.Azure.Functions.Worker.Sdk
-nuget FSharp.Compiler.Service 39.0.0
+nuget FSharp.Compiler.Service 40.0.0
 nuget Thoth.Json.Net 5.0.0
 nuget Ply
 

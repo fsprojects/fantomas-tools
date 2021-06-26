@@ -1,8 +1,8 @@
 module FSharpTokens.Server.Encoders
 
-open FSharp.Compiler.SourceCodeServices
-open Fantomas.TriviaTypes
 open Thoth.Json.Net
+open FSharp.Compiler.Tokenization
+open Fantomas.TriviaTypes
 
 let private encodeEnum<'t> (value: 't) = value.ToString() |> Encode.string
 

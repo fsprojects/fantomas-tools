@@ -4,7 +4,6 @@ open Fantomas
 open FSharpTokens.Shared
 open System.IO
 open System.Net
-open System.Net.Http
 open System.Threading.Tasks
 open FSharp.Control.Tasks
 open Thoth.Json.Net
@@ -88,7 +87,7 @@ module GetTokens =
     let getVersion (res: HttpResponseData) : Task<HttpResponseData> =
         let version =
             let assembly =
-                typeof<FSharp.Compiler.SourceCodeServices.FSharpChecker>
+                typeof<FSharp.Compiler.CodeAnalysis.FSharpChecker>
                     .Assembly
 
             let version = assembly.GetName().Version
