@@ -1,0 +1,5 @@
+clampByteArrays=False
+define=FABLE_COMPILER,FABLE_COMPILER_3,RELEASE
+optimize=False
+typedArrays=True
+version=3.1.15
