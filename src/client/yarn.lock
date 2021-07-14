@@ -4415,10 +4415,10 @@ smart-buffer@^4.1.0:
   resolved "https://registry.yarnpkg.com/smart-buffer/-/smart-buffer-4.1.0.tgz#91605c25d91652f4661ea69ccf45f1b331ca21ba"
   integrity sha512-iVICrxOzCynf/SNaBQCw34eM9jROU/s5rzIhpOvzhzuYHfJR/DhZfDkXiZSgKXfgv26HT3Yni3AV/DGw0cGnnw==
 
-snowpack@3.8.1:
-  version "3.8.1"
-  resolved "https://registry.yarnpkg.com/snowpack/-/snowpack-3.8.1.tgz#374b066dfae4bbf4ba701aecf47ce7c02893a334"
-  integrity sha512-p2ohs1RzFM0e7X98tEzmD2KaQ2chpQMmk4ITWWl7nGZm5MQ7U1M8b+QseR6Md+GwrUrcuDFeTjy/GiqsvnzuFA==
+snowpack@3.8.2:
+  version "3.8.2"
+  resolved "https://registry.yarnpkg.com/snowpack/-/snowpack-3.8.2.tgz#fd1d995508f13725ede981d49b7583bdd0399f2f"
+  integrity sha512-aTPnHGHFmoAeZb4NxHzLbZyl/KeUveA78Xz40h+OX6ynFUO74Kta5Q3xw0CwWS87oBxoFL5jjNuFV8Bq1iaJBg==
   dependencies:
     "@npmcli/arborist" "^2.6.4"
     bufferutil "^4.0.2"
