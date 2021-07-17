@@ -30,18 +30,18 @@ jobs:
     - name: Restore local tools
       run: dotnet tool restore
 
-    - name: docker version
-      run: /usr/bin/docker --version
+    - name: docker run
+      run: /usr/bin/docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace --user "$(id -u):$(id -g)" nojaf/fable-azure-functions:1.1 bash -c "dotnet tool restore && dotnet fake run build.fsx -t CI"
 
     # Run the FAKE script inside our own Docker image, this is necessary for the Azure Functions to be published correctly.
     # Honestly, don't ask
-    - uses: addnab/docker-run-action@v3
-      with:
-        image: nojaf/fable-azure-functions:1.1
-        options: -v ${{ github.workspace }}:/workspace -w /workspace --user "$(id -u):$(id -g)"
-        run: |
-          dotnet tool restore
-          dotnet fake run build.fsx -t CI
+    # - uses: addnab/docker-run-action@v3
+    #   with:
+    #     image: nojaf/fable-azure-functions:1.1
+    #     options: -v ${{ github.workspace }}:/workspace -w /workspace --user "$(id -u):$(id -g)"
+    #     run: |
+    #       dotnet tool restore
+    #       dotnet fake run build.fsx -t CI
 
     - name: Deploy Frontend
       uses: peaceiris/actions-gh-pages@v3
