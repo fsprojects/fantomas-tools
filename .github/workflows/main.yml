@@ -46,9 +46,6 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./src/client/build
 
-    - name: remove obj
-      run: rm ./infrastructure/obj -rf
-
     - uses: pulumi/actions@v3
       with:
         command: up
