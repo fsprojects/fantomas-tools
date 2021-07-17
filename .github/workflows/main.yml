@@ -30,11 +30,12 @@ jobs:
     - name: Restore local tools
       run: dotnet tool restore
 
+    - name: Restore Pulumi project
+      run: dotnet build ./infrastructure
+
     - name: docker run
       run: /usr/bin/docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace nojaf/fable-azure-functions:1.1 bash -c "dotnet tool restore && dotnet fake run build.fsx -t CI"
 
-    - name: remove obj
-      run: rm ./infrastructure/obj -rf && rm ./paket-files/ -rf
     # Run the FAKE script inside our own Docker image, this is necessary for the Azure Functions to be published correctly.
     # Honestly, don't ask
     # - uses: addnab/docker-run-action@v3
