@@ -46,6 +46,9 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./src/client/build
 
+    - name: Set permissions
+      run: chmod -R 777 ./
+
     - uses: pulumi/actions@v3
       with:
         command: up
