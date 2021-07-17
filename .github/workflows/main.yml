@@ -35,6 +35,7 @@ jobs:
     - uses: addnab/docker-run-action@v3
       with:
         image: nojaf/fable-azure-functions:1.1
+        options: -v ${{ github.workspace }}:/workspace -w /workspace --user $(id -u):$(id -g)
         run: |
           dotnet tool restore
           dotnet fake run build.fsx -t CI
