@@ -14,7 +14,7 @@ open FantomasTools.Client.FSharpTokens.Encoders
 open FantomasTools.Client
 
 [<Emit("import.meta.env.SNOWPACK_PUBLIC_FSHARP_TOKENS_BACKEND")>]
-let private backend : string = jsNative
+let private backend: string = jsNative
 
 let private getTokens (request: FSharpTokens.Shared.GetTokensRequest) : JS.Promise<string> =
     let url = sprintf "%s/%s" backend "api/get-tokens"
@@ -36,7 +36,7 @@ let private initialModel =
       IsLoading = false
       Version = "??" }
 
-let private decodeGetTokensRequest : Decoder<FSharpTokens.Shared.GetTokensRequest> =
+let private decodeGetTokensRequest: Decoder<FSharpTokens.Shared.GetTokensRequest> =
     Decode.object
         (fun get ->
             { Defines = get.Required.Field "defines" (Decode.list Decode.string)
@@ -145,7 +145,7 @@ let update code msg model =
                         |> Array.item tokenIndex
                         |> fun t -> t.TokenInfo
 
-                    let range : Editor.HighLightRange =
+                    let range: Editor.HighLightRange =
                         { StartLine = activeLine
                           StartColumn = token.LeftColumn
                           EndLine = activeLine

@@ -11,7 +11,7 @@ open FantomasTools.Client.Trivia.Decoders
 open Thoth.Json
 
 [<Emit("import.meta.env.SNOWPACK_PUBLIC_TRIVIA_BACKEND")>]
-let private backend : string = jsNative
+let private backend: string = jsNative
 
 let private fetchTrivia (payload: ParseRequest) dispatch =
     let url = sprintf "%s/api/get-trivia" backend
@@ -32,7 +32,7 @@ let private fetchTrivia (payload: ParseRequest) dispatch =
 
 let private fetchFSCVersion () = sprintf "%s/api/version" backend |> Http.getText
 
-let private initialModel : Model =
+let private initialModel: Model =
     { ActiveTab = ByTriviaNodes
       Trivia = []
       TriviaNodeCandidates = []
@@ -121,7 +121,7 @@ let update code msg model =
             range
             |> Option.map
                 (fun r ->
-                    let highLightRange : Editor.HighLightRange =
+                    let highLightRange: Editor.HighLightRange =
                         { StartLine = r.StartLine
                           StartColumn = r.StartColumn
                           EndLine = r.EndLine

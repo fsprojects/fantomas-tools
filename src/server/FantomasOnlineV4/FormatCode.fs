@@ -93,5 +93,5 @@ module FormatCode =
             executionContext: FunctionContext
         )
         =
-        let log : ILogger = executionContext.GetLogger("FormatCode")
+        let log: ILogger = executionContext.GetLogger("FormatCode")
         Http.main CodeFormatter.GetVersion getOptions mapFantomasOptionsToRecord format validate log req

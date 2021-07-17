@@ -11,7 +11,7 @@ let decodeUrlModel initialModel : Decoder<Model> =
                   Defines = get.Required.Field "defines" Decode.string
                   IsFsi = get.Required.Field "isFsi" Decode.bool })
 
-let private rangeDecoder : Decoder<Range> =
+let private rangeDecoder: Decoder<Range> =
     Decode.object
         (fun get ->
             { StartLine = get.Required.Field "startLine" Decode.int
@@ -19,11 +19,11 @@ let private rangeDecoder : Decoder<Range> =
               EndLine = get.Required.Field "endLine" Decode.int
               EndCol = get.Required.Field "endCol" Decode.int })
 
-let decodeKeyValue : Decoder<obj> = fun _ -> Ok
+let decodeKeyValue: Decoder<obj> = fun _ -> Ok
 
 #nowarn "40"
 
-let private decodeASTError : Decoder<ASTError> =
+let private decodeASTError: Decoder<ASTError> =
     Decode.object
         (fun get ->
             { SubCategory = get.Required.Field "subcategory" Decode.string
@@ -32,7 +32,7 @@ let private decodeASTError : Decoder<ASTError> =
               ErrorNumber = get.Required.Field "errorNumber" Decode.int
               Message = get.Required.Field "message" Decode.string })
 
-let responseDecoder : Decoder<Response> =
+let responseDecoder: Decoder<Response> =
     Decode.object
         (fun get ->
             { String = get.Required.Field "string" Decode.string

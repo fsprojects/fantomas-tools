@@ -234,7 +234,7 @@ module GetAST =
             executionContext: FunctionContext
         )
         =
-        let log : ILogger = executionContext.GetLogger("GetAST")
+        let log: ILogger = executionContext.GetLogger("GetAST")
         log.LogInformation("F# HTTP trigger function processed a request.")
         let path = req.Url.LocalPath.ToLower()
         let method = req.Method.ToUpper()

@@ -66,7 +66,7 @@ let Editor (isReadOnly: bool) (props: MonacoEditorProp list) =
                     "renderWhitespace" ==> "all"
                     "minimap" ==> createObj [ "enabled" ==> false ] ]
 
-    let defaultProps : MonacoEditorProp list =
+    let defaultProps: MonacoEditorProp list =
         [ MonacoEditorProp.Height "100%"
           MonacoEditorProp.DefaultLanguage "fsharp"
           MonacoEditorProp.Options options

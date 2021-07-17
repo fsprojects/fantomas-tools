@@ -3,7 +3,7 @@ module FantomasTools.Client.FantomasOnline.Decoders
 open Thoth.Json
 open FantomasOnline.Shared
 
-let private optionDecoder : Decoder<FantomasOption> =
+let private optionDecoder: Decoder<FantomasOption> =
     Decode.object
         (fun get ->
             let t = get.Required.Field "$type" Decode.string
@@ -25,7 +25,7 @@ let decodeOptions json =
     Decode.fromString (Decode.array optionDecoder) json
     |> Result.map (Array.sortBy sortByOption >> List.ofArray)
 
-let decodeOptionsFromUrl : Decoder<FantomasOption list * bool> =
+let decodeOptionsFromUrl: Decoder<FantomasOption list * bool> =
     Decode.object
         (fun get ->
             let settings =
@@ -34,7 +34,7 @@ let decodeOptionsFromUrl : Decoder<FantomasOption list * bool> =
             let isFSI = get.Required.Field "isFsi" Decode.bool
             settings, isFSI)
 
-let private decodeRange : Decoder<Range> =
+let private decodeRange: Decoder<Range> =
     Decode.object
         (fun get ->
             { StartLine = get.Required.Field "startLine" Decode.int
@@ -42,7 +42,7 @@ let private decodeRange : Decoder<Range> =
               EndLine = get.Required.Field "endLine" Decode.int
               EndCol = get.Required.Field "endCol" Decode.int })
 
-let private decoderASTErrorSeverity : Decoder<ASTErrorSeverity> =
+let private decoderASTErrorSeverity: Decoder<ASTErrorSeverity> =
     Decode.string
     |> Decode.map
         (fun s ->
@@ -52,7 +52,7 @@ let private decoderASTErrorSeverity : Decoder<ASTErrorSeverity> =
             | "info" -> ASTErrorSeverity.Info
             | _ -> ASTErrorSeverity.Hidden)
 
-let private decodeASTError : Decoder<ASTError> =
+let private decodeASTError: Decoder<ASTError> =
     Decode.object
         (fun get ->
             { SubCategory = get.Required.Field "subCategory" Decode.string
@@ -61,7 +61,7 @@ let private decodeASTError : Decoder<ASTError> =
               ErrorNumber = get.Required.Field "errorNumber" Decode.int
               Message = get.Required.Field "message" Decode.string })
 
-let decodeFormatResponse : Decoder<FormatResponse> =
+let decodeFormatResponse: Decoder<FormatResponse> =
     Decode.object
         (fun get ->
             { FirstFormat = get.Required.Field "firstFormat" Decode.string

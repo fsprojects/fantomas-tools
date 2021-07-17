@@ -3,7 +3,7 @@ module TriviaViewer.Server.Decoders
 open Thoth.Json.Net
 open TriviaViewer.Shared
 
-let private parseRequestDecoder : Decoder<ParseRequest> =
+let private parseRequestDecoder: Decoder<ParseRequest> =
     Decode.object
         (fun get ->
             { SourceCode = get.Required.Field "sourceCode" Decode.string

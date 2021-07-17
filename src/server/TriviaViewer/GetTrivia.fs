@@ -181,7 +181,7 @@ module GetTrivia =
             executionContext: FunctionContext
         )
         =
-        let log : ILogger = executionContext.GetLogger("GetTrivia")
+        let log: ILogger = executionContext.GetLogger("GetTrivia")
         log.LogInformation("F# HTTP trigger function processed a request.")
         let path = req.Url.LocalPath.ToLower()
         let method = req.Method.ToUpper()

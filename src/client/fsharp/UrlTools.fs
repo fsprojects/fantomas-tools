@@ -35,7 +35,7 @@ let private encodeUrl (_x: string) : string =
 let private decodeUrl (_x: string) : string =
     import "decompressFromEncodedURIComponent" "lz-string"
 
-let private URLSearchParamsExist : bool = emitJsExpr () "'URLSearchParams' in window"
+let private URLSearchParamsExist: bool = emitJsExpr () "'URLSearchParams' in window"
 
 let updateUrlBy (mapFn: string -> string) : unit =
     if URLSearchParamsExist then

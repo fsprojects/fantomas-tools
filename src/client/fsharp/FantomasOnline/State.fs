@@ -11,16 +11,16 @@ open Fetch
 open Thoth.Json
 
 [<Emit("import.meta.env.SNOWPACK_PUBLIC_FANTOMAS_V2")>]
-let private v2Backend : string = jsNative
+let private v2Backend: string = jsNative
 
 [<Emit("import.meta.env.SNOWPACK_PUBLIC_FANTOMAS_V3")>]
-let private v3Backend : string = jsNative
+let private v3Backend: string = jsNative
 
 [<Emit("import.meta.env.SNOWPACK_PUBLIC_FANTOMAS_V4")>]
-let private v4Backend : string = jsNative
+let private v4Backend: string = jsNative
 
 [<Emit("import.meta.env.SNOWPACK_PUBLIC_FANTOMAS_PREVIEW")>]
-let private previewBackend : string = jsNative
+let private previewBackend: string = jsNative
 
 let private backend =
     Map.ofList [ (FantomasMode.V2, v2Backend)
