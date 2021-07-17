@@ -55,7 +55,6 @@ let clientDir = __SOURCE_DIRECTORY__ </> "src" </> "client"
 let setClientDir = (fun (opt: Yarn.YarnParams) -> { opt with WorkingDirectory = clientDir })
 let serverDir = __SOURCE_DIRECTORY__ </> "src" </> "server"
 let artifactDir = __SOURCE_DIRECTORY__ </> "artifacts"
-let infrastructureDir = __SOURCE_DIRECTORY__ </> "infrastructure"
 
 Target.create "Fantomas-Git" (fun _ ->
     let targetDir = ".deps" @@ "fantomas"
@@ -196,12 +195,6 @@ Target.create "CheckFormat" (fun _ ->
     else
         Trace.logf "Errors while formatting: %A" result.Errors)
 
-Target.create "CleanForInfrastructure" (fun _ ->
-    Shell.rm_rf (infrastructureDir </> "bin")
-    Shell.rm_rf (infrastructureDir </> "obj")
-    Shell.rm_rf (__SOURCE_DIRECTORY__ </> "paket-files")
-)
-
 Target.create "Install" ignore
 Target.create "CI" ignore
 Target.create "PR" ignore
@@ -217,7 +210,7 @@ open Fake.Core.TargetOperators
 "Install" <== [ "YarnInstall"; "NETInstall" ]
 
 "CI"
-    <== [ "CleanForInfrastructure"; "BundleFrontend"; "DeployFunctions"; "Clean"; "Fantomas-Git"; "CheckFormat" ]
+    <== [ "BundleFrontend"; "DeployFunctions"; "Clean"; "Fantomas-Git"; "CheckFormat" ]
 
 "PR" 
     <== [ "BundleFrontend"; "Build"; "Clean"; "Fantomas-Git"; "CheckFormat" ]
