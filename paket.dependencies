@@ -32,6 +32,21 @@ nuget Pulumi.FSharp 2.0.0
 nuget Pulumi.Azure 3.1.0
 nuget Thoth.Json.Net 5.0.0
 
+# Separate group for AST Viewer to easier swap out the Compiler version
+group ASTViewer
+
+source https://api.nuget.org/v3/index.json
+storage: none
+framework: net5.0
+
+nuget FSharp.Core
+nuget FSharp.Compiler.Service 39.0.0
+nuget Microsoft.Azure.Functions.Worker
+nuget Microsoft.Azure.Functions.Worker.Extensions.Http
+nuget Microsoft.Azure.Functions.Worker.Sdk
+nuget Thoth.Json.Net 5.0.0
+nuget Ply
+
 group Server
 
 source https://api.nuget.org/v3/index.json

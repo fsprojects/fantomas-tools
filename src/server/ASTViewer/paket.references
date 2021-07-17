@@ -1,4 +1,4 @@
-group Server
+group ASTViewer
 FSharp.Core
 Microsoft.Azure.Functions.Worker
 Microsoft.Azure.Functions.Worker.Extensions.Http

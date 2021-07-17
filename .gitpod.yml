@@ -8,18 +8,26 @@ tasks:
   - command: rm paket-files/ -rf && dotnet tool restore && dotnet fake run build.fsx -t Install -p 2
 ports:
   - port: 9060
-    onOpen: open-browser 
+    onOpen: open-browser
+    visibility: public
   - port: 7899
     onOpen: ignore
+    visibility: public
   - port: 7412
     onOpen: ignore
+    visibility: public
   - port: 9856
     onOpen: ignore
+    visibility: public
   - port: 11084
     onOpen: ignore
+    visibility: public
   - port: 2568
     onOpen: ignore
+    visibility: public
   - port: 9007
     onOpen: ignore
+    visibility: public
   - port: 10707
     onOpen: ignore
+    visibility: public
