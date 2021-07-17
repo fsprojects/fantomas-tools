@@ -28,8 +28,8 @@ storage: none
 framework: netcoreapp3.1
 
 nuget FSharp.Core
-nuget Pulumi.FSharp 2.0.0
-nuget Pulumi.Azure 3.1.0
+nuget Pulumi.FSharp 3.7.0
+nuget Pulumi.Azure 4.10.0
 nuget Thoth.Json.Net 5.0.0
 
 # Separate group for AST Viewer to easier swap out the Compiler version
