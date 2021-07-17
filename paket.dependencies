@@ -67,14 +67,14 @@ source https://api.nuget.org/v3/index.json
 storage: none
 framework: net5.0
 
-nuget FSharp.Core 5.0
+nuget FSharp.Core
 nuget Microsoft.Azure.Functions.Worker
 nuget Microsoft.Azure.Functions.Worker.Extensions.Http
 nuget Microsoft.Azure.Functions.Worker.Sdk
-nuget FSharp.Compiler.Service 38.0.2
+nuget FSharp.Compiler.Service 39.0.0
 nuget Microsoft.Build.Utilities.Core
 nuget Thoth.Json.Net 5.0.0
-nuget Fantomas.Extras 4.4.0
+nuget Fantomas.Extras 4.5.0
 nuget Ply
 
 group V3
