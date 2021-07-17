@@ -1,16 +1,16 @@
-import { toString as toString_1 } from "../fable-library.3.1.15/Decimal.js";
-import { Lazy, mapCurriedArgs, uncurry, getEnumerator } from "../fable-library.3.1.15/Util.js";
-import { empty, map as map_3, tryFind, add, toList } from "../fable-library.3.1.15/Map.js";
-import { toString as toString_2 } from "../fable-library.3.1.15/BigInt.js";
-import { toString as toString_3 } from "../fable-library.3.1.15/Date.js";
-import { toString as toString_4 } from "../fable-library.3.1.15/TimeSpan.js";
-import { defaultArg, value as value_34, map, defaultArgWith, some } from "../fable-library.3.1.15/Option.js";
-import { toString as toString_5, FSharpRef } from "../fable-library.3.1.15/Types.js";
-import { class_type, getGenerics, getGenericTypeDefinition, getTupleFields, getTupleElements, isTuple, isGenericType, getEnumUnderlyingType, isEnum, getElementType, isArray, getUnionCaseFields, getUnionFields, isUnion, getRecordElements, getRecordField, name, isRecord, fullName } from "../fable-library.3.1.15/Reflection.js";
-import { fill, map as map_1 } from "../fable-library.3.1.15/Array.js";
+import { toString as toString_1 } from "../fable-library.3.2.9/Decimal.js";
+import { Lazy, mapCurriedArgs, uncurry, getEnumerator } from "../fable-library.3.2.9/Util.js";
+import { empty, map as map_3, tryFind, add, toList } from "../fable-library.3.2.9/Map.js";
+import { toString as toString_2 } from "../fable-library.3.2.9/BigInt.js";
+import { toString as toString_3 } from "../fable-library.3.2.9/Date.js";
+import { toString as toString_4 } from "../fable-library.3.2.9/TimeSpan.js";
+import { defaultArg, value as value_34, map, defaultArgWith, some } from "../fable-library.3.2.9/Option.js";
+import { toString as toString_5, FSharpRef } from "../fable-library.3.2.9/Types.js";
+import { class_type, getGenerics, getGenericTypeDefinition, getTupleFields, getTupleElements, isTuple, isGenericType, getEnumUnderlyingType, isEnum, getElementType, isArray, getUnionCaseFields, getUnionFields, isUnion, getRecordElements, getRecordField, name, isRecord, fullName } from "../fable-library.3.2.9/Reflection.js";
+import { fill, map as map_1 } from "../fable-library.3.2.9/Array.js";
 import { Util_CachedEncoders, Util_Cache$1__GetOrAdd_43981464, CaseStrategy, Util_Casing_convert } from "./Types.fs.js";
-import { mapIndexed, map as map_2, fold } from "../fable-library.3.1.15/Seq.js";
-import { toFail, printf, toText } from "../fable-library.3.1.15/String.js";
+import { mapIndexed, map as map_2, fold } from "../fable-library.3.2.9/Seq.js";
+import { toFail, printf, toText } from "../fable-library.3.2.9/String.js";
 
 export function guid(value) {
     return value;
@@ -365,7 +365,7 @@ export function Auto_generateEncoderCached_Z127D9D79(caseStrategy, extra, skipNu
     const t = value_34(resolver).ResolveType();
     const caseStrategy_1 = defaultArg(caseStrategy, new CaseStrategy(0));
     const skipNullField_1 = defaultArg(skipNullField, true);
-    return Util_Cache$1__GetOrAdd_43981464(Util_CachedEncoders, (y_1 = (y = fullName(t), toString_5(caseStrategy_1) + y), defaultArg(map((e) => e.Hash, extra), "") + y_1), () => autoEncoder(makeExtra(extra), caseStrategy_1, skipNullField_1, t));
+    return Util_Cache$1__GetOrAdd_43981464(Util_CachedEncoders, (y_1 = ((y = fullName(t), toString_5(caseStrategy_1) + y)), defaultArg(map((e) => e.Hash, extra), "") + y_1), () => autoEncoder(makeExtra(extra), caseStrategy_1, skipNullField_1, t));
 }
 
 export function Auto_generateEncoder_Z127D9D79(caseStrategy, extra, skipNullField, resolver) {

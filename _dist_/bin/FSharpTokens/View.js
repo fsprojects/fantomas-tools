@@ -1,14 +1,14 @@
-import { printf, toText } from "../.fable/fable-library.3.1.15/String.js";
+import { printf, toText } from "../.fable/fable-library.3.2.9/String.js";
 import * as react from "../../../_snowpack/pkg/react.js";
-import { numberHash, int32ToString } from "../.fable/fable-library.3.1.15/Util.js";
+import { numberHash, int32ToString } from "../.fable/fable-library.3.2.9/Util.js";
 import { Msg } from "./Model.js";
-import { map, mapIndexed } from "../.fable/fable-library.3.1.15/Array.js";
-import { Array_groupBy } from "../.fable/fable-library.3.1.15/Seq2.js";
-import { map as map_1 } from "../.fable/fable-library.3.1.15/Option.js";
+import { map, mapIndexed } from "../.fable/fable-library.3.2.9/Array.js";
+import { Array_groupBy } from "../.fable/fable-library.3.2.9/Seq2.js";
+import { map as map_1 } from "../.fable/fable-library.3.2.9/Option.js";
 import { loader } from "../Loader.js";
 import { ButtonProps, button } from "../.fable/Fable.Reactstrap.0.5.1/Button.fs.js";
 import { DOMAttr } from "../.fable/Fable.React.7.4.0/Fable.React.Props.fs.js";
-import { singleton } from "../.fable/fable-library.3.1.15/List.js";
+import { singleton } from "../.fable/fable-library.3.2.9/List.js";
 import { versionBar } from "../VersionBar.js";
 import { input } from "../SettingControls.js";
 
@@ -33,7 +33,7 @@ function lineToken(dispatch, index, token) {
 function line(dispatch, activeLine, lineNumber, tokens_1) {
     let al_1;
     const tokens_2 = mapIndexed((index, token) => lineToken(dispatch, index, token), tokens_1);
-    const className = (activeLine != null) ? ((activeLine === lineNumber) ? (al_1 = (activeLine | 0), "line active") : "line") : "line";
+    const className = (activeLine != null) ? ((activeLine === lineNumber) ? ((al_1 = (activeLine | 0), "line active")) : "line") : "line";
     return react.createElement("div", {
         className: className,
         key: toText(printf("line-%d"))(lineNumber),

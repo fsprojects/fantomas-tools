@@ -1,6 +1,6 @@
-import { toArray, mapIndexed } from "../.fable/fable-library.3.1.15/List.js";
+import { toArray, mapIndexed } from "../.fable/fable-library.3.2.9/List.js";
 import * as react from "../../../_snowpack/pkg/react.js";
-import { interpolate, printf, toText } from "../.fable/fable-library.3.1.15/String.js";
+import { interpolate, printf, toText } from "../.fable/fable-library.3.2.9/String.js";
 import { HighLightRange } from "../Editor.js";
 import { Msg } from "./Model.js";
 

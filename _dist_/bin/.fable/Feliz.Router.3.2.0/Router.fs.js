@@ -1,18 +1,18 @@
-import { trimEnd, isNullOrWhiteSpace, substring, join, endsWith } from "../fable-library.3.1.15/String.js";
-import { ofArray, singleton, empty, collect, map } from "../fable-library.3.1.15/List.js";
-import { equalsWith } from "../fable-library.3.1.15/Array.js";
-import { comparePrimitives } from "../fable-library.3.1.15/Util.js";
+import { trimEnd, isNullOrWhiteSpace, substring, join, endsWith } from "../fable-library.3.2.9/String.js";
+import { ofArray, singleton, empty, collect, map } from "../fable-library.3.2.9/List.js";
+import { equalsWith } from "../fable-library.3.2.9/Array.js";
+import { comparePrimitives } from "../fable-library.3.2.9/Util.js";
 import { React_createDisposable_3A5B6456, useReact_useEffect_Z5ECA432F, useReact_useMemo_CF4EA67, useReact_useCallbackRef_7C4B0DD6, React_memo_62A0F746 } from "../Feliz.1.43.0/React.fs.js";
-import { defaultArg } from "../fable-library.3.1.15/Option.js";
+import { defaultArg } from "../fable-library.3.2.9/Option.js";
 import { Impl_createRemoveOptions, Impl_adjustPassive } from "../Feliz.UseListener.0.6.3/Listener.fs.js";
-import { tryParse } from "../fable-library.3.1.15/Int32.js";
-import { FSharpRef } from "../fable-library.3.1.15/Types.js";
-import { tryParse as tryParse_1, fromInt } from "../fable-library.3.1.15/Long.js";
-import { tryParse as tryParse_2 } from "../fable-library.3.1.15/Guid.js";
-import { tryParse as tryParse_3 } from "../fable-library.3.1.15/Double.js";
-import { tryParse as tryParse_4 } from "../fable-library.3.1.15/Decimal.js";
-import Decimal from "../fable-library.3.1.15/Decimal.js";
-import { map as map_1, delay, toList } from "../fable-library.3.1.15/Seq.js";
+import { tryParse } from "../fable-library.3.2.9/Int32.js";
+import { FSharpRef } from "../fable-library.3.2.9/Types.js";
+import { tryParse as tryParse_1, fromInt } from "../fable-library.3.2.9/Long.js";
+import { tryParse as tryParse_2 } from "../fable-library.3.2.9/Guid.js";
+import { tryParse as tryParse_3 } from "../fable-library.3.2.9/Double.js";
+import { tryParse as tryParse_4 } from "../fable-library.3.2.9/Decimal.js";
+import Decimal from "../fable-library.3.2.9/Decimal.js";
+import { map as map_1, delay, toList } from "../fable-library.3.2.9/Seq.js";
 
 export function RouterModule_String_$007CPrefix$007C(prefix, str) {
     if (str.indexOf(prefix) === 0) {
@@ -56,13 +56,13 @@ function RouterModule_normalizeRoute(routeMode) {
     if (routeMode === 1) {
         return (_arg1) => {
             let activePatternResult9603, path, activePatternResult9604, path_1, activePatternResult9605, path_2;
-            return activePatternResult9603 = RouterModule_String_$007CPrefix$007C("/", _arg1), (activePatternResult9603 != null) ? (path = activePatternResult9603, "#" + path) : (activePatternResult9604 = RouterModule_String_$007CPrefix$007C("#/", _arg1), (activePatternResult9604 != null) ? (path_1 = activePatternResult9604, path_1) : (activePatternResult9605 = RouterModule_String_$007CPrefix$007C("#", _arg1), (activePatternResult9605 != null) ? (path_2 = activePatternResult9605, "#/" + substring(path_2, 1, path_2.length - 1)) : ("#/" + _arg1)));
+            return (activePatternResult9603 = RouterModule_String_$007CPrefix$007C("/", _arg1), (activePatternResult9603 != null) ? ((path = activePatternResult9603, "#" + path)) : ((activePatternResult9604 = RouterModule_String_$007CPrefix$007C("#/", _arg1), (activePatternResult9604 != null) ? ((path_1 = activePatternResult9604, path_1)) : ((activePatternResult9605 = RouterModule_String_$007CPrefix$007C("#", _arg1), (activePatternResult9605 != null) ? ((path_2 = activePatternResult9605, "#/" + substring(path_2, 1, path_2.length - 1))) : ("#/" + _arg1))))));
         };
     }
     else {
         return (_arg2) => {
             let activePatternResult9608, path_4;
-            return activePatternResult9608 = RouterModule_String_$007CPrefix$007C("/", _arg2), (activePatternResult9608 != null) ? (path_4 = activePatternResult9608, path_4) : ("/" + _arg2);
+            return (activePatternResult9608 = RouterModule_String_$007CPrefix$007C("/", _arg2), (activePatternResult9608 != null) ? ((path_4 = activePatternResult9608, path_4)) : ("/" + _arg2));
         };
     }
 }

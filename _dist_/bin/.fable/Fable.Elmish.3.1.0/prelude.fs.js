@@ -1,6 +1,6 @@
-import { some } from "../fable-library.3.1.15/Option.js";
-import Timer from "../fable-library.3.1.15/Timer.js";
-import { add } from "../fable-library.3.1.15/Observable.js";
+import { some } from "../fable-library.3.2.9/Option.js";
+import Timer from "../fable-library.3.2.9/Timer.js";
+import { add } from "../fable-library.3.2.9/Observable.js";
 
 export function Log_onError(text, ex) {
     console.error(some(text), ex);
@@ -15,7 +15,7 @@ export function Timer_delay(interval, callback) {
     let returnVal = new Timer(interval);
     returnVal.AutoReset = false;
     t = returnVal;
-    add(callback, t.Elapsed);
+    add(callback, t.Elapsed());
     t.Enabled = true;
     t.Start();
 }

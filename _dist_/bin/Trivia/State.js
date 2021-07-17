@@ -1,17 +1,17 @@
 import * as __SNOWPACK_ENV__ from '../../../_snowpack/env.js';
 
 import { getText, postJson } from "../Http.js";
-import { split, printf, toText } from "../.fable/fable-library.3.1.15/String.js";
+import { split, printf, toText } from "../.fable/fable-library.3.2.9/String.js";
 import { encodeUrlModel, encodeParseRequest } from "./Encoders.js";
 import { decodeUrlModel, decodeResult } from "./Decoders.js";
 import { Model, ActiveTab as ActiveTab_1, Msg } from "./Model.js";
-import { tryItem, ofArray, empty } from "../.fable/fable-library.3.1.15/List.js";
+import { tryItem, ofArray, empty } from "../.fable/fable-library.3.2.9/List.js";
 import { ParseRequest } from "../shared/TriviaShared.js";
 import { updateUrlWithData, restoreModelFromUrl } from "../UrlTools.js";
-import { uncurry } from "../.fable/fable-library.3.1.15/Util.js";
+import { uncurry } from "../.fable/fable-library.3.2.9/Util.js";
 import { Cmd_OfFunc_result, Cmd_none, Cmd_ofSub, Cmd_batch, Cmd_OfPromise_either } from "../.fable/Fable.Elmish.3.1.0/cmd.fs.js";
 import { toString } from "../.fable/Thoth.Json.5.1.0/Encode.fs.js";
-import { defaultArg, map } from "../.fable/fable-library.3.1.15/Option.js";
+import { defaultArg, map } from "../.fable/fable-library.3.2.9/Option.js";
 import { selectRange, HighLightRange } from "../Editor.js";
 
 function fetchTrivia(payload, dispatch) {
@@ -21,7 +21,7 @@ function fetchTrivia(payload, dispatch) {
         let matchValue;
         const status = tupledArg[0] | 0;
         const body = tupledArg[1];
-        dispatch((status === 200) ? (matchValue = decodeResult(body), (matchValue.tag === 1) ? (new Msg(7, toText(printf("failed to decode response: %A"))(matchValue.fields[0]))) : (new Msg(2, matchValue.fields[0]))) : ((status === 400) ? (new Msg(7, body)) : ((status === 413) ? (new Msg(7, "the input was too large to process")) : (new Msg(7, body)))));
+        dispatch((status === 200) ? ((matchValue = decodeResult(body), (matchValue.tag === 1) ? (new Msg(7, toText(printf("failed to decode response: %A"))(matchValue.fields[0]))) : (new Msg(2, matchValue.fields[0])))) : ((status === 400) ? (new Msg(7, body)) : ((status === 413) ? (new Msg(7, "the input was too large to process")) : (new Msg(7, body)))));
     }));
 }
 

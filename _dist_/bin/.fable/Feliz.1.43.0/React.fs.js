@@ -1,9 +1,9 @@
 import { useLayoutEffectWithDeps, useLayoutEffect, useEffectWithDeps, useEffect, useDebugValue } from "./ReactInterop.js";
-import { class_type } from "../fable-library.3.1.15/Reflection.js";
-import { iterate } from "../fable-library.3.1.15/Seq.js";
-import { defaultArg, some, toArray } from "../fable-library.3.1.15/Option.js";
+import { class_type } from "../fable-library.3.2.9/Reflection.js";
+import { iterate } from "../fable-library.3.2.9/Seq.js";
+import { defaultArg, some, toArray } from "../fable-library.3.2.9/Option.js";
 import { Interop_reactApi } from "./Interop.fs.js";
-import { curry, uncurry } from "../fable-library.3.1.15/Util.js";
+import { curry, uncurry } from "../fable-library.3.2.9/Util.js";
 import { useState } from "../../../../_snowpack/pkg/react.js";
 import * as react from "../../../../_snowpack/pkg/react.js";
 

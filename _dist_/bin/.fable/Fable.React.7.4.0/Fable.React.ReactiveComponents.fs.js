@@ -1,5 +1,5 @@
-import { Record } from "../fable-library.3.1.15/Types.js";
-import { array_type, record_type, class_type, unit_type, lambda_type, string_type } from "../fable-library.3.1.15/Reflection.js";
+import { Record } from "../fable-library.3.2.9/Types.js";
+import { array_type, record_type, class_type, unit_type, lambda_type, string_type } from "../fable-library.3.2.9/Reflection.js";
 import { Component } from "../../../../_snowpack/pkg/react.js";
 import * as react from "../../../../_snowpack/pkg/react.js";
 

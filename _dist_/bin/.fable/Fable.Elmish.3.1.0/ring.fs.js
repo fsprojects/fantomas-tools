@@ -1,10 +1,10 @@
-import { Union } from "../fable-library.3.1.15/Types.js";
-import { class_type, union_type, int32_type, array_type } from "../fable-library.3.1.15/Reflection.js";
-import { fill } from "../fable-library.3.1.15/Array.js";
-import { comparePrimitives, max } from "../fable-library.3.1.15/Util.js";
-import { some } from "../fable-library.3.1.15/Option.js";
-import { singleton, collect, take, skip, append, delay } from "../fable-library.3.1.15/Seq.js";
-import { rangeDouble } from "../fable-library.3.1.15/Range.js";
+import { Union } from "../fable-library.3.2.9/Types.js";
+import { class_type, union_type, int32_type, array_type } from "../fable-library.3.2.9/Reflection.js";
+import { fill } from "../fable-library.3.2.9/Array.js";
+import { comparePrimitives, max } from "../fable-library.3.2.9/Util.js";
+import { some } from "../fable-library.3.2.9/Option.js";
+import { singleton, collect, take, skip, append, delay } from "../fable-library.3.2.9/Seq.js";
+import { rangeDouble } from "../fable-library.3.2.9/Range.js";
 
 export class RingState$1 extends Union {
     constructor(tag, ...fields) {

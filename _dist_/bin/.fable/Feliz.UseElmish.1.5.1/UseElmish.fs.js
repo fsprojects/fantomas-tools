@@ -1,14 +1,14 @@
-import { Union } from "../fable-library.3.1.15/Types.js";
-import { class_type, union_type, int32_type, array_type } from "../fable-library.3.1.15/Reflection.js";
-import { fill } from "../fable-library.3.1.15/Array.js";
-import { isDisposable, comparePrimitives, max } from "../fable-library.3.1.15/Util.js";
-import { toArray, value as value_1, some } from "../fable-library.3.1.15/Option.js";
-import { iterate as iterate_1, singleton, collect, take, skip, append, delay } from "../fable-library.3.1.15/Seq.js";
-import { rangeDouble } from "../fable-library.3.1.15/Range.js";
+import { Union } from "../fable-library.3.2.9/Types.js";
+import { class_type, union_type, int32_type, array_type } from "../fable-library.3.2.9/Reflection.js";
+import { fill } from "../fable-library.3.2.9/Array.js";
+import { isDisposable, comparePrimitives, max } from "../fable-library.3.2.9/Util.js";
+import { toArray, value as value_1, some } from "../fable-library.3.2.9/Option.js";
+import { iterate as iterate_1, singleton, collect, take, skip, append, delay } from "../fable-library.3.2.9/Seq.js";
+import { rangeDouble } from "../fable-library.3.2.9/Range.js";
 import { useReact_useMemo_CF4EA67, useReact_useEffect_3A5B6456, useReact_useEffect_Z101E1A95, useReact_useEffect_Z5234A374, useReact_useCallbackRef_7C4B0DD6, React_createDisposable_3A5B6456, useReact_useEffectOnce_Z5ECA432F, useFeliz_React__React_useState_Static_1505, useReact_useRef_1505 } from "../Feliz.1.43.0/React.fs.js";
-import { isCancellationRequested, cancel, createCancellationToken } from "../fable-library.3.1.15/Async.js";
+import { isCancellationRequested, cancel, createCancellationToken } from "../fable-library.3.2.9/Async.js";
 import { PromiseBuilder__While_2044D34, PromiseBuilder__Delay_62FBFDE1, PromiseBuilder__Run_212F1D4B } from "../Fable.Promise.2.2.0/Promise.fs.js";
-import { iterate } from "../fable-library.3.1.15/List.js";
+import { iterate } from "../fable-library.3.2.9/List.js";
 import { promise } from "../Fable.Promise.2.2.0/PromiseImpl.fs.js";
 
 export class RingState$1 extends Union {
@@ -102,7 +102,7 @@ export function useFeliz_React__React_useElmish_Static_17DC4F1D(init, update, de
     const setChildState_1 = () => {
         void setTimeout(() => {
             let copyOfStruct;
-            if (!(copyOfStruct = token_1.current, isCancellationRequested(copyOfStruct))) {
+            if (!((copyOfStruct = token_1.current, isCancellationRequested(copyOfStruct)))) {
                 patternInput[1](state.current);
             }
         }, 0);
@@ -112,7 +112,7 @@ export function useFeliz_React__React_useElmish_Static_17DC4F1D(init, update, de
             let nextMsg = some(msg);
             return PromiseBuilder__While_2044D34(promise, () => {
                 let copyOfStruct_1;
-                return (nextMsg != null) ? (!(copyOfStruct_1 = token_1.current, isCancellationRequested(copyOfStruct_1))) : false;
+                return (nextMsg != null) ? (!((copyOfStruct_1 = token_1.current, isCancellationRequested(copyOfStruct_1)))) : false;
             }, PromiseBuilder__Delay_62FBFDE1(promise, () => {
                 const patternInput_1 = update(value_1(nextMsg), state.current);
                 iterate((sub) => {

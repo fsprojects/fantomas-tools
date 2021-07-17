@@ -1,10 +1,10 @@
-import { Record, Union } from "./.fable/fable-library.3.1.15/Types.js";
-import { record_type, int32_type, bool_type, union_type, delegate_type, obj_type, class_type, lambda_type, unit_type, string_type } from "./.fable/fable-library.3.1.15/Reflection.js";
+import { Record, Union } from "./.fable/fable-library.3.2.9/Types.js";
+import { record_type, int32_type, bool_type, union_type, delegate_type, obj_type, class_type, lambda_type, unit_type, string_type } from "./.fable/fable-library.3.2.9/Reflection.js";
 import { useReact_useRef_1505, useReact_useEffect_Z5234A374 } from "./.fable/Feliz.1.43.0/React.fs.js";
-import { ofArray, append } from "./.fable/fable-library.3.1.15/List.js";
+import { ofArray, append } from "./.fable/fable-library.3.2.9/List.js";
 import * as react from "../../_snowpack/pkg/react.js";
 import react_1 from "../../_snowpack/pkg/@monaco-editor/react.js";
-import { keyValueList } from "./.fable/fable-library.3.1.15/MapUtil.js";
+import { keyValueList } from "./.fable/fable-library.3.2.9/MapUtil.js";
 
 export class MonacoEditorProp extends Union {
     constructor(tag, ...fields) {

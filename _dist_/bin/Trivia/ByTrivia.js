@@ -1,8 +1,8 @@
-import { printf, toText } from "../.fable/fable-library.3.1.15/String.js";
+import { printf, toText } from "../.fable/fable-library.3.2.9/String.js";
 import { menu, MenuItem, rangeToText } from "./Menu.js";
-import { map } from "../.fable/fable-library.3.1.15/Option.js";
+import { map } from "../.fable/fable-library.3.2.9/Option.js";
 import * as react from "../../../_snowpack/pkg/react.js";
-import { tryItem, map as map_1 } from "../.fable/fable-library.3.1.15/List.js";
+import { tryItem, map as map_1 } from "../.fable/fable-library.3.2.9/List.js";
 import { Msg, ActiveTab } from "./Model.js";
 
 function contentToClassName(c) {
@@ -59,7 +59,7 @@ function activeTrivia(trivia) {
     const arg20 = rangeToText(trivia.Range);
     const arg10 = typeName(trivia.Item);
     title = toText(printf("%s %s"))(arg10)(arg20);
-    const content = map((c_3) => react.createElement("code", {}, c_3), (matchValue = trivia.Item, (matchValue.tag === 1) ? matchValue.fields[0] : ((matchValue.tag === 2) ? matchValue.fields[0] : ((matchValue.tag === 9) ? matchValue.fields[0] : ((matchValue.tag === 3) ? matchValue.fields[0] : ((matchValue.tag === 4) ? matchValue.fields[0] : ((matchValue.tag === 7) ? matchValue.fields[0] : ((matchValue.tag === 10) ? matchValue.fields[0] : ((matchValue.tag === 11) ? matchValue.fields[0] : ((matchValue.tag === 5) ? (c = matchValue.fields[0], (c.tag === 1) ? c.fields[0] : ((c.tag === 2) ? toText(printf("%s (newline before: %b) (newline after: %b)"))(c.fields[0])(c.fields[1])(c.fields[2]) : c.fields[0])) : (void 0)))))))))));
+    const content = map((c_3) => react.createElement("code", {}, c_3), (matchValue = trivia.Item, (matchValue.tag === 1) ? matchValue.fields[0] : ((matchValue.tag === 2) ? matchValue.fields[0] : ((matchValue.tag === 9) ? matchValue.fields[0] : ((matchValue.tag === 3) ? matchValue.fields[0] : ((matchValue.tag === 4) ? matchValue.fields[0] : ((matchValue.tag === 7) ? matchValue.fields[0] : ((matchValue.tag === 10) ? matchValue.fields[0] : ((matchValue.tag === 11) ? matchValue.fields[0] : ((matchValue.tag === 5) ? ((c = matchValue.fields[0], (c.tag === 1) ? c.fields[0] : ((c.tag === 2) ? toText(printf("%s (newline before: %b) (newline after: %b)"))(c.fields[0])(c.fields[1])(c.fields[2]) : c.fields[0]))) : (void 0)))))))))));
     return react.createElement("div", {
         className: "tab-pane active",
     }, react.createElement("h2", {

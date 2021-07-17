@@ -1,11 +1,11 @@
-import { join } from "../fable-library.3.1.15/String.js";
-import { length, ofArray, map } from "../fable-library.3.1.15/List.js";
-import { milliseconds, seconds, minutes, hours } from "../fable-library.3.1.15/TimeSpan.js";
-import { map as map_1 } from "../fable-library.3.1.15/Seq.js";
+import { join } from "../fable-library.3.2.9/String.js";
+import { length, ofArray, map } from "../fable-library.3.2.9/List.js";
+import { milliseconds, seconds, minutes, hours } from "../fable-library.3.2.9/TimeSpan.js";
+import { map as map_1 } from "../fable-library.3.2.9/Seq.js";
 
 export function PropHelpers_createClockValue(duration) {
     let i_1;
-    return (join(":", map((i) => ((i < 10) ? ("0" + i) : i), ofArray([hours(duration), minutes(duration), seconds(duration)]))) + ".") + (i_1 = (milliseconds(duration) | 0), (i_1 < 10) ? ("0" + i_1) : i_1);
+    return (join(":", map((i) => ((i < 10) ? ("0" + i) : i), ofArray([hours(duration), minutes(duration), seconds(duration)]))) + ".") + ((i_1 = (milliseconds(duration) | 0), (i_1 < 10) ? ("0" + i_1) : i_1));
 }
 
 export function PropHelpers_createKeySplines(values) {

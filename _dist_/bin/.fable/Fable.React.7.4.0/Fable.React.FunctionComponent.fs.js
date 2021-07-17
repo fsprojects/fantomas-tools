@@ -1,6 +1,6 @@
-import { class_type } from "../fable-library.3.1.15/Reflection.js";
-import { defaultArg, value as value_1 } from "../fable-library.3.1.15/Option.js";
-import { curry, int32ToString } from "../fable-library.3.1.15/Util.js";
+import { class_type } from "../fable-library.3.2.9/Reflection.js";
+import { defaultArg, value as value_1 } from "../fable-library.3.2.9/Option.js";
+import { curry, int32ToString } from "../fable-library.3.2.9/Util.js";
 import { ReactElementTypeModule_memoWith } from "./Fable.React.Helpers.fs.js";
 import * as react from "../../../../_snowpack/pkg/react.js";
 
@@ -56,7 +56,7 @@ export function FunctionComponent_Of_Z5A158BBF(render, displayName, memoizeWith,
         }
         return (props) => {
             let f_1;
-            return react.createElement(elemType, (withKey == null) ? props : (f_1 = withKey, (props.key = f_1(props), props)));
+            return react.createElement(elemType, (withKey == null) ? props : ((f_1 = withKey, (props.key = f_1(props), props))));
         };
     });
 }

@@ -1,5 +1,5 @@
-import { FSharpRef, Record } from "../fable-library.3.1.15/Types.js";
-import { lambda_type, class_type, record_type, bool_type } from "../fable-library.3.1.15/Reflection.js";
+import { FSharpRef, Record } from "../fable-library.3.2.9/Types.js";
+import { lambda_type, class_type, record_type, bool_type } from "../fable-library.3.2.9/Reflection.js";
 import { Component } from "../../../../_snowpack/pkg/react.js";
 import * as react from "../../../../_snowpack/pkg/react.js";
 

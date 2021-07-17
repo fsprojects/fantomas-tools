@@ -1,8 +1,8 @@
 import { NavbarProps, navbar } from "./.fable/Fable.Reactstrap.0.5.1/Navbar.fs.js";
 import { Prop, DOMAttr, HTMLAttr } from "./.fable/Fable.React.7.4.0/Fable.React.Props.fs.js";
-import { toArray, ofArray, singleton } from "./.fable/fable-library.3.1.15/List.js";
+import { toArray, ofArray, singleton } from "./.fable/fable-library.3.2.9/List.js";
 import { NavbarBrandProps, navbarBrand } from "./.fable/Fable.Reactstrap.0.5.1/NavbarBrand.fs.js";
-import { printf, toText } from "./.fable/fable-library.3.1.15/String.js";
+import { printf, toText } from "./.fable/fable-library.3.2.9/String.js";
 import { createElement } from "../../_snowpack/pkg/react.js";
 import * as react from "../../_snowpack/pkg/react.js";
 import { ButtonProps, button } from "./.fable/Fable.Reactstrap.0.5.1/Button.fs.js";
@@ -17,7 +17,7 @@ import { commands as commands_4, settings as settings_4, view as view_3 } from "
 import { NavItemProps, navItem as navItem_1 } from "./.fable/Fable.Reactstrap.0.5.1/NavItem.fs.js";
 import { NavLinkProps, navLink } from "./.fable/Fable.Reactstrap.0.5.1/NavLink.fs.js";
 import { toHash } from "./Navigation.js";
-import { equals } from "./.fable/fable-library.3.1.15/Util.js";
+import { equals } from "./.fable/fable-library.3.2.9/Util.js";
 import { FantomasMode } from "./FantomasOnline/Model.js";
 import { NavProps, nav } from "./.fable/Fable.Reactstrap.0.5.1/Nav.fs.js";
 
@@ -114,7 +114,7 @@ export function tabs(model, dispatch) {
     }
     const navItem = (tab_1, label, isActive) => {
         let page, query, hash, arg10;
-        return navItem_1([new NavItemProps(2, singleton(new Prop(0, label)))], [navLink([new NavLinkProps(3, singleton(new HTMLAttr(94, (page = toHash(tab_1), (query = (hash = window.location.hash, (hash.indexOf("?") >= 0) ? (arg10 = hash.split("?")[1], toText(printf("?%s"))(arg10)) : ""), toText(printf("%s%s"))(page)(query)))))), new NavLinkProps(0, isActive)], [label])]);
+        return navItem_1([new NavItemProps(2, singleton(new Prop(0, label)))], [navLink([new NavLinkProps(3, singleton(new HTMLAttr(94, (page = toHash(tab_1), (query = ((hash = window.location.hash, (hash.indexOf("?") >= 0) ? ((arg10 = hash.split("?")[1], toText(printf("?%s"))(arg10))) : "")), toText(printf("%s%s"))(page)(query)))))), new NavLinkProps(0, isActive)], [label])]);
     };
     const navItems = ofArray([navItem(new ActiveTab(0), "Home", equals(model.ActiveTab, new ActiveTab(0))), navItem(new ActiveTab(1), "FSharp Tokens", equals(model.ActiveTab, new ActiveTab(1))), navItem(new ActiveTab(2), "AST", equals(model.ActiveTab, new ActiveTab(2))), navItem(new ActiveTab(3), "Trivia", equals(model.ActiveTab, new ActiveTab(3))), navItem(new ActiveTab(4, new FantomasMode(3)), "Fantomas", (model.ActiveTab.tag === 4) ? true : false)]);
     return react.createElement("div", {

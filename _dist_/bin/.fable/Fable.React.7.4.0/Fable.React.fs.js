@@ -1,5 +1,5 @@
-import { Record } from "../fable-library.3.1.15/Types.js";
-import { record_type, string_type } from "../fable-library.3.1.15/Reflection.js";
+import { Record } from "../fable-library.3.2.9/Types.js";
+import { record_type, string_type } from "../fable-library.3.2.9/Reflection.js";
 
 export class FragmentProps extends Record {
     constructor(key) {

@@ -1,10 +1,10 @@
-import { Union } from "../fable-library.3.1.15/Types.js";
-import { union_type, list_type, class_type, obj_type, lambda_type, unit_type, string_type, bool_type } from "../fable-library.3.1.15/Reflection.js";
+import { Union } from "../fable-library.3.2.9/Types.js";
+import { union_type, list_type, class_type, obj_type, lambda_type, unit_type, string_type, bool_type } from "../fable-library.3.2.9/Reflection.js";
 import { FadeProps$reflection } from "./Fade.fs.js";
 import * as react from "../../../../_snowpack/pkg/react.js";
 import { Modal } from "../../../../_snowpack/pkg/reactstrap.js";
-import { singleton, map, reduce, isEmpty } from "../fable-library.3.1.15/Seq.js";
-import { keyValueList } from "../fable-library.3.1.15/MapUtil.js";
+import { singleton, map, reduce, isEmpty } from "../fable-library.3.2.9/Seq.js";
+import { keyValueList } from "../fable-library.3.2.9/MapUtil.js";
 
 export class ModalProps extends Union {
     constructor(tag, ...fields) {

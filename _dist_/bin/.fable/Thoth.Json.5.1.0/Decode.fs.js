@@ -1,24 +1,24 @@
-import { toFail, printf, toText, join } from "../fable-library.3.1.15/String.js";
-import { Result_Map, FSharpResult$2 } from "../fable-library.3.1.15/Choice.js";
+import { toFail, printf, toText, join } from "../fable-library.3.2.9/String.js";
+import { Result_Map, FSharpResult$2 } from "../fable-library.3.2.9/Choice.js";
 import { Util_CachedDecoders, Util_Cache$1__GetOrAdd_43981464, CaseStrategy, Util_Casing_convert, ErrorReason } from "./Types.fs.js";
-import { tryParse as tryParse_2 } from "../fable-library.3.1.15/Guid.js";
-import { toString as toString_12, FSharpRef } from "../fable-library.3.1.15/Types.js";
-import { tryParse as tryParse_3 } from "../fable-library.3.1.15/Int32.js";
-import { tryParse as tryParse_4, fromInt, fromNumber, fromBits, toNumber } from "../fable-library.3.1.15/Long.js";
-import { parse, fromInt32 } from "../fable-library.3.1.15/BigInt.js";
-import { tryParse as tryParse_5 } from "../fable-library.3.1.15/Decimal.js";
-import Decimal from "../fable-library.3.1.15/Decimal.js";
-import { toUniversalTime, tryParse as tryParse_6, minValue } from "../fable-library.3.1.15/Date.js";
-import { tryParse as tryParse_7, minValue as minValue_1 } from "../fable-library.3.1.15/DateOffset.js";
-import { tryParse as tryParse_8 } from "../fable-library.3.1.15/TimeSpan.js";
-import { map as map_4, value as value_40, defaultArg, some } from "../fable-library.3.1.15/Option.js";
-import { ofArray, toArray, map as map_1, length, singleton, append as append_1, tail as tail_1, head as head_1, isEmpty, ofSeq, empty, reverse, fold, tryLast, cons } from "../fable-library.3.1.15/List.js";
-import { int16ToString, numberHash, mapCurriedArgs, compare, int32ToString, uncurry } from "../fable-library.3.1.15/Util.js";
-import { map as map_2, tryFind, foldBack2, foldBack, fill, fold as fold_1 } from "../fable-library.3.1.15/Array.js";
-import { contains, fold as fold_2, toList, append, reverse as reverse_1 } from "../fable-library.3.1.15/Seq.js";
-import { empty as empty_1, map as map_3, tryFind as tryFind_1, add, ofSeq as ofSeq_1, ofList } from "../fable-library.3.1.15/Map.js";
-import { getGenerics, getGenericTypeDefinition, makeTuple, getTupleElements, isTuple, isGenericType, parseEnum, getEnumValues, getEnumUnderlyingType, isEnum, getElementType, isArray, isUnion, makeRecord, getRecordElements, isRecord, fullName, getUnionCaseFields, makeUnion as makeUnion_1, getUnionCases, name as name_3, class_type } from "../fable-library.3.1.15/Reflection.js";
-import { ofSeq as ofSeq_2 } from "../fable-library.3.1.15/Set.js";
+import { tryParse as tryParse_2 } from "../fable-library.3.2.9/Guid.js";
+import { toString as toString_12, FSharpRef } from "../fable-library.3.2.9/Types.js";
+import { tryParse as tryParse_3 } from "../fable-library.3.2.9/Int32.js";
+import { tryParse as tryParse_4, fromInt, fromNumber, fromBits, toNumber } from "../fable-library.3.2.9/Long.js";
+import { parse, fromInt32 } from "../fable-library.3.2.9/BigInt.js";
+import { tryParse as tryParse_5 } from "../fable-library.3.2.9/Decimal.js";
+import Decimal from "../fable-library.3.2.9/Decimal.js";
+import { toUniversalTime, tryParse as tryParse_6, minValue } from "../fable-library.3.2.9/Date.js";
+import { tryParse as tryParse_7, minValue as minValue_1 } from "../fable-library.3.2.9/DateOffset.js";
+import { tryParse as tryParse_8 } from "../fable-library.3.2.9/TimeSpan.js";
+import { map as map_4, value as value_40, defaultArg, some } from "../fable-library.3.2.9/Option.js";
+import { ofArray, toArray, map as map_1, length, singleton, append as append_1, tail as tail_1, head as head_1, isEmpty, ofSeq, empty, reverse, fold, tryLast, cons } from "../fable-library.3.2.9/List.js";
+import { int16ToString, numberHash, mapCurriedArgs, compare, int32ToString, uncurry } from "../fable-library.3.2.9/Util.js";
+import { map as map_2, tryFind, foldBack2, foldBack, fill, fold as fold_1 } from "../fable-library.3.2.9/Array.js";
+import { contains, fold as fold_2, toList, append, reverse as reverse_1 } from "../fable-library.3.2.9/Seq.js";
+import { empty as empty_1, map as map_3, tryFind as tryFind_1, add, ofSeq as ofSeq_1, ofList } from "../fable-library.3.2.9/Map.js";
+import { getGenerics, getGenericTypeDefinition, makeTuple, getTupleElements, isTuple, isGenericType, parseEnum, getEnumValues, getEnumUnderlyingType, isEnum, getElementType, isArray, isUnion, makeRecord, getRecordElements, isRecord, fullName, getUnionCaseFields, makeUnion as makeUnion_1, getUnionCases, name as name_3, class_type } from "../fable-library.3.2.9/Reflection.js";
+import { ofSeq as ofSeq_2 } from "../fable-library.3.2.9/Set.js";
 
 export function Helpers_isUndefined(o) {
     return (typeof o) === "undefined";
@@ -529,7 +529,7 @@ export function index(requestedIndex, decoder, path, value_1) {
             return decoder(currentPath, vArray[requestedIndex]);
         }
         else {
-            return new FSharpResult$2(1, [currentPath, new ErrorReason(5, ((("a longer array. Need index `" + int32ToString(requestedIndex)) + "` but there are only `") + (copyOfStruct = vArray.length, int32ToString(copyOfStruct))) + "` entries", value_1)]);
+            return new FSharpResult$2(1, [currentPath, new ErrorReason(5, ((("a longer array. Need index `" + int32ToString(requestedIndex)) + "` but there are only `") + ((copyOfStruct = vArray.length, int32ToString(copyOfStruct)))) + "` entries", value_1)]);
         }
     }
     else {
@@ -1011,7 +1011,7 @@ export class Getters$1 {
     constructor(path, v) {
         let _this, _this_1;
         this.errors = [];
-        this.required = (_this = this, {
+        this.required = ((_this = this, {
             Field(fieldName, decoder) {
                 return unwrapWith(_this.errors, path, (path_1, value_1) => field(fieldName, decoder, path_1, value_1), v);
             },
@@ -1021,8 +1021,8 @@ export class Getters$1 {
             Raw(decoder_4) {
                 return unwrapWith(_this.errors, path, decoder_4, v);
             },
-        });
-        this.optional = (_this_1 = this, {
+        }));
+        this.optional = ((_this_1 = this, {
             Field(fieldName_1, decoder_5) {
                 return unwrapWith(_this_1.errors, path, (path_2, value_2) => optional(fieldName_1, decoder_5, path_2, value_2), v);
             },
@@ -1085,7 +1085,7 @@ export class Getters$1 {
                     return some(matchValue.fields[0]);
                 }
             },
-        });
+        }));
     }
     get Required() {
         const __ = this;
@@ -1670,7 +1670,7 @@ export function Auto_generateDecoderCached_7848D058(caseStrategy, extra, resolve
     let y_1, y;
     const t = value_40(resolver).ResolveType();
     const caseStrategy_1 = defaultArg(caseStrategy, new CaseStrategy(0));
-    return Util_Cache$1__GetOrAdd_43981464(Util_CachedDecoders, (y_1 = (y = fullName(t), toString_12(caseStrategy_1) + y), defaultArg(map_4((e) => e.Hash, extra), "") + y_1), () => autoDecoder(makeExtra(extra), caseStrategy_1, false, t));
+    return Util_Cache$1__GetOrAdd_43981464(Util_CachedDecoders, (y_1 = ((y = fullName(t), toString_12(caseStrategy_1) + y)), defaultArg(map_4((e) => e.Hash, extra), "") + y_1), () => autoDecoder(makeExtra(extra), caseStrategy_1, false, t));
 }
 
 export function Auto_generateDecoder_7848D058(caseStrategy, extra, resolver) {

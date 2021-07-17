@@ -1,7 +1,7 @@
 import { bool, fromString, string, option as option_2, list, Auto_generateDecoderCached_7848D058, int, object } from "../.fable/Thoth.Json.5.1.0/Decode.fs.js";
-import { uncurry } from "../.fable/fable-library.3.1.15/Util.js";
+import { uncurry } from "../.fable/fable-library.3.2.9/Util.js";
 import { ParseResult, TriviaNodeCandidate, TriviaNode, TriviaNodeType$reflection, Trivia, TriviaContent$reflection, Range$ } from "../shared/TriviaShared.js";
-import { defaultArg } from "../.fable/fable-library.3.1.15/Option.js";
+import { defaultArg } from "../.fable/fable-library.3.2.9/Option.js";
 import { Model } from "./Model.js";
 
 const decodeRange = (path) => ((v) => object((get$) => (new Range$(get$.Required.Field("startLine", uncurry(2, int)), get$.Required.Field("startColumn", uncurry(2, int)), get$.Required.Field("endLine", uncurry(2, int)), get$.Required.Field("endColumn", uncurry(2, int)))), path, v));

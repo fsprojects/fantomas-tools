@@ -1,9 +1,9 @@
-import { Record, Union } from "../.fable/fable-library.3.1.15/Types.js";
-import { record_type, class_type, bool_type, tuple_type, list_type, string_type, union_type } from "../.fable/fable-library.3.1.15/Reflection.js";
+import { Record, Union } from "../.fable/fable-library.3.2.9/Types.js";
+import { record_type, class_type, bool_type, tuple_type, list_type, string_type, union_type } from "../.fable/fable-library.3.2.9/Reflection.js";
 import { sortByOption, FormatResponse$reflection, FantomasOption$reflection } from "../shared/FantomasOnlineShared.js";
-import { sortBy, zip, filter, map } from "../.fable/fable-library.3.1.15/List.js";
-import { comparePrimitives, equals } from "../.fable/fable-library.3.1.15/Util.js";
-import { toList } from "../.fable/fable-library.3.1.15/Map.js";
+import { sortBy, zip, filter, map } from "../.fable/fable-library.3.2.9/List.js";
+import { comparePrimitives, equals } from "../.fable/fable-library.3.2.9/Util.js";
+import { toList } from "../.fable/fable-library.3.2.9/Map.js";
 
 export class FantomasMode extends Union {
     constructor(tag, ...fields) {

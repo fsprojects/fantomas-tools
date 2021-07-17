@@ -1,5 +1,5 @@
-import { toString, Record, Union } from "../fable-library.3.1.15/Types.js";
-import { array_type, float64_type, int32_type, bool_type, obj_type, record_type, option_type, lambda_type, unit_type, class_type, union_type, string_type } from "../fable-library.3.1.15/Reflection.js";
+import { toString, Record, Union } from "../fable-library.3.2.9/Types.js";
+import { array_type, float64_type, int32_type, bool_type, obj_type, record_type, option_type, lambda_type, unit_type, class_type, union_type, string_type } from "../fable-library.3.2.9/Reflection.js";
 
 export class FragmentProp extends Union {
     constructor(tag, ...fields) {

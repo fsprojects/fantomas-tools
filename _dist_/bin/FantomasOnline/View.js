@@ -1,19 +1,19 @@
 import { createElement } from "../../../_snowpack/pkg/react.js";
 import * as react from "../../../_snowpack/pkg/react.js";
 import { MultiButtonSettings, multiButton, toggleButton, input } from "../SettingControls.js";
-import { isMatch } from "../.fable/fable-library.3.1.15/RegExp.js";
-import { parse } from "../.fable/fable-library.3.1.15/Int32.js";
+import { isMatch } from "../.fable/fable-library.3.2.9/RegExp.js";
+import { parse } from "../.fable/fable-library.3.2.9/Int32.js";
 import { getOptionKey, optionValue, sortByOption, FantomasOption$reflection, FantomasOption } from "../shared/FantomasOnlineShared.js";
 import { FantomasMode, Model__get_SettingsChangedByTheUser, Msg } from "./Model.js";
-import { singleton, mapIndexed, empty, ofArray, isEmpty, sortBy, map, toArray } from "../.fable/fable-library.3.1.15/List.js";
-import { toList } from "../.fable/fable-library.3.1.15/Map.js";
-import { escapeDataString, equals, comparePrimitives } from "../.fable/fable-library.3.1.15/Util.js";
-import { toString, Record } from "../.fable/fable-library.3.1.15/Types.js";
-import { record_type, bool_type, class_type, list_type, string_type } from "../.fable/fable-library.3.1.15/Reflection.js";
-import { map as map_1, zip, toArray as toArray_1, choose, toList as toList_1 } from "../.fable/fable-library.3.1.15/Seq.js";
-import { isNullOrWhiteSpace, printf, toText, join } from "../.fable/fable-library.3.1.15/String.js";
+import { singleton, mapIndexed, empty, ofArray, isEmpty, sortBy, map, toArray } from "../.fable/fable-library.3.2.9/List.js";
+import { toList } from "../.fable/fable-library.3.2.9/Map.js";
+import { escapeDataString, equals, comparePrimitives } from "../.fable/fable-library.3.2.9/Util.js";
+import { toString, Record } from "../.fable/fable-library.3.2.9/Types.js";
+import { record_type, bool_type, class_type, list_type, string_type } from "../.fable/fable-library.3.2.9/Reflection.js";
+import { map as map_1, zip, toArray as toArray_1, choose, toList as toList_1 } from "../.fable/fable-library.3.2.9/Seq.js";
+import { isNullOrWhiteSpace, printf, toText, join } from "../.fable/fable-library.3.2.9/String.js";
 import { DOMAttr, HTMLAttr } from "../.fable/Fable.React.7.4.0/Fable.React.Props.fs.js";
-import { defaultArg } from "../.fable/fable-library.3.1.15/Option.js";
+import { defaultArg } from "../.fable/fable-library.3.2.9/Option.js";
 import { ButtonProps, button } from "../.fable/Fable.Reactstrap.0.5.1/Button.fs.js";
 import { BadgeProps, badge } from "../.fable/Fable.Reactstrap.0.5.1/Badge.fs.js";
 import { loader } from "../Loader.js";
@@ -30,19 +30,19 @@ function mapToOption(dispatch, key, fantomasOption) {
         if (isMatch(nv, "\\d+")) {
             dispatch(new Msg(5, [key, new FantomasOption(0, fantomasOption.fields[0], key, parse(nv, 511, false, 32))]));
         }
-    }, key, "integer", fantomasOption.fields[2]) : ((fantomasOption.tag === 2) ? (o_2 = (fantomasOption.fields[0] | 0), toggleButton((_arg3) => {
+    }, key, "integer", fantomasOption.fields[2]) : ((fantomasOption.tag === 2) ? ((o_2 = (fantomasOption.fields[0] | 0), toggleButton((_arg3) => {
         dispatch(new Msg(5, [key, new FantomasOption(2, o_2, key, "character_width")]));
     }, (_arg4) => {
         dispatch(new Msg(5, [key, new FantomasOption(2, o_2, key, "number_of_items")]));
-    }, "CharacterWidth", "NumberOfItems", key, fantomasOption.fields[2] === "character_width")) : ((fantomasOption.tag === 3) ? (o_3 = (fantomasOption.fields[0] | 0), toggleButton((_arg5) => {
+    }, "CharacterWidth", "NumberOfItems", key, fantomasOption.fields[2] === "character_width"))) : ((fantomasOption.tag === 3) ? ((o_3 = (fantomasOption.fields[0] | 0), toggleButton((_arg5) => {
         dispatch(new Msg(5, [key, new FantomasOption(3, o_3, key, "crlf")]));
     }, (_arg6) => {
         dispatch(new Msg(5, [key, new FantomasOption(3, o_3, key, "lf")]));
-    }, "CRLF", "LF", key, fantomasOption.fields[2] === "crlf")) : (o = (fantomasOption.fields[0] | 0), toggleButton((_arg1) => {
+    }, "CRLF", "LF", key, fantomasOption.fields[2] === "crlf"))) : ((o = (fantomasOption.fields[0] | 0), toggleButton((_arg1) => {
         dispatch(new Msg(5, [key, new FantomasOption(1, o, key, true)]));
     }, (_arg2) => {
         dispatch(new Msg(5, [key, new FantomasOption(1, o, key, false)]));
-    }, "true", "false", key, fantomasOption.fields[2])))));
+    }, "true", "false", key, fantomasOption.fields[2]))))));
 }
 
 export function options(model, dispatch) {
@@ -159,9 +159,9 @@ function viewErrors(model, result, isIdempotent, errors) {
         return react.createElement("ul", {
             id: "ast-errors",
             className: "",
-        }, (o = (isIdempotent ? (void 0) : (githubIssue = (new GithubIssue("Formatted code", result.FirstFormat, "Reformatted code", defaultArg(result.SecondFormat, result.FirstFormat), "Fantomas was not able to produce the same code after reformatting the result.", "Idempotency problem when \u003cadd use-case\u003e", model.DefaultOptions, model.UserOptions, model.Version, model.IsFsi)), react.createElement("div", {
+        }, (o = (isIdempotent ? (void 0) : ((githubIssue = (new GithubIssue("Formatted code", result.FirstFormat, "Reformatted code", defaultArg(result.SecondFormat, result.FirstFormat), "Fantomas was not able to produce the same code after reformatting the result.", "Idempotency problem when \u003cadd use-case\u003e", model.DefaultOptions, model.UserOptions, model.Version, model.IsFsi)), react.createElement("div", {
             className: "idempotent-error",
-        }, react.createElement("h6", {}, "The result was not idempotent"), "Fantomas was able to format the code, but when formatting the result again, the code changed.", react.createElement("br", {}), "The result after the first format is being displayed.", react.createElement("br", {}), button([new ButtonProps(1, "danger"), new ButtonProps(9, ofArray([githubIssueUri(githubIssue), new HTMLAttr(157, "_blank"), new HTMLAttr(64, "rounded-0")]))], ["Report idempotancy issue"])))), (o == null) ? null : o), toArray(errors_2));
+        }, react.createElement("h6", {}, "The result was not idempotent"), "Fantomas was able to format the code, but when formatting the result again, the code changed.", react.createElement("br", {}), "The result after the first format is being displayed.", react.createElement("br", {}), button([new ButtonProps(1, "danger"), new ButtonProps(9, ofArray([githubIssueUri(githubIssue), new HTMLAttr(157, "_blank"), new HTMLAttr(64, "rounded-0")]))], ["Report idempotancy issue"]))))), (o == null) ? null : o), toArray(errors_2));
     }
     else {
         return void 0;
@@ -240,7 +240,7 @@ export function commands(code, model, dispatch) {
     const copySettingButton = userChangedSettings(model) ? button([new ButtonProps(1, "secondary"), new ButtonProps(9, ofArray([new HTMLAttr(64, "text-white"), new DOMAttr(40, (_arg2) => {
         dispatch(new Msg(8));
     })]))], ["Copy settings"]) : (void 0);
-    return react.createElement(react.Fragment, {}, ...(matchValue = model.State, (matchValue.tag === 2) ? ofArray([formatButton, (o = copySettingButton, (o == null) ? null : o)]) : ((matchValue.tag === 1) ? ofArray([createGitHubIssue(code, model), formatButton, (o_2 = copySettingButton, (o_2 == null) ? null : o_2)]) : ((matchValue.tag === 3) ? ofArray([createGitHubIssue(code, model), formatButton, (o_2 = copySettingButton, (o_2 == null) ? null : o_2)]) : ((matchValue.tag === 4) ? ofArray([createGitHubIssue(code, model), formatButton, (o_2 = copySettingButton, (o_2 == null) ? null : o_2)]) : empty())))));
+    return react.createElement(react.Fragment, {}, ...((matchValue = model.State, (matchValue.tag === 2) ? ofArray([formatButton, (o = copySettingButton, (o == null) ? null : o)]) : ((matchValue.tag === 1) ? ofArray([createGitHubIssue(code, model), formatButton, (o_2 = copySettingButton, (o_2 == null) ? null : o_2)]) : ((matchValue.tag === 3) ? ofArray([createGitHubIssue(code, model), formatButton, (o_2 = copySettingButton, (o_2 == null) ? null : o_2)]) : ((matchValue.tag === 4) ? ofArray([createGitHubIssue(code, model), formatButton, (o_2 = copySettingButton, (o_2 == null) ? null : o_2)]) : empty()))))));
 }
 
 export function settings(model, dispatch) {

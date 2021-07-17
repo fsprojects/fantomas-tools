@@ -3,11 +3,11 @@ import * as react from "../../_snowpack/pkg/react.js";
 import { InputProps, input as input_1 } from "./.fable/Fable.Reactstrap.0.5.1/Input.fs.js";
 import { Prop, DOMAttr, HTMLAttr } from "./.fable/Fable.React.7.4.0/Fable.React.Props.fs.js";
 import { Browser_Types_Event__Event_get_Value } from "./.fable/Fable.React.7.4.0/Fable.React.Extensions.fs.js";
-import { toArray, map, singleton, ofArray } from "./.fable/fable-library.3.1.15/List.js";
+import { toArray, map, singleton, ofArray } from "./.fable/fable-library.3.2.9/List.js";
 import { ButtonProps, button } from "./.fable/Fable.Reactstrap.0.5.1/Button.fs.js";
 import { ButtonGroupProps, buttonGroup } from "./.fable/Fable.Reactstrap.0.5.1/ButtonGroup.fs.js";
-import { Record } from "./.fable/fable-library.3.1.15/Types.js";
-import { record_type, bool_type, lambda_type, unit_type, obj_type, string_type } from "./.fable/fable-library.3.1.15/Reflection.js";
+import { Record } from "./.fable/fable-library.3.2.9/Types.js";
+import { record_type, bool_type, lambda_type, unit_type, obj_type, string_type } from "./.fable/fable-library.3.2.9/Reflection.js";
 
 export function input(key, onChange, labelValue, placeholder, value) {
     return formGroup([], [react.createElement("label", {}, labelValue), input_1([new InputProps(13, ofArray([new HTMLAttr(128, placeholder), new DOMAttr(9, (ev) => {

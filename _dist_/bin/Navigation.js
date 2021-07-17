@@ -1,12 +1,12 @@
-import { isNullOrWhiteSpace } from "./.fable/fable-library.3.1.15/String.js";
+import { isNullOrWhiteSpace } from "./.fable/fable-library.3.2.9/String.js";
 import { Cmd_none, Cmd_batch, Cmd_OfFunc_result, Cmd_map } from "./.fable/Fable.Elmish.3.1.0/cmd.fs.js";
 import { ActiveTab, Msg } from "./Model.js";
 import { Msg as Msg_1 } from "./FSharpTokens/Model.js";
 import { Msg as Msg_2 } from "./ASTViewer/Model.js";
 import { Msg as Msg_3 } from "./Trivia/Model.js";
-import { equals } from "./.fable/fable-library.3.1.15/Util.js";
+import { equals } from "./.fable/fable-library.3.2.9/Util.js";
 import { getVersionCmd, getOptionsCmd } from "./FantomasOnline/State.js";
-import { tail, head, isEmpty, ofArray } from "./.fable/fable-library.3.1.15/List.js";
+import { tail, head, isEmpty, ofArray } from "./.fable/fable-library.3.2.9/List.js";
 import { FantomasMode, Msg as Msg_4 } from "./FantomasOnline/Model.js";
 import { Route_$007CQuery$007C_$007C } from "./.fable/Feliz.Router.3.2.0/Router.fs.js";
 

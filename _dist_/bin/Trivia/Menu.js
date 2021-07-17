@@ -1,11 +1,11 @@
-import { printf, toText } from "../.fable/fable-library.3.1.15/String.js";
+import { printf, toText } from "../.fable/fable-library.3.2.9/String.js";
 import { BadgeProps, badge } from "../.fable/Fable.Reactstrap.0.5.1/Badge.fs.js";
 import { DOMAttr, Prop, HTMLAttr } from "../.fable/Fable.React.7.4.0/Fable.React.Props.fs.js";
-import { mapIndexed, toArray, ofArray, singleton } from "../.fable/fable-library.3.1.15/List.js";
+import { mapIndexed, toArray, ofArray, singleton } from "../.fable/fable-library.3.2.9/List.js";
 import * as react from "../../../_snowpack/pkg/react.js";
-import { singleton as singleton_1, append, delay, toList } from "../.fable/fable-library.3.1.15/Seq.js";
-import { Record } from "../.fable/fable-library.3.1.15/Types.js";
-import { record_type, string_type } from "../.fable/fable-library.3.1.15/Reflection.js";
+import { singleton as singleton_1, append, delay, toList } from "../.fable/fable-library.3.2.9/Seq.js";
+import { Record } from "../.fable/fable-library.3.2.9/Types.js";
+import { record_type, string_type } from "../.fable/fable-library.3.2.9/Reflection.js";
 import { Range$$reflection } from "../shared/TriviaShared.js";
 import { NavProps, nav } from "../.fable/Fable.Reactstrap.0.5.1/Nav.fs.js";
 import { NavItemProps, navItem } from "../.fable/Fable.Reactstrap.0.5.1/NavItem.fs.js";

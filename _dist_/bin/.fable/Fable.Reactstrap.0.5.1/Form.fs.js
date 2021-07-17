@@ -1,9 +1,9 @@
-import { Union } from "../fable-library.3.1.15/Types.js";
-import { union_type, list_type, class_type } from "../fable-library.3.1.15/Reflection.js";
+import { Union } from "../fable-library.3.2.9/Types.js";
+import { union_type, list_type, class_type } from "../fable-library.3.2.9/Reflection.js";
 import * as react from "../../../../_snowpack/pkg/react.js";
 import { Form } from "../../../../_snowpack/pkg/reactstrap.js";
-import { keyValueList } from "../fable-library.3.1.15/MapUtil.js";
-import { collect } from "../fable-library.3.1.15/Seq.js";
+import { keyValueList } from "../fable-library.3.2.9/MapUtil.js";
+import { collect } from "../fable-library.3.2.9/Seq.js";
 
 export class FormProps extends Union {
     constructor(tag, ...fields) {

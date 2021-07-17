@@ -1,22 +1,22 @@
 import * as __SNOWPACK_ENV__ from '../../../_snowpack/env.js';
 
-import { add, empty as empty_1, find, ofList } from "../.fable/fable-library.3.1.15/Map.js";
+import { add, empty as empty_1, find, ofList } from "../.fable/fable-library.3.2.9/Map.js";
 import { Model__get_SettingsChangedByTheUser, Model, EditorState, Msg, FantomasMode } from "./Model.js";
-import { contains, tryFind, isEmpty, map, empty, singleton, ofArray } from "../.fable/fable-library.3.1.15/List.js";
+import { contains, tryFind, isEmpty, map, empty, singleton, ofArray } from "../.fable/fable-library.3.2.9/List.js";
 import { postJson, getText } from "../Http.js";
-import { isNullOrWhiteSpace, toConsole, join, trimStart, toFail, printf, toText } from "../.fable/fable-library.3.1.15/String.js";
+import { isNullOrWhiteSpace, toConsole, join, trimStart, toFail, printf, toText } from "../.fable/fable-library.3.2.9/String.js";
 import { Types_RequestProperties, fetch$ } from "../.fable/Fable.Fetch.2.2.0/Fetch.fs.js";
 import { decodeOptionsFromUrl, decodeFormatResponse, decodeOptions } from "./Decoders.js";
 import { encodeUrlModel, encodeRequest } from "./Encoders.js";
 import { fromString } from "../.fable/Thoth.Json.5.1.0/Decode.fs.js";
-import { stringHash, uncurry } from "../.fable/fable-library.3.1.15/Util.js";
+import { stringHash, uncurry } from "../.fable/fable-library.3.2.9/Util.js";
 import { restoreModelFromUrl, updateUrlWithData } from "../UrlTools.js";
 import { toString } from "../.fable/Thoth.Json.5.1.0/Encode.fs.js";
 import { Cmd_ofSub, Cmd_none, Cmd_OfFunc_result, Cmd_batch, Cmd_OfPromise_either } from "../.fable/Fable.Elmish.3.1.0/cmd.fs.js";
 import { getOptionKey, FantomasOption } from "../shared/FantomasOnlineShared.js";
 import { Notyf } from "../../../_snowpack/pkg/notyf.js";
-import { map as map_1 } from "../.fable/fable-library.3.1.15/Seq.js";
-import { isUpper } from "../.fable/fable-library.3.1.15/Char.js";
+import { map as map_1 } from "../.fable/fable-library.3.2.9/Seq.js";
+import { isUpper } from "../.fable/fable-library.3.2.9/Char.js";
 
 const backend = ofList(ofArray([[new FantomasMode(0), __SNOWPACK_ENV__.SNOWPACK_PUBLIC_FANTOMAS_V2], [new FantomasMode(1), __SNOWPACK_ENV__.SNOWPACK_PUBLIC_FANTOMAS_V3], [new FantomasMode(2), __SNOWPACK_ENV__.SNOWPACK_PUBLIC_FANTOMAS_V4], [new FantomasMode(3), __SNOWPACK_ENV__.SNOWPACK_PUBLIC_FANTOMAS_PREVIEW]]));
 
@@ -48,7 +48,7 @@ function getFormattedCode(code, model, dispatch) {
         let matchValue;
         const status = tupledArg[0] | 0;
         const body = tupledArg[1];
-        dispatch((status === 200) ? (matchValue = fromString(uncurry(2, decodeFormatResponse), body), (matchValue.tag === 1) ? (new Msg(2, matchValue.fields[0])) : (new Msg(4, matchValue.fields[0]))) : ((status === 400) ? (new Msg(2, body)) : ((status === 413) ? (new Msg(2, "the input was too large to process")) : (new Msg(2, body)))));
+        dispatch((status === 200) ? ((matchValue = fromString(uncurry(2, decodeFormatResponse), body), (matchValue.tag === 1) ? (new Msg(2, matchValue.fields[0])) : (new Msg(4, matchValue.fields[0])))) : ((status === 400) ? (new Msg(2, body)) : ((status === 413) ? (new Msg(2, "the input was too large to process")) : (new Msg(2, body)))));
     }));
 }
 
