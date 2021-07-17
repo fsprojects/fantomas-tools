@@ -2,7 +2,7 @@
   "scripts": {
     "start": "vite ",
     "prebuild": "dotnet fable ./fsharp/FantomasTools.fsproj --outDir ./src/bin",
-    "build": "vite build",
+    "build": "vite build --base=/fantomas-tools/",
     "postbuild": "touch ./build/.nojekyll",
     "serve": "vite preview",
     "format": "prettier --write \"src/**/*.{js,jsx}\"",
