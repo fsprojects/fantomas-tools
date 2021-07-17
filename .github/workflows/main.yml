@@ -35,7 +35,6 @@ jobs:
     - uses: addnab/docker-run-action@v3
       with:
         image: nojaf/fable-azure-functions:1.1
-        options: -v ${{ github.workspace }}:/workspace -w /workspace
         run: |
           dotnet tool restore
           dotnet fake run build.fsx -t CI
@@ -45,9 +44,6 @@ jobs:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./src/client/build
-
-    - name: Set permissions
-      run: chmod -R 777 ./
 
     - uses: pulumi/actions@v3
       with:
