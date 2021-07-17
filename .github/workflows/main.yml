@@ -30,6 +30,9 @@ jobs:
     - name: Restore local tools
       run: dotnet tool restore
 
+    - name: docker version
+      run: /usr/bin/docker --version
+
     # Run the FAKE script inside our own Docker image, this is necessary for the Azure Functions to be published correctly.
     # Honestly, don't ask
     - uses: addnab/docker-run-action@v3
