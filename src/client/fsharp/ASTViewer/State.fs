@@ -10,7 +10,7 @@ open FantomasTools.Client
 open FantomasTools.Client.ASTViewer.Decoders
 open FantomasTools.Client.ASTViewer.Encoders
 
-[<Emit("import.meta.env.SNOWPACK_PUBLIC_AST_BACKEND")>]
+[<Emit("import.meta.env.VITE_AST_BACKEND")>]
 let private backend: string = jsNative
 
 let private getVersion () =
