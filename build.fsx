@@ -195,8 +195,6 @@ Target.create "CheckFormat" (fun _ ->
     else
         Trace.logf "Errors while formatting: %A" result.Errors)
 
-Target.create "BuildInfrastructure" (fun _ -> DotNet.build (fun opt -> { opt with Configuration = DotNet.BuildConfiguration.Release }) "./infrastructure")
-
 Target.create "Install" ignore
 Target.create "CI" ignore
 Target.create "PR" ignore
@@ -212,9 +210,9 @@ open Fake.Core.TargetOperators
 "Install" <== [ "YarnInstall"; "NETInstall" ]
 
 "CI"
-    <== [ "BuildInfrastructure"; "BundleFrontend"; "DeployFunctions"; "Clean"; "Fantomas-Git"; "CheckFormat" ]
+    <== [ "BundleFrontend"; "DeployFunctions"; "Clean"; "Fantomas-Git" (*; "CheckFormat" *) ]
 
 "PR" 
-    <== [ "BundleFrontend"; "Build"; "Clean"; "Fantomas-Git"; "CheckFormat" ]
+    <== [ "BundleFrontend"; "Build"; "Clean"; "Fantomas-Git"; (* "CheckFormat" *) ]
 
 Target.runOrDefault "Build"

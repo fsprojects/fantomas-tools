@@ -30,8 +30,8 @@ jobs:
     - name: Restore local tools
       run: dotnet tool restore
 
-    - name: docker run
-      run: /usr/bin/docker run --rm -v ${{ github.workspace }}:/workspace -v "/root/.nuget/packages:/root/.nuget/packages" -w /workspace nojaf/fable-azure-functions:1.1 bash -c "dotnet tool restore && dotnet fake run build.fsx -t CI"
+    - name: docker build
+      run: env DOCKER_BUILDKIT=1 /usr/bin/docker build --output type=local,dest=./artifacts .
 
     # Run the FAKE script inside our own Docker image, this is necessary for the Azure Functions to be published correctly.
     # Honestly, don't ask
@@ -47,7 +47,7 @@ jobs:
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./src/client/build
+        publish_dir: ./artifacts/client
 
     - uses: pulumi/actions@v3
       with:
