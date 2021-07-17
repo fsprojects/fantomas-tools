@@ -30,8 +30,8 @@ jobs:
     - name: Restore local tools
       run: dotnet tool restore
 
-    - name: Restore Pulumi project
-      run: dotnet build ./infrastructure
+    - name: Restore all
+      run: dotnet restore
 
     - name: docker run
       run: /usr/bin/docker run --rm -v ${{ github.workspace }}:/workspace -v "/root/.nuget/packages:/root/.nuget/packages" -w /workspace nojaf/fable-azure-functions:1.1 bash -c "dotnet tool restore && dotnet fake run build.fsx -t CI"
