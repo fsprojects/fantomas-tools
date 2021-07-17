@@ -30,9 +30,6 @@ jobs:
     - name: Restore local tools
       run: dotnet tool restore
 
-    - name: Restore all
-      run: dotnet fake run build.fsx -t NETInstall
-
     - name: docker run
       run: /usr/bin/docker run --rm -v ${{ github.workspace }}:/workspace -v "/root/.nuget/packages:/root/.nuget/packages" -w /workspace nojaf/fable-azure-functions:1.1 bash -c "dotnet tool restore && dotnet fake run build.fsx -t CI"
 
