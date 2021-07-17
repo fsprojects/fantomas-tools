@@ -1,7 +1,8 @@
 module ASTViewer.Server.Encoders
 
 open Thoth.Json.Net
-open FSharp.Compiler.SourceCodeServices
+open FSharp.Compiler
+open FSharp.Compiler.Diagnostics
 
 let private rangeEncoder (range: FSharp.Compiler.Text.Range) =
     Encode.object

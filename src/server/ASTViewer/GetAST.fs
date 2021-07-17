@@ -1,15 +1,15 @@
 namespace ASTViewer.Server
 
+open System.IO
+open System.Threading.Tasks
+open System.Net
+open System.Net.Http
 open Microsoft.Azure.Functions.Worker.Http
 open Microsoft.Azure.Functions.Worker
 open Microsoft.Extensions.Logging
-open System.IO
-open System.Threading.Tasks
-open FSharp.Compiler.SourceCodeServices
-open System.Net
-open System.Net.Http
 open Thoth.Json.Net
 open FSharp.Control.Tasks
+open FSharp.Compiler.CodeAnalysis
 open ASTViewer.Shared
 open ASTViewer.Server
 
@@ -137,14 +137,9 @@ module GetAST =
                         |> fst)
 
             // Run the first phase (untyped parsing) of the compiler
-            let untypedRes =
-                checker.ParseFile(fileName, sourceText, checkOptions)
-                |> Async.RunSynchronously
+            let! parseResult = checker.ParseFile(fileName, sourceText, checkOptions)
 
-
-            match untypedRes.ParseTree with
-            | Some tree -> return Result.Ok(tree, untypedRes.Errors)
-            | _ -> return Error Array.empty // Not sure this branch can be reached.
+            return (parseResult.ParseTree, parseResult.Diagnostics)
         }
 
     let private getAST log (req: HttpRequestData) (res: HttpResponseData) : Task<HttpResponseData> =
@@ -155,16 +150,13 @@ module GetAST =
 
             match parseRequest with
             | Ok input when (input.SourceCode.Length < Const.sourceSizeLimit) ->
-                let! astResult = parseAST log input
+                let! (ast, errors) = parseAST log input
 
-                match astResult with
-                | Ok (ast, errors) ->
-                    let responseJson =
-                        Encoders.encodeResponse (sprintf "%A" ast) errors
-                        |> Encode.toString 2
+                let responseJson =
+                    Encoders.encodeResponse (sprintf "%A" ast) errors
+                    |> Encode.toString 2
 
-                    return! sendJson responseJson res
-                | Error error -> return! sendBadRequest (sprintf "%A" error) res
+                return! sendJson responseJson res
             | Ok _ -> return! sendTooLargeError res
             | Error err -> return! sendInternalError (sprintf "%A" err) res
         }
@@ -192,13 +184,13 @@ module GetAST =
                     Error(
                         sprintf
                             "Type checking aborted. With Parse errors:\n%A\n And with options: \n%A"
-                            parseRes.Errors
+                            parseRes.Diagnostics
                             options
                     )
             | FSharpCheckFileAnswer.Succeeded res ->
                 match res.ImplementationFile with
-                | None -> return Error(sprintf "%A" res.Errors)
-                | Some fc -> return Result.Ok(fc.Declarations, parseRes.Errors)
+                | None -> return Error(sprintf "%A" res.Diagnostics)
+                | Some fc -> return Result.Ok(fc.Declarations, parseRes.Diagnostics)
         }
 
 
@@ -234,7 +226,7 @@ module GetAST =
             executionContext: FunctionContext
         )
         =
-        let log: ILogger = executionContext.GetLogger("GetAST")
+        let log : ILogger = executionContext.GetLogger("GetAST")
         log.LogInformation("F# HTTP trigger function processed a request.")
         let path = req.Url.LocalPath.ToLower()
         let method = req.Method.ToUpper()
