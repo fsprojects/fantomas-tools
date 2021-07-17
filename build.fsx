@@ -196,9 +196,10 @@ Target.create "CheckFormat" (fun _ ->
     else
         Trace.logf "Errors while formatting: %A" result.Errors)
 
-Target.create "CleanInfrastructure" (fun _ ->
+Target.create "CleanForInfrastructure" (fun _ ->
     Shell.rm_rf (infrastructureDir </> "bin")
     Shell.rm_rf (infrastructureDir </> "obj")
+    Shell.rm_rf (__SOURCE_DIRECTORY__ </> "paket-files")
 )
 
 Target.create "Install" ignore
@@ -216,7 +217,7 @@ open Fake.Core.TargetOperators
 "Install" <== [ "YarnInstall"; "NETInstall" ]
 
 "CI"
-    <== [ "CleanInfrastructure"; "BundleFrontend"; "DeployFunctions"; "Clean"; "Fantomas-Git"; "CheckFormat" ]
+    <== [ "CleanForInfrastructure"; "BundleFrontend"; "DeployFunctions"; "Clean"; "Fantomas-Git"; "CheckFormat" ]
 
 "PR" 
     <== [ "BundleFrontend"; "Build"; "Clean"; "Fantomas-Git"; "CheckFormat" ]
