@@ -65,6 +65,7 @@ Target.create "Fantomas-Git" (fun _ ->
         Git.Repository.cloneSingleBranch "." "https://github.com/fsprojects/fantomas.git" "master" targetDir
 
     DotNet.exec (fun opt -> { opt with WorkingDirectory = targetDir }) "tool" "restore" |> ignore
+    DotNet.exec (fun opt -> { opt with WorkingDirectory = targetDir }) "paket" "restore" |> ignore
     DotNet.build (fun opt -> { opt with Configuration = DotNet.BuildConfiguration.Release }) "./.deps/fantomas/src/Fantomas/Fantomas.fsproj"
 )
 
