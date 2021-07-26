@@ -39,6 +39,9 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./artifacts/client
 
+    - name: Restore infrastructure dependencies
+      run: dotnet paket restore --group Infrastructure
+
     - uses: pulumi/actions@v3
       with:
         command: up
