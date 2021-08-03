@@ -72,7 +72,7 @@ Target.create "Fantomas-Git" (fun _ ->
 Target.create "Clean" (fun _ ->
     Shell.rm_rf artifactDir
     !!(serverDir + "/*/bin")
-    ++(serverDir + "/*/obj") 
+    ++(serverDir + "/*/obj")
     ++(clientDir + "/src/bin")
     ++(clientDir + "/build")
     |> Seq.iter Shell.rm_rf
@@ -208,12 +208,14 @@ open Fake.Core.TargetOperators
 
 "Fantomas-Git" ==> "NETInstall"
 
+"Install" ==> "Watch"
+
 "Install" <== [ "YarnInstall"; "NETInstall" ]
 
 "CI"
     <== [ "BundleFrontend"; "DeployFunctions"; "Clean"; "Fantomas-Git" (*; "CheckFormat" *) ]
 
-"PR" 
+"PR"
     <== [ "BundleFrontend"; "Build"; "Clean"; "Fantomas-Git"; (* "CheckFormat" *) ]
 
 Target.runOrDefault "Build"

@@ -11,19 +11,19 @@ To run this tool locally you need:
 
 ## Running locally
 
-* Restore the dotnet tools:
+* Perform a one-time set up of source dependencies:
 
-> dotnet tool restore
-
-* Restore the npm packages:
-
-> yarn
+> dotnet fake run build.fsx -t "Fantomas-Git"
 
 * Run the Watch target with FAKE:
 
 > dotnet fake run build.fsx -t Watch
 
-Open http://localhost:9060
+NOTE: you may see some error output during this process on first run, but those errors should eventually resolve and subsequent runs work without error.
+
+* Open http://localhost:9060
+
+NOTE: you will need to disable CORS for the front-end to interact with the locally-hosted backend. For example, if using Firefox, you can do this using the CORS Everywhere extension.
 
 ## Running in Gitpod
 
