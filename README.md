@@ -11,7 +11,11 @@ To run this tool locally you need:
 
 ## Running locally
 
-* Perform a one-time set up of source dependencies:
+* Restore the dotnet tools:
+
+> dotnet tool restore
+
+* Pull in source dependencies:
 
 > dotnet fake run build.fsx -t "Fantomas-Git"
 
