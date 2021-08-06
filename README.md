@@ -27,8 +27,6 @@ NOTE: you may see some error output during this process on first run, but those 
 
 * Open http://localhost:9060
 
-NOTE: you will need to disable CORS for the front-end to interact with the locally-hosted backend. For example, if using Firefox, you can do this using the CORS Everywhere extension.
-
 ## Running in Gitpod
 
 * Open the repository via https://gitpod.io/#https://github.com/fsprojects/fantomas-tools

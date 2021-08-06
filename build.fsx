@@ -121,7 +121,7 @@ let watchMode getBackendUrl getCorsUrl =
 
 Target.create "Watch" (fun _ ->
     let localhostBackend port = sprintf "http://localhost:%i" port
-    let cors = sprintf "https://localhost:%i"
+    let cors = sprintf "http://localhost:%i"
     watchMode localhostBackend cors)
 
 Target.create "GitPod" (fun _ ->
