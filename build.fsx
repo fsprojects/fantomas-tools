@@ -72,7 +72,7 @@ Target.create "Fantomas-Git" (fun _ ->
 Target.create "Clean" (fun _ ->
     Shell.rm_rf artifactDir
     !!(serverDir + "/*/bin")
-    ++(serverDir + "/*/obj") 
+    ++(serverDir + "/*/obj")
     ++(clientDir + "/src/bin")
     ++(clientDir + "/build")
     |> Seq.iter Shell.rm_rf
@@ -121,7 +121,7 @@ let watchMode getBackendUrl getCorsUrl =
 
 Target.create "Watch" (fun _ ->
     let localhostBackend port = sprintf "http://localhost:%i" port
-    let cors = sprintf "https://localhost:%i"
+    let cors = sprintf "http://localhost:%i"
     watchMode localhostBackend cors)
 
 Target.create "GitPod" (fun _ ->
@@ -208,12 +208,14 @@ open Fake.Core.TargetOperators
 
 "Fantomas-Git" ==> "NETInstall"
 
+"Install" ==> "Watch"
+
 "Install" <== [ "YarnInstall"; "NETInstall" ]
 
 "CI"
     <== [ "BundleFrontend"; "DeployFunctions"; "Clean"; "Fantomas-Git" (*; "CheckFormat" *) ]
 
-"PR" 
+"PR"
     <== [ "BundleFrontend"; "Build"; "Clean"; "Fantomas-Git"; (* "CheckFormat" *) ]
 
 Target.runOrDefault "Build"

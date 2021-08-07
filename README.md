@@ -15,15 +15,17 @@ To run this tool locally you need:
 
 > dotnet tool restore
 
-* Restore the npm packages:
+* Pull in source dependencies:
 
-> yarn
+> dotnet fake run build.fsx -t "Fantomas-Git"
 
 * Run the Watch target with FAKE:
 
 > dotnet fake run build.fsx -t Watch
 
-Open http://localhost:9060
+NOTE: you may see some error output during this process on first run, but those errors should eventually resolve and subsequent runs work without error.
+
+* Open http://localhost:9060
 
 ## Running in Gitpod
 
