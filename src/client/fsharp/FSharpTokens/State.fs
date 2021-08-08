@@ -149,7 +149,7 @@ let update code msg model =
                         { StartLine = activeLine
                           StartColumn = token.LeftColumn
                           EndLine = activeLine
-                          EndColumn = token.RightColumn }
+                          EndColumn = token.RightColumn + 1 }
 
                     Cmd.ofSub (Editor.selectRange range))
             |> Option.defaultValue Cmd.none
