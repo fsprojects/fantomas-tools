@@ -18,17 +18,16 @@ let private fetchTrivia (payload: ParseRequest) dispatch =
     let json = encodeParseRequest payload
 
     Http.postJson url json
-    |> Promise.iter
-        (fun (status, body) ->
-            match status with
-            | 200 ->
-                match decodeResult body with
-                | Ok r -> TriviaReceived r
-                | Result.Error err -> Error(sprintf "failed to decode response: %A" err)
-            | 400 -> Error body
-            | 413 -> Error "the input was too large to process"
-            | _ -> Error body
-            |> dispatch)
+    |> Promise.iter (fun (status, body) ->
+        match status with
+        | 200 ->
+            match decodeResult body with
+            | Ok r -> TriviaReceived r
+            | Result.Error err -> Error(sprintf "failed to decode response: %A" err)
+        | 400 -> Error body
+        | 413 -> Error "the input was too large to process"
+        | _ -> Error body
+        |> dispatch)
 
 let private fetchFSCVersion () = sprintf "%s/api/version" backend |> Http.getText
 
@@ -119,15 +118,14 @@ let update code msg model =
 
         let cmd =
             range
-            |> Option.map
-                (fun r ->
-                    let highLightRange: Editor.HighLightRange =
-                        { StartLine = r.StartLine
-                          StartColumn = r.StartColumn
-                          EndLine = r.EndLine
-                          EndColumn = r.EndColumn }
+            |> Option.map (fun r ->
+                let highLightRange: Editor.HighLightRange =
+                    { StartLine = r.StartLine
+                      StartColumn = r.StartColumn
+                      EndLine = r.EndLine
+                      EndColumn = r.EndColumn }
 
-                    Cmd.ofMsg (HighLight highLightRange))
+                Cmd.ofMsg (HighLight highLightRange))
             |> Option.defaultValue Cmd.none
 
         model, cmd

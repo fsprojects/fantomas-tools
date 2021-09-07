@@ -22,19 +22,17 @@ module FormatCode =
     let private getOptions () =
         FantomasOnline.Server.Shared.Http.Reflection.getRecordFields FormatConfig.FormatConfig.Default
         |> Seq.indexed
-        |> Seq.choose
-            (fun (idx, (k: string, v: obj)) ->
-                match v with
-                | :? int as i -> FantomasOption.IntOption(idx, k, i) |> Some
-                | :? bool as b -> FantomasOption.BoolOption(idx, k, b) |> Some
-                | _ -> None)
+        |> Seq.choose (fun (idx, (k: string, v: obj)) ->
+            match v with
+            | :? int as i -> FantomasOption.IntOption(idx, k, i) |> Some
+            | :? bool as b -> FantomasOption.BoolOption(idx, k, b) |> Some
+            | _ -> None)
         |> Seq.toList
 
     let private mapFantomasOptionsToRecord options =
         let newValues =
             options
-            |> Seq.map
-                (function
+            |> Seq.map (function
                 | BoolOption (_, _, v) -> box v
                 | IntOption (_, _, v) -> box v
                 | _ -> failwith "option not supported in this version")
@@ -56,20 +54,19 @@ module FormatCode =
 
             return
                 result.Errors
-                |> Array.map
-                    (fun e ->
-                        { SubCategory = e.Subcategory
-                          Range =
-                              { StartLine = e.StartLineAlternate
-                                StartCol = e.StartColumn
-                                EndLine = e.EndLineAlternate
-                                EndCol = e.EndColumn }
-                          Severity =
-                              match e.Severity with
-                              | FSharpErrorSeverity.Warning -> ASTErrorSeverity.Warning
-                              | FSharpErrorSeverity.Error -> ASTErrorSeverity.Error
-                          ErrorNumber = e.ErrorNumber
-                          Message = e.Message })
+                |> Array.map (fun e ->
+                    { SubCategory = e.Subcategory
+                      Range =
+                          { StartLine = e.StartLineAlternate
+                            StartCol = e.StartColumn
+                            EndLine = e.EndLineAlternate
+                            EndCol = e.EndColumn }
+                      Severity =
+                          match e.Severity with
+                          | FSharpErrorSeverity.Warning -> ASTErrorSeverity.Warning
+                          | FSharpErrorSeverity.Error -> ASTErrorSeverity.Error
+                      ErrorNumber = e.ErrorNumber
+                      Message = e.Message })
                 |> Array.toList
 
         }

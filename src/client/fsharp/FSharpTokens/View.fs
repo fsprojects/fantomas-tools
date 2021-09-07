@@ -92,24 +92,23 @@ let private tokenDetail dispatch index token =
 
 let private details model dispatch =
     model.ActiveLine
-    |> Option.map
-        (fun activeLine ->
-            let details =
-                model.Tokens
-                |> Array.filter (fun t -> t.LineNumber = activeLine)
-                |> Array.mapi (tokenDetail dispatch)
+    |> Option.map (fun activeLine ->
+        let details =
+            model.Tokens
+            |> Array.filter (fun t -> t.LineNumber = activeLine)
+            |> Array.mapi (tokenDetail dispatch)
 
-            div [ Id "details" ] [
-                h4 [ ClassName "p-2" ] [
-                    str "Details of line "
-                    span [ Class "has-text-grey" ] [
-                        ofInt activeLine
-                    ]
+        div [ Id "details" ] [
+            h4 [ ClassName "p-2" ] [
+                str "Details of line "
+                span [ Class "has-text-grey" ] [
+                    ofInt activeLine
                 ]
-                div [ Class "detail-container" ] [
-                    ofArray details
-                ]
-            ])
+            ]
+            div [ Class "detail-container" ] [
+                ofArray details
+            ]
+        ])
     |> ofOption
 
 let view model dispatch =

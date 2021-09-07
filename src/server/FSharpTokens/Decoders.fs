@@ -4,10 +4,9 @@ open Thoth.Json.Net
 open FSharpTokens.Shared
 
 let decodeTokenRequest: Decoder<GetTokensRequest> =
-    Decode.object
-        (fun get ->
-            { Defines = get.Required.Field "defines" (Decode.list Decode.string)
-              SourceCode = get.Required.Field "sourceCode" Decode.string })
+    Decode.object (fun get ->
+        { Defines = get.Required.Field "defines" (Decode.list Decode.string)
+          SourceCode = get.Required.Field "sourceCode" Decode.string })
 
 let private decodeEnum<'t> (path: string) (token: JsonValue) =
     let v = token.Value<string>()

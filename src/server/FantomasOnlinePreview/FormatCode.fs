@@ -18,25 +18,23 @@ module FormatCode =
     let private getOptions () =
         Http.Reflection.getRecordFields FormatConfig.FormatConfig.Default
         |> Seq.indexed
-        |> Seq.choose
-            (fun (idx, (k: string, v: obj)) ->
-                match v with
-                | :? int as i -> FantomasOption.IntOption(idx, k, i) |> Some
-                | :? bool as b -> FantomasOption.BoolOption(idx, k, b) |> Some
-                | :? MultilineFormatterType as mft ->
-                    FantomasOption.MultilineFormatterTypeOption(idx, k, (MultilineFormatterType.ToConfigString mft))
-                    |> Some
-                | :? EndOfLineStyle as eol ->
-                    FantomasOption.EndOfLineStyleOption(idx, k, (EndOfLineStyle.ToConfigString eol))
-                    |> Some
-                | _ -> None)
+        |> Seq.choose (fun (idx, (k: string, v: obj)) ->
+            match v with
+            | :? int as i -> FantomasOption.IntOption(idx, k, i) |> Some
+            | :? bool as b -> FantomasOption.BoolOption(idx, k, b) |> Some
+            | :? MultilineFormatterType as mft ->
+                FantomasOption.MultilineFormatterTypeOption(idx, k, (MultilineFormatterType.ToConfigString mft))
+                |> Some
+            | :? EndOfLineStyle as eol ->
+                FantomasOption.EndOfLineStyleOption(idx, k, (EndOfLineStyle.ToConfigString eol))
+                |> Some
+            | _ -> None)
         |> Seq.toList
 
     let private mapFantomasOptionsToRecord options =
         let newValues =
             options
-            |> Seq.map
-                (function
+            |> Seq.map (function
                 | BoolOption (_, _, v) -> box v
                 | IntOption (_, _, v) -> box v
                 | MultilineFormatterTypeOption (_, _, v) ->
@@ -71,22 +69,21 @@ module FormatCode =
 
             return
                 result.Diagnostics
-                |> Array.map
-                    (fun e ->
-                        { SubCategory = e.Subcategory
-                          Range =
-                              { StartLine = e.Range.StartLine
-                                StartCol = e.Range.StartColumn
-                                EndLine = e.Range.EndLine
-                                EndCol = e.Range.EndColumn }
-                          Severity =
-                              match e.Severity with
-                              | FSharpDiagnosticSeverity.Warning -> ASTErrorSeverity.Warning
-                              | FSharpDiagnosticSeverity.Error -> ASTErrorSeverity.Error
-                              | FSharpDiagnosticSeverity.Info -> ASTErrorSeverity.Info
-                              | FSharpDiagnosticSeverity.Hidden -> ASTErrorSeverity.Hidden
-                          ErrorNumber = e.ErrorNumber
-                          Message = e.Message })
+                |> Array.map (fun e ->
+                    { SubCategory = e.Subcategory
+                      Range =
+                          { StartLine = e.Range.StartLine
+                            StartCol = e.Range.StartColumn
+                            EndLine = e.Range.EndLine
+                            EndCol = e.Range.EndColumn }
+                      Severity =
+                          match e.Severity with
+                          | FSharpDiagnosticSeverity.Warning -> ASTErrorSeverity.Warning
+                          | FSharpDiagnosticSeverity.Error -> ASTErrorSeverity.Error
+                          | FSharpDiagnosticSeverity.Info -> ASTErrorSeverity.Info
+                          | FSharpDiagnosticSeverity.Hidden -> ASTErrorSeverity.Hidden
+                      ErrorNumber = e.ErrorNumber
+                      Message = e.Message })
                 |> Array.toList
         }
 

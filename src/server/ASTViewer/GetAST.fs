@@ -131,10 +131,9 @@ module GetAST =
             let! checkOptions =
                 checker
                 |> getProjectOptionsFromScript fileName sourceText defines
-                |> Async.map
-                    (fun projOpts ->
-                        checker.GetParsingOptionsFromProjectOptions projOpts
-                        |> fst)
+                |> Async.map (fun projOpts ->
+                    checker.GetParsingOptionsFromProjectOptions projOpts
+                    |> fst)
 
             // Run the first phase (untyped parsing) of the compiler
             let untypedRes =

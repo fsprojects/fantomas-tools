@@ -70,11 +70,10 @@ let private activeTriviaNode (tn: TriviaNode) =
         if (isNotAnEmptyList items) then
             let listItems =
                 items
-                |> List.mapi
-                    (fun idx item ->
-                        li [ Key !!idx ] [
-                            triviaContentToDetail item
-                        ])
+                |> List.mapi (fun idx item ->
+                    li [ Key !!idx ] [
+                        triviaContentToDetail item
+                    ])
 
             fragment [] [
                 h4 [] [ str title ]
@@ -95,17 +94,16 @@ let private activeTriviaNode (tn: TriviaNode) =
 let view (model: Model) dispatch =
     let navItems =
         model.TriviaNodes
-        |> List.map
-            (fun tn ->
-                let className =
-                    match tn.Type with
-                    | Token _ -> "nav-link-token"
-                    | MainNode _ -> "nav-link-main-node"
+        |> List.map (fun tn ->
+            let className =
+                match tn.Type with
+                | Token _ -> "nav-link-token"
+                | MainNode _ -> "nav-link-main-node"
 
-                { Label = typeName tn.Type
-                  ClassName = className
-                  Title = typeTitle tn.Type
-                  Range = tn.Range })
+            { Label = typeName tn.Type
+              ClassName = className
+              Title = typeTitle tn.Type
+              Range = tn.Range })
 
     let onClick idx =
         dispatch (Msg.ActiveItemChange(ActiveTab.ByTriviaNodes, idx))

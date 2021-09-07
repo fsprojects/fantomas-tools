@@ -8,31 +8,30 @@ open TriviaViewer.Shared
 let view (model: Model) dispatch =
     let nodes =
         model.TriviaNodeCandidates
-        |> List.mapi
-            (fun idx node ->
-                let mapRange (r: Range) : FantomasTools.Client.Editor.HighLightRange =
-                    { StartLine = r.StartLine
-                      StartColumn = r.StartColumn
-                      EndLine = r.EndLine
-                      EndColumn = r.EndColumn }
+        |> List.mapi (fun idx node ->
+            let mapRange (r: Range) : FantomasTools.Client.Editor.HighLightRange =
+                { StartLine = r.StartLine
+                  StartColumn = r.StartColumn
+                  EndLine = r.EndLine
+                  EndColumn = r.EndColumn }
 
-                tr [ Key(sprintf "node_%d" idx)
-                     ClassName($"trivia-candidate-{node.Type} pointer")
-                     OnClick(fun _ -> HighLight(mapRange node.Range) |> dispatch) ] [
-                    td [] [ str node.Name ]
-                    td [ ClassName "text-center" ] [
-                        ofInt node.Range.StartLine
-                    ]
-                    td [ ClassName "text-center" ] [
-                        ofInt node.Range.StartColumn
-                    ]
-                    td [ ClassName "text-center" ] [
-                        ofInt node.Range.EndLine
-                    ]
-                    td [ ClassName "text-center" ] [
-                        ofInt node.Range.EndColumn
-                    ]
-                ])
+            tr [ Key(sprintf "node_%d" idx)
+                 ClassName($"trivia-candidate-{node.Type} pointer")
+                 OnClick(fun _ -> HighLight(mapRange node.Range) |> dispatch) ] [
+                td [] [ str node.Name ]
+                td [ ClassName "text-center" ] [
+                    ofInt node.Range.StartLine
+                ]
+                td [ ClassName "text-center" ] [
+                    ofInt node.Range.StartColumn
+                ]
+                td [ ClassName "text-center" ] [
+                    ofInt node.Range.EndLine
+                ]
+                td [ ClassName "text-center" ] [
+                    ofInt node.Range.EndColumn
+                ]
+            ])
 
     div [] [
         table [ ClassName "table table-bordered" ] [

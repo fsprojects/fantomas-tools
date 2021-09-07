@@ -236,32 +236,26 @@ let private viewErrors (model: Model) result isIdempotent errors =
                 | _ -> Info
 
             errors
-            |> List.mapi
-                (fun i e ->
-                    li [ Key(sprintf "ast-error-%i" i) ] [
-                        strong [] [
-                            str (
-                                sprintf
-                                    "(%i,%i) (%i, %i)"
-                                    e.Range.StartLine
-                                    e.Range.StartCol
-                                    e.Range.EndLine
-                                    e.Range.EndCol
-                            )
-                        ]
-                        Badge.badge [ Badge.Color(badgeColor e) ] [
-                            str (e.Severity.ToString())
-                        ]
-                        Badge.badge [ Badge.Color Color.Dark
-                                      Badge.Custom [ Title "ErrorNumber" ] ] [
-                            ofInt e.ErrorNumber
-                        ]
-                        Badge.badge [ Badge.Color Color.Light
-                                      Badge.Custom [ Title "SubCategory" ] ] [
-                            str e.SubCategory
-                        ]
-                        p [] [ str e.Message ]
-                    ])
+            |> List.mapi (fun i e ->
+                li [ Key(sprintf "ast-error-%i" i) ] [
+                    strong [] [
+                        str (
+                            sprintf "(%i,%i) (%i, %i)" e.Range.StartLine e.Range.StartCol e.Range.EndLine e.Range.EndCol
+                        )
+                    ]
+                    Badge.badge [ Badge.Color(badgeColor e) ] [
+                        str (e.Severity.ToString())
+                    ]
+                    Badge.badge [ Badge.Color Color.Dark
+                                  Badge.Custom [ Title "ErrorNumber" ] ] [
+                        ofInt e.ErrorNumber
+                    ]
+                    Badge.badge [ Badge.Color Color.Light
+                                  Badge.Custom [ Title "SubCategory" ] ] [
+                        str e.SubCategory
+                    ]
+                    p [] [ str e.Message ]
+                ])
 
     let idempotency =
         if isIdempotent then
@@ -374,11 +368,10 @@ let settings model dispatch =
               FantomasMode.V3, "3.x"
               FantomasMode.V4, "4.x"
               FantomasMode.Preview, "Preview" ]
-            |> List.map
-                (fun (m, l) ->
-                    { IsActive = model.Mode = m
-                      Label = l
-                      OnClick = (fun _ -> ChangeMode m |> dispatch) }: SettingControls.MultiButtonSettings)
+            |> List.map (fun (m, l) ->
+                { IsActive = model.Mode = m
+                  Label = l
+                  OnClick = (fun _ -> ChangeMode m |> dispatch) }: SettingControls.MultiButtonSettings)
             |> SettingControls.multiButton "Mode"
 
         let fileExtension =

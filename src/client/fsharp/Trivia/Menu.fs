@@ -54,26 +54,24 @@ type MenuItem =
 let menu onItemClick activeIndex items =
     let navItems =
         items
-        |> List.mapi
-            (fun idx mi ->
-                let className =
-                    mi.ClassName
-                    |> sprintf "d-flex %s %s" (if idx = activeIndex then "active" else "")
+        |> List.mapi (fun idx mi ->
+            let className =
+                mi.ClassName
+                |> sprintf "d-flex %s %s" (if idx = activeIndex then "active" else "")
 
-                NavItem.navItem [ NavItem.Custom [ Key !!idx
-                                                   Title mi.Title
-                                                   OnClick
-                                                       (fun ev ->
-                                                           ev.preventDefault ()
-                                                           onItemClick idx) ] ] [
-                    NavLink.navLink [ NavLink.Custom [ Href "#"
-                                                       ClassName className ] ] [
-                        span [ ClassName "mr-4" ] [
-                            str mi.Label
-                        ]
-                        rangeToBadge mi.Range
+            NavItem.navItem [ NavItem.Custom [ Key !!idx
+                                               Title mi.Title
+                                               OnClick (fun ev ->
+                                                   ev.preventDefault ()
+                                                   onItemClick idx) ] ] [
+                NavLink.navLink [ NavLink.Custom [ Href "#"
+                                                   ClassName className ] ] [
+                    span [ ClassName "mr-4" ] [
+                        str mi.Label
                     ]
-                ])
+                    rangeToBadge mi.Range
+                ]
+            ])
 
     Nav.nav [ Nav.Pills true
               Nav.Custom [ ClassName "flex-column" ] ] [

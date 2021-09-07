@@ -16,50 +16,48 @@ let private results model =
 
     let astErrors =
         model.Parsed
-        |> Option.bind
-            (fun parsed ->
-                match parsed with
-                | Ok (parsed) when (not (Seq.isEmpty parsed.Errors)) ->
-                    let badgeColor (e: ASTViewer.Shared.ASTError) =
-                        if e.Severity = "warning" then
-                            Color.Warning
-                        else
-                            Color.Danger
+        |> Option.bind (fun parsed ->
+            match parsed with
+            | Ok parsed when (not (Seq.isEmpty parsed.Errors)) ->
+                let badgeColor (e: ASTViewer.Shared.ASTError) =
+                    if e.Severity = "warning" then
+                        Color.Warning
+                    else
+                        Color.Danger
 
-                    let errors =
-                        parsed.Errors
-                        |> Array.mapi
-                            (fun i e ->
-                                li [ Key(sprintf "ast-error-%i" i) ] [
-                                    strong [] [
-                                        str (
-                                            sprintf
-                                                "(%i,%i) (%i, %i)"
-                                                e.Range.StartLine
-                                                e.Range.StartCol
-                                                e.Range.EndLine
-                                                e.Range.EndCol
-                                        )
-                                    ]
-                                    Badge.badge [ Badge.Color(badgeColor e) ] [
-                                        str e.Severity
-                                    ]
-                                    Badge.badge [ Badge.Color Color.Dark
-                                                  Badge.Custom [ Title "ErrorNumber" ] ] [
-                                        ofInt e.ErrorNumber
-                                    ]
-                                    Badge.badge [ Badge.Color Color.Light
-                                                  Badge.Custom [ Title "SubCategory" ] ] [
-                                        str e.SubCategory
-                                    ]
-                                    p [] [ str e.Message ]
-                                ])
+                let errors =
+                    parsed.Errors
+                    |> Array.mapi (fun i e ->
+                        li [ Key(sprintf "ast-error-%i" i) ] [
+                            strong [] [
+                                str (
+                                    sprintf
+                                        "(%i,%i) (%i, %i)"
+                                        e.Range.StartLine
+                                        e.Range.StartCol
+                                        e.Range.EndLine
+                                        e.Range.EndCol
+                                )
+                            ]
+                            Badge.badge [ Badge.Color(badgeColor e) ] [
+                                str e.Severity
+                            ]
+                            Badge.badge [ Badge.Color Color.Dark
+                                          Badge.Custom [ Title "ErrorNumber" ] ] [
+                                ofInt e.ErrorNumber
+                            ]
+                            Badge.badge [ Badge.Color Color.Light
+                                          Badge.Custom [ Title "SubCategory" ] ] [
+                                str e.SubCategory
+                            ]
+                            p [] [ str e.Message ]
+                        ])
 
-                    ul [ Id "ast-errors"; ClassName "" ] [
-                        ofArray errors
-                    ]
-                    |> Some
-                | _ -> None)
+                ul [ Id "ast-errors"; ClassName "" ] [
+                    ofArray errors
+                ]
+                |> Some
+            | _ -> None)
         |> ofOption
 
     div [ Id "ast-content" ] [
@@ -69,7 +67,7 @@ let private results model =
         astErrors
     ]
 
-let view model dispatch =
+let view model _dispatch =
     if model.IsLoading then
         Loader.loader
     else

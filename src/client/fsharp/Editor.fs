@@ -89,13 +89,12 @@ type HighLightRange =
 
 let selectRange (range: HighLightRange) _ =
     let data =
-        jsOptions<CustomEventInit>
-            (fun o ->
-                o.detail <-
-                    {| startColumn = range.StartColumn + 1
-                       startLineNumber = range.StartLine
-                       endLineNumber = range.EndLine
-                       endColumn = range.EndColumn + 1 |})
+        jsOptions<CustomEventInit> (fun o ->
+            o.detail <-
+                {| startColumn = range.StartColumn + 1
+                   startLineNumber = range.StartLine
+                   endLineNumber = range.EndLine
+                   endColumn = range.EndColumn + 1 |})
 
     let event = CustomEvent.Create("select_range", data)
     Dom.window.dispatchEvent (event) |> ignore

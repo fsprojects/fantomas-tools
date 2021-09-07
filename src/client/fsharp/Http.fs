@@ -11,12 +11,11 @@ let postJson<'TResponse> (url: string) (body: string) : JS.Promise<int * string>
                        Body !^body ]
 
     GlobalFetch.fetch (RequestInfo.Url url, options)
-    |> Promise.bind
-        (fun res ->
-            promise {
-                let! text = res.text ()
-                return (res.Status, text)
-            })
+    |> Promise.bind (fun res ->
+        promise {
+            let! text = res.text ()
+            return (res.Status, text)
+        })
 
 let getText (url: string) : JS.Promise<string> =
     let options =
