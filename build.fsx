@@ -60,7 +60,7 @@ Target.create "Fantomas-Git" (fun _ ->
     let targetDir = ".deps" @@ "fantomas"
 
     if System.IO.Directory.Exists(targetDir) then
-        Git.Branches.pull targetDir "origin" "master"
+        Git.Branches.pull targetDir "origin" "4.6"
     else
         Git.Repository.cloneSingleBranch "." "https://github.com/fsprojects/fantomas.git" "master" targetDir
 
