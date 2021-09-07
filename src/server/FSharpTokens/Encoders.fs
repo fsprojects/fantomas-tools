@@ -1,6 +1,6 @@
 module FSharpTokens.Server.Encoders
 
-open FSharp.Compiler.SourceCodeServices
+open FSharp.Compiler.Tokenization
 open Fantomas.TriviaTypes
 open Thoth.Json.Net
 

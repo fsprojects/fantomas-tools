@@ -62,7 +62,7 @@ Target.create "Fantomas-Git" (fun _ ->
     if System.IO.Directory.Exists(targetDir) then
         Git.Branches.pull targetDir "origin" "4.6"
     else
-        Git.Repository.cloneSingleBranch "." "https://github.com/fsprojects/fantomas.git" "master" targetDir
+        Git.Repository.cloneSingleBranch "." "https://github.com/fsprojects/fantomas.git" "4.6" targetDir
 
     DotNet.exec (fun opt -> { opt with WorkingDirectory = targetDir }) "tool" "restore" |> ignore
     DotNet.exec (fun opt -> { opt with WorkingDirectory = targetDir }) "paket" "restore" |> ignore
