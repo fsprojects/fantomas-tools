@@ -103,7 +103,7 @@ module FormatCode =
                 System.IO.FileInfo assembly.Location
                 |> fun f -> f.LastWriteTime.ToShortDateString()
 
-        sprintf "Master at %s" date
+        sprintf "4.6 branch at %s" date
 
     [<Function "FormatCode">]
     let run
