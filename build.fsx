@@ -13,6 +13,7 @@ open System.IO
 module Azure =
     let az parameters =
         let azPath = ProcessUtils.findPath [] "az"
+
         CreateProcess.fromRawCommand azPath parameters
         |> Proc.run
         |> ignore
@@ -23,7 +24,7 @@ module Func =
           Port: int
           WorkingDirectory: string }
 
-    let host (hostOptions: HostOptions): unit =
+    let host (hostOptions: HostOptions) : unit =
         let funcPath = ProcessUtils.findPath [] "func"
 
         let parameters =
@@ -51,9 +52,15 @@ let fantomasV2Port = 2568
 let fantomasV3Port = 9007
 let fantomasV4Port = 10707
 
-let clientDir = __SOURCE_DIRECTORY__ </> "src" </> "client"
-let setClientDir = (fun (opt: Yarn.YarnParams) -> { opt with WorkingDirectory = clientDir })
-let serverDir = __SOURCE_DIRECTORY__ </> "src" </> "server"
+let clientDir =
+    __SOURCE_DIRECTORY__ </> "src" </> "client"
+
+let setClientDir =
+    (fun (opt: Yarn.YarnParams) -> { opt with WorkingDirectory = clientDir })
+
+let serverDir =
+    __SOURCE_DIRECTORY__ </> "src" </> "server"
+
 let artifactDir = __SOURCE_DIRECTORY__ </> "artifacts"
 
 Target.create "Fantomas-Git" (fun _ ->
@@ -64,24 +71,36 @@ Target.create "Fantomas-Git" (fun _ ->
     else
         Git.Repository.cloneSingleBranch "." "https://github.com/fsprojects/fantomas.git" "4.6" targetDir
 
-    DotNet.exec (fun opt -> { opt with WorkingDirectory = targetDir }) "tool" "restore" |> ignore
-    DotNet.exec (fun opt -> { opt with WorkingDirectory = targetDir }) "paket" "restore" |> ignore
-    DotNet.build (fun opt -> { opt with Configuration = DotNet.BuildConfiguration.Release }) "./.deps/fantomas/src/Fantomas/Fantomas.fsproj"
-)
+    DotNet.exec (fun opt -> { opt with WorkingDirectory = targetDir }) "tool" "restore"
+    |> ignore
+
+    DotNet.exec (fun opt -> { opt with WorkingDirectory = targetDir }) "paket" "restore"
+    |> ignore
+
+    DotNet.build
+        (fun opt -> { opt with Configuration = DotNet.BuildConfiguration.Release })
+        "./.deps/fantomas/src/Fantomas/Fantomas.fsproj")
 
 Target.create "Clean" (fun _ ->
     Shell.rm_rf artifactDir
+
     !!(serverDir + "/*/bin")
-    ++(serverDir + "/*/obj")
-    ++(clientDir + "/src/bin")
-    ++(clientDir + "/build")
-    |> Seq.iter Shell.rm_rf
-)
+    ++ (serverDir + "/*/obj")
+    ++ (clientDir + "/src/bin")
+    ++ (clientDir + "/build")
+    |> Seq.iter Shell.rm_rf)
 
 Target.create "Build" (fun _ ->
-    [ "FSharpTokens"; "ASTViewer"; "TriviaViewer"; "FantomasOnlineV2"; "FantomasOnlineV3"; "FantomasOnlineV4"; "FantomasOnlinePreview" ]
+    [ "FSharpTokens"
+      "ASTViewer"
+      "TriviaViewer"
+      "FantomasOnlineV2"
+      "FantomasOnlineV3"
+      "FantomasOnlineV4"
+      "FantomasOnlinePreview" ]
     |> List.iter (fun project ->
-        DotNet.build (fun config -> { config with Configuration = DotNet.BuildConfiguration.Release })
+        DotNet.build
+            (fun config -> { config with Configuration = DotNet.BuildConfiguration.Release })
             (sprintf "%s/%s/%s.fsproj" serverDir project project)))
 
 let watchMode getBackendUrl getCorsUrl =
@@ -95,8 +114,9 @@ let watchMode getBackendUrl getCorsUrl =
     Environment.setEnvironVar "VITE_FANTOMAS_PREVIEW" (getBackendUrl fantomasPreviewPort)
     Environment.setEnvironVar "VITE_FRONTEND_PORT" (fablePort.ToString())
 
-    let vite = async { Yarn.exec "start" (setClientDir) }
-    let fable = async { DotNet.exec (fun config -> { config with WorkingDirectory = clientDir }) "fable" "watch ./fsharp/FantomasTools.fsproj --outDir ./src/bin" |> ignore }
+    let frontend =
+        async { Yarn.exec "start" (setClientDir) }
+
     let cors = getCorsUrl fablePort //sprintf "https://localhost:%i" fablePort
 
     let hostAzureFunction name port =
@@ -107,15 +127,34 @@ let watchMode getBackendUrl getCorsUrl =
                   WorkingDirectory = serverDir </> name }
         }
 
-    let fsharpTokens = hostAzureFunction "FSharpTokens" fsharpTokensPort
-    let astViewer = hostAzureFunction "ASTViewer" astPort
-    let triviaViewer = hostAzureFunction "TriviaViewer" triviaPort
-    let fantomasV2 = hostAzureFunction "FantomasOnlineV2" fantomasV2Port
-    let fantomasV3 = hostAzureFunction "FantomasOnlineV3" fantomasV3Port
-    let fantomasV4 = hostAzureFunction "FantomasOnlineV4" fantomasV4Port
-    let fantomasPreview = hostAzureFunction "FantomasOnlinePreview" fantomasPreviewPort
+    let fsharpTokens =
+        hostAzureFunction "FSharpTokens" fsharpTokensPort
 
-    Async.Parallel [ vite; fable; fsharpTokens; astViewer; triviaViewer; fantomasV2; fantomasV3; fantomasV4; fantomasPreview ]
+    let astViewer = hostAzureFunction "ASTViewer" astPort
+
+    let triviaViewer =
+        hostAzureFunction "TriviaViewer" triviaPort
+
+    let fantomasV2 =
+        hostAzureFunction "FantomasOnlineV2" fantomasV2Port
+
+    let fantomasV3 =
+        hostAzureFunction "FantomasOnlineV3" fantomasV3Port
+
+    let fantomasV4 =
+        hostAzureFunction "FantomasOnlineV4" fantomasV4Port
+
+    let fantomasPreview =
+        hostAzureFunction "FantomasOnlinePreview" fantomasPreviewPort
+
+    Async.Parallel [ frontend
+                     fsharpTokens
+                     astViewer
+                     triviaViewer
+                     fantomasV2
+                     fantomasV3
+                     fantomasV4
+                     fantomasPreview ]
     |> Async.Ignore
     |> Async.RunSynchronously
 
@@ -125,24 +164,33 @@ Target.create "Watch" (fun _ ->
     watchMode localhostBackend cors)
 
 Target.create "GitPod" (fun _ ->
-    let gitpodWorkspaceUrl = System.Environment.GetEnvironmentVariable "GITPOD_WORKSPACE_URL"
-    let gitpod = gitpodWorkspaceUrl.Replace("https://", System.String.Empty)
+    let gitpodWorkspaceUrl =
+        System.Environment.GetEnvironmentVariable "GITPOD_WORKSPACE_URL"
+
+    let gitpod =
+        gitpodWorkspaceUrl.Replace("https://", System.String.Empty)
+
     let getBackendUrl port = sprintf "https://%i-%s" port gitpod
     let getCorsUrl = getBackendUrl
-    watchMode getBackendUrl getCorsUrl
-)
+    watchMode getBackendUrl getCorsUrl)
 
 Target.create "DeployFunctions" (fun _ ->
-    ["FantomasOnlineV2"; "FantomasOnlineV3"; "FantomasOnlineV4"; "FantomasOnlinePreview"; "ASTViewer"; "FSharpTokens"; "TriviaViewer"]
+    [ "FantomasOnlineV2"
+      "FantomasOnlineV3"
+      "FantomasOnlineV4"
+      "FantomasOnlinePreview"
+      "ASTViewer"
+      "FSharpTokens"
+      "TriviaViewer" ]
     |> List.iter (fun project ->
         let output = artifactDir </> project
+
         DotNet.publish
-            (fun config -> { config with
-                                Configuration = DotNet.BuildConfiguration.Release
-                                OutputPath = Some output })
-            (sprintf "%s/%s/%s.fsproj" serverDir project project)
-    )
-)
+            (fun config ->
+                { config with
+                    Configuration = DotNet.BuildConfiguration.Release
+                    OutputPath = Some output })
+            (sprintf "%s/%s/%s.fsproj" serverDir project project)))
 
 Target.create "YarnInstall" (fun _ -> Yarn.install setClientDir)
 
@@ -158,11 +206,11 @@ Target.create "BundleFrontend" (fun _ ->
     Environment.setEnvironVar "VITE_FANTOMAS_V4" "https://azfun-fantomas-online-v4-main.azurewebsites.net"
     Environment.setEnvironVar "VITE_FANTOMAS_PREVIEW" "https://azfun-fantomas-online-preview-main.azurewebsites.net"
 
-    Yarn.exec "build" setClientDir
-)
+    Yarn.exec "build" setClientDir)
 
 Target.create "Format" (fun _ ->
     let result = DotNet.exec id "fantomas" "src -r"
+
     if not result.OK then
         printfn "Errors while formatting all files: %A" result.Messages)
 
@@ -171,16 +219,20 @@ Target.create "FormatChanged" (fun _ ->
     |> Seq.choose (fun (_, file) ->
         let ext = Path.GetExtension(file)
 
-        if file.StartsWith("src")
-           && (ext = ".fs" || ext = ".fsi") then
+        if
+            file.StartsWith("src")
+            && (ext = ".fs" || ext = ".fsi")
+        then
             Some file
         else
             None)
-    |> Seq.map (fun file -> async {
-        let result = DotNet.exec id "fantomas" file
-        if not result.OK then
-            printfn "Problem when formatting %s:\n%A" file result.Errors
-    })
+    |> Seq.map (fun file ->
+        async {
+            let result = DotNet.exec id "fantomas" file
+
+            if not result.OK then
+                printfn "Problem when formatting %s:\n%A" file result.Errors
+        })
     |> Async.Parallel
     |> Async.RunSynchronously
     |> ignore)
@@ -213,9 +265,15 @@ open Fake.Core.TargetOperators
 "Install" <== [ "YarnInstall"; "NETInstall" ]
 
 "CI"
-    <== [ "BundleFrontend"; "DeployFunctions"; "Clean"; "Fantomas-Git" (*; "CheckFormat" *) ]
+<== [ "BundleFrontend"
+      "DeployFunctions"
+      "Clean"
+      "Fantomas-Git" (*; "CheckFormat" *)  ]
 
 "PR"
-    <== [ "BundleFrontend"; "Build"; "Clean"; "Fantomas-Git"; (* "CheckFormat" *) ]
+<== [ "BundleFrontend"
+      "Build"
+      "Clean"
+      "Fantomas-Git" (* "CheckFormat" *)  ]
 
 Target.runOrDefault "Build"

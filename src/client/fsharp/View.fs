@@ -33,6 +33,15 @@ let navigation dispatch =
                 i [ ClassName "fab fa-github mr-1 mt-1" ] []
                 str "GitHub"
             ]
+            Button.button [ Button.Custom [ Href
+                                                "https://www.youtube.com/playlist?list=PLvw_J2kfZCX3Mf6tEbIPZXbzJOD1VGl4K"
+                                            Target "_blank"
+                                            ClassName "text-white ml-2"
+                                            Style [ Background "red"
+                                                    BorderColor "red" ] ] ] [
+                i [ ClassName "fab fa-youtube mr-1 mt-1" ] []
+                str "YouTube"
+            ]
             Button.button [ Button.Custom [ ClassName "ml-2 pointer"
                                             OnClick(fun _ -> dispatch ToggleSettings) ] ] [
                 i [ ClassName "fas fa-sliders-h" ] []
