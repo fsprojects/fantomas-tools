@@ -73,8 +73,8 @@ let update msg model =
             match tab with
             | ActiveTab.FantomasTab ft when (ft <> model.FantomasModel.Mode) ->
                 { model with
-                      ActiveTab = tab
-                      FantomasModel = { model.FantomasModel with Mode = ft } }
+                    ActiveTab = tab
+                    FantomasModel = { model.FantomasModel with Mode = ft } }
             | _ -> { model with ActiveTab = tab }
 
         let cmd = Navigation.cmdForCurrentTab tab model
@@ -83,8 +83,7 @@ let update msg model =
     | UpdateSourceCode code -> { model with SourceCode = code }, Cmd.none
     | ToggleSettings ->
         let m =
-            { model with
-                  SettingsOpen = not model.SettingsOpen }
+            { model with SettingsOpen = not model.SettingsOpen }
 
         m, reload m
     | TriviaMsg tMsg ->
@@ -96,9 +95,7 @@ let update msg model =
         let (fModel, fCmd) =
             FSharpTokens.State.update model.SourceCode ftMsg model.FSharpTokensModel
 
-        { model with
-              FSharpTokensModel = fModel },
-        Cmd.map FSharpTokensMsg fCmd
+        { model with FSharpTokensModel = fModel }, Cmd.map FSharpTokensMsg fCmd
     | ASTMsg aMsg ->
         let (aModel, aCmd) =
             ASTViewer.State.update model.SourceCode aMsg model.ASTModel

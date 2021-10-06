@@ -83,17 +83,17 @@ let update code msg model =
         { model with IsLoading = true }, cmd
     | TriviaReceived result ->
         { model with
-              IsLoading = false
-              Trivia = result.Trivia
-              TriviaNodeCandidates = result.TriviaNodeCandidates
-              TriviaNodes = result.TriviaNodes
-              ActiveByTriviaIndex = 0
-              ActiveByTriviaNodeIndex = 0 },
+            IsLoading = false
+            Trivia = result.Trivia
+            TriviaNodeCandidates = result.TriviaNodeCandidates
+            TriviaNodes = result.TriviaNodes
+            ActiveByTriviaIndex = 0
+            ActiveByTriviaNodeIndex = 0 },
         Cmd.none
     | Error err ->
         { initialModel with
-              Error = Some err
-              IsLoading = false },
+            Error = Some err
+            IsLoading = false },
         Cmd.none
     | ActiveItemChange (tab, index) ->
         let model, range =
@@ -104,17 +104,13 @@ let update code msg model =
                     List.tryItem index model.TriviaNodes
                     |> Option.map (fun t -> t.Range)
 
-                { model with
-                      ActiveByTriviaNodeIndex = index },
-                range
+                { model with ActiveByTriviaNodeIndex = index }, range
             | ByTrivia ->
                 let range =
                     List.tryItem index model.Trivia
                     |> Option.map (fun tv -> tv.Range)
 
-                { model with
-                      ActiveByTriviaIndex = index },
-                range
+                { model with ActiveByTriviaIndex = index }, range
 
         let cmd =
             range
@@ -132,8 +128,8 @@ let update code msg model =
     | DefinesUpdated d -> { model with Defines = d }, Cmd.none
     | FSCVersionReceived version ->
         { model with
-              Version = version
-              IsLoading = false },
+            Version = version
+            IsLoading = false },
         Cmd.none
     | SetFsiFile v -> { model with IsFsi = v }, Cmd.none
     | HighLight hlr -> model, Cmd.ofSub (FantomasTools.Client.Editor.selectRange hlr)

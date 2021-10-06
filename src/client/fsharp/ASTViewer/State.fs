@@ -88,15 +88,15 @@ let update code (msg: Msg) (model: Model) : Model * Cmd<Msg> =
     | ASTParsed x ->
         let nextModel =
             { model with
-                  IsLoading = false
-                  Parsed = Some(Ok x) }
+                IsLoading = false
+                Parsed = Some(Ok x) }
 
         nextModel, Cmd.none
     | Error e ->
         let nextModel =
             { model with
-                  IsLoading = false
-                  Parsed = Some(Result.Error e) }
+                IsLoading = false
+                Parsed = Some(Result.Error e) }
 
         nextModel, Cmd.none
     | DoParse ->

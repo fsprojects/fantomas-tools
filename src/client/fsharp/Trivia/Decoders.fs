@@ -57,5 +57,5 @@ let decodeUrlModel (initialModel: Model) : Decoder<Model> =
             |> Option.defaultValue initialModel.IsFsi
 
         { initialModel with
-              Defines = defines
-              IsFsi = isFsi })
+            Defines = defines
+            IsFsi = isFsi })

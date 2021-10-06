@@ -23,6 +23,4 @@ let private decodeToken: Decoder<Token> =
 let decodeTokens json = Decode.fromString (Decode.array decodeToken) json
 
 let decodeUrlModel initialModel : Decoder<Model> =
-    Decode.object (fun get ->
-        { initialModel with
-              Defines = get.Required.Field "defines" Decode.string })
+    Decode.object (fun get -> { initialModel with Defines = get.Required.Field "defines" Decode.string })

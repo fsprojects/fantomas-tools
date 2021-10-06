@@ -122,16 +122,13 @@ let update code msg model =
                     Cmd.none
 
             { model with
-                  Tokens = tokens
-                  IsLoading = false },
+                Tokens = tokens
+                IsLoading = false },
             cmd
         | Error error ->
             printfn "%A" error
             { model with IsLoading = false }, Cmd.none
-    | LineSelected lineNumber ->
-        { model with
-              ActiveLine = Some lineNumber },
-        Cmd.none
+    | LineSelected lineNumber -> { model with ActiveLine = Some lineNumber }, Cmd.none
 
     | TokenSelected tokenIndex ->
         let highlightCmd =
@@ -154,9 +151,7 @@ let update code msg model =
 
         let scrollCmd = Cmd.OfFunc.result (PlayScroll tokenIndex)
 
-        { model with
-              ActiveTokenIndex = Some tokenIndex },
-        Cmd.batch [ highlightCmd; scrollCmd ]
+        { model with ActiveTokenIndex = Some tokenIndex }, Cmd.batch [ highlightCmd; scrollCmd ]
     | PlayScroll index -> model, Cmd.ofSub (fun _ -> scrollTo index)
     | DefinesUpdated defines -> { model with Defines = defines }, Cmd.none
     | VersionFound v -> { model with Version = v }, Cmd.none

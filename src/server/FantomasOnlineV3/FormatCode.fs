@@ -44,8 +44,7 @@ module FormatCode =
 
     let private validate fileName code =
         let options =
-            { FSharpParsingOptions.Default with
-                  SourceFiles = [| fileName |] }
+            { FSharpParsingOptions.Default with SourceFiles = [| fileName |] }
 
         let sourceCode = FSharp.Compiler.Text.SourceText.ofString code
 
@@ -57,14 +56,14 @@ module FormatCode =
                 |> Array.map (fun e ->
                     { SubCategory = e.Subcategory
                       Range =
-                          { StartLine = e.StartLineAlternate
-                            StartCol = e.StartColumn
-                            EndLine = e.EndLineAlternate
-                            EndCol = e.EndColumn }
+                        { StartLine = e.StartLineAlternate
+                          StartCol = e.StartColumn
+                          EndLine = e.EndLineAlternate
+                          EndCol = e.EndColumn }
                       Severity =
-                          match e.Severity with
-                          | FSharpErrorSeverity.Warning -> ASTErrorSeverity.Warning
-                          | FSharpErrorSeverity.Error -> ASTErrorSeverity.Error
+                        match e.Severity with
+                        | FSharpErrorSeverity.Warning -> ASTErrorSeverity.Warning
+                        | FSharpErrorSeverity.Error -> ASTErrorSeverity.Error
                       ErrorNumber = e.ErrorNumber
                       Message = e.Message })
                 |> Array.toList
