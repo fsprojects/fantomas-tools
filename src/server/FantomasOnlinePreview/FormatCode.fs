@@ -13,7 +13,7 @@ open FantomasOnline.Shared
 
 module FormatCode =
 
-    let private checker = Fantomas.Extras.FakeHelpers.sharedChecker.Force()
+    let private checker = CodeFormatterImpl.sharedChecker.Force()
 
     let private getOptions () =
         Http.Reflection.getRecordFields FormatConfig.FormatConfig.Default
@@ -49,10 +49,9 @@ module FormatCode =
         let formatConfigType = typeof<FormatConfig.FormatConfig>
         Microsoft.FSharp.Reflection.FSharpValue.MakeRecord(formatConfigType, newValues) :?> FormatConfig.FormatConfig
 
-
     let private format fileName code config =
         let options =
-            Fantomas.Extras.FakeHelpers.createParsingOptionsFromFile fileName
+            CodeFormatterImpl.createParsingOptionsFromFile fileName
 
         let source = SourceOrigin.SourceString code
         CodeFormatter.FormatDocumentAsync(fileName, source, config, options, checker)
