@@ -7,6 +7,7 @@ nuget FSharp.Core 5.0.3-beta.21352.5
 nuget FSharp.Compiler.Service 40.0.1-preview.21352.5
 nuget editorconfig
 nuget MAB.DotIgnore
+nuget Microsoft.SourceLink.GitHub copy_local: true
 
 group Build
 
@@ -75,7 +76,7 @@ nuget Microsoft.Azure.Functions.Worker.Sdk
 nuget FSharp.Compiler.Service 39.0.0
 nuget Microsoft.Build.Utilities.Core
 nuget Thoth.Json.Net 5.0.0
-nuget Fantomas.Extras 4.5.3
+nuget Fantomas.Extras 4.5.4
 nuget Ply
 
 group V3
