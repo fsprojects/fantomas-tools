@@ -5,7 +5,7 @@ open Microsoft.Azure.Functions.Worker
 open Microsoft.Extensions.Logging
 open System.IO
 open System.Threading.Tasks
-open FSharp.Compiler.SourceCodeServices
+open FSharp.Compiler.CodeAnalysis
 open System.Net
 open System.Net.Http
 open Thoth.Json.Net
@@ -131,19 +131,14 @@ module GetAST =
             let! checkOptions =
                 checker
                 |> getProjectOptionsFromScript fileName sourceText defines
-                |> Async.map (fun projOpts ->
-                    checker.GetParsingOptionsFromProjectOptions projOpts
-                    |> fst)
+                |> Async.map (checker.GetParsingOptionsFromProjectOptions >> fst)
 
             // Run the first phase (untyped parsing) of the compiler
             let untypedRes =
                 checker.ParseFile(fileName, sourceText, checkOptions)
                 |> Async.RunSynchronously
 
-
-            match untypedRes.ParseTree with
-            | Some tree -> return Result.Ok(tree, untypedRes.Errors)
-            | _ -> return Error Array.empty // Not sure this branch can be reached.
+            return Result.Ok(untypedRes.ParseTree, untypedRes.Diagnostics)
         }
 
     let private getAST log (req: HttpRequestData) (res: HttpResponseData) : Task<HttpResponseData> =
@@ -191,13 +186,13 @@ module GetAST =
                     Error(
                         sprintf
                             "Type checking aborted. With Parse errors:\n%A\n And with options: \n%A"
-                            parseRes.Errors
+                            parseRes.Diagnostics
                             options
                     )
             | FSharpCheckFileAnswer.Succeeded res ->
                 match res.ImplementationFile with
-                | None -> return Error(sprintf "%A" res.Errors)
-                | Some fc -> return Result.Ok(fc.Declarations, parseRes.Errors)
+                | None -> return Error(sprintf "%A" res.Diagnostics)
+                | Some fc -> return Result.Ok(fc.Declarations, parseRes.Diagnostics)
         }
 
 
