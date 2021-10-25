@@ -41,12 +41,12 @@ source https://api.nuget.org/v3/index.json
 storage: none
 framework: net5.0
 
-nuget FSharp.Core
-nuget FSharp.Compiler.Service 39.0.0
+nuget FSharp.Core 6.0.0-beta.21472.3
+nuget FSharp.Compiler.Service 41.0.0-preview.21472.3
 nuget Microsoft.Azure.Functions.Worker
 nuget Microsoft.Azure.Functions.Worker.Extensions.Http
 nuget Microsoft.Azure.Functions.Worker.Sdk
-nuget Thoth.Json.Net 5.0.0
+nuget Thoth.Json.Net 7.1.0
 nuget Ply
 
 group Server
