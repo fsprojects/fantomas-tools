@@ -128,14 +128,16 @@ module GetAST =
 
         async {
             // Get compiler options for a single script file
-            let! checkOptions =
-                checker
-                |> getProjectOptionsFromScript fileName sourceText defines
-                |> Async.map (checker.GetParsingOptionsFromProjectOptions >> fst)
+            let parsingOptions =
+                { FSharpParsingOptions.Default with
+                    SourceFiles = [| fileName |]
+                    IsExe = true
+                    ConditionalCompilationDefines = Array.toList defines
+                    LangVersionText = "preview" }
 
             // Run the first phase (untyped parsing) of the compiler
             let untypedRes =
-                checker.ParseFile(fileName, sourceText, checkOptions)
+                checker.ParseFile(fileName, sourceText, parsingOptions)
                 |> Async.RunSynchronously
 
             return Result.Ok(untypedRes.ParseTree, untypedRes.Diagnostics)
