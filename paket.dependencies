@@ -3,8 +3,8 @@ source https://api.nuget.org/v3/index.json
 storage: none
 framework: netstandard2.0
 # for the local Fantomas build
-nuget FSharp.Core 6.0.0-beta.21472.3
-nuget FSharp.Compiler.Service 41.0.0-preview.21472.3
+nuget FSharp.Core 6.0.1
+nuget FSharp.Compiler.Service 41.0.1
 nuget editorconfig
 nuget MAB.DotIgnore
 nuget Microsoft.SourceLink.GitHub copy_local: true
@@ -41,8 +41,8 @@ source https://api.nuget.org/v3/index.json
 storage: none
 framework: net5.0
 
-nuget FSharp.Core 6.0.0-beta.21472.3
-nuget FSharp.Compiler.Service 41.0.0-preview.21472.3
+nuget FSharp.Core 6.0.1
+nuget FSharp.Compiler.Service 41.0.1
 nuget Microsoft.Azure.Functions.Worker
 nuget Microsoft.Azure.Functions.Worker.Extensions.Http
 nuget Microsoft.Azure.Functions.Worker.Sdk
@@ -55,8 +55,8 @@ source https://api.nuget.org/v3/index.json
 storage: none
 framework: net5.0
 
-nuget FSharp.Core 6.0.0-beta.21472.3
-nuget FSharp.Compiler.Service 41.0.0-preview.21472.3
+nuget FSharp.Core 6.0.1
+nuget FSharp.Compiler.Service 41.0.1
 nuget Microsoft.Azure.Functions.Worker
 nuget Microsoft.Azure.Functions.Worker.Extensions.Http
 nuget Microsoft.Azure.Functions.Worker.Sdk
@@ -76,7 +76,7 @@ nuget Microsoft.Azure.Functions.Worker.Sdk
 nuget FSharp.Compiler.Service 39.0.0
 nuget Microsoft.Build.Utilities.Core
 nuget Thoth.Json.Net 5.0.0
-nuget Fantomas.Extras 4.5.4
+nuget Fantomas.Extras 4.5.6
 nuget Ply
 
 group V3
