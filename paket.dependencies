@@ -45,6 +45,7 @@ nuget FSharp.Core 6.0.1
 nuget FSharp.Compiler.Service 41.0.1
 nuget Thoth.Json.Net 7.1.0
 nuget Ply
+nuget Microsoft.Net.Http.Headers
 nuget Amazon.Lambda.Core 2.0.0
 nuget Amazon.Lambda.Serialization.SystemTextJson 2.1.0
 nuget Amazon.Lambda.APIGatewayEvents 2.4.0

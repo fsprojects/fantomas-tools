@@ -123,7 +123,7 @@ let infra () =
         let lambda =
             let args =
                 Aws.Lambda.FunctionArgs(
-                    Handler = input "ASTViewer::ASTViewer.Lambda+Function::FunctionHandler",
+                    Handler = input "ASTViewer::ASTViewer.Lambda+Function::GetVersion",
                     Runtime = inputUnion2Of2 Aws.Lambda.Runtime.DotnetCore3d1,
                     Code =
                         input (

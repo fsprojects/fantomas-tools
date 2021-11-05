@@ -9,3 +9,9 @@ fsharp_disable_elmish_syntax=true
 
 [src/client/fsharp/Navigation.fs]
 fsharp_disable_elmish_syntax=true
+
+[src/server/**/*.fs]
+fsharp_disable_elmish_syntax=true
+
+[src/server/**/Function.fs]
+fsharp_max_infix_operator_expression=120
