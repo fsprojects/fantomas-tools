@@ -1,6 +1,6 @@
 group Infrastructure
 
 FSharp.Core
-Pulumi.Azure
+Pulumi.Aws
 Pulumi.FSharp
 Thoth.Json.Net

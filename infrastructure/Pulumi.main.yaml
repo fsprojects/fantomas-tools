@@ -1,2 +1,3 @@
 config:
-  azure:location: WestEurope
+  aws:region: eu-west-1
+  pulumi:template: aws-fsharp
