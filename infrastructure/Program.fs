@@ -123,7 +123,7 @@ let infra () =
         let lambda =
             let args =
                 Aws.Lambda.FunctionArgs(
-                    Handler = input "ASTViewer::ASTViewer.Lambda+Function::GetVersion",
+                    Handler = input "ASTViewer::ASTViewer.Lambda+Function::PostUntypedAST",
                     Runtime = inputUnion2Of2 Aws.Lambda.Runtime.DotnetCore3d1,
                     Code =
                         input (
@@ -132,7 +132,9 @@ let infra () =
                             )
                             :> Archive
                         ),
-                    Role = io lambdaRole.Arn
+                    Role = io lambdaRole.Arn,
+                    Timeout = input 15,
+                    MemorySize = input 256
                 )
 
             Aws.Lambda.Function("ast-viewer", args)
@@ -192,7 +194,7 @@ let infra () =
             let args =
                 Aws.ApiGatewayV2.RouteArgs(
                     ApiId = io gateway.Id,
-                    RouteKey = input "GET /version",
+                    RouteKey = input "POST /ast-viewer/untyped-ast",
                     Target = io (lambdaIntegration.Id.Apply(fun id -> $"integrations/{id}"))
                 )
 

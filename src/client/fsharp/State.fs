@@ -39,10 +39,10 @@ let init _ =
     let initialCmd = Navigation.cmdForCurrentTab currentTab model
     //
     let cmd =
-        Cmd.batch [ Cmd.map TriviaMsg triviaCmd
-                    Cmd.map FSharpTokensMsg fsharpTokensCmd
+        Cmd.batch [ //Cmd.map TriviaMsg triviaCmd
+                    //Cmd.map FSharpTokensMsg fsharpTokensCmd
                     Cmd.map ASTMsg astCmd
-                    Cmd.map FantomasMsg fantomasCmd
+                    //Cmd.map FantomasMsg fantomasCmd
                     initialCmd ]
 
     model, cmd

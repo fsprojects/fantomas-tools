@@ -66,7 +66,7 @@ let artifactDir = __SOURCE_DIRECTORY__ </> "artifacts"
 Target.create "Fantomas-Git" (fun _ ->
     let targetDir = ".deps" @@ "fantomas"
 
-    if System.IO.Directory.Exists(targetDir) then
+    if Directory.Exists(targetDir) then
         Git.Branches.pull targetDir "origin" "4.6"
     else
         Git.Repository.cloneSingleBranch "." "https://github.com/fsprojects/fantomas.git" "4.6" targetDir
@@ -115,7 +115,7 @@ let watchMode getBackendUrl getCorsUrl =
     Environment.setEnvironVar "VITE_FRONTEND_PORT" (fablePort.ToString())
 
     let frontend =
-        async { Yarn.exec "start" (setClientDir) }
+        async { Yarn.exec "start" setClientDir }
 
     let cors = getCorsUrl fablePort //sprintf "https://localhost:%i" fablePort
 
@@ -158,10 +158,23 @@ let watchMode getBackendUrl getCorsUrl =
     |> Async.Ignore
     |> Async.RunSynchronously
 
-Target.create "Watch" (fun _ ->
-    let localhostBackend port = sprintf "http://localhost:%i" port
-    let cors = sprintf "http://localhost:%i"
-    watchMode localhostBackend cors)
+Target.create "Watch" (fun target ->
+    let localhostBackend port subPath = sprintf "http://localhost:%i/%s" port subPath
+    //    let cors = sprintf "http://localhost:%i"
+//    watchMode localhostBackend cors)    Environment.setEnvironVar "NODE_ENV" "development"
+    Environment.setEnvironVar "NODE_ENV" "development"
+    Environment.setEnvironVar "VITE_AST_BACKEND" (localhostBackend astPort "ast-viewer")
+    let frontend = async { Yarn.exec "start" setClientDir }
+
+    let astViewer =
+        async {
+            DotNet.exec (fun opt -> { opt with WorkingDirectory = serverDir </> "ASTViewer" }) "watch" "run"
+            |> ignore<ProcessResult>
+        }
+
+    Async.Parallel [|  astViewer; frontend |]
+    |> Async.Ignore
+    |> fun a -> Async.RunSynchronously(a, cancellationToken = target.Context.CancellationToken))
 
 Target.create "GitPod" (fun _ ->
     let gitpodWorkspaceUrl =
