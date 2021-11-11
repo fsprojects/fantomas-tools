@@ -68,17 +68,10 @@ let private getBytes (v: string) = System.Text.Encoding.UTF8.GetBytes v
 let REQUEST_ENTITY_TOO_LARGE (body: string) = response HTTP_413 (getBytes body)
 let INTERNAL_SERVER_ERROR (body: string) = response HTTP_500 (getBytes body)
 
-let allow_cors: WebPart =
-    OPTIONS
-    >=> addHeader "Access-Control-Allow-Origin" "*"
+let setCORSHeaders =
+    addHeader "Access-Control-Allow-Origin" "*"
     >=> addHeader "Access-Control-Allow-Headers" "*"
-    >=> addHeader "Access-Control-Allow-Methods" "GET,POST"
-    >=> OK "CORS approved"
-
-let corsConfig =
-    { defaultCORSConfig with allowedUris = InclusiveOption.All
-    // InclusiveOption.Some [ "http://localhost:8080" ]
-     }
+    >=> addHeader "Access-Control-Allow-Methods" "*"
 
 [<EntryPoint>]
 let main argv =
@@ -106,9 +99,9 @@ let main argv =
             })
 
     let webPart =
-        cors corsConfig
+        setCORSHeaders
         >=> choose
-                [ OPTIONS >=> OK "CORS?"
+                [ OPTIONS >=> no_content
                   GET >=> path "/ast-viewer/version" >=> setMimeType "text/plain" >=> OK(getVersion ())
                   POST >=> path "/ast-viewer/untyped-ast" >=> untypedAst
                   POST >=> path "/ast-viewer/typed-ast" >=> typedAst
