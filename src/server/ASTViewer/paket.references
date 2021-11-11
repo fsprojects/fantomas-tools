@@ -2,7 +2,6 @@ group ASTViewer
 FSharp.Core
 FSharp.Compiler.Service
 Thoth.Json.Net
-Ply
 Microsoft.Net.Http.Headers
 Amazon.Lambda.Core
 Amazon.Lambda.Serialization.SystemTextJson

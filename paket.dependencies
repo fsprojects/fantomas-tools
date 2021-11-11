@@ -44,7 +44,6 @@ framework: netcoreapp3.1
 nuget FSharp.Core 6.0.1
 nuget FSharp.Compiler.Service 41.0.1
 nuget Thoth.Json.Net 7.1.0
-nuget Ply
 nuget Microsoft.Net.Http.Headers
 nuget Amazon.Lambda.Core 2.0.0
 nuget Amazon.Lambda.Serialization.SystemTextJson 2.1.0
@@ -55,60 +54,64 @@ group Server
 
 source https://api.nuget.org/v3/index.json
 storage: none
-framework: net5.0
+framework: netcoreapp3.1
 
 nuget FSharp.Core 6.0.1
 nuget FSharp.Compiler.Service 41.0.1
-nuget Microsoft.Azure.Functions.Worker
-nuget Microsoft.Azure.Functions.Worker.Extensions.Http
-nuget Microsoft.Azure.Functions.Worker.Sdk
 nuget Thoth.Json.Net 5.0.0
-nuget Ply
+nuget Microsoft.Net.Http.Headers
+nuget Amazon.Lambda.Core 2.0.0
+nuget Amazon.Lambda.Serialization.SystemTextJson 2.1.0
+nuget Amazon.Lambda.APIGatewayEvents 2.4.0
+nuget Suave
 
 group V4
 
 source https://api.nuget.org/v3/index.json
 storage: none
-framework: net5.0
+framework: netcoreapp3.1
 
 nuget FSharp.Core
-nuget Microsoft.Azure.Functions.Worker
-nuget Microsoft.Azure.Functions.Worker.Extensions.Http
-nuget Microsoft.Azure.Functions.Worker.Sdk
 nuget FSharp.Compiler.Service 39.0.0
 nuget Microsoft.Build.Utilities.Core
 nuget Thoth.Json.Net 5.0.0
 nuget Fantomas.Extras 4.5.6
-nuget Ply
+nuget Microsoft.Net.Http.Headers
+nuget Amazon.Lambda.Core 2.0.0
+nuget Amazon.Lambda.Serialization.SystemTextJson 2.1.0
+nuget Amazon.Lambda.APIGatewayEvents 2.4.0
+nuget Suave
 
 group V3
 
 source https://api.nuget.org/v3/index.json
 storage: none
-framework: net5.0
+framework: netcoreapp3.1
 
 nuget FSharp.Core 4.7.0
-nuget Microsoft.Azure.Functions.Worker
-nuget Microsoft.Azure.Functions.Worker.Extensions.Http
-nuget Microsoft.Azure.Functions.Worker.Sdk
 nuget Thoth.Json.Net 4.1.0
 nuget FSharp.Compiler.Service 34.1.0
 nuget Fantomas 3.3.0
-nuget Ply
+nuget Microsoft.Net.Http.Headers
+nuget Amazon.Lambda.Core 2.0.0
+nuget Amazon.Lambda.Serialization.SystemTextJson 2.1.0
+nuget Amazon.Lambda.APIGatewayEvents 2.4.0
+nuget Suave
 
 group V2
 
 source https://api.nuget.org/v3/index.json
 storage: none
-framework: net5.0
+framework: netcoreapp3.1
 
-nuget Microsoft.Azure.Functions.Worker
-nuget Microsoft.Azure.Functions.Worker.Extensions.Http
-nuget Microsoft.Azure.Functions.Worker.Sdk
 nuget Thoth.Json.Net 5.0.0
 nuget FSharp.Compiler.Service 25.0.1
 nuget Fantomas 2.9.2
-nuget Ply
+nuget Microsoft.Net.Http.Headers
+nuget Amazon.Lambda.Core 2.0.0
+nuget Amazon.Lambda.Serialization.SystemTextJson 2.1.0
+nuget Amazon.Lambda.APIGatewayEvents 2.4.0
+nuget Suave
 
 group Client
 
