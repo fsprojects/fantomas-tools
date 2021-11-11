@@ -114,8 +114,7 @@ let watchMode getBackendUrl getCorsUrl =
     Environment.setEnvironVar "VITE_FANTOMAS_PREVIEW" (getBackendUrl fantomasPreviewPort)
     Environment.setEnvironVar "VITE_FRONTEND_PORT" (fablePort.ToString())
 
-    let frontend =
-        async { Yarn.exec "start" setClientDir }
+    let frontend = async { Yarn.exec "start" setClientDir }
 
     let cors = getCorsUrl fablePort //sprintf "https://localhost:%i" fablePort
 
@@ -159,7 +158,8 @@ let watchMode getBackendUrl getCorsUrl =
     |> Async.RunSynchronously
 
 Target.create "Watch" (fun target ->
-    let localhostBackend port subPath = sprintf "http://localhost:%i/%s" port subPath
+    let localhostBackend port subPath =
+        sprintf "http://localhost:%i/%s" port subPath
     //    let cors = sprintf "http://localhost:%i"
 //    watchMode localhostBackend cors)    Environment.setEnvironVar "NODE_ENV" "development"
     Environment.setEnvironVar "NODE_ENV" "development"
@@ -172,7 +172,7 @@ Target.create "Watch" (fun target ->
             |> ignore<ProcessResult>
         }
 
-    Async.Parallel [|  astViewer; frontend |]
+    Async.Parallel [| astViewer; frontend |]
     |> Async.Ignore
     |> fun a -> Async.RunSynchronously(a, cancellationToken = target.Context.CancellationToken))
 
@@ -273,7 +273,7 @@ open Fake.Core.TargetOperators
 
 "Fantomas-Git" ==> "NETInstall"
 
-"Install" ==> "Watch"
+// "Install" ==> "Watch"
 
 "Install" <== [ "YarnInstall"; "NETInstall" ]
 
