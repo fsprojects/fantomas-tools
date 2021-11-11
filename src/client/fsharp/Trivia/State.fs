@@ -14,7 +14,7 @@ open Thoth.Json
 let private backend: string = jsNative
 
 let private fetchTrivia (payload: ParseRequest) dispatch =
-    let url = sprintf "%s/api/get-trivia" backend
+    let url = sprintf "%s/get-trivia" backend
     let json = encodeParseRequest payload
 
     Http.postJson url json
@@ -29,7 +29,7 @@ let private fetchTrivia (payload: ParseRequest) dispatch =
         | _ -> Error body
         |> dispatch)
 
-let private fetchFSCVersion () = sprintf "%s/api/version" backend |> Http.getText
+let private fetchFSCVersion () = sprintf "%s/version" backend |> Http.getText
 
 let private initialModel: Model =
     { ActiveTab = ByTriviaNodes
@@ -46,12 +46,11 @@ let private initialModel: Model =
 
 let private splitDefines (value: string) =
     value.Split([| ' '; ';' |], StringSplitOptions.RemoveEmptyEntries)
-    |> List.ofArray
 
 let private modelToParseRequest sourceCode (model: Model) =
     { SourceCode = sourceCode
       Defines = splitDefines model.Defines
-      FileName = if model.IsFsi then "script.fsi" else "script.fsx" }
+      IsFsi = model.IsFsi }
 
 let init isActive =
     let model =
@@ -132,4 +131,4 @@ let update code msg model =
             IsLoading = false },
         Cmd.none
     | SetFsiFile v -> { model with IsFsi = v }, Cmd.none
-    | HighLight hlr -> model, Cmd.ofSub (FantomasTools.Client.Editor.selectRange hlr)
+    | HighLight hlr -> model, Cmd.ofSub (Editor.selectRange hlr)

@@ -1,192 +1,99 @@
-namespace TriviaViewer.Server
+module TriviaViewer.GetTrivia
 
-open FSharp.Compiler.Diagnostics
-open Microsoft.Azure.Functions.Worker.Http
-open Microsoft.Azure.Functions.Worker
-open Microsoft.Extensions.Logging
-open System.IO
 open FSharp.Compiler.CodeAnalysis
 open FSharp.Compiler.Syntax
-open System.Net
-open System.Threading.Tasks
-open FSharp.Control.Tasks
 open Fantomas
 open Fantomas.AstTransformer
-open Thoth.Json.Net
 open TriviaViewer.Shared
 open TriviaViewer.Server
 
-module GetTrivia =
-    let private sendJson json (res: HttpResponseData) : Task<HttpResponseData> =
-        task {
-            res.StatusCode <- HttpStatusCode.OK
-            do! res.WriteStringAsync(json)
-            res.Headers.Add("Content-Type", "application/json")
-            return res
-        }
+let private checker = FSharpChecker.Create(keepAssemblyContents = true)
 
-    let private sendText (text: string) (res: HttpResponseData) : Task<HttpResponseData> =
-        task {
-            do! res.WriteStringAsync(text, System.Text.Encoding.UTF8)
-            res.StatusCode <- HttpStatusCode.OK
-            res.Headers.Add("Content-Type", "text/plain")
-            return res
-        }
+let getVersion () : string =
+    let assembly = typeof<FSharpChecker>.Assembly
+    let version = assembly.GetName().Version
+    sprintf "%i.%i.%i" version.Major version.Minor version.Revision
 
-    let private sendInternalError (error: string) (res: HttpResponseData) : Task<HttpResponseData> =
-        task {
-            do! res.WriteStringAsync(error)
-            res.Headers.Add("Content-Type", "application/text")
-            res.StatusCode <- HttpStatusCode.InternalServerError
-            return res
-        }
+let private collectTriviaCandidates tokens ast =
+    let triviaNodesFromAST =
+        match ast with
+        | ParsedInput.ImplFile (ParsedImplFileInput.ParsedImplFileInput (_, _, _, _, hds, mns, _)) -> astToNode hds mns
 
-    let private sendTooLargeError (res: HttpResponseData) : Task<HttpResponseData> =
-        task {
-            do! res.WriteStringAsync("File was too large")
-            res.Headers.Add("Content-Type", "application/text")
-            res.StatusCode <- HttpStatusCode.RequestEntityTooLarge
-            return res
-        }
+        | ParsedInput.SigFile (ParsedSigFileInput.ParsedSigFileInput (_, _, _, _, mns)) -> sigAstToNode mns
 
-    let private sendBadRequest (error: string) (res: HttpResponseData) : Task<HttpResponseData> =
-        task {
-            do! res.WriteStringAsync(error)
-            res.Headers.Add("Content-Type", "application/text")
-            res.StatusCode <- HttpStatusCode.BadRequest
-            return res
-        }
+    let mkRange (sl, sc) (el, ec) =
+        FSharp.Compiler.Text.Range.mkRange
+            ast.Range.FileName
+            (FSharp.Compiler.Text.Position.mkPos sl sc)
+            (FSharp.Compiler.Text.Position.mkPos el ec)
 
-    let private notFound (res: HttpResponseData) : Task<HttpResponseData> =
-        task {
-            let json = Encode.string "Not found" |> Encode.toString 4
-            do! res.WriteStringAsync(json)
-            res.StatusCode <- HttpStatusCode.NotFound
-            return res
-        }
+    let triviaNodesFromTokens =
+        TokenParser.getTriviaNodesFromTokens mkRange tokens
 
-    let private getProjectOptionsFromScript file source defines (checker: FSharpChecker) =
-        async {
-            let otherFlags =
-                defines
-                |> Seq.map (sprintf "-d:%s")
-                |> Seq.toArray
+    triviaNodesFromAST @ triviaNodesFromTokens
+    |> List.sortBy (fun n -> n.Range.Start.Line, n.Range.Start.Column)
 
-            let! opts, _ =
-                checker.GetProjectOptionsFromScript(file, source, otherFlags = otherFlags, assumeDotNetFramework = true)
+let private parseAST source defines isFsi =
+    let fileName = if isFsi then "tmp.fsi" else "tmp.fsx"
+    // create ISourceText
+    let sourceText = FSharp.Compiler.Text.SourceText.ofString source
 
-            return opts
-        }
+    async {
+        // Get compiler options for a single script file
+        let parsingOptions =
+            { FSharpParsingOptions.Default with
+                SourceFiles = [| fileName |]
+                IsExe = true
+                ConditionalCompilationDefines = Array.toList defines
+                LangVersionText = "preview" }
 
-    let private collectAST (log: ILogger) fileName defines source =
-        async {
-            let sourceText = FSharp.Compiler.Text.SourceText.ofString source
+        // Run the first phase (untyped parsing) of the compiler
+        let untypedRes =
+            checker.ParseFile(fileName, sourceText, parsingOptions)
+            |> Async.RunSynchronously
 
-            let checker = FSharpChecker.Create(keepAssemblyContents = false)
+        return Result.Ok(untypedRes.ParseTree, untypedRes.Diagnostics)
+    }
 
-            let! checkOptions = getProjectOptionsFromScript fileName sourceText defines checker
+[<RequireQualifiedAccess>]
+type GetTriviaResponse =
+    | Ok of json: string
+    | BadRequest of body: string
 
-            let parsingOptions =
-                checker.GetParsingOptionsFromProjectOptions(checkOptions)
-                |> fst
+let getTrivia json : Async<GetTriviaResponse> =
+    async {
+        let parseRequest = Decoders.decodeParseRequest json
 
-            let! ast = checker.ParseFile(fileName, sourceText, parsingOptions)
+        match parseRequest with
+        | Ok pr ->
+            let { SourceCode = content
+                  Defines = defines
+                  IsFsi = isFsi } =
+                pr
 
-            if ast.ParseHadErrors then
-                let errors =
-                    ast.Diagnostics
-                    |> Array.filter (fun e -> e.Severity = FSharpDiagnosticSeverity.Error)
+            let _, defineHashTokens = TokenParser.getDefines content
 
-                if not <| Array.isEmpty errors then
-                    log.LogError(sprintf "Parsing failed with errors: %A\nAnd options: %A" errors checkOptions)
+            let tokens =
+                TokenParser.tokenize (List.ofArray defines) defineHashTokens content
 
-                return Error ast.Diagnostics
-            else
-                return Ok ast.ParseTree
-        }
+            let! astResult = parseAST content defines isFsi
 
-    let private getVersion (res: HttpResponseData) : Task<HttpResponseData> =
-        let version =
-            let assembly = typeof<FSharpChecker>.Assembly
-            let version = assembly.GetName().Version
-            sprintf "%i.%i.%i" version.Major version.Minor version.Revision
+            match astResult with
+            | Result.Ok (ast, errors) when (Array.isEmpty errors) ->
+                let mkRange (sl, sc) (el, ec) =
+                    FSharp.Compiler.Text.Range.mkRange
+                        ast.Range.FileName
+                        (FSharp.Compiler.Text.Position.mkPos sl sc)
+                        (FSharp.Compiler.Text.Position.mkPos el ec)
 
-        sendText version res
+                let trivias = TokenParser.getTriviaFromTokens mkRange tokens
+                let triviaCandidates = collectTriviaCandidates tokens ast
+                let triviaNodes = Trivia.collectTrivia mkRange tokens ast
 
-    let private collectTriviaCandidates tokens ast =
-        let triviaNodesFromAST =
-            match ast with
-            | ParsedInput.ImplFile (ParsedImplFileInput.ParsedImplFileInput (_, _, _, _, hds, mns, _)) ->
-                astToNode hds mns
-
-            | ParsedInput.SigFile (ParsedSigFileInput.ParsedSigFileInput (_, _, _, _, mns)) -> sigAstToNode mns
-
-        let mkRange (sl, sc) (el, ec) =
-            FSharp.Compiler.Text.Range.mkRange
-                ast.Range.FileName
-                (FSharp.Compiler.Text.Position.mkPos sl sc)
-                (FSharp.Compiler.Text.Position.mkPos el ec)
-
-        let triviaNodesFromTokens =
-            TokenParser.getTriviaNodesFromTokens mkRange tokens
-
-        triviaNodesFromAST @ triviaNodesFromTokens
-        |> List.sortBy (fun n -> n.Range.Start.Line, n.Range.Start.Column)
-
-    let private getTrivia (log: ILogger) (req: HttpRequestData) (res: HttpResponseData) : Task<HttpResponseData> =
-        task {
-            use stream = new StreamReader(req.Body)
-            let! json = stream.ReadToEndAsync()
-            let parseRequest = Decoders.decodeParseRequest json
-
-            match parseRequest with
-            | Ok pr ->
-                let { SourceCode = content
-                      Defines = defines
-                      FileName = fileName } =
-                    pr
-
-                let _, defineHashTokens = TokenParser.getDefines content
-
-                let tokens =
-                    TokenParser.tokenize defines defineHashTokens content
-
-                let! astResult = collectAST log fileName defines content
-
-                match astResult with
-                | Result.Ok ast ->
-                    let mkRange (sl, sc) (el, ec) =
-                        FSharp.Compiler.Text.Range.mkRange
-                            ast.Range.FileName
-                            (FSharp.Compiler.Text.Position.mkPos sl sc)
-                            (FSharp.Compiler.Text.Position.mkPos el ec)
-
-                    let trivias = TokenParser.getTriviaFromTokens mkRange tokens
-                    let triviaCandidates = collectTriviaCandidates tokens ast
-                    let triviaNodes = Trivia.collectTrivia mkRange tokens ast
-
-                    let json =
-                        Encoders.encodeParseResult trivias triviaNodes triviaCandidates
-
-                    return! sendJson json res
-                | Error err -> return! sendBadRequest (sprintf "%A" err) res
-            | Error err -> return! sendBadRequest (sprintf "%A" err) res
-        }
-
-    [<Function "GetTrivia">]
-    let run
-        (
-            [<HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "{*any}")>] req: HttpRequestData,
-            executionContext: FunctionContext
-        )
-        =
-        let log: ILogger = executionContext.GetLogger("GetTrivia")
-        log.LogInformation("F# HTTP trigger function processed a request.")
-        let path = req.Url.LocalPath.ToLower()
-        let method = req.Method.ToUpper()
-        let res = req.CreateResponse()
-
-        match method, path with
-        | "POST", "/api/get-trivia" -> getTrivia log req res
-        | "GET", "/api/version" -> getVersion res
-        | _ -> notFound res
+                let json =
+                    Encoders.encodeParseResult trivias triviaNodes triviaCandidates
+                return GetTriviaResponse.Ok json
+            | Ok (_, errors) -> return GetTriviaResponse.BadRequest(Array.map string errors |> String.concat "\n")
+            | Error err -> return GetTriviaResponse.BadRequest(string err)
+        | Error err -> return GetTriviaResponse.BadRequest(string err)
+    }

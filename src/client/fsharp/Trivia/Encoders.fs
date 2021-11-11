@@ -7,8 +7,8 @@ open FantomasTools.Client.Trivia.Model
 let encodeParseRequest (pr: ParseRequest) =
     Encode.object
         [ "sourceCode", Encode.string pr.SourceCode
-          "defines", List.map Encode.string pr.Defines |> Encode.list
-          "fileName", Encode.string pr.FileName ]
+          "defines", Array.map Encode.string pr.Defines |> Encode.array
+          "isFsi", Encode.bool pr.IsFsi ]
     |> Encode.toString 4
 
 let encodeUrlModel code (model: Model) =
