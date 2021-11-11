@@ -1,19 +1,12 @@
-namespace FSharpTokens.Server
+module FSharpTokens.GetTokens
 
+open Thoth.Json.Net
 open Fantomas
 open FSharpTokens.Shared
-open System.IO
-open System.Net
-open System.Threading.Tasks
-open FSharp.Control.Tasks
-open Thoth.Json.Net
-open Microsoft.Extensions.Logging
-open Microsoft.Azure.Functions.Worker.Http
-open Microsoft.Azure.Functions.Worker
 open FSharpTokens.Server.Decoders
 open FSharpTokens.Server.Encoders
 
-module GetTokens =
+(*
     let private sendJson json (res: HttpResponseData) : Task<HttpResponseData> =
         task {
             res.StatusCode <- HttpStatusCode.OK
@@ -112,3 +105,30 @@ module GetTokens =
         | "POST", "/api/get-tokens" -> getTokens log req res
         | "GET", "/api/version" -> getVersion res
         | _ -> notFound res
+*)
+
+let getVersion () : string =
+    let assembly =
+        typeof<FSharp.Compiler.CodeAnalysis.FSharpChecker>
+            .Assembly
+
+    let version = assembly.GetName().Version
+    sprintf "%i.%i.%i" version.Major version.Minor version.Revision
+
+type GetTokensResponse =
+    | Tokens of json: string
+    | BadRequest of error: string
+
+let getTokens (json: string) : GetTokensResponse =
+    let model = Decode.fromString decodeTokenRequest json
+
+    match model with
+    | Ok model ->
+        let _, defineHashTokens = TokenParser.getDefines model.SourceCode
+
+        let json =
+            TokenParser.tokenize model.Defines defineHashTokens model.SourceCode
+            |> toJson
+
+        GetTokensResponse.Tokens json
+    | Error err -> GetTokensResponse.BadRequest err

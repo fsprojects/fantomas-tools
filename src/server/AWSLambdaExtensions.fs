@@ -1,6 +1,9 @@
 ﻿module AWSLambdaExtensions
 
 open System.Collections.Generic
+open System.Net
+open Amazon.Lambda.APIGatewayEvents
+open Microsoft.Net.Http.Headers
 
 let createHeaders headers =
     Seq.fold
@@ -9,3 +12,10 @@ let createHeaders headers =
             acc)
         (Dictionary<string, string>())
         headers
+
+let mkAPIGatewayProxyResponse (statusCode: HttpStatusCode, body: string, contentTypeHeaderValue: string) =
+    APIGatewayProxyResponse(
+        StatusCode = int statusCode,
+        Body = body,
+        Headers = createHeaders [ HeaderNames.ContentType, contentTypeHeaderValue ]
+    )

@@ -16,7 +16,7 @@
     <Compile Include="Encoders.fs" />
     <Compile Include="Decoders.fs" />
     <Compile Include="GetAST.fs" />
-    <Compile Include="Function.fs" />
+    <Compile Include="Lambda.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <Import Project="..\..\..\.paket\Paket.Restore.targets" />

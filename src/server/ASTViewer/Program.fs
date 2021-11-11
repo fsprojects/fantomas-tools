@@ -1,4 +1,3 @@
-open System.Net
 open Suave
 open Suave.Filters
 open Suave.Operators
@@ -34,25 +33,21 @@ let main argv =
                 return! (mapASTResponseToWebPart astResponse) ctx
             })
 
-    let webPart =
-        setCORSHeaders
-        >=> choose
-                [ OPTIONS >=> no_content
-                  GET
-                  >=> path "/ast-viewer/version"
-                  >=> textPlain
-                  >=> OK(getVersion ())
-                  POST
-                  >=> path "/ast-viewer/untyped-ast"
-                  >=> untypedAst
-                  POST >=> path "/ast-viewer/typed-ast" >=> typedAst
-                  NOT_FOUND "Not found" ]
+    let routes =
+        [ GET
+          >=> path "/ast-viewer/version"
+          >=> textPlain
+          >=> OK(getVersion ())
+          POST
+          >=> path "/ast-viewer/untyped-ast"
+          >=> untypedAst
+          POST >=> path "/ast-viewer/typed-ast" >=> typedAst ]
 
     let port =
         match List.ofArray argv with
         | [ "--port"; port ] -> System.UInt16.Parse port
         | _ -> 7412us
 
-    startWebServer { defaultConfig with bindings = [ HttpBinding.create HTTP IPAddress.Loopback port ] } webPart
+    startFantomasTool port routes
 
     0

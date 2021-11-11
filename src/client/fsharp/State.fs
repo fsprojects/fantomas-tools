@@ -12,12 +12,9 @@ let private getCodeFromUrl () =
 let init _ =
     let sourceCode = getCodeFromUrl ()
     let currentTab = Navigation.parseUrl (Router.currentUrl ())
-
-    let (triviaModel, triviaCmd) = Trivia.State.init (currentTab = TriviaTab)
-
     let (fsharpTokensModel, fsharpTokensCmd) = FSharpTokens.State.init (currentTab = TokensTab)
-
     let (astModel, astCmd) = ASTViewer.State.init (currentTab = ASTTab)
+    let (triviaModel, triviaCmd) = Trivia.State.init (currentTab = TriviaTab)
 
     let (fantomasModel, fantomasCmd) =
         let tab =
@@ -39,9 +36,9 @@ let init _ =
     let initialCmd = Navigation.cmdForCurrentTab currentTab model
     //
     let cmd =
-        Cmd.batch [ //Cmd.map TriviaMsg triviaCmd
-                    //Cmd.map FSharpTokensMsg fsharpTokensCmd
+        Cmd.batch [ Cmd.map FSharpTokensMsg fsharpTokensCmd
                     Cmd.map ASTMsg astCmd
+                    //Cmd.map TriviaMsg triviaCmd
                     //Cmd.map FantomasMsg fantomasCmd
                     initialCmd ]
 

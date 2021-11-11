@@ -163,16 +163,26 @@ Target.create "Watch" (fun target ->
     //    let cors = sprintf "http://localhost:%i"
 //    watchMode localhostBackend cors)    Environment.setEnvironVar "NODE_ENV" "development"
     Environment.setEnvironVar "NODE_ENV" "development"
+    Environment.setEnvironVar "VITE_FSHARP_TOKENS_BACKEND" (localhostBackend fsharpTokensPort "fsharp-tokens")
     Environment.setEnvironVar "VITE_AST_BACKEND" (localhostBackend astPort "ast-viewer")
+//    Environment.setEnvironVar "VITE_TRIVIA_BACKEND" (getBackendUrl triviaPort)
+//    Environment.setEnvironVar "VITE_FANTOMAS_V2" (getBackendUrl fantomasV2Port)
+//    Environment.setEnvironVar "VITE_FANTOMAS_V3" (getBackendUrl fantomasV3Port)
+//    Environment.setEnvironVar "VITE_FANTOMAS_V4" (getBackendUrl fantomasV4Port)
+//    Environment.setEnvironVar "VITE_FANTOMAS_PREVIEW" (getBackendUrl fantomasPreviewPort)
     let frontend = async { Yarn.exec "start" setClientDir }
 
-    let astViewer =
+    let runLambda directory =
         async {
-            DotNet.exec (fun opt -> { opt with WorkingDirectory = serverDir </> "ASTViewer" }) "watch" "run"
+            DotNet.exec (fun opt -> { opt with WorkingDirectory = serverDir </> directory }) "watch" "run"
             |> ignore<ProcessResult>
         }
+    
+    let fsharpTokens = runLambda "FSharpTokens"
+    let astViewer = runLambda "ASTViewer"
 
-    Async.Parallel [| astViewer; frontend |]
+
+    Async.Parallel [| fsharpTokens; astViewer; frontend |]
     |> Async.Ignore
     |> fun a -> Async.RunSynchronously(a, cancellationToken = target.Context.CancellationToken))
 

@@ -19,9 +19,13 @@
     <Compile Include="../../../.deps/fantomas/src/Fantomas/TriviaTypes.fs" />
     <Compile Include="../../../.deps/fantomas/src/Fantomas/TokenParser.fs" />
     <Compile Include="../../shared/FSharpTokensShared.fs" />
+    <Compile Include="..\HttpConstants.fs" />
+    <Compile Include="..\AWSLambdaExtensions.fs" />
+    <Compile Include="..\SuaveExtensions.fs" />
     <Compile Include="Decoders.fs" />
     <Compile Include="Encoders.fs" />
     <Compile Include="GetTokens.fs" />
+    <Compile Include="Lambda.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <Import Project="..\..\..\.paket\Paket.Restore.targets" />

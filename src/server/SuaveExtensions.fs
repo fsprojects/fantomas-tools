@@ -1,9 +1,13 @@
 ﻿module SuaveExtensions
 
+open System.Net
 open Suave
 open Suave.Operators
 open Suave.Writers
 open Suave.Response
+open Suave.Filters
+open Suave.Successful
+open Suave.RequestErrors
 open HttpConstants
 
 type HttpRequest with
@@ -20,3 +24,11 @@ let setCORSHeaders =
     addHeader "Access-Control-Allow-Origin" "*"
     >=> addHeader "Access-Control-Allow-Headers" "*"
     >=> addHeader "Access-Control-Allow-Methods" "*"
+
+let startFantomasTool port routes =
+    setCORSHeaders
+    >=> choose
+            [ OPTIONS >=> no_content
+              yield! routes
+              NOT_FOUND "Not found" ]
+    |> startWebServer { defaultConfig with bindings = [ HttpBinding.create HTTP IPAddress.Loopback port ] }
