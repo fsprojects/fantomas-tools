@@ -24,9 +24,7 @@ let private getTokens (request: FSharpTokens.Shared.GetTokensRequest) : JS.Promi
     fetch url [ Body(!^json); Method HttpMethod.POST ]
     |> Promise.bind (fun res -> res.text ())
 
-let private getVersion () =
-    sprintf "%s/%s" backend "version"
-    |> Http.getText
+let private getVersion () = sprintf "%s/%s" backend "version" |> Http.getText
 
 let private initialModel =
     { Defines = ""

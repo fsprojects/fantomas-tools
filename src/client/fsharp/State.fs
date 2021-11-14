@@ -39,7 +39,7 @@ let init _ =
         Cmd.batch [ Cmd.map FSharpTokensMsg fsharpTokensCmd
                     Cmd.map ASTMsg astCmd
                     Cmd.map TriviaMsg triviaCmd
-                    //Cmd.map FantomasMsg fantomasCmd
+                    Cmd.map FantomasMsg fantomasCmd
                     initialCmd ]
 
     model, cmd

@@ -165,10 +165,10 @@ Target.create "Watch" (fun target ->
     Environment.setEnvironVar "VITE_FSHARP_TOKENS_BACKEND" (localhostBackend fsharpTokensPort "fsharp-tokens")
     Environment.setEnvironVar "VITE_AST_BACKEND" (localhostBackend astPort "ast-viewer")
     Environment.setEnvironVar "VITE_TRIVIA_BACKEND" (localhostBackend triviaPort "trivia-viewer")
-    //    Environment.setEnvironVar "VITE_FANTOMAS_V2" (getBackendUrl fantomasV2Port)
-//    Environment.setEnvironVar "VITE_FANTOMAS_V3" (getBackendUrl fantomasV3Port)
-//    Environment.setEnvironVar "VITE_FANTOMAS_V4" (getBackendUrl fantomasV4Port)
-//    Environment.setEnvironVar "VITE_FANTOMAS_PREVIEW" (getBackendUrl fantomasPreviewPort)
+    Environment.setEnvironVar "VITE_FANTOMAS_V2" (localhostBackend fantomasV2Port "fantomas/v2")
+    Environment.setEnvironVar "VITE_FANTOMAS_V3" (localhostBackend fantomasV3Port "fantomas/v3")
+    Environment.setEnvironVar "VITE_FANTOMAS_V4" (localhostBackend fantomasV4Port "fantomas/v4")
+    Environment.setEnvironVar "VITE_FANTOMAS_PREVIEW" (localhostBackend fantomasPreviewPort "fantomas/preview")
     let frontend = async { Yarn.exec "start" setClientDir }
 
     let runLambda directory =
@@ -180,10 +180,18 @@ Target.create "Watch" (fun target ->
     let fsharpTokens = runLambda "FSharpTokens"
     let astViewer = runLambda "ASTViewer"
     let triviaViewer = runLambda "TriviaViewer"
+    let fantomasV2 = runLambda "FantomasOnlineV2"
+    let fantomasV3 = runLambda "FantomasOnlineV3"
+    let fantomasV4 = runLambda "FantomasOnlineV4"
+    let fantomasPreview = runLambda "FantomasOnlinePreview"
 
     Async.Parallel [| fsharpTokens
                       astViewer
                       triviaViewer
+                      fantomasV2
+                      fantomasV3
+                      fantomasV4
+                      fantomasPreview
                       frontend |]
     |> Async.Ignore
     |> fun a -> Async.RunSynchronously(a, cancellationToken = target.Context.CancellationToken))

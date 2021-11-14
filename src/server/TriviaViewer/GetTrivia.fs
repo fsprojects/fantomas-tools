@@ -92,6 +92,7 @@ let getTrivia json : Async<GetTriviaResponse> =
 
                 let json =
                     Encoders.encodeParseResult trivias triviaNodes triviaCandidates
+
                 return GetTriviaResponse.Ok json
             | Ok (_, errors) -> return GetTriviaResponse.BadRequest(Array.map string errors |> String.concat "\n")
             | Error err -> return GetTriviaResponse.BadRequest(string err)

@@ -2,6 +2,11 @@
 
 [<RequireQualifiedAccess>]
 module HeaderValues =
-    let [<Literal>] ApplicationText = "application/text"
-    let [<Literal>] TextPlain = "text/plain"
-    let [<Literal>] ApplicationJson = "application/json"
+    [<Literal>]
+    let ApplicationText = "application/text"
+
+    [<Literal>]
+    let TextPlain = "text/plain"
+
+    [<Literal>]
+    let ApplicationJson = "application/json"

@@ -11,10 +11,14 @@
   <ItemGroup>
     <None Include="paket.references" />
     <Compile Include="../../shared/FantomasOnlineShared.fs" />
+    <Compile Include="..\HttpConstants.fs" />
+    <Compile Include="..\AWSLambdaExtensions.fs" />
+    <Compile Include="..\SuaveExtensions.fs" />
     <Compile Include="../FantomasOnline.Shared/Encoders.fs" />
     <Compile Include="../FantomasOnline.Shared/Decoders.fs" />
     <Compile Include="../FantomasOnline.Shared/Http.fs" />
     <Compile Include="FormatCode.fs" />
+    <Compile Include="Lambda.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
