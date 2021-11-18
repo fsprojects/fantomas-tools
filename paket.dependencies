@@ -88,8 +88,7 @@ source https://api.nuget.org/v3/index.json
 storage: none
 framework: netcoreapp3.1
 
-nuget FSharp.Core 4.7.0
-nuget Thoth.Json.Net 4.1.0
+nuget Thoth.Json.Net 5.0.0
 nuget FSharp.Compiler.Service 34.1.0
 nuget Fantomas 3.3.0
 nuget Microsoft.Net.Http.Headers
@@ -120,7 +119,7 @@ storage: none
 framework: netstandard2.0
 
 nuget Fable.Core 3.2.6
-nuget FSharp.Core
+nuget FSharp.Core 5.0.2
 nuget Fable.Reactstrap 0.5.1
 nuget Thoth.Json
 nuget Fable.Fetch
