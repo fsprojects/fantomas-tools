@@ -75,6 +75,12 @@ let getOptions () : string =
         match v with
         | :? int as i -> FantomasOption.IntOption(idx, k, i) |> Some
         | :? bool as b -> FantomasOption.BoolOption(idx, k, b) |> Some
+        | :? MultilineFormatterType as mft ->
+            FantomasOption.MultilineFormatterTypeOption(idx, k, (MultilineFormatterType.ToConfigString mft))
+            |> Some
+        | :? EndOfLineStyle as eol ->
+            FantomasOption.EndOfLineStyleOption(idx, k, (EndOfLineStyle.ToConfigString eol))
+            |> Some
         | _ -> None)
     |> Seq.toList
     |> mapOptionsToJson
