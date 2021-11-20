@@ -149,7 +149,7 @@ Target.create "Watch" (fun target ->
     subscription.Dispose()
     cts.Cancel())
 
-Target.create "DeployFunctions" (fun _ ->
+Target.create "PublishLambdas" (fun _ ->
     [ "FantomasOnlineV2"
       "FantomasOnlineV3"
       "FantomasOnlineV4"
@@ -157,15 +157,21 @@ Target.create "DeployFunctions" (fun _ ->
       "ASTViewer"
       "FSharpTokens"
       "TriviaViewer" ]
-    |> List.iter (fun project ->
-        let output = artifactDir </> project
+    |> List.map (fun project ->
+        async {
+            let output = artifactDir </> project
 
-        DotNet.publish
-            (fun config ->
-                { config with
-                    Configuration = DotNet.BuildConfiguration.Release
-                    OutputPath = Some output })
-            (sprintf "%s/%s/%s.fsproj" serverDir project project)))
+            do
+                DotNet.publish
+                    (fun config ->
+                        { config with
+                            Configuration = DotNet.BuildConfiguration.Release
+                            OutputPath = Some output })
+                    (sprintf "%s/%s/%s.fsproj" serverDir project project)
+        })
+    |> Async.Parallel
+    |> Async.Ignore
+    |> Async.RunSynchronously)
 
 Target.create "YarnInstall" (fun _ -> Yarn.install setClientDir)
 
@@ -241,7 +247,7 @@ open Fake.Core.TargetOperators
 
 "CI"
 <== [ "BundleFrontend"
-      "DeployFunctions"
+      "PublishLambdas"
       "Clean"
       "Fantomas-Git" (*; "CheckFormat" *)  ]
 

@@ -13,10 +13,10 @@ open FSharpTokens.GetTokens
 
 let GetVersion (_request: APIGatewayProxyRequest) (_context: ILambdaContext) =
     let version = getVersion ()
-    mkAPIGatewayProxyResponse (HttpStatusCode.OK, version, HeaderValues.TextPlain)
+    mkAPIGatewayProxyResponse (HttpStatusCode.OK, HeaderValues.TextPlain, version)
 
 let GetTokens (request: APIGatewayProxyRequest) (_context: ILambdaContext) =
     match getTokens request.Body with
-    | GetTokensResponse.Tokens body -> HttpStatusCode.OK, body, HeaderValues.ApplicationJson
-    | GetTokensResponse.BadRequest body -> HttpStatusCode.BadRequest, body, HeaderValues.ApplicationText
+    | GetTokensResponse.Tokens body -> HttpStatusCode.OK, HeaderValues.ApplicationJson, body
+    | GetTokensResponse.BadRequest body -> HttpStatusCode.BadRequest, HeaderValues.ApplicationText, body
     |> mkAPIGatewayProxyResponse

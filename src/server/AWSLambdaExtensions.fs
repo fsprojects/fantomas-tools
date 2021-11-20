@@ -13,7 +13,7 @@ let createHeaders headers =
         (Dictionary<string, string>())
         headers
 
-let mkAPIGatewayProxyResponse (statusCode: HttpStatusCode, body: string, contentTypeHeaderValue: string) =
+let mkAPIGatewayProxyResponse (statusCode: HttpStatusCode, contentTypeHeaderValue: string, body: string) =
     APIGatewayProxyResponse(
         StatusCode = int statusCode,
         Body = body,

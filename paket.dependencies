@@ -35,6 +35,7 @@ nuget FSharp.Core
 nuget Pulumi.FSharp 3.7.0
 nuget Pulumi.Aws
 nuget Thoth.Json.Net 5.0.0
+nuget Humanizer.Core
 
 # Separate group for AST Viewer to easier swap out the Compiler version
 group ASTViewer

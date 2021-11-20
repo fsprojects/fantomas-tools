@@ -13,7 +13,7 @@ open HttpConstants
 
 let GetVersion (_request: APIGatewayProxyRequest) (_context: ILambdaContext) =
     let version = getVersion ()
-    mkAPIGatewayProxyResponse (HttpStatusCode.OK, version, HeaderValues.TextPlain)
+    mkAPIGatewayProxyResponse (HttpStatusCode.OK, HeaderValues.TextPlain, version)
 
 let private mapASTResponse response =
     match response with

@@ -1436,6 +1436,7 @@ NUGET
       System.Memory (>= 4.5.3)
     Grpc.Core.Api (2.37.1)
       System.Memory (>= 4.5.3)
+    Humanizer.Core (2.13.14)
     Microsoft.Extensions.DependencyInjection (5.0.2)
       Microsoft.Extensions.DependencyInjection.Abstractions (>= 5.0)
     Microsoft.Extensions.DependencyInjection.Abstractions (5.0)
