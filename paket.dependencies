@@ -22,6 +22,8 @@ nuget Fake.JavaScript.Yarn
 nuget Fake.DotNet.Cli
 nuget Fake.IO.Zip
 nuget Fake.Tools.Git
+nuget CliWrap
+nuget FSharp.Control.Reactive
 
 group Infrastructure
 
