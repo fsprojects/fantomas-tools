@@ -23,3 +23,4 @@ let PostFormat (request: APIGatewayProxyRequest) (_context: ILambdaContext) =
         let! response = formatCode request.Body
         return mapFormatResponseToAPIGatewayProxyResponse response
     }
+    |> Async.StartAsTask

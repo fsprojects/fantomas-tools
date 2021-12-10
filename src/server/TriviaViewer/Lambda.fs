@@ -13,7 +13,7 @@ open TriviaViewer.GetTrivia
 
 let GetVersion (_request: APIGatewayProxyRequest) (_context: ILambdaContext) =
     let version = getVersion ()
-    mkAPIGatewayProxyResponse (HttpStatusCode.OK, version, HeaderValues.TextPlain)
+    mkAPIGatewayProxyResponse (HttpStatusCode.OK, HeaderValues.TextPlain, version)
 
 let GetTrivia (request: APIGatewayProxyRequest) (_context: ILambdaContext) =
     async {
@@ -21,8 +21,9 @@ let GetTrivia (request: APIGatewayProxyRequest) (_context: ILambdaContext) =
 
         let responseData =
             match triviaResponse with
-            | GetTriviaResponse.Ok body -> HttpStatusCode.OK, body, HeaderValues.ApplicationJson
-            | GetTriviaResponse.BadRequest body -> HttpStatusCode.BadRequest, body, HeaderValues.ApplicationText
+            | GetTriviaResponse.Ok body -> HttpStatusCode.OK, HeaderValues.ApplicationJson, body
+            | GetTriviaResponse.BadRequest body -> HttpStatusCode.BadRequest, HeaderValues.ApplicationText, body
 
         return mkAPIGatewayProxyResponse responseData
     }
+    |> Async.StartAsTask

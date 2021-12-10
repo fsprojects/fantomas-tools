@@ -177,17 +177,32 @@ Target.create "YarnInstall" (fun _ -> Yarn.install setClientDir)
 
 Target.create "NETInstall" (fun _ -> DotNet.restore id "fantomas-tools.sln")
 
-Target.create "BundleFrontend" (fun _ ->
+let setViteToProduction () =
     Environment.setEnvironVar "NODE_ENV" "production"
-    Environment.setEnvironVar "VITE_FSHARP_TOKENS_BACKEND" "https://azfun-fsharp-tokens-main.azurewebsites.net"
-    Environment.setEnvironVar "VITE_AST_BACKEND" "https://azfun-ast-viewer-main.azurewebsites.net"
-    Environment.setEnvironVar "VITE_TRIVIA_BACKEND" "https://azfun-trivia-viewer-main.azurewebsites.net"
-    Environment.setEnvironVar "VITE_FANTOMAS_V2" "https://azfun-fantomas-online-v2-main.azurewebsites.net"
-    Environment.setEnvironVar "VITE_FANTOMAS_V3" "https://azfun-fantomas-online-v3-main.azurewebsites.net"
-    Environment.setEnvironVar "VITE_FANTOMAS_V4" "https://azfun-fantomas-online-v4-main.azurewebsites.net"
-    Environment.setEnvironVar "VITE_FANTOMAS_PREVIEW" "https://azfun-fantomas-online-preview-main.azurewebsites.net"
 
+    let mainStageUrl =
+        "https://arlp8cgo97.execute-api.eu-west-1.amazonaws.com/fantomas-main-stage-1c52a6a"
+
+    Environment.setEnvironVar "VITE_FSHARP_TOKENS_BACKEND" $"{mainStageUrl}/fsharp-tokens"
+    Environment.setEnvironVar "VITE_AST_BACKEND" $"{mainStageUrl}/ast-viewer"
+    Environment.setEnvironVar "VITE_TRIVIA_BACKEND" $"{mainStageUrl}/trivia-viewer"
+    Environment.setEnvironVar "VITE_FANTOMAS_V2" $"{mainStageUrl}/fantomas/v2"
+    Environment.setEnvironVar "VITE_FANTOMAS_V3" $"{mainStageUrl}/fantomas/v3"
+    Environment.setEnvironVar "VITE_FANTOMAS_V4" $"{mainStageUrl}/fantomas/v4"
+    Environment.setEnvironVar "VITE_FANTOMAS_PREVIEW" $"{mainStageUrl}/fantomas/preview"
+
+Target.create "BundleFrontend" (fun _ ->
+    setViteToProduction ()
     Yarn.exec "build" setClientDir)
+
+Target.create "RunWithLambdas" (fun target ->
+    setViteToProduction ()
+
+    DotNet.exec
+        (fun opt -> { opt with WorkingDirectory = clientDir })
+        "fable"
+        "watch ./fsharp/FantomasTools.fsproj --outDir ./src/bin --run vite"
+    |> printfn "%A")
 
 Target.create "Format" (fun _ ->
     let result = DotNet.exec id "fantomas" "src -r"
