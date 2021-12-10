@@ -22,16 +22,30 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
 
-    - name: Setup .NET Core
+    - uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+
+    # For Lambda's
+    - name: Setup .NET Core 3.1
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.402
+
+    # For Fable
+    - name: Setup .NET Core 5.0
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 5.0.202
 
-    - name: Restore local tools
+    - name: Restore
       run: dotnet tool restore
 
-    - name: docker build
-      run: env DOCKER_BUILDKIT=1 /usr/bin/docker build --output type=local,dest=./artifacts .
+    - name: Download Fantomas
+      run: dotnet fake run build.fsx -t Fantomas-Git
+      
+    - name: Run CI Target
+      run: dotnet fake run build.fsx -t CI
 
     - name: Deploy Frontend
       uses: peaceiris/actions-gh-pages@v3
@@ -42,15 +56,17 @@ jobs:
     - name: Restore infrastructure dependencies
       run: dotnet paket restore --group Infrastructure
 
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-region: ${{ secrets.AWS_REGION }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
     - uses: pulumi/actions@v3
       with:
         command: up
         stack-name: main
         work-dir: ./infrastructure
       env:
-        ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-        ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-        ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
-        ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
         PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-        ARM_SKIP_PROVIDER_REGISTRATION: 1

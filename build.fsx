@@ -193,7 +193,8 @@ let setViteToProduction () =
 
 Target.create "BundleFrontend" (fun _ ->
     setViteToProduction ()
-    Yarn.exec "build" setClientDir)
+    Yarn.exec "build" setClientDir
+    Shell.cp_r (clientDir </> "build") (artifactDir </> "client"))
 
 Target.create "RunWithLambdas" (fun target ->
     setViteToProduction ()
