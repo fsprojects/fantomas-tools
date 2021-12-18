@@ -17,11 +17,25 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-      
-      - uses: addnab/docker-run-action@v3
+
+      - uses: actions/setup-node@v2
         with:
-          image: nojaf/fable-azure-functions:1.1
-          options: -v ${{ github.workspace }}:/workspace -w /workspace
-          run: |
-            dotnet tool restore
-            dotnet fake run build.fsx -t PR
+          node-version: '14'
+
+      # For Lambda's
+      - name: Setup .NET Core 3.1
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.402
+
+      # For Fable
+      - name: Setup .NET Core 5.0
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.0.202
+
+      - name: Restore
+        run: dotnet tool restore
+
+      - name: Build
+        run: dotnet fake run build.fsx -t PR

@@ -17,16 +17,14 @@ open FantomasTools.Client
 let private backend: string = jsNative
 
 let private getTokens (request: FSharpTokens.Shared.GetTokensRequest) : JS.Promise<string> =
-    let url = sprintf "%s/%s" backend "api/get-tokens"
+    let url = sprintf "%s/%s" backend "get-tokens"
 
     let json = Encode.toString 4 (encodeGetTokensRequest request)
 
     fetch url [ Body(!^json); Method HttpMethod.POST ]
     |> Promise.bind (fun res -> res.text ())
 
-let private getVersion () =
-    sprintf "%s/%s" backend "api/version"
-    |> Http.getText
+let private getVersion () = sprintf "%s/%s" backend "version" |> Http.getText
 
 let private initialModel =
     { Defines = ""

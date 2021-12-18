@@ -12,14 +12,11 @@ let private getCodeFromUrl () =
 let init _ =
     let sourceCode = getCodeFromUrl ()
     let currentTab = Navigation.parseUrl (Router.currentUrl ())
+    let fsharpTokensModel, fsharpTokensCmd = FSharpTokens.State.init (currentTab = TokensTab)
+    let astModel, astCmd = ASTViewer.State.init (currentTab = ASTTab)
+    let triviaModel, triviaCmd = Trivia.State.init (currentTab = TriviaTab)
 
-    let (triviaModel, triviaCmd) = Trivia.State.init (currentTab = TriviaTab)
-
-    let (fsharpTokensModel, fsharpTokensCmd) = FSharpTokens.State.init (currentTab = TokensTab)
-
-    let (astModel, astCmd) = ASTViewer.State.init (currentTab = ASTTab)
-
-    let (fantomasModel, fantomasCmd) =
+    let fantomasModel, fantomasCmd =
         let tab =
             match currentTab with
             | ActiveTab.FantomasTab ft -> ft
@@ -39,9 +36,9 @@ let init _ =
     let initialCmd = Navigation.cmdForCurrentTab currentTab model
     //
     let cmd =
-        Cmd.batch [ Cmd.map TriviaMsg triviaCmd
-                    Cmd.map FSharpTokensMsg fsharpTokensCmd
+        Cmd.batch [ Cmd.map FSharpTokensMsg fsharpTokensCmd
                     Cmd.map ASTMsg astCmd
+                    Cmd.map TriviaMsg triviaCmd
                     Cmd.map FantomasMsg fantomasCmd
                     initialCmd ]
 
@@ -51,16 +48,16 @@ let private reload model =
     if not model.SettingsOpen then
         match model.ActiveTab with
         | TokensTab ->
-            Cmd.ofMsg (FantomasTools.Client.FSharpTokens.Model.GetTokens)
+            Cmd.ofMsg FantomasTools.Client.FSharpTokens.Model.GetTokens
             |> Cmd.map FSharpTokensMsg
         | ASTTab ->
-            Cmd.ofMsg (FantomasTools.Client.ASTViewer.Model.DoParse)
+            Cmd.ofMsg FantomasTools.Client.ASTViewer.Model.DoParse
             |> Cmd.map ASTMsg
         | TriviaTab ->
-            Cmd.ofMsg (FantomasTools.Client.Trivia.Model.GetTrivia)
+            Cmd.ofMsg FantomasTools.Client.Trivia.Model.GetTrivia
             |> Cmd.map TriviaMsg
         | FantomasTab _ ->
-            Cmd.ofMsg (FantomasTools.Client.FantomasOnline.Model.Format)
+            Cmd.ofMsg FantomasTools.Client.FantomasOnline.Model.Format
             |> Cmd.map FantomasMsg
         | _ -> Cmd.none
     else
@@ -87,17 +84,17 @@ let update msg model =
 
         m, reload m
     | TriviaMsg tMsg ->
-        let (tModel, tCmd) =
+        let tModel, tCmd =
             Trivia.State.update model.SourceCode tMsg model.TriviaModel
 
         { model with TriviaModel = tModel }, Cmd.map TriviaMsg tCmd
     | FSharpTokensMsg ftMsg ->
-        let (fModel, fCmd) =
+        let fModel, fCmd =
             FSharpTokens.State.update model.SourceCode ftMsg model.FSharpTokensModel
 
         { model with FSharpTokensModel = fModel }, Cmd.map FSharpTokensMsg fCmd
     | ASTMsg aMsg ->
-        let (aModel, aCmd) =
+        let aModel, aCmd =
             ASTViewer.State.update model.SourceCode aMsg model.ASTModel
 
         { model with ASTModel = aModel }, Cmd.map ASTMsg aCmd
@@ -126,7 +123,7 @@ let update msg model =
             | FantomasTab _ -> true
             | _ -> false
 
-        let (fModel, fCmd) =
+        let fModel, fCmd =
             FantomasOnline.State.update isActiveTab model.SourceCode fMsg model.FantomasModel
 
         { model with FantomasModel = fModel }, Cmd.map FantomasMsg fCmd

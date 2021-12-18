@@ -1,19 +1,23 @@
 <Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <TargetFramework>net5.0</TargetFramework>
-        <OutputType>Exe</OutputType>
-        <AzureFunctionsVersion>v3</AzureFunctionsVersion>
-        <AssemblyName>ASTViewer.Server</AssemblyName>
-        <RootNamespace>ASTViewer.Server</RootNamespace>
-    </PropertyGroup>
-    <ItemGroup>
-        <None Include="paket.references" />
-        <Compile Include="..\..\shared\ASTViewerShared.fs" />
-        <Compile Include="Encoders.fs" />
-        <Compile Include="Decoders.fs" />
-        <Compile Include="GetAST.fs" />
-        <Compile Include="Program.fs" />
-        <None Include="host.json" CopyToOutputDirectory="Always" />
-    </ItemGroup>
-    <Import Project="..\..\..\.paket\Paket.Restore.targets" />
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+    <AWSProjectType>Lambda</AWSProjectType>
+    <OutputType>exe</OutputType>
+    <!-- This property makes the build directory similar to a publish directory and helps the AWS .NET Lambda Mock Test Tool find project dependencies. -->
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="paket.references" />
+    <Compile Include="..\..\shared\ASTViewerShared.fs" />
+    <Compile Include="..\HttpConstants.fs" />
+    <Compile Include="..\AWSLambdaExtensions.fs" />
+    <Compile Include="..\SuaveExtensions.fs" />
+    <Compile Include="Encoders.fs" />
+    <Compile Include="Decoders.fs" />
+    <Compile Include="GetAST.fs" />
+    <Compile Include="Lambda.fs" />
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+  <Import Project="..\..\..\.paket\Paket.Restore.targets" />
 </Project>

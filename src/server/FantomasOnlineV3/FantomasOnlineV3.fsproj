@@ -1,19 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-    <OutputType>Exe</OutputType>
-    <AzureFunctionsVersion>v3</AzureFunctionsVersion>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+    <AWSProjectType>Lambda</AWSProjectType>
+    <OutputType>exe</OutputType>
+    <!-- This property makes the build directory similar to a publish directory and helps the AWS .NET Lambda Mock Test Tool find project dependencies. -->
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
   <ItemGroup>
     <None Include="paket.references" />
     <Compile Include="../../shared/FantomasOnlineShared.fs" />
+    <Compile Include="..\HttpConstants.fs" />
+    <Compile Include="..\AWSLambdaExtensions.fs" />
+    <Compile Include="..\SuaveExtensions.fs" />
     <Compile Include="../FantomasOnline.Shared/Encoders.fs" />
     <Compile Include="../FantomasOnline.Shared/Decoders.fs" />
     <Compile Include="../FantomasOnline.Shared/Http.fs" />
     <Compile Include="FormatCode.fs" />
+    <Compile Include="Lambda.fs" />
     <Compile Include="Program.fs" />
-    <None Include="host.json" CopyToOutputDirectory="Always" />
   </ItemGroup>
   <Import Project="..\..\..\.paket\Paket.Restore.targets" />
 </Project>

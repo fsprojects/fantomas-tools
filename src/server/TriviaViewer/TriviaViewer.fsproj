@@ -1,17 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-    <OutputType>Exe</OutputType>
-    <AzureFunctionsVersion>v3</AzureFunctionsVersion>
-    <AssemblyName>TriviaViewer.Server</AssemblyName>
-    <RootNamespace>TriviaViewer.Server</RootNamespace>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+    <AWSProjectType>Lambda</AWSProjectType>
+    <OutputType>exe</OutputType>
+    <!-- This property makes the build directory similar to a publish directory and helps the AWS .NET Lambda Mock Test Tool find project dependencies. -->
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
-  <ItemGroup>
-    <Content Include="host.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
   <ItemGroup>
     <None Include="paket.references" />
     <Compile Include="../../../.deps/fantomas/src/Fantomas/RangeHelpers.fs" />
@@ -29,9 +25,13 @@
     <Compile Include="../../../.deps/fantomas/src/Fantomas/TokenParser.fs" />
     <Compile Include="../../../.deps/fantomas/src/Fantomas/Trivia.fs" />
     <Compile Include="../../shared/TriviaShared.fs" />
+    <Compile Include="..\HttpConstants.fs" />
+    <Compile Include="..\AWSLambdaExtensions.fs" />
+    <Compile Include="..\SuaveExtensions.fs" />
     <Compile Include="Decoders.fs" />
     <Compile Include="Encoders.fs" />
     <Compile Include="GetTrivia.fs" />
+    <Compile Include="Lambda.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <Import Project="..\..\..\.paket\Paket.Restore.targets" />

@@ -1,6 +1,12 @@
 #r "paket: groupref build //"
 #load ".fake/build.fsx/intellisense.fsx"
 
+open System
+open System.IO
+open System.Threading
+open CliWrap
+open CliWrap.EventStream
+open FSharp.Control.Reactive
 open Fake.Core
 open Fake.DotNet
 open Fake.IO
@@ -8,40 +14,6 @@ open Fake.IO.FileSystemOperators
 open Fake.IO.Globbing.Operators
 open Fake.JavaScript
 open Fake.Tools
-open System.IO
-
-module Azure =
-    let az parameters =
-        let azPath = ProcessUtils.findPath [] "az"
-
-        CreateProcess.fromRawCommand azPath parameters
-        |> Proc.run
-        |> ignore
-
-module Func =
-    type HostOptions =
-        { Cors: string
-          Port: int
-          WorkingDirectory: string }
-
-    let host (hostOptions: HostOptions) : unit =
-        let funcPath = ProcessUtils.findPath [] "func"
-
-        let parameters =
-            [ "start"
-              "--csharp"
-              "--cors"
-              hostOptions.Cors
-              "--port"
-              hostOptions.Port.ToString()
-              "--worker-runtime"
-              "dotnetIsolated" ]
-
-        CreateProcess.fromRawCommand funcPath parameters
-        |> CreateProcess.withWorkingDirectory hostOptions.WorkingDirectory
-        |> Proc.run
-        |> ignore
-
 
 let fablePort = 9060
 let fsharpTokensPort = 7899
@@ -66,7 +38,7 @@ let artifactDir = __SOURCE_DIRECTORY__ </> "artifacts"
 Target.create "Fantomas-Git" (fun _ ->
     let targetDir = ".deps" @@ "fantomas"
 
-    if System.IO.Directory.Exists(targetDir) then
+    if Directory.Exists(targetDir) then
         Git.Branches.pull targetDir "origin" "4.6"
     else
         Git.Repository.cloneSingleBranch "." "https://github.com/fsprojects/fantomas.git" "4.6" targetDir
@@ -103,78 +75,81 @@ Target.create "Build" (fun _ ->
             (fun config -> { config with Configuration = DotNet.BuildConfiguration.Release })
             (sprintf "%s/%s/%s.fsproj" serverDir project project)))
 
-let watchMode getBackendUrl getCorsUrl =
+Target.create "Watch" (fun target ->
+    let cts =
+        CancellationTokenSource.CreateLinkedTokenSource(target.Context.CancellationToken)
+
+    let localhostBackend port subPath =
+        sprintf "http://localhost:%i/%s" port subPath
+
     Environment.setEnvironVar "NODE_ENV" "development"
-    Environment.setEnvironVar "VITE_FSHARP_TOKENS_BACKEND" (getBackendUrl fsharpTokensPort)
-    Environment.setEnvironVar "VITE_AST_BACKEND" (getBackendUrl astPort)
-    Environment.setEnvironVar "VITE_TRIVIA_BACKEND" (getBackendUrl triviaPort)
-    Environment.setEnvironVar "VITE_FANTOMAS_V2" (getBackendUrl fantomasV2Port)
-    Environment.setEnvironVar "VITE_FANTOMAS_V3" (getBackendUrl fantomasV3Port)
-    Environment.setEnvironVar "VITE_FANTOMAS_V4" (getBackendUrl fantomasV4Port)
-    Environment.setEnvironVar "VITE_FANTOMAS_PREVIEW" (getBackendUrl fantomasPreviewPort)
-    Environment.setEnvironVar "VITE_FRONTEND_PORT" (fablePort.ToString())
+    Environment.setEnvironVar "VITE_FSHARP_TOKENS_BACKEND" (localhostBackend fsharpTokensPort "fsharp-tokens")
+    Environment.setEnvironVar "VITE_AST_BACKEND" (localhostBackend astPort "ast-viewer")
+    Environment.setEnvironVar "VITE_TRIVIA_BACKEND" (localhostBackend triviaPort "trivia-viewer")
+    Environment.setEnvironVar "VITE_FANTOMAS_V2" (localhostBackend fantomasV2Port "fantomas/v2")
+    Environment.setEnvironVar "VITE_FANTOMAS_V3" (localhostBackend fantomasV3Port "fantomas/v3")
+    Environment.setEnvironVar "VITE_FANTOMAS_V4" (localhostBackend fantomasV4Port "fantomas/v4")
+    Environment.setEnvironVar "VITE_FANTOMAS_PREVIEW" (localhostBackend fantomasPreviewPort "fantomas/preview")
+
+    let mapEvents (name: string) (observable: IObservable<CommandEvent>) =
+        Observable.map (fun event -> name, event) observable
 
     let frontend =
-        async { Yarn.exec "start" (setClientDir) }
+        Cli
+            .Wrap(DotNet.Options.Create().DotNetCliPath)
+            .WithArguments("fable watch ./fsharp/FantomasTools.fsproj --outDir ./src/bin --run vite")
+            .WithWorkingDirectory(clientDir)
+            .Observe(cts.Token)
+        |> mapEvents "vite/fable"
 
-    let cors = getCorsUrl fablePort //sprintf "https://localhost:%i" fablePort
+    let runLambda (directory: string) =
+        Cli
+            .Wrap(DotNet.Options.Create().DotNetCliPath)
+            .WithArguments("watch run")
+            .WithWorkingDirectory(serverDir </> directory)
+            .Observe(cts.Token)
 
-    let hostAzureFunction name port =
-        async {
-            Func.host
-                { Cors = cors
-                  Port = port
-                  WorkingDirectory = serverDir </> name }
-        }
+        |> mapEvents directory
 
-    let fsharpTokens =
-        hostAzureFunction "FSharpTokens" fsharpTokensPort
+    let fsharpTokens = runLambda "FSharpTokens"
+    let astViewer = runLambda "ASTViewer"
+    let triviaViewer = runLambda "TriviaViewer"
+    let fantomasV2 = runLambda "FantomasOnlineV2"
+    let fantomasV3 = runLambda "FantomasOnlineV3"
+    let fantomasV4 = runLambda "FantomasOnlineV4"
+    let fantomasPreview = runLambda "FantomasOnlinePreview"
 
-    let astViewer = hostAzureFunction "ASTViewer" astPort
+    let subscription =
+        Observable.mergeArray
+            [| frontend
+               fsharpTokens
+               astViewer
+               triviaViewer
+               fantomasV2
+               fantomasV3
+               fantomasV4
+               fantomasPreview |]
+        |> Observable.observeOn System.Reactive.Concurrency.ThreadPoolScheduler.Instance
+        |> Observable.subscribe (fun (name, event: CommandEvent) ->
+            let info (msg: string) =
+                Trace.logToConsole ($"{name}: {msg}", Trace.EventLogEntryType.Information)
 
-    let triviaViewer =
-        hostAzureFunction "TriviaViewer" triviaPort
+            let error (msg: string) =
+                Trace.logToConsole ($"{name}: {msg}", Trace.EventLogEntryType.Error)
 
-    let fantomasV2 =
-        hostAzureFunction "FantomasOnlineV2" fantomasV2Port
+            match event with
+            | :? StartedCommandEvent -> info "started"
+            | :? StandardOutputCommandEvent as output -> info output.Text
+            | :? StandardErrorCommandEvent as e -> error e.Text
+            | :? ExitedCommandEvent -> info "exited"
+            | _ -> Trace.logToConsole ($"{name}: unexpected event, {event}", Trace.EventLogEntryType.Other))
 
-    let fantomasV3 =
-        hostAzureFunction "FantomasOnlineV3" fantomasV3Port
+    Trace.logToConsole ("Starting watch mode, press any key to exit", Trace.EventLogEntryType.Information)
+    let _ = Console.ReadKey()
+    subscription.Dispose()
+    cts.Cancel())
 
-    let fantomasV4 =
-        hostAzureFunction "FantomasOnlineV4" fantomasV4Port
-
-    let fantomasPreview =
-        hostAzureFunction "FantomasOnlinePreview" fantomasPreviewPort
-
-    Async.Parallel [ frontend
-                     fsharpTokens
-                     astViewer
-                     triviaViewer
-                     fantomasV2
-                     fantomasV3
-                     fantomasV4
-                     fantomasPreview ]
-    |> Async.Ignore
-    |> Async.RunSynchronously
-
-Target.create "Watch" (fun _ ->
-    let localhostBackend port = sprintf "http://localhost:%i" port
-    let cors = sprintf "http://localhost:%i"
-    watchMode localhostBackend cors)
-
-Target.create "GitPod" (fun _ ->
-    let gitpodWorkspaceUrl =
-        System.Environment.GetEnvironmentVariable "GITPOD_WORKSPACE_URL"
-
-    let gitpod =
-        gitpodWorkspaceUrl.Replace("https://", System.String.Empty)
-
-    let getBackendUrl port = sprintf "https://%i-%s" port gitpod
-    let getCorsUrl = getBackendUrl
-    watchMode getBackendUrl getCorsUrl)
-
-Target.create "DeployFunctions" (fun _ ->
+Target.create "PublishLambdas" (fun _ ->
     [ "FantomasOnlineV2"
       "FantomasOnlineV3"
       "FantomasOnlineV4"
@@ -182,31 +157,53 @@ Target.create "DeployFunctions" (fun _ ->
       "ASTViewer"
       "FSharpTokens"
       "TriviaViewer" ]
-    |> List.iter (fun project ->
-        let output = artifactDir </> project
+    |> List.map (fun project ->
+        async {
+            let output = artifactDir </> project
 
-        DotNet.publish
-            (fun config ->
-                { config with
-                    Configuration = DotNet.BuildConfiguration.Release
-                    OutputPath = Some output })
-            (sprintf "%s/%s/%s.fsproj" serverDir project project)))
+            do
+                DotNet.publish
+                    (fun config ->
+                        { config with
+                            Configuration = DotNet.BuildConfiguration.Release
+                            OutputPath = Some output })
+                    (sprintf "%s/%s/%s.fsproj" serverDir project project)
+        })
+    |> Async.Parallel
+    |> Async.Ignore
+    |> Async.RunSynchronously)
 
 Target.create "YarnInstall" (fun _ -> Yarn.install setClientDir)
 
 Target.create "NETInstall" (fun _ -> DotNet.restore id "fantomas-tools.sln")
 
-Target.create "BundleFrontend" (fun _ ->
+let setViteToProduction () =
     Environment.setEnvironVar "NODE_ENV" "production"
-    Environment.setEnvironVar "VITE_FSHARP_TOKENS_BACKEND" "https://azfun-fsharp-tokens-main.azurewebsites.net"
-    Environment.setEnvironVar "VITE_AST_BACKEND" "https://azfun-ast-viewer-main.azurewebsites.net"
-    Environment.setEnvironVar "VITE_TRIVIA_BACKEND" "https://azfun-trivia-viewer-main.azurewebsites.net"
-    Environment.setEnvironVar "VITE_FANTOMAS_V2" "https://azfun-fantomas-online-v2-main.azurewebsites.net"
-    Environment.setEnvironVar "VITE_FANTOMAS_V3" "https://azfun-fantomas-online-v3-main.azurewebsites.net"
-    Environment.setEnvironVar "VITE_FANTOMAS_V4" "https://azfun-fantomas-online-v4-main.azurewebsites.net"
-    Environment.setEnvironVar "VITE_FANTOMAS_PREVIEW" "https://azfun-fantomas-online-preview-main.azurewebsites.net"
 
-    Yarn.exec "build" setClientDir)
+    let mainStageUrl =
+        "https://arlp8cgo97.execute-api.eu-west-1.amazonaws.com/fantomas-main-stage-1c52a6a"
+
+    Environment.setEnvironVar "VITE_FSHARP_TOKENS_BACKEND" $"{mainStageUrl}/fsharp-tokens"
+    Environment.setEnvironVar "VITE_AST_BACKEND" $"{mainStageUrl}/ast-viewer"
+    Environment.setEnvironVar "VITE_TRIVIA_BACKEND" $"{mainStageUrl}/trivia-viewer"
+    Environment.setEnvironVar "VITE_FANTOMAS_V2" $"{mainStageUrl}/fantomas/v2"
+    Environment.setEnvironVar "VITE_FANTOMAS_V3" $"{mainStageUrl}/fantomas/v3"
+    Environment.setEnvironVar "VITE_FANTOMAS_V4" $"{mainStageUrl}/fantomas/v4"
+    Environment.setEnvironVar "VITE_FANTOMAS_PREVIEW" $"{mainStageUrl}/fantomas/preview"
+
+Target.create "BundleFrontend" (fun _ ->
+    setViteToProduction ()
+    Yarn.exec "build" setClientDir
+    Shell.cp_r (clientDir </> "build") (artifactDir </> "client"))
+
+Target.create "RunWithLambdas" (fun target ->
+    setViteToProduction ()
+
+    DotNet.exec
+        (fun opt -> { opt with WorkingDirectory = clientDir })
+        "fable"
+        "watch ./fsharp/FantomasTools.fsproj --outDir ./src/bin --run vite"
+    |> printfn "%A")
 
 Target.create "Format" (fun _ ->
     let result = DotNet.exec id "fantomas" "src -r"
@@ -260,13 +257,13 @@ open Fake.Core.TargetOperators
 
 "Fantomas-Git" ==> "NETInstall"
 
-"Install" ==> "Watch"
+// "Install" ==> "Watch"
 
 "Install" <== [ "YarnInstall"; "NETInstall" ]
 
 "CI"
 <== [ "BundleFrontend"
-      "DeployFunctions"
+      "PublishLambdas"
       "Clean"
       "Fantomas-Git" (*; "CheckFormat" *)  ]
 

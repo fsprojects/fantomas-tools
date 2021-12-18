@@ -6,8 +6,9 @@ Collection of tools used when developing for Fantomas
 
 To run this tool locally you need:
 
-* [Node.js 12.x](https://nodejs.org/en/download/) or higher
-* [Azure Functions Core Tools v3](https://www.npmjs.com/package/azure-functions-core-tools)
+* [Node.js 14.x](https://nodejs.org/en/download/) or higher
+* [.NET 3.1.x SDK](https://dotnet.microsoft.com/en-us/download/dotnet/3.1)
+* [.NET 5.x SDK](https://dotnet.microsoft.com/en-us/download/dotnet/5.0)
 
 ## Running locally
 
@@ -31,6 +32,8 @@ NOTE: you may see some error output during this process on first run, but those 
 
 * Open the repository via https://gitpod.io/#https://github.com/fsprojects/fantomas-tools
 
-* Run `dotnet fake run build.fsx -t Gitpod`
+* Run 
+> dotnet fake run build.fsx -t "Fantomas-Git"
+> dotnet fake run build.fsx -t Watch
 
 * Open browser for port `9060`

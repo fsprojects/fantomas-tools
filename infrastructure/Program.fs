@@ -1,34 +1,38 @@
 module Program
 
+open System.IO
 open System.Net.Http
 open System.Net.Http.Headers
 open Pulumi
-open Pulumi.Azure.AppInsights
-open Pulumi.Azure.AppService
-open Pulumi.Azure.AppService.Inputs
-open Pulumi.Azure.Core
-open Pulumi.Azure.Storage
 open Pulumi.FSharp
-open System.IO
+open Pulumi.Aws
 open Thoth.Json.Net
+open Humanizer
 
-let private commitDecoder: Decoder<string*string> =
+let private commitDecoder: Decoder<string * string> =
     Decode.object (fun get ->
         let sha = get.Required.Field "sha" Decode.string
-        let timestamp = get.Required.At ["commit";"author";"date"] Decode.string
-        sha, timestamp
-    )
+
+        let timestamp =
+            get.Required.At [ "commit"; "author"; "date" ] Decode.string
+
+        sha, timestamp)
 
 let private getLastCommit () =
     async {
         use httpClient = new HttpClient()
-        let request = new HttpRequestMessage(HttpMethod.Get, "https://api.github.com/repos/fsprojects/fantomas/commits")
-        request.Headers.CacheControl <- CacheControlHeaderValue.Parse("no-cache")
-        request.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36")
 
-        let! response =
-            httpClient.SendAsync(request)
-            |> Async.AwaitTask
+        let request =
+            new HttpRequestMessage(HttpMethod.Get, "https://api.github.com/repos/fsprojects/fantomas/commits")
+
+        request.Headers.CacheControl <- CacheControlHeaderValue.Parse("no-cache")
+
+        request.Headers.Add(
+            "User-Agent",
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36"
+        )
+
+        let! response = httpClient.SendAsync(request) |> Async.AwaitTask
 
         let! body =
             response.Content.ReadAsStringAsync()
@@ -36,8 +40,8 @@ let private getLastCommit () =
 
         let decodeResult =
             match Decode.fromString (Decode.list commitDecoder) body with
-            | Ok (t::_)
-            | Ok ([t]) ->
+            | Ok (t :: _)
+            | Ok [ t ] ->
                 printfn "Last commit: %A" t
                 Some t
             | Ok [] -> None
@@ -48,122 +52,204 @@ let private getLastCommit () =
         return decodeResult
     }
 
+let (</>) a b = Path.Combine(a, b)
+
+type LambdaProject =
+    { Name: string
+      FileArchive: string
+      HandlerPrefix: string
+      Lambdas: LambdaInfo list
+      FunctionPrefix: string }
+
+and LambdaInfo =
+    { Name: string
+      Verb: string
+      Route: string }
+
+let allLambdas =
+    let mkLambdaInfo name verb route =
+        { Name = name
+          Verb = verb
+          Route = route }
+
+    let mkLambdaProject (name: string) lambdas =
+        let archive =
+            __SOURCE_DIRECTORY__
+            </> ".."
+            </> "artifacts"
+            </> name
+
+        { Name = name
+          FileArchive = archive
+          HandlerPrefix = name.Kebaberize()
+          Lambdas = lambdas
+          FunctionPrefix = $"{name}::{name}.Lambda" }
+
+    [ mkLambdaProject
+        "FSharpTokens"
+        [ mkLambdaInfo "GetVersion" "GET" "/fsharp-tokens/version"
+          mkLambdaInfo "GetTokens" "POST" "/fsharp-tokens/get-tokens" ]
+      mkLambdaProject
+          "ASTViewer"
+          [ mkLambdaInfo "GetVersion" "GET" "/ast-viewer/version"
+            mkLambdaInfo "PostUntypedAST" "POST" "/ast-viewer/untyped-ast"
+            mkLambdaInfo "PostTypedAST" "POST" "/ast-viewer/typed-ast" ]
+      mkLambdaProject
+          "TriviaViewer"
+          [ mkLambdaInfo "GetVersion" "GET" "/trivia-viewer/version"
+            mkLambdaInfo "GetTrivia" "POST" "/trivia-viewer/get-trivia" ]
+      mkLambdaProject
+          "FantomasOnlineV2"
+          [ mkLambdaInfo "GetVersion" "GET" "/fantomas/v2/version"
+            mkLambdaInfo "GetOptions" "GET" "/fantomas/v2/options"
+            mkLambdaInfo "PostFormat" "POST" "/fantomas/v2/format" ]
+      mkLambdaProject
+          "FantomasOnlineV3"
+          [ mkLambdaInfo "GetVersion" "GET" "/fantomas/v3/version"
+            mkLambdaInfo "GetOptions" "GET" "/fantomas/v3/options"
+            mkLambdaInfo "PostFormat" "POST" "/fantomas/v3/format" ]
+      mkLambdaProject
+          "FantomasOnlineV4"
+          [ mkLambdaInfo "GetVersion" "GET" "/fantomas/v4/version"
+            mkLambdaInfo "GetOptions" "GET" "/fantomas/v4/options"
+            mkLambdaInfo "PostFormat" "POST" "/fantomas/v4/format" ]
+      mkLambdaProject
+          "FantomasOnlinePreview"
+          [ mkLambdaInfo "GetVersion" "GET" "/fantomas/preview/version"
+            mkLambdaInfo "GetOptions" "GET" "/fantomas/preview/options"
+            mkLambdaInfo "PostFormat" "POST" "/fantomas/preview/format" ] ]
+
 let infra () =
     async {
-        let stackName = Deployment.Instance.StackName
+        let lambdaRole =
+            Iam.Role(
+                "FantomasLambdaRole",
+                Iam.RoleArgs(
+                    AssumeRolePolicy =
+                        input
+                            """{
+                               	"Version": "2012-10-17",
+                               	"Statement": [{
+                               		"Action": "sts:AssumeRole",
+                               		"Principal": {
+                               			"Service": "lambda.amazonaws.com"
+                               		},
+                               		"Effect": "Allow",
+                               		"Sid": ""
+                               	}]
+                               }"""
+                )
+            )
 
-        // Create an Azure Resource Group
-        let resourceGroupArgs = ResourceGroupArgs(Name = input (sprintf "rg-fantomas-%s" stackName))
-        let resourceGroup = ResourceGroup(sprintf "rg-fantomas-%s" stackName, args = resourceGroupArgs)
+        let _policy =
+            let args =
+                Iam.RolePolicyArgs(
+                    Policy =
+                        input
+                            """{
+	                                "Version": "2012-10-17",
+	                                "Statement": [{
+		                                "Effect": "Allow",
+		                                "Action": [
+			                                "logs:CreateLogGroup",
+			                                "logs:CreateLogStream",
+			                                "logs:PutLogEvents"
+		                                ],
+		                                "Resource": "arn:aws:logs:*:*:*"
+	                                }]
+                                }""",
+                    Role = io lambdaRole.Id
+                )
 
-        // Create an Azure Storage Account
-        let storageAccount =
-            Account
-                ("storagefantomas",
-                 AccountArgs
-                     (ResourceGroupName = io resourceGroup.Name, Name = input (sprintf "storfantomas%s" stackName),
-                      AccountReplicationType = input "LRS", AccountTier = input "Standard"))
+            Iam.RolePolicy("fantomas-log-policy", args)
 
-        // Table Storage for Benchmarks
-        let _benchmarkTable =
-            Table("benchmarks", TableArgs(StorageAccountName = io storageAccount.Name,
-                                          Name = input "FantomasBenchmarks"))
+        let gateway =
+            let cors =
+                ApiGatewayV2.Inputs.ApiCorsConfigurationArgs(
+                    AllowHeaders = inputList [ input "*" ],
+                    AllowMethods = inputList [ input "*" ],
+                    AllowOrigins =
+                        inputList [ input "https://fsprojects.github.io"
+                                    input "http://localhost:9060" ]
+                )
 
-        // container for zips
-        let zipContainer =
-            Container
-                ("zips",
-                 ContainerArgs
-                     (Name = input "zips", StorageAccountName = io storageAccount.Name,
-                      ContainerAccessType = input "private"))
+            let args =
+                ApiGatewayV2.ApiArgs(ProtocolType = input "HTTP", CorsConfiguration = input cors)
 
-        // Create Application Insights
-        let applicationsInsight =
-            Insights
-                ("ai-fantomas",
-                 InsightsArgs
-                     (ResourceGroupName = io resourceGroup.Name, Name = input (sprintf "ai-fantomas-%s" stackName),
-                      ApplicationType = input "web"))
+            ApiGatewayV2.Api("fantomas-gateway", args)
 
-        let appServicePlan =
-            Plan
-                ("azfun-fantomas",
-                 PlanArgs
-                     (ResourceGroupName = io resourceGroup.Name, Kind = input "FunctionApp",
-                      Sku = input (PlanSkuArgs(Tier = input "Dynamic", Size = input "Y1")),
-                      Name = input (sprintf "azfun-fantomas-plan-%s" stackName)))
+        let _mainStage =
+            let args =
+                ApiGatewayV2.StageArgs(ApiId = io gateway.Id, AutoDeploy = input true)
 
-        let genericSiteConfig =
-            input
-                (FunctionAppSiteConfigArgs
-                    (Http2Enabled = input true,
-                     Cors = input
-                                (FunctionAppSiteConfigCorsArgs(AllowedOrigins = inputList [ input "https://fsprojects.github.io" ]))))
+            ApiGatewayV2.Stage("fantomas-main-stage", args)
 
-        let artifactsFolder = Path.Combine(Directory.GetCurrentDirectory(), "..", "artifacts")
+        let lambdaIds =
+            allLambdas
+            |> List.collect (fun lambdaProject ->
+                lambdaProject.Lambdas
+                |> List.map (fun lambdaInfo ->
+                    let lambdaFunctionName =
+                        $"{lambdaProject.Name}{lambdaInfo.Name}"
+                            .Kebaberize()
 
-        printfn "Current directory: %s" artifactsFolder
+                    let lambda =
+                        let args =
+                            Lambda.FunctionArgs(
+                                Handler = input $"{lambdaProject.FunctionPrefix}::{lambdaInfo.Name}",
+                                Runtime = inputUnion2Of2 Lambda.Runtime.DotnetCore3d1,
+                                Code = input (FileArchive(lambdaProject.FileArchive) :> Archive),
+                                Role = io lambdaRole.Arn,
+                                Timeout = input 30,
+                                MemorySize = input 256
+                            )
 
-        let toPascalCase (v: string) =
-            v.Split('-')
-            |> Array.map (fun piece ->
-                if piece = "fsharp" then
-                    "FSharp"
-                elif String.length piece > 3 then
-                    piece.[0].ToString().ToUpper() + piece.Substring(1)
-                else
-                    piece.ToUpper())
-            |> String.concat ""
+                        Lambda.Function(lambdaFunctionName, args)
 
-        let! lastCommit = getLastCommit ()
-        let lastCommitAppSettings =
-            match lastCommit with
-            | Some (sha, timestamp) -> [ "LAST_COMMIT_SHA", input sha
-                                         "LAST_COMMIT_TIMESTAMP", input timestamp ]
-            | None -> []
+                    let _log =
+                        CloudWatch.LogGroup(
+                            $"{lambdaFunctionName}-log-group",
+                            CloudWatch.LogGroupArgs(
+                                RetentionInDays = input 30,
+                                Name = io (lambda.Id.Apply(fun id -> $"/aws/lambda/{id}"))
+                            )
+                        )
 
-        let functionHostNames =
-            [ "fantomas-online-v2"
-              "fantomas-online-v3"
-              "fantomas-online-v4"
-              "fantomas-online-preview"
-              "ast-viewer"
-              "fsharp-tokens"
-              "trivia-viewer" ]
-            |> List.map (fun funcName ->
-                let path = Path.Combine(artifactsFolder, (toPascalCase funcName))
-                let archive: AssetOrArchive = FileArchive(path) :> AssetOrArchive
+                    let _lambdaPermission =
+                        Lambda.Permission(
+                            $"{lambdaFunctionName}-lambda-permissions",
+                            Lambda.PermissionArgs(
+                                Function = io lambda.Name,
+                                Principal = input "apigateway.amazonaws.com",
+                                Action = input "lambda:InvokeFunction",
+                                SourceArn = io (Output.Format($"{gateway.ExecutionArn}/*"))
+                            )
+                        )
 
-                let blob =
-                    Blob
-                        (sprintf "%s-zip" funcName,
-                         BlobArgs
-                             (StorageAccountName = io storageAccount.Name, StorageContainerName = io zipContainer.Name,
-                              Type = input "Block", Source = input archive))
+                    let lambdaIntegration =
+                        let args =
+                            ApiGatewayV2.IntegrationArgs(
+                                ApiId = io gateway.Id,
+                                IntegrationType = input "AWS_PROXY",
+                                IntegrationMethod = input "POST",
+                                IntegrationUri = io lambda.Arn
+                            )
 
-                let codeBlobUrl = SharedAccessSignature.SignedBlobReadUrl(blob, storageAccount)
+                        ApiGatewayV2.Integration($"{lambdaFunctionName}-integration", args)
 
-                let functionAppSettings =
-                    inputMap
-                        [ "FUNCTIONS_WORKER_RUNTIME", input "dotnet-isolated"
-                          "APPINSIGHTS_INSTRUMENTATIONKEY", io applicationsInsight.InstrumentationKey
-                          "WEBSITE_RUN_FROM_PACKAGE", io codeBlobUrl
-                          yield! lastCommitAppSettings ]
+                    let _apiRoute =
+                        let args =
+                            ApiGatewayV2.RouteArgs(
+                                ApiId = io gateway.Id,
+                                RouteKey = input $"{lambdaInfo.Verb} {lambdaInfo.Route}",
+                                Target = io (lambdaIntegration.Id.Apply(fun id -> $"integrations/{id}"))
+                            )
 
-                let funcApp =
-                    FunctionApp
-                        (sprintf "azfun-%s-plan" funcName,
-                         FunctionAppArgs
-                             (ResourceGroupName = io resourceGroup.Name,
-                              Name = input (sprintf "azfun-%s-%s" funcName stackName),
-                              AppServicePlanId = io appServicePlan.Id,
-                              StorageConnectionString = io storageAccount.PrimaryConnectionString,
-                              AppSettings = functionAppSettings, SiteConfig = genericSiteConfig, HttpsOnly = input true,
-                              Version = input "~3"))
+                        ApiGatewayV2.Route($"{lambdaFunctionName}-route", args)
 
-                (sprintf "%s-app-host-name" funcName, funcApp.DefaultHostname :> obj))
+                    $"{lambdaProject.Name}_{lambdaInfo.Name}", null))
 
-        return dict [ yield! functionHostNames ]
+        return dict lambdaIds
     }
 
 [<EntryPoint>]

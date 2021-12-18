@@ -22,6 +22,8 @@ nuget Fake.JavaScript.Yarn
 nuget Fake.DotNet.Cli
 nuget Fake.IO.Zip
 nuget Fake.Tools.Git
+nuget CliWrap
+nuget FSharp.Control.Reactive
 
 group Infrastructure
 
@@ -31,82 +33,87 @@ framework: net5.0
 
 nuget FSharp.Core
 nuget Pulumi.FSharp 3.7.0
-nuget Pulumi.Azure 4.10.0
+nuget Pulumi.Aws
 nuget Thoth.Json.Net 5.0.0
+nuget Humanizer.Core
 
 # Separate group for AST Viewer to easier swap out the Compiler version
 group ASTViewer
 
 source https://api.nuget.org/v3/index.json
 storage: none
-framework: net5.0
+framework: netcoreapp3.1
 
 nuget FSharp.Core 6.0.1
 nuget FSharp.Compiler.Service 41.0.1
-nuget Microsoft.Azure.Functions.Worker
-nuget Microsoft.Azure.Functions.Worker.Extensions.Http
-nuget Microsoft.Azure.Functions.Worker.Sdk
 nuget Thoth.Json.Net 7.1.0
-nuget Ply
+nuget Microsoft.Net.Http.Headers
+nuget Amazon.Lambda.Core 2.0.0
+nuget Amazon.Lambda.Serialization.SystemTextJson 2.1.0
+nuget Amazon.Lambda.APIGatewayEvents 2.4.0
+nuget Suave
 
 group Server
 
 source https://api.nuget.org/v3/index.json
 storage: none
-framework: net5.0
+framework: netcoreapp3.1
 
 nuget FSharp.Core 6.0.1
 nuget FSharp.Compiler.Service 41.0.1
-nuget Microsoft.Azure.Functions.Worker
-nuget Microsoft.Azure.Functions.Worker.Extensions.Http
-nuget Microsoft.Azure.Functions.Worker.Sdk
 nuget Thoth.Json.Net 5.0.0
-nuget Ply
+nuget Microsoft.Net.Http.Headers
+nuget Amazon.Lambda.Core 2.0.0
+nuget Amazon.Lambda.Serialization.SystemTextJson 2.1.0
+nuget Amazon.Lambda.APIGatewayEvents 2.4.0
+nuget Suave
 
 group V4
 
 source https://api.nuget.org/v3/index.json
 storage: none
-framework: net5.0
+framework: netcoreapp3.1
 
 nuget FSharp.Core
-nuget Microsoft.Azure.Functions.Worker
-nuget Microsoft.Azure.Functions.Worker.Extensions.Http
-nuget Microsoft.Azure.Functions.Worker.Sdk
 nuget FSharp.Compiler.Service 39.0.0
 nuget Microsoft.Build.Utilities.Core
 nuget Thoth.Json.Net 5.0.0
 nuget Fantomas.Extras 4.5.6
-nuget Ply
+nuget Microsoft.Net.Http.Headers
+nuget Amazon.Lambda.Core 2.0.0
+nuget Amazon.Lambda.Serialization.SystemTextJson 2.1.0
+nuget Amazon.Lambda.APIGatewayEvents 2.4.0
+nuget Suave
 
 group V3
 
 source https://api.nuget.org/v3/index.json
 storage: none
-framework: net5.0
+framework: netcoreapp3.1
 
-nuget FSharp.Core 4.7.0
-nuget Microsoft.Azure.Functions.Worker
-nuget Microsoft.Azure.Functions.Worker.Extensions.Http
-nuget Microsoft.Azure.Functions.Worker.Sdk
-nuget Thoth.Json.Net 4.1.0
+nuget Thoth.Json.Net 5.0.0
 nuget FSharp.Compiler.Service 34.1.0
 nuget Fantomas 3.3.0
-nuget Ply
+nuget Microsoft.Net.Http.Headers
+nuget Amazon.Lambda.Core 2.0.0
+nuget Amazon.Lambda.Serialization.SystemTextJson 2.1.0
+nuget Amazon.Lambda.APIGatewayEvents 2.4.0
+nuget Suave
 
 group V2
 
 source https://api.nuget.org/v3/index.json
 storage: none
-framework: net5.0
+framework: netcoreapp3.1
 
-nuget Microsoft.Azure.Functions.Worker
-nuget Microsoft.Azure.Functions.Worker.Extensions.Http
-nuget Microsoft.Azure.Functions.Worker.Sdk
 nuget Thoth.Json.Net 5.0.0
 nuget FSharp.Compiler.Service 25.0.1
 nuget Fantomas 2.9.2
-nuget Ply
+nuget Microsoft.Net.Http.Headers
+nuget Amazon.Lambda.Core 2.0.0
+nuget Amazon.Lambda.Serialization.SystemTextJson 2.1.0
+nuget Amazon.Lambda.APIGatewayEvents 2.4.0
+nuget Suave
 
 group Client
 
@@ -115,7 +122,7 @@ storage: none
 framework: netstandard2.0
 
 nuget Fable.Core 3.2.6
-nuget FSharp.Core
+nuget FSharp.Core 5.0.2
 nuget Fable.Reactstrap 0.5.1
 nuget Thoth.Json
 nuget Fable.Fetch

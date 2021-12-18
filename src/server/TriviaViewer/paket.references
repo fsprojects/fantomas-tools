@@ -1,8 +1,9 @@
 group Server
-Microsoft.Azure.Functions.Worker
-Microsoft.Azure.Functions.Worker.Extensions.Http
-Microsoft.Azure.Functions.Worker.Sdk
 FSharp.Compiler.Service
 FSharp.Core
 Thoth.Json.Net
-Ply
+Microsoft.Net.Http.Headers
+Amazon.Lambda.Core
+Amazon.Lambda.Serialization.SystemTextJson
+Amazon.Lambda.APIGatewayEvents
+Suave

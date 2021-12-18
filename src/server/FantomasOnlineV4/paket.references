@@ -1,11 +1,11 @@
 group V4
 FSharp.Compiler.Service
 Microsoft.Build.Utilities.Core
-Fantomas
 Fantomas.Extras
-Microsoft.Azure.Functions.Worker
-Microsoft.Azure.Functions.Worker.Extensions.Http
-Microsoft.Azure.Functions.Worker.Sdk
+Microsoft.Net.Http.Headers
+Amazon.Lambda.Core
+Amazon.Lambda.Serialization.SystemTextJson
+Amazon.Lambda.APIGatewayEvents
+Suave
 FSharp.Core
 Thoth.Json.Net
-Ply

@@ -2,7 +2,6 @@ module FantomasTools.Client.FantomasOnline.State
 
 open Elmish
 open Fable.Core
-open Fable.Core.JsInterop
 open FantomasOnline.Shared
 open FantomasTools.Client
 open FantomasTools.Client.FantomasOnline
@@ -29,12 +28,11 @@ let private backend =
                  (FantomasMode.Preview, previewBackend) ]
 
 let private getVersion mode =
-    sprintf "%s/%s" (Map.find mode backend) "api/version"
+    sprintf "%s/%s" (Map.find mode backend) "version"
     |> Http.getText
 
 let private getOptions mode =
-    let url =
-        sprintf "%s/%s" (Map.find mode backend) "api/options"
+    let url = sprintf "%s/%s" (Map.find mode backend) "options"
 
     fetch url [ RequestProperties.Method HttpMethod.GET ]
     |> Promise.bind (fun res -> res.text ())
@@ -45,7 +43,7 @@ let private getOptions mode =
 
 let private getFormattedCode code model dispatch =
     let url =
-        sprintf "%s/%s" (Map.find model.Mode backend) "api/format"
+        sprintf "%s/%s" (Map.find model.Mode backend) "format"
 
     let json = Encoders.encodeRequest code model
 
@@ -108,7 +106,7 @@ let private updateOptionValue defaultOption userOption =
 
 let private restoreUserOptionsFromUrl (defaultOptions: FantomasOption list) =
     let userOptions, isFsi =
-        UrlTools.restoreModelFromUrl (Decoders.decodeOptionsFromUrl) ([], false)
+        UrlTools.restoreModelFromUrl Decoders.decodeOptionsFromUrl ([], false)
 
     let reconstructedOptions =
         match userOptions with
@@ -142,8 +140,8 @@ type Notyf() =
     end
 
 let private notify = Notyf()
-let private showSuccess message = notify.success (message)
-let private showError message = notify.error (message)
+let private showSuccess message = notify.success message
+let private showError message = notify.error message
 
 let private copySettings (model: Model) _ =
     let supportedProperties =
