@@ -13,10 +13,10 @@ open FantomasOnlineV2.FormatCode
 ()
 
 let GetVersion (_request: APIGatewayProxyRequest) (_context: ILambdaContext) =
-    mkAPIGatewayProxyResponse (HttpStatusCode.OK, getVersion (), HeaderValues.TextPlain)
+    mkAPIGatewayProxyResponse (HttpStatusCode.OK, HeaderValues.TextPlain, getVersion ())
 
 let GetOptions (_request: APIGatewayProxyRequest) (_context: ILambdaContext) =
-    mkAPIGatewayProxyResponse (HttpStatusCode.OK, getOptions (), HeaderValues.ApplicationJson)
+    mkAPIGatewayProxyResponse (HttpStatusCode.OK, HeaderValues.ApplicationJson, getOptions ())
 
 let PostFormat (request: APIGatewayProxyRequest) (_context: ILambdaContext) =
     async {
