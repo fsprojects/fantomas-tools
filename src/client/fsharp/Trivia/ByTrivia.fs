@@ -43,8 +43,7 @@ let private typeName c =
     | KeywordString _ -> "KeywordString"
 
 let private activeTrivia trivia =
-    let title =
-        sprintf "%s %s" (typeName trivia.Item) (rangeToText trivia.Range)
+    let title = sprintf "%s %s" (typeName trivia.Item) (rangeToText trivia.Range)
 
     let content =
         match trivia.Item with

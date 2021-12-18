@@ -50,7 +50,7 @@ let navigation dispatch =
     ]
 
 let editor model dispatch =
-    Col.col [ Col.Xs(Col.mkCol !^5)
+    Col.col [ Col.Xs(Col.mkCol !^ 5)
               Col.Custom [ ClassName "border-right h-100 d-flex flex-column" ] ] [
         div [ Id "source"; ClassName "flex-grow-1" ] [
             Editor
@@ -75,8 +75,7 @@ let private homeTab =
     ]
 
 let private settings model dispatch inner =
-    let className =
-        sprintf "settings %s" (if model.SettingsOpen then "open" else "")
+    let className = sprintf "settings %s" (if model.SettingsOpen then "open" else "")
 
     div [ ClassName className
           OnClick (fun ev ->
@@ -172,14 +171,3 @@ let tabs (model: Model) dispatch =
             div [ Id "commands" ] [ commands ]
         ]
     ]
-
-//let view model dispatch =
-//    div [ ClassName "d-flex flex-column h-100" ] [
-//        navigation dispatch
-//        main [ ClassName "flex-grow-1" ] [
-//            Row.row [ Row.Custom [ ClassName "h-100 no-gutters" ] ] [
-//                editor model dispatch
-//                //tabs model dispatch
-//            ]
-//        ]
-//    ]

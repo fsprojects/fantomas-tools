@@ -57,8 +57,7 @@ let init isActive : Model * Cmd<Msg> =
         else
             initialModel
 
-    let cmd =
-        Cmd.OfPromise.either getVersion () VersionFound getMessageFromError
+    let cmd = Cmd.OfPromise.either getVersion () VersionFound getMessageFromError
 
     model, cmd
 

@@ -27,8 +27,7 @@ let private collectTriviaCandidates tokens ast =
             (FSharp.Compiler.Text.Position.mkPos sl sc)
             (FSharp.Compiler.Text.Position.mkPos el ec)
 
-    let triviaNodesFromTokens =
-        TokenParser.getTriviaNodesFromTokens mkRange tokens
+    let triviaNodesFromTokens = TokenParser.getTriviaNodesFromTokens mkRange tokens
 
     triviaNodesFromAST @ triviaNodesFromTokens
     |> List.sortBy (fun n -> n.Range.Start.Line, n.Range.Start.Column)
@@ -72,10 +71,7 @@ let getTrivia json : Async<GetTriviaResponse> =
                 pr
 
             let _, defineHashTokens = TokenParser.getDefines content
-
-            let tokens =
-                TokenParser.tokenize (List.ofArray defines) defineHashTokens content
-
+            let tokens = TokenParser.tokenize (List.ofArray defines) defineHashTokens content
             let! astResult = parseAST content defines isFsi
 
             match astResult with
@@ -89,9 +85,7 @@ let getTrivia json : Async<GetTriviaResponse> =
                 let trivias = TokenParser.getTriviaFromTokens mkRange tokens
                 let triviaCandidates = collectTriviaCandidates tokens ast
                 let triviaNodes = Trivia.collectTrivia mkRange tokens ast
-
-                let json =
-                    Encoders.encodeParseResult trivias triviaNodes triviaCandidates
+                let json = Encoders.encodeParseResult trivias triviaNodes triviaCandidates
 
                 return GetTriviaResponse.Ok json
             | Ok (_, errors) -> return GetTriviaResponse.BadRequest(Array.map string errors |> String.concat "\n")

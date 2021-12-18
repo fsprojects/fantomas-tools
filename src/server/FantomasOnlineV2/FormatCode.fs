@@ -23,8 +23,7 @@ let private format fileName code config =
     async { return CodeFormatter.FormatDocument(fileName, code, config) }
 
 let private validate fileName code =
-    let options =
-        { FSharpParsingOptions.Default with SourceFiles = [| fileName |] }
+    let options = { FSharpParsingOptions.Default with SourceFiles = [| fileName |] }
 
     async {
         let! result = checker.ParseFile(fileName, code, options)

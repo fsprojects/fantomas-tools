@@ -10,8 +10,8 @@ open System
 
 [<AllowNullLiteral>]
 type IMonacoEditor =
-    abstract setSelection : obj -> unit
-    abstract revealRangeInCenter : obj * int -> unit
+    abstract setSelection: obj -> unit
+    abstract revealRangeInCenter: obj * int -> unit
 
 [<RequireQualifiedAccess>]
 type MonacoEditorProp =
@@ -41,8 +41,7 @@ let private useEventListener (target: Element, ``type``: string, listener: Event
 
 [<ReactComponent>]
 let Editor (isReadOnly: bool) (props: MonacoEditorProp list) =
-    let editorRef =
-        React.useRef<IMonacoEditor> (Unchecked.defaultof<IMonacoEditor>)
+    let editorRef = React.useRef<IMonacoEditor> (Unchecked.defaultof<IMonacoEditor>)
 
     let selectRange (ev: Event) =
         let ev = ev :?> CustomEvent
@@ -54,9 +53,7 @@ let Editor (isReadOnly: bool) (props: MonacoEditorProp list) =
             editor.revealRangeInCenter (range, 0)
 
     useEventListener (window :?> Element, "select_range", selectRange)
-
-    let handleEditorDidMount =
-        Action<_, _>(fun editor _ -> editorRef.current <- editor)
+    let handleEditorDidMount = Action<_, _>(fun editor _ -> editorRef.current <- editor)
 
     let options =
         createObj [ "readOnly" ==> isReadOnly

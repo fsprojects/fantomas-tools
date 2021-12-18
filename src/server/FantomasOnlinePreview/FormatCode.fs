@@ -28,15 +28,13 @@ let private mapFantomasOptionsToRecord options =
     Microsoft.FSharp.Reflection.FSharpValue.MakeRecord(formatConfigType, newValues) :?> FormatConfig.FormatConfig
 
 let private format fileName code config =
-    let options =
-        CodeFormatterImpl.createParsingOptionsFromFile fileName
+    let options = CodeFormatterImpl.createParsingOptionsFromFile fileName
 
     let source = SourceOrigin.SourceString code
     CodeFormatter.FormatDocumentAsync(fileName, source, config, options, checker)
 
 let private validate fileName code =
-    let options =
-        { FSharpParsingOptions.Default with SourceFiles = [| fileName |] }
+    let options = { FSharpParsingOptions.Default with SourceFiles = [| fileName |] }
 
     let sourceCode = FSharp.Compiler.Text.SourceText.ofString code
 

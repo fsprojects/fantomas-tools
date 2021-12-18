@@ -42,8 +42,7 @@ let private getOptions mode =
         | Error e -> failwithf "%A" e)
 
 let private getFormattedCode code model dispatch =
-    let url =
-        sprintf "%s/%s" (Map.find model.Mode backend) "format"
+    let url = sprintf "%s/%s" (Map.find model.Mode backend) "format"
 
     let json = Encoders.encodeRequest code model
 
@@ -61,8 +60,7 @@ let private getFormattedCode code model dispatch =
         |> dispatch)
 
 let private updateUrl code model _ =
-    let json =
-        Encode.toString 2 (Encoders.encodeUrlModel code model)
+    let json = Encode.toString 2 (Encoders.encodeUrlModel code model)
 
     UrlTools.updateUrlWithData json
 
@@ -117,8 +115,7 @@ let private restoreUserOptionsFromUrl (defaultOptions: FantomasOption list) =
                 // map the value from the url if found
                 let key = getOptionKey defOpt
 
-                let matchingUserOption =
-                    List.tryFind (fun uOpt -> (getOptionKey uOpt) = key) uo
+                let matchingUserOption = List.tryFind (fun uOpt -> (getOptionKey uOpt) = key) uo
 
                 match matchingUserOption with
                 | Some muo -> updateOptionValue defOpt muo
@@ -133,9 +130,9 @@ let private writeText _text : JS.Promise<unit> = jsNative
 [<Import("Notyf", from = "notyf")>]
 type Notyf() =
     class
-        abstract success : string -> unit
+        abstract success: string -> unit
         default this.success(_: string) : unit = jsNative
-        abstract error : string -> unit
+        abstract error: string -> unit
         default this.error(_: string) : unit = jsNative
     end
 

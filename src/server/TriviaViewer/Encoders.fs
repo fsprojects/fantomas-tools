@@ -10,8 +10,7 @@ let private mapToSharedType (tnt: TriviaNodeType) =
     | MainNode mn -> Shared.MainNode(mn.ToString())
     | Token (_, t) -> Shared.Token t.TokenInfo.TokenName
 
-let private typeEncoder =
-    Encode.Auto.generateEncoder<Shared.TriviaNodeType> ()
+let private typeEncoder = Encode.Auto.generateEncoder<Shared.TriviaNodeType> ()
 
 let private encodeTriviaNodeType = mapToSharedType >> typeEncoder
 

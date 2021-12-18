@@ -26,9 +26,7 @@ let decodeOptions json =
 
 let decodeOptionsFromUrl: Decoder<FantomasOption list * bool> =
     Decode.object (fun get ->
-        let settings =
-            get.Required.Field "settings" (Decode.list optionDecoder)
-
+        let settings = get.Required.Field "settings" (Decode.list optionDecoder)
         let isFSI = get.Required.Field "isFsi" Decode.bool
         settings, isFSI)
 

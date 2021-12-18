@@ -94,9 +94,7 @@ let init isActive =
         else
             initialModel
 
-    let cmd =
-        Cmd.OfPromise.either getVersion () VersionFound NetworkException
-
+    let cmd = Cmd.OfPromise.either getVersion () VersionFound NetworkException
     model, cmd
 
 let update code msg model =
