@@ -168,7 +168,9 @@ let infra () =
                 ApiGatewayV2.Inputs.ApiCorsConfigurationArgs(
                     AllowHeaders = inputList [ input "*" ],
                     AllowMethods = inputList [ input "*" ],
-                    AllowOrigins = inputList [ input "*" ]
+                    AllowOrigins =
+                        inputList [ input "https://fsprojects.github.io"
+                                    input "http://localhost:9060" ]
                 )
 
             let args =
