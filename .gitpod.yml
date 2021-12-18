@@ -1,10 +1,14 @@
-image: nojaf/fable-azure-functions:1.1
+image: gitpod/workspace-dotnet
 vscode:
   extensions:
     - muhammad-sammy.csharp
     - ionide.ionide-fsharp
     - syler.sass-indented
 tasks:
+  - name: Download .NET SDKS
+    init: |
+      curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --version 3.1.402
+      curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --version 5.0.401
   - command: rm paket-files/ -rf && dotnet tool restore && dotnet fake run build.fsx -t Install -p 2
 ports:
   - port: 9060
