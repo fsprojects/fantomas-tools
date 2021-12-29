@@ -24,16 +24,22 @@ let fantomasV2Port = 2568
 let fantomasV3Port = 9007
 let fantomasV4Port = 10707
 
-let clientDir =
-    __SOURCE_DIRECTORY__ </> "src" </> "client"
+let clientDir = __SOURCE_DIRECTORY__ </> "src" </> "client"
 
 let setClientDir =
     (fun (opt: Yarn.YarnParams) -> { opt with WorkingDirectory = clientDir })
 
-let serverDir =
-    __SOURCE_DIRECTORY__ </> "src" </> "server"
+let serverDir = __SOURCE_DIRECTORY__ </> "src" </> "server"
 
 let artifactDir = __SOURCE_DIRECTORY__ </> "artifacts"
+
+let fsharpFiles =
+    !!(serverDir </> "**/*.fs")
+    -- (serverDir </> "**/obj/**/*.fs")
+    ++ (clientDir </> "fsharp/*.fs")
+    ++ (clientDir </> "fsharp/**/*.fs")
+    -- (clientDir </> "**/obj/**/*.fs")
+    ++ "build.fsx"
 
 Target.create "Fantomas-Git" (fun _ ->
     let targetDir = ".deps" @@ "fantomas"
@@ -206,7 +212,11 @@ Target.create "RunWithLambdas" (fun target ->
     |> printfn "%A")
 
 Target.create "Format" (fun _ ->
-    let result = DotNet.exec id "fantomas" "src -r"
+    let result =
+        fsharpFiles
+        |> Seq.map (sprintf "\"%s\"")
+        |> String.concat " "
+        |> DotNet.exec id "fantomas"
 
     if not result.OK then
         printfn "Errors while formatting all files: %A" result.Messages)
@@ -236,7 +246,11 @@ Target.create "FormatChanged" (fun _ ->
 
 Target.create "CheckFormat" (fun _ ->
     let result =
-        DotNet.exec id "fantomas" "src -r --check"
+        fsharpFiles
+        |> Seq.map (sprintf "\"%s\"")
+        |> String.concat " "
+        |> sprintf "%s --check"
+        |> DotNet.exec id "fantomas"
 
     if result.ExitCode = 0 then
         Trace.log "No files need formatting"
@@ -265,12 +279,14 @@ open Fake.Core.TargetOperators
 <== [ "BundleFrontend"
       "PublishLambdas"
       "Clean"
-      "Fantomas-Git" (*; "CheckFormat" *)  ]
+      "Fantomas-Git"
+      "CheckFormat" ]
 
 "PR"
 <== [ "BundleFrontend"
       "Build"
       "Clean"
-      "Fantomas-Git" (* "CheckFormat" *)  ]
+      "Fantomas-Git"
+      "CheckFormat" ]
 
 Target.runOrDefault "Build"

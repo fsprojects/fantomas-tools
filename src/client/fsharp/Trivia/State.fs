@@ -76,8 +76,9 @@ let update code msg model =
         let parseRequest = modelToParseRequest code model
 
         let cmd =
-            Cmd.batch [ Cmd.ofSub (fetchTrivia parseRequest)
-                        Cmd.ofSub (updateUrl code model) ]
+            Cmd.batch
+                [ Cmd.ofSub (fetchTrivia parseRequest)
+                  Cmd.ofSub (updateUrl code model) ]
 
         { model with IsLoading = true }, cmd
     | TriviaReceived result ->

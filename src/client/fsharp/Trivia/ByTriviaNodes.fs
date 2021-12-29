@@ -40,11 +40,11 @@ let private triviaContentToDetail tc =
     | Newline -> str "Newline"
     | StringContent sc -> fragment [] (wrap "StringContent" sc)
     | CharContent cc -> fragment [] (wrap "CharContent" cc)
-    | Comment (c) ->
+    | Comment c ->
         match c with
         | BlockComment (bc, _, _) -> (wrap "BlockComment" bc)
-        | LineCommentOnSingleLine (lc) -> (wrap "LineCommentOnSingleLine" lc)
-        | LineCommentAfterSourceCode (lc) -> (wrap "LineCommentAfterSourceCode" lc)
+        | LineCommentOnSingleLine lc -> (wrap "LineCommentOnSingleLine" lc)
+        | LineCommentAfterSourceCode lc -> (wrap "LineCommentAfterSourceCode" lc)
         |> fun inner ->
             fragment [] [
                 str "Comment("

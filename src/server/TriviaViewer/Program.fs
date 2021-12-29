@@ -22,13 +22,8 @@ let main argv =
             })
 
     let routes =
-        [ GET
-          >=> path "/trivia-viewer/version"
-          >=> textPlain
-          >=> OK(getVersion ())
-          POST
-          >=> path "/trivia-viewer/get-trivia"
-          >=> getTriviaWebPart ]
+        [ GET >=> path "/trivia-viewer/version" >=> textPlain >=> OK(getVersion ())
+          POST >=> path "/trivia-viewer/get-trivia" >=> getTriviaWebPart ]
 
     let port =
         match List.ofArray argv with

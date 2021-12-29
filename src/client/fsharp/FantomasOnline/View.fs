@@ -28,7 +28,7 @@ let private mapToOption dispatch (key, fantomasOption) =
         | FantomasOption.IntOption (o, _, v) ->
             let onChange (nv: string) =
                 if Regex.IsMatch(nv, "\\d+") then
-                    let v = nv |> (int)
+                    let v = nv |> int
 
                     UpdateOption(key, IntOption(o, key, v))
                     |> dispatch
@@ -128,7 +128,7 @@ let githubIssueUri (githubIssue: GithubIssue) =
             header
             code
 
-    let (left, right) =
+    let left, right =
         codeTemplate githubIssue.BeforeHeader githubIssue.BeforeContent,
         codeTemplate githubIssue.AfterHeader githubIssue.AfterContent
 

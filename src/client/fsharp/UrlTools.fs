@@ -43,12 +43,12 @@ let updateUrlBy (mapFn: string -> string) : unit =
         let ``params`` = URLSearchParams.Create(hashPieces.[1])
 
         let safeHash =
-            if isNullOrUndefined (window.location.hash) then
+            if isNullOrUndefined window.location.hash then
                 ""
             else
                 window.location.hash
 
-        let newHash = (mapFn (safeHash)).Split('?').[0]
+        let newHash = (mapFn safeHash).Split('?').[0]
 
         let newUrl =
             $"{window.location.protocol}//{window.location.host}{window.location.pathname}{newHash}?{``params``.ToString()}"
@@ -73,8 +73,8 @@ let private (|KeyValuesFromHash|_|) hash =
 
 let restoreModelFromUrl decoder defaultValue =
     match Browser.Dom.window.location.hash with
-    | KeyValuesFromHash (v) ->
-        let json = JS.decodeURIComponent (v) |> decodeUrl
+    | KeyValuesFromHash v ->
+        let json = JS.decodeURIComponent v |> decodeUrl
         let modelResult = Decode.fromString decoder json
 
         match modelResult with

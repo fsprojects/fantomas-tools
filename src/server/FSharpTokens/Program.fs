@@ -14,15 +14,10 @@ let main argv =
         | GetTokensResponse.BadRequest err -> (applicationText >=> BAD_REQUEST err)
 
     let routes =
-        [ GET
-          >=> path "/fsharp-tokens/version"
-          >=> textPlain
-          >=> OK(getVersion ())
+        [ GET >=> path "/fsharp-tokens/version" >=> textPlain >=> OK(getVersion ())
           POST
           >=> path "/fsharp-tokens/get-tokens"
-          >=> request (fun req ->
-              getTokens req.BodyText
-              |> mapGetTokensResponseToWebPart) ]
+          >=> request (fun req -> getTokens req.BodyText |> mapGetTokensResponseToWebPart) ]
 
     let port =
         match List.ofArray argv with

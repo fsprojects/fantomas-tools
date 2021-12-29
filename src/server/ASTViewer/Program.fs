@@ -12,9 +12,7 @@ let main argv =
         match response with
         | ASTResponse.Ok body -> (applicationJson >=> OK body)
         | ASTResponse.InvalidAST errors -> (applicationText >=> BAD_REQUEST errors)
-        | ASTResponse.TooLarge ->
-            (applicationText
-             >=> REQUEST_ENTITY_TOO_LARGE "File was too large")
+        | ASTResponse.TooLarge -> (applicationText >=> REQUEST_ENTITY_TOO_LARGE "File was too large")
         | ASTResponse.InternalError error -> (applicationText >=> INTERNAL_SERVER_ERROR error)
 
     let untypedAst =
@@ -34,13 +32,8 @@ let main argv =
             })
 
     let routes =
-        [ GET
-          >=> path "/ast-viewer/version"
-          >=> textPlain
-          >=> OK(getVersion ())
-          POST
-          >=> path "/ast-viewer/untyped-ast"
-          >=> untypedAst
+        [ GET >=> path "/ast-viewer/version" >=> textPlain >=> OK(getVersion ())
+          POST >=> path "/ast-viewer/untyped-ast" >=> untypedAst
           POST >=> path "/ast-viewer/typed-ast" >=> typedAst ]
 
     let port =

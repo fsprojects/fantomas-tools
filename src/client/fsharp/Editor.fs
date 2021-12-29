@@ -41,7 +41,7 @@ let private useEventListener (target: Element, ``type``: string, listener: Event
 
 [<ReactComponent>]
 let Editor (isReadOnly: bool) (props: MonacoEditorProp list) =
-    let editorRef = React.useRef<IMonacoEditor> (Unchecked.defaultof<IMonacoEditor>)
+    let editorRef = React.useRef<IMonacoEditor> Unchecked.defaultof<IMonacoEditor>
 
     let selectRange (ev: Event) =
         let ev = ev :?> CustomEvent
@@ -49,19 +49,20 @@ let Editor (isReadOnly: bool) (props: MonacoEditorProp list) =
         if (emitJsExpr (ev, editorRef.current) "$0 && $0.detail && $1") then
             let range = ev.detail
             let editor = editorRef.current
-            editor.setSelection (range)
+            editor.setSelection range
             editor.revealRangeInCenter (range, 0)
 
     useEventListener (window :?> Element, "select_range", selectRange)
     let handleEditorDidMount = Action<_, _>(fun editor _ -> editorRef.current <- editor)
 
     let options =
-        createObj [ "readOnly" ==> isReadOnly
-                    "selectOnLineNumbers" ==> true
-                    "lineNumbers" ==> true
-                    "theme" ==> "vs-light"
-                    "renderWhitespace" ==> "all"
-                    "minimap" ==> createObj [ "enabled" ==> false ] ]
+        createObj
+            [ "readOnly" ==> isReadOnly
+              "selectOnLineNumbers" ==> true
+              "lineNumbers" ==> true
+              "theme" ==> "vs-light"
+              "renderWhitespace" ==> "all"
+              "minimap" ==> createObj [ "enabled" ==> false ] ]
 
     let defaultProps: MonacoEditorProp list =
         [ MonacoEditorProp.Height "100%"
@@ -94,4 +95,4 @@ let selectRange (range: HighLightRange) _ =
                    endColumn = range.EndColumn + 1 |})
 
     let event = CustomEvent.Create("select_range", data)
-    Dom.window.dispatchEvent (event) |> ignore
+    Dom.window.dispatchEvent event |> ignore

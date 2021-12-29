@@ -46,7 +46,7 @@ let private splitDefines (value: string) =
 let private nodeListToArray (nl: NodeListOf<Element>) : Element array =
     emitJsStatement nl "Array.prototype.slice.call($0)"
 
-let private dollar (selector: string) : NodeListOf<Element> = document.querySelectorAll (selector)
+let private dollar (selector: string) : NodeListOf<Element> = document.querySelectorAll selector
 
 let private scrollIntoView (element: Element) : unit =
     emitJsStatement
@@ -108,7 +108,7 @@ let update code msg model =
             Cmd.batch [ requestCmd; updateUrlCmd ]
 
         { model with IsLoading = true }, cmd
-    | TokenReceived (tokensText) ->
+    | TokenReceived tokensText ->
         match decodeTokens tokensText with
         | Ok tokens ->
             let cmd =

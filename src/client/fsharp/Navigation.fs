@@ -10,13 +10,13 @@ let cmdForCurrentTab tab model =
         match tab with
         | HomeTab -> Cmd.none
         | TokensTab ->
-            Cmd.ofMsg (FSharpTokens.Model.GetTokens)
+            Cmd.ofMsg FSharpTokens.Model.GetTokens
             |> Cmd.map Msg.FSharpTokensMsg
         | ASTTab ->
-            Cmd.ofMsg (ASTViewer.Model.DoParse)
+            Cmd.ofMsg ASTViewer.Model.DoParse
             |> Cmd.map Msg.ASTMsg
         | TriviaTab ->
-            Cmd.ofMsg (Trivia.Model.GetTrivia)
+            Cmd.ofMsg Trivia.Model.GetTrivia
             |> Cmd.map Msg.TriviaMsg
         | FantomasTab mode when (mode <> model.FantomasModel.Mode) ->
             Cmd.batch
@@ -24,7 +24,7 @@ let cmdForCurrentTab tab model =
                   Cmd.map FantomasMsg (FantomasOnline.State.getVersionCmd mode) ]
 
         | FantomasTab _ when not (List.isEmpty model.FantomasModel.DefaultOptions) ->
-            Cmd.ofMsg (FantomasOnline.Model.Format)
+            Cmd.ofMsg FantomasOnline.Model.Format
             |> Cmd.map FantomasMsg
         | FantomasTab _ -> Cmd.none
     else
@@ -36,10 +36,10 @@ let toHash =
     | TriviaTab -> "#/trivia"
     | TokensTab -> "#/tokens"
     | ASTTab -> "#/ast"
-    | FantomasTab (FantomasOnline.Model.V2) -> "#/fantomas/v2"
-    | FantomasTab (FantomasOnline.Model.V3) -> "#/fantomas/v3"
-    | FantomasTab (FantomasOnline.Model.V4) -> "#/fantomas/v4"
-    | FantomasTab (FantomasOnline.Model.Preview) -> "#/fantomas/preview"
+    | FantomasTab FantomasOnline.Model.V2 -> "#/fantomas/v2"
+    | FantomasTab FantomasOnline.Model.V3 -> "#/fantomas/v3"
+    | FantomasTab FantomasOnline.Model.V4 -> "#/fantomas/v4"
+    | FantomasTab FantomasOnline.Model.Preview -> "#/fantomas/preview"
 
 let parseUrl segments =
     match segments with
