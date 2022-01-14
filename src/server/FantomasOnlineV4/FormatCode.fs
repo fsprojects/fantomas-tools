@@ -1,13 +1,13 @@
 module FantomasOnlineV4.FormatCode
 
+open FSharp.Compiler.CodeAnalysis
+open FSharp.Compiler.Diagnostics
 open Fantomas
 open Fantomas.FormatConfig
-open Fantomas.Extras
 open FantomasOnline.Shared
 open FantomasOnline.Server.Shared.Http
-open FSharp.Compiler.SourceCodeServices
 
-let private checker = FakeHelpers.sharedChecker.Force()
+let private checker = CodeFormatterImpl.sharedChecker.Force()
 
 let private mapFantomasOptionsToRecord options =
     let newValues =
@@ -28,8 +28,7 @@ let private mapFantomasOptionsToRecord options =
     Microsoft.FSharp.Reflection.FSharpValue.MakeRecord(formatConfigType, newValues) :?> FormatConfig.FormatConfig
 
 let private format fileName code config =
-    let options = FakeHelpers.createParsingOptionsFromFile fileName
-
+    let options = CodeFormatterImpl.createParsingOptionsFromFile fileName
     let source = SourceOrigin.SourceString code
     CodeFormatter.FormatDocumentAsync(fileName, source, config, options, checker)
 
@@ -42,7 +41,7 @@ let private validate fileName code =
         let! result = checker.ParseFile(fileName, sourceCode, options)
 
         return
-            result.Errors
+            result.Diagnostics
             |> Array.map (fun e ->
                 { SubCategory = e.Subcategory
                   Range =
