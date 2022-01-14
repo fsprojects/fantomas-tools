@@ -75,10 +75,10 @@ storage: none
 framework: netcoreapp3.1
 
 nuget FSharp.Core
-nuget FSharp.Compiler.Service 39.0.0
+nuget FSharp.Compiler.Service 41.0.1
 nuget Microsoft.Build.Utilities.Core
 nuget Thoth.Json.Net 5.0.0
-nuget Fantomas.Extras 4.5.6
+nuget Fantomas.Extras 4.6
 nuget Microsoft.Net.Http.Headers
 nuget Amazon.Lambda.Core 2.0.0
 nuget Amazon.Lambda.Serialization.SystemTextJson 2.1.0

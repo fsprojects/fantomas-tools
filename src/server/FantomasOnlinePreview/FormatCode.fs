@@ -77,7 +77,7 @@ let getFantomasVersion () =
             System.IO.FileInfo assembly.Location
             |> fun f -> f.LastWriteTime.ToShortDateString()
 
-    sprintf "4.6 branch at %s" date
+    sprintf "master branch at %s" date
 
 let getVersion = getFantomasVersion
 

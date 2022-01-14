@@ -45,9 +45,9 @@ Target.create "Fantomas-Git" (fun _ ->
     let targetDir = ".deps" @@ "fantomas"
 
     if Directory.Exists(targetDir) then
-        Git.Branches.pull targetDir "origin" "4.6"
+        Git.Branches.pull targetDir "origin" "master"
     else
-        Git.Repository.cloneSingleBranch "." "https://github.com/fsprojects/fantomas.git" "4.6" targetDir
+        Git.Repository.cloneSingleBranch "." "https://github.com/fsprojects/fantomas.git" "master" targetDir
 
     DotNet.exec (fun opt -> { opt with WorkingDirectory = targetDir }) "tool" "restore"
     |> ignore
