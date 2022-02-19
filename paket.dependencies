@@ -14,7 +14,7 @@ group Build
 
 source https://api.nuget.org/v3/index.json
 storage: none
-framework: netstandard2.0
+framework: net6.0
 
 nuget FSharp.Core
 nuget Fake.Core.Target
