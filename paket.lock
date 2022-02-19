@@ -2,6 +2,11 @@ STORAGE: NONE
 RESTRICTION: == netstandard2.0
 NUGET
   remote: https://api.nuget.org/v3/index.json
+    DotNet.ReproducibleBuilds (1.1.1) - copy_local: true
+      Microsoft.SourceLink.AzureRepos.Git (>= 1.1.1)
+      Microsoft.SourceLink.Bitbucket.Git (>= 1.1.1)
+      Microsoft.SourceLink.GitHub (>= 1.1.1)
+      Microsoft.SourceLink.GitLab (>= 1.1.1)
     editorconfig (0.12.2)
     FSharp.Compiler.Service (41.0.1)
       FSharp.Core (6.0.1)
@@ -31,6 +36,7 @@ NUGET
       System.Threading.Thread (>= 4.3)
       System.Threading.ThreadPool (>= 4.3)
     FSharp.Core (6.0.1)
+    Ionide.KeepAChangelog.Tasks (0.1.2) - copy_local: true
     MAB.DotIgnore (3.0.2)
       NETStandard.Library (>= 1.6.1)
     Microsoft.Build.Framework (16.11)
@@ -48,7 +54,7 @@ NUGET
       System.Security.Cryptography.Xml (>= 4.7)
       System.Security.Permissions (>= 4.7)
       System.Threading.Tasks.Dataflow (>= 4.9)
-    Microsoft.Build.Tasks.Git (1.0) - copy_local: true
+    Microsoft.Build.Tasks.Git (1.1.1) - copy_local: true
     Microsoft.Build.Utilities.Core (16.11)
       Microsoft.Build.Framework (>= 16.11)
       Microsoft.NET.StringTools (>= 1.0)
@@ -62,10 +68,19 @@ NUGET
       System.Runtime.CompilerServices.Unsafe (>= 5.0)
     Microsoft.NETCore.Platforms (5.0.2)
     Microsoft.NETCore.Targets (5.0)
-    Microsoft.SourceLink.Common (1.0) - copy_local: true
-    Microsoft.SourceLink.GitHub (1.0) - copy_local: true
-      Microsoft.Build.Tasks.Git (>= 1.0)
-      Microsoft.SourceLink.Common (>= 1.0)
+    Microsoft.SourceLink.AzureRepos.Git (1.1.1) - copy_local: true
+      Microsoft.Build.Tasks.Git (>= 1.1.1)
+      Microsoft.SourceLink.Common (>= 1.1.1)
+    Microsoft.SourceLink.Bitbucket.Git (1.1.1) - copy_local: true
+      Microsoft.Build.Tasks.Git (>= 1.1.1)
+      Microsoft.SourceLink.Common (>= 1.1.1)
+    Microsoft.SourceLink.Common (1.1.1) - copy_local: true
+    Microsoft.SourceLink.GitHub (1.1.1) - copy_local: true
+      Microsoft.Build.Tasks.Git (>= 1.1.1)
+      Microsoft.SourceLink.Common (>= 1.1.1)
+    Microsoft.SourceLink.GitLab (1.1.1) - copy_local: true
+      Microsoft.Build.Tasks.Git (>= 1.1.1)
+      Microsoft.SourceLink.Common (>= 1.1.1)
     Microsoft.Win32.Primitives (4.3)
       Microsoft.NETCore.Platforms (>= 1.1)
       Microsoft.NETCore.Targets (>= 1.1)
@@ -2684,12 +2699,11 @@ NUGET
       FSharp.Compiler.Service (>= 41.0.1)
       FSharp.Core (>= 6.0.1)
       Microsoft.SourceLink.GitHub (>= 1.0)
-    Fantomas.Extras (4.6)
+    Fantomas.Extras (4.6.5)
       editorconfig (>= 0.12.2)
-      Fantomas (>= 4.6)
+      Fantomas (>= 1.0)
       FSharp.Core (>= 6.0.1)
       MAB.DotIgnore (>= 3.0.2)
-      Microsoft.SourceLink.GitHub (>= 1.0)
     FSharp.Compiler.Service (41.0.1)
       FSharp.Core (6.0.1)
       Microsoft.Build.Framework (>= 16.11)
