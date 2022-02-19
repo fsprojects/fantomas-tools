@@ -30,7 +30,7 @@ group Infrastructure
 
 source https://api.nuget.org/v3/index.json
 storage: none
-framework: net5.0
+framework: net6.0
 
 nuget FSharp.Core
 nuget Pulumi.FSharp 3.7.0

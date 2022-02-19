@@ -1399,14 +1399,14 @@ NUGET
 
 GROUP Infrastructure
 STORAGE: NONE
-RESTRICTION: == net5.0
+RESTRICTION: == net6.0
 NUGET
   remote: https://api.nuget.org/v3/index.json
     Ben.Demystifier (0.4.1)
       System.Reflection.Metadata (>= 5.0)
     Fable.Core (3.2.6)
       FSharp.Core (>= 4.7.2)
-    FSharp.Core (5.0.2)
+    FSharp.Core (6.0.3)
     Grpc (2.37.1)
       Grpc.Core (>= 2.37.1)
     Grpc.Core (2.37.1)
@@ -1414,7 +1414,7 @@ NUGET
       System.Memory (>= 4.5.3)
     Grpc.Core.Api (2.37.1)
       System.Memory (>= 4.5.3)
-    Humanizer.Core (2.13.14)
+    Humanizer.Core (2.14.1)
     Microsoft.Extensions.DependencyInjection (5.0.2)
       Microsoft.Extensions.DependencyInjection.Abstractions (>= 5.0)
     Microsoft.Extensions.DependencyInjection.Abstractions (5.0)
@@ -1435,7 +1435,7 @@ NUGET
     Newtonsoft.Json (13.0.1)
     OneOf (3.0.178)
       NETStandard.Library (>= 1.6.1)
-    Pulumi (3.17)
+    Pulumi (3.24.1)
       Ben.Demystifier (>= 0.4.1)
       Grpc (>= 2.37)
       Microsoft.Extensions.Logging.Abstractions (>= 3.1.16)
@@ -1444,8 +1444,8 @@ NUGET
       semver (>= 2.0.6)
       Serilog.Extensions.Logging (>= 3.0.1)
       Serilog.Sinks.Console (>= 3.1.1)
-    Pulumi.Aws (4.25)
-      Pulumi (>= 3.15)
+    Pulumi.Aws (4.37.5)
+      Pulumi (>= 3.24.1)
     Pulumi.FSharp (3.7)
       FSharp.Core (>= 4.7.2)
       Pulumi (>= 3.7)
