@@ -31,6 +31,9 @@ jobs:
       with:
         dotnet-version: 6.0.200
 
+    - name: meh
+      run: ls -la /home/runner/.dotnet/packs/Microsoft.NETCore.App.Ref
+
     - name: link files
       run: ln -s /home/runner/.dotnet/packs/Microsoft.NETCore.App.Ref/6.0.2/ref/net6.0 /home/runner/.dotnet/packs/Microsoft.NETCore.App.Ref/6.0.0/ref/net6.0
 
