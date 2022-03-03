@@ -1,14 +1,11 @@
-image: gitpod/workspace-dotnet:2022-03-03-09-59-58
+image: gitpod/workspace-dotnet:2022-03-03-09-59-58 # contains .NET 6.0.200
 vscode:
   extensions:
     - muhammad-sammy.csharp
     - ionide.ionide-fsharp
     - syler.sass-indented
 tasks:
-  - name: Download .NET SDKS
-    # init: |
-    #   curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --version 3.1.402 --install-dir /home/gitpod/dotnet/
-    #   curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --version 5.0.401 --install-dir /home/gitpod/dotnet/
+  - name: Download Fantomas dependency
   - command: rm paket-files/ -rf && dotnet tool restore && dotnet fake run build.fsx -t Install -p 2
 ports:
   - port: 9060
