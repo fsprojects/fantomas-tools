@@ -1,4 +1,4 @@
-image: gitpod/workspace-dotnet:latest
+image: gitpod/workspace-dotnet:2022-03-03-09-59-58
 vscode:
   extensions:
     - muhammad-sammy.csharp
