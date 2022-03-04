@@ -1,9 +1,5 @@
 module TriviaViewer.Shared
 
-type TriviaNodeType =
-    | MainNode of string
-    | Token of string
-
 type Range =
     { StartLine: int
       StartColumn: int
@@ -30,7 +26,7 @@ type TriviaContent =
     | KeywordString of string
 
 type TriviaNode =
-    { Type: TriviaNodeType
+    { Type: string
       ContentBefore: TriviaContent list
       ContentItself: TriviaContent option
       ContentAfter: TriviaContent list

@@ -19,12 +19,9 @@ let private decodeTrivia: Decoder<Trivia> =
         { Item = get.Required.Field "item" decodeTriviaContent
           Range = get.Required.Field "range" decodeRange })
 
-let private decodeTriviaNodeType =
-    Decode.Auto.generateDecoderCached<TriviaNodeType> ()
-
 let private decodeTriviaNode: Decoder<TriviaNode> =
     Decode.object (fun get ->
-        { Type = get.Required.Field "type" decodeTriviaNodeType
+        { Type = get.Required.Field "type" Decode.string
           ContentBefore = get.Required.Field "contentBefore" (Decode.list decodeTriviaContent)
           ContentItself = get.Required.Field "contentItself" (Decode.option decodeTriviaContent)
           ContentAfter = get.Required.Field "contentAfter" (Decode.list decodeTriviaContent)

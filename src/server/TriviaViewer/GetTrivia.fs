@@ -14,22 +14,14 @@ let getVersion () : string =
     let version = assembly.GetName().Version
     sprintf "%i.%i.%i" version.Major version.Minor version.Revision
 
-let private collectTriviaCandidates tokens ast =
+let private collectTriviaCandidates ast =
     let triviaNodesFromAST =
         match ast with
         | ParsedInput.ImplFile (ParsedImplFileInput.ParsedImplFileInput (_, _, _, _, hds, mns, _)) -> astToNode hds mns
 
         | ParsedInput.SigFile (ParsedSigFileInput.ParsedSigFileInput (_, _, _, _, mns)) -> sigAstToNode mns
 
-    let mkRange (sl, sc) (el, ec) =
-        FSharp.Compiler.Text.Range.mkRange
-            ast.Range.FileName
-            (FSharp.Compiler.Text.Position.mkPos sl sc)
-            (FSharp.Compiler.Text.Position.mkPos el ec)
-
-    let triviaNodesFromTokens = TokenParser.getTriviaNodesFromTokens mkRange tokens
-
-    triviaNodesFromAST @ triviaNodesFromTokens
+    triviaNodesFromAST
     |> List.sortBy (fun n -> n.Range.Start.Line, n.Range.Start.Column)
 
 let private parseAST source defines isFsi =
@@ -83,7 +75,7 @@ let getTrivia json : Async<GetTriviaResponse> =
                         (FSharp.Compiler.Text.Position.mkPos el ec)
 
                 let trivias = TokenParser.getTriviaFromTokens mkRange tokens
-                let triviaCandidates = collectTriviaCandidates tokens ast
+                let triviaCandidates = collectTriviaCandidates ast
                 let triviaNodes = Trivia.collectTrivia mkRange tokens ast
                 let json = Encoders.encodeParseResult trivias triviaNodes triviaCandidates
 

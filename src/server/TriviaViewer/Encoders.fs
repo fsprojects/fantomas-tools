@@ -5,15 +5,6 @@ open Thoth.Json.Net
 open Fantomas.TriviaTypes
 open TriviaViewer
 
-let private mapToSharedType (tnt: TriviaNodeType) =
-    match tnt with
-    | MainNode mn -> Shared.MainNode(mn.ToString())
-    | Token (_, t) -> Shared.Token t.TokenInfo.TokenName
-
-let private typeEncoder = Encode.Auto.generateEncoder<Shared.TriviaNodeType> ()
-
-let private encodeTriviaNodeType = mapToSharedType >> typeEncoder
-
 let private mapToComment comment =
     match comment with
     | LineCommentAfterSourceCode c -> Shared.LineCommentAfterSourceCode c
@@ -47,7 +38,7 @@ let private encodeRange (range: Range) =
 
 let private encodeTriviaNode (tn: TriviaNode) =
     Encode.object
-        [ "type", encodeTriviaNodeType tn.Type
+        [ "type", Encode.string (string tn.Type)
           "contentBefore",
           List.map encodeTriviaContent tn.ContentBefore
           |> Encode.list
@@ -65,14 +56,9 @@ let private encodeTrivia (t: Trivia) =
           "range", encodeRange t.Range ]
 
 let private encodeTriviaNodeAssigner (t: TriviaNodeAssigner) =
-    let typeName, name =
-        match t.Type with
-        | MainNode mn -> "main-node", mn.ToString()
-        | Token (_, t) -> "token-node", t.TokenInfo.TokenName
-
     Encode.object
-        [ "type", Encode.string typeName
-          "name", Encode.string name
+        [ "type", Encode.string "main-node"
+          "name", Encode.string (string t.Type)
           "range", encodeRange t.Range ]
 
 let internal encodeParseResult trivia triviaNodes triviaCandidates =

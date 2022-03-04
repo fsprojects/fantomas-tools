@@ -9,16 +9,6 @@ open Reactstrap
 open TriviaViewer.Shared
 open FantomasTools.Client.Trivia.Menu
 
-let private typeName =
-    function
-    | Token t -> t
-    | MainNode mn -> mn
-
-let private typeTitle =
-    function
-    | Token _ -> "Token"
-    | MainNode _ -> "MainNode"
-
 let private rangeToText (r: Range) =
     sprintf "(%i,%i - %i,%i)" r.StartLine r.StartColumn r.EndLine r.EndColumn
 
@@ -63,7 +53,7 @@ let private triviaContentToDetail tc =
 
 
 let private activeTriviaNode (tn: TriviaNode) =
-    let title = sprintf "%s %s" (typeName tn.Type) (rangeToText tn.Range)
+    let title = $"%s{tn.Type} %s{rangeToText tn.Range}"
 
     let contentInfo title items =
         if (isNotAnEmptyList items) then
@@ -94,14 +84,11 @@ let view (model: Model) dispatch =
     let navItems =
         model.TriviaNodes
         |> List.map (fun tn ->
-            let className =
-                match tn.Type with
-                | Token _ -> "nav-link-token"
-                | MainNode _ -> "nav-link-main-node"
+            let className = "nav-link-main-node"
 
-            { Label = typeName tn.Type
+            { Label = tn.Type
               ClassName = className
-              Title = typeTitle tn.Type
+              Title = "MainNode"
               Range = tn.Range })
 
     let onClick idx =
