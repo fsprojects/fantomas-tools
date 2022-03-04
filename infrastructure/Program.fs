@@ -4,6 +4,7 @@ open System.IO
 open System.Net.Http
 open System.Net.Http.Headers
 open Pulumi
+open Pulumi.Aws.Lambda.Inputs
 open Pulumi.FSharp
 open Pulumi.Aws
 open Thoth.Json.Net
@@ -13,8 +14,7 @@ let private commitDecoder: Decoder<string * string> =
     Decode.object (fun get ->
         let sha = get.Required.Field "sha" Decode.string
 
-        let timestamp =
-            get.Required.At [ "commit"; "author"; "date" ] Decode.string
+        let timestamp = get.Required.At [ "commit"; "author"; "date" ] Decode.string
 
         sha, timestamp)
 
@@ -64,13 +64,15 @@ type LambdaProject =
 and LambdaInfo =
     { Name: string
       Verb: string
-      Route: string }
+      Route: string
+      Environment: (string * string) list }
 
-let allLambdas =
-    let mkLambdaInfo name verb route =
+let getAllLambdas (lastSha, lastTime) =
+    let mkLambdaInfo name verb route environment =
         { Name = name
           Verb = verb
-          Route = route }
+          Route = route
+          Environment = environment }
 
     let mkLambdaProject (name: string) lambdas =
         let archive =
@@ -86,41 +88,49 @@ let allLambdas =
           FunctionPrefix = $"{name}::{name}.Lambda" }
 
     [ mkLambdaProject
-        "FSharpTokens"
-        [ mkLambdaInfo "GetVersion" "GET" "/fsharp-tokens/version"
-          mkLambdaInfo "GetTokens" "POST" "/fsharp-tokens/get-tokens" ]
+          "FSharpTokens"
+          [ mkLambdaInfo "GetVersion" "GET" "/fsharp-tokens/version" List.empty
+            mkLambdaInfo "GetTokens" "POST" "/fsharp-tokens/get-tokens" List.empty ]
       mkLambdaProject
           "ASTViewer"
-          [ mkLambdaInfo "GetVersion" "GET" "/ast-viewer/version"
-            mkLambdaInfo "PostUntypedAST" "POST" "/ast-viewer/untyped-ast"
-            mkLambdaInfo "PostTypedAST" "POST" "/ast-viewer/typed-ast" ]
+          [ mkLambdaInfo "GetVersion" "GET" "/ast-viewer/version" List.empty
+            mkLambdaInfo "PostUntypedAST" "POST" "/ast-viewer/untyped-ast" List.empty
+            mkLambdaInfo "PostTypedAST" "POST" "/ast-viewer/typed-ast" List.empty ]
       mkLambdaProject
           "TriviaViewer"
-          [ mkLambdaInfo "GetVersion" "GET" "/trivia-viewer/version"
-            mkLambdaInfo "GetTrivia" "POST" "/trivia-viewer/get-trivia" ]
+          [ mkLambdaInfo "GetVersion" "GET" "/trivia-viewer/version" List.empty
+            mkLambdaInfo "GetTrivia" "POST" "/trivia-viewer/get-trivia" List.empty ]
       mkLambdaProject
           "FantomasOnlineV2"
-          [ mkLambdaInfo "GetVersion" "GET" "/fantomas/v2/version"
-            mkLambdaInfo "GetOptions" "GET" "/fantomas/v2/options"
-            mkLambdaInfo "PostFormat" "POST" "/fantomas/v2/format" ]
+          [ mkLambdaInfo "GetVersion" "GET" "/fantomas/v2/version" List.empty
+            mkLambdaInfo "GetOptions" "GET" "/fantomas/v2/options" List.empty
+            mkLambdaInfo "PostFormat" "POST" "/fantomas/v2/format" List.empty ]
       mkLambdaProject
           "FantomasOnlineV3"
-          [ mkLambdaInfo "GetVersion" "GET" "/fantomas/v3/version"
-            mkLambdaInfo "GetOptions" "GET" "/fantomas/v3/options"
-            mkLambdaInfo "PostFormat" "POST" "/fantomas/v3/format" ]
+          [ mkLambdaInfo "GetVersion" "GET" "/fantomas/v3/version" List.empty
+            mkLambdaInfo "GetOptions" "GET" "/fantomas/v3/options" List.empty
+            mkLambdaInfo "PostFormat" "POST" "/fantomas/v3/format" List.empty ]
       mkLambdaProject
           "FantomasOnlineV4"
-          [ mkLambdaInfo "GetVersion" "GET" "/fantomas/v4/version"
-            mkLambdaInfo "GetOptions" "GET" "/fantomas/v4/options"
-            mkLambdaInfo "PostFormat" "POST" "/fantomas/v4/format" ]
+          [ mkLambdaInfo "GetVersion" "GET" "/fantomas/v4/version" List.empty
+            mkLambdaInfo "GetOptions" "GET" "/fantomas/v4/options" List.empty
+            mkLambdaInfo "PostFormat" "POST" "/fantomas/v4/format" List.empty ]
       mkLambdaProject
           "FantomasOnlinePreview"
-          [ mkLambdaInfo "GetVersion" "GET" "/fantomas/preview/version"
-            mkLambdaInfo "GetOptions" "GET" "/fantomas/preview/options"
-            mkLambdaInfo "PostFormat" "POST" "/fantomas/preview/format" ] ]
+          [ mkLambdaInfo
+                "GetVersion"
+                "GET"
+                "/fantomas/preview/version"
+                [ "LAST_COMMIT_TIMESTAMP", lastTime
+                  "LAST_COMMIT_SHA", lastSha ]
+            mkLambdaInfo "GetOptions" "GET" "/fantomas/preview/options" List.empty
+            mkLambdaInfo "PostFormat" "POST" "/fantomas/preview/format" List.empty ] ]
 
 let infra () =
     async {
+        let! lastInfo = getLastCommit ()
+        let lastCommitInfo = Option.defaultValue ("?", "?") lastInfo
+
         let lambdaRole =
             Iam.Role(
                 "FantomasLambdaRole",
@@ -179,19 +189,25 @@ let infra () =
             ApiGatewayV2.Api("fantomas-gateway", args)
 
         let _mainStage =
-            let args =
-                ApiGatewayV2.StageArgs(ApiId = io gateway.Id, AutoDeploy = input true)
+            let args = ApiGatewayV2.StageArgs(ApiId = io gateway.Id, AutoDeploy = input true)
 
             ApiGatewayV2.Stage("fantomas-main-stage", args)
 
         let lambdaIds =
-            allLambdas
+            getAllLambdas lastCommitInfo
             |> List.collect (fun lambdaProject ->
                 lambdaProject.Lambdas
                 |> List.map (fun lambdaInfo ->
                     let lambdaFunctionName =
                         $"{lambdaProject.Name}{lambdaInfo.Name}"
                             .Kebaberize()
+
+                    let environmentArgs =
+                        let variables =
+                            lambdaInfo.Environment
+                            |> Seq.map (fun (k, v) -> k, input v)
+
+                        FunctionEnvironmentArgs(Variables = inputMap variables)
 
                     let lambda =
                         let args =
@@ -201,7 +217,8 @@ let infra () =
                                 Code = input (FileArchive(lambdaProject.FileArchive) :> Archive),
                                 Role = io lambdaRole.Arn,
                                 Timeout = input 30,
-                                MemorySize = input 256
+                                MemorySize = input 256,
+                                Environment = input environmentArgs
                             )
 
                         Lambda.Function(lambdaFunctionName, args)
