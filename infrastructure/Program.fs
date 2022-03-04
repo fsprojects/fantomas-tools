@@ -203,11 +203,14 @@ let infra () =
                             .Kebaberize()
 
                     let environmentArgs =
-                        let variables =
-                            lambdaInfo.Environment
-                            |> Seq.map (fun (k, v) -> k, input v)
+                        if lambdaInfo.Environment.IsEmpty then
+                            null
+                        else
+                            let variables =
+                                lambdaInfo.Environment
+                                |> Seq.map (fun (k, v) -> k, input v)
 
-                        FunctionEnvironmentArgs(Variables = inputMap variables)
+                            input (FunctionEnvironmentArgs(Variables = inputMap variables))
 
                     let lambda =
                         let args =
@@ -218,7 +221,7 @@ let infra () =
                                 Role = io lambdaRole.Arn,
                                 Timeout = input 30,
                                 MemorySize = input 256,
-                                Environment = input environmentArgs
+                                Environment = environmentArgs
                             )
 
                         Lambda.Function(lambdaFunctionName, args)
