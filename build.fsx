@@ -86,7 +86,12 @@ Target.create "Watch" (fun target ->
         CancellationTokenSource.CreateLinkedTokenSource(target.Context.CancellationToken)
 
     let localhostBackend port subPath =
-        sprintf "http://localhost:%i/%s" port subPath
+        let gitpodEnv = Environment.environVarOrDefault "GITPOD_WORKSPACE_URL" ""
+        if String.isNullOrWhiteSpace gitpodEnv then
+            sprintf "http://localhost:%i/%s" port subPath
+        else
+            let gitpodEnv = gitpodEnv.Replace("https://", "")
+            sprintf "https://%i-%s/%s" port gitpodEnv subPath
 
     Environment.setEnvironVar "NODE_ENV" "development"
     Environment.setEnvironVar "VITE_FSHARP_TOKENS_BACKEND" (localhostBackend fsharpTokensPort "fsharp-tokens")
