@@ -216,7 +216,7 @@ let infra () =
                         let args =
                             Lambda.FunctionArgs(
                                 Handler = input $"{lambdaProject.FunctionPrefix}::{lambdaInfo.Name}",
-                                Runtime = inputUnion2Of2 Lambda.Runtime.DotnetCore3d1,
+                                Runtime = inputUnion2Of2 Lambda.Runtime.Dotnet6,
                                 Code = input (FileArchive(lambdaProject.FileArchive) :> Archive),
                                 Role = io lambdaRole.Arn,
                                 Timeout = input 30,
