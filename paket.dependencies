@@ -79,7 +79,7 @@ nuget FSharp.Core
 nuget FSharp.Compiler.Service 41.0.3
 nuget Microsoft.Build.Utilities.Core
 nuget Thoth.Json.Net 5.0.0
-nuget Fantomas.Extras 4.7.0
+nuget Fantomas.Extras 4.7.1
 nuget Microsoft.Net.Http.Headers
 nuget Amazon.Lambda.Core 2.0.0
 nuget Amazon.Lambda.Serialization.SystemTextJson 2.1.0
