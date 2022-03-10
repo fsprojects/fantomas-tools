@@ -34,7 +34,7 @@ framework: net6.0
 
 nuget FSharp.Core
 nuget Pulumi.FSharp 3.7.0
-nuget Pulumi.Aws
+nuget Pulumi.Aws 4.38.1
 nuget Thoth.Json.Net 5.0.0
 nuget Humanizer.Core
 
@@ -43,7 +43,7 @@ group ASTViewer
 
 source https://api.nuget.org/v3/index.json
 storage: none
-framework: netcoreapp3.1
+framework: net6.0
 
 nuget FSharp.Core
 nuget FSharp.Compiler.Service 41.0.3
@@ -58,7 +58,7 @@ group Server
 
 source https://api.nuget.org/v3/index.json
 storage: none
-framework: netcoreapp3.1
+framework: net6.0
 
 nuget FSharp.Core
 nuget FSharp.Compiler.Service 41.0.3
@@ -73,7 +73,7 @@ group V4
 
 source https://api.nuget.org/v3/index.json
 storage: none
-framework: netcoreapp3.1
+framework: net6.0
 
 nuget FSharp.Core
 nuget FSharp.Compiler.Service 41.0.3
@@ -90,7 +90,7 @@ group V3
 
 source https://api.nuget.org/v3/index.json
 storage: none
-framework: netcoreapp3.1
+framework: net6.0
 
 nuget Thoth.Json.Net 5.0.0
 nuget FSharp.Compiler.Service 34.1.0
@@ -105,7 +105,7 @@ group V2
 
 source https://api.nuget.org/v3/index.json
 storage: none
-framework: netcoreapp3.1
+framework: net6.0
 
 nuget Thoth.Json.Net 5.0.0
 nuget FSharp.Compiler.Service 25.0.1
