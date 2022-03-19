@@ -43,11 +43,12 @@ let fsharpFiles =
 
 Target.create "Fantomas-Git" (fun _ ->
     let targetDir = ".deps" @@ "fantomas"
+    let branch = "get-back"
 
     if Directory.Exists(targetDir) then
-        Git.Branches.pull targetDir "origin" "master"
+        Git.Branches.pull targetDir "origin" branch
     else
-        Git.Repository.cloneSingleBranch "." "https://github.com/fsprojects/fantomas.git" "master" targetDir
+        Git.Repository.cloneSingleBranch "." "https://github.com/fsprojects/fantomas.git" branch targetDir
 
     DotNet.exec (fun opt -> { opt with WorkingDirectory = targetDir }) "tool" "restore"
     |> ignore
