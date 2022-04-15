@@ -99,7 +99,7 @@ Issue created from [fantomas-online](%s)
 
 #### Extra information
 
-- [ ] The formatted result breaks by code.
+- [ ] The formatted result breaks my code.
 - [ ] The formatted result gives compiler warnings.
 - [ ] I or my company would be willing to help fix this.
 
