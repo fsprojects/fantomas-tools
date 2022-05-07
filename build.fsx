@@ -42,7 +42,7 @@ let fsharpFiles =
 
 Target.create "Fantomas-Git" (fun _ ->
     let targetDir = ".deps" @@ "fantomas"
-    let branch = "get-back"
+    let branch = "master"
 
     if Directory.Exists(targetDir) then
         Git.Branches.pull targetDir "origin" branch
