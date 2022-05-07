@@ -88,10 +88,6 @@ let getAllLambdas (lastSha, lastTime) =
           FunctionPrefix = $"{name}::{name}.Lambda" }
 
     [ mkLambdaProject
-          "FSharpTokens"
-          [ mkLambdaInfo "GetVersion" "GET" "/fsharp-tokens/version" List.empty
-            mkLambdaInfo "GetTokens" "POST" "/fsharp-tokens/get-tokens" List.empty ]
-      mkLambdaProject
           "ASTViewer"
           [ mkLambdaInfo "GetVersion" "GET" "/ast-viewer/version" List.empty
             mkLambdaInfo "PostUntypedAST" "POST" "/ast-viewer/untyped-ast" List.empty
