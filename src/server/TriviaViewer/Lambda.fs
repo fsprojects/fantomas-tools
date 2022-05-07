@@ -16,14 +16,11 @@ let GetVersion (_request: APIGatewayProxyRequest) (_context: ILambdaContext) =
     mkAPIGatewayProxyResponse (HttpStatusCode.OK, HeaderValues.TextPlain, version)
 
 let GetTrivia (request: APIGatewayProxyRequest) (_context: ILambdaContext) =
-    async {
-        let! triviaResponse = getTrivia request.Body
+    let triviaResponse = getTrivia request.Body
 
-        let responseData =
-            match triviaResponse with
-            | GetTriviaResponse.Ok body -> HttpStatusCode.OK, HeaderValues.ApplicationJson, body
-            | GetTriviaResponse.BadRequest body -> HttpStatusCode.BadRequest, HeaderValues.ApplicationText, body
+    let responseData =
+        match triviaResponse with
+        | GetTriviaResponse.Ok body -> HttpStatusCode.OK, HeaderValues.ApplicationJson, body
+        | GetTriviaResponse.BadRequest body -> HttpStatusCode.BadRequest, HeaderValues.ApplicationText, body
 
-        return mkAPIGatewayProxyResponse responseData
-    }
-    |> Async.StartAsTask
+    mkAPIGatewayProxyResponse responseData

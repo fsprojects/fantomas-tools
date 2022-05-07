@@ -12,18 +12,9 @@ type Comment =
     | BlockComment of string * newlineBefore: bool * newlineAfter: bool
 
 type TriviaContent =
-    | Keyword of string
-    | Number of string
-    | StringContent of string
-    | IdentOperatorAsWord of string
-    | IdentBetweenTicks of string
     | Comment of Comment
     | Newline
     | Directive of directive: string
-    | NewlineAfter
-    | CharContent of string
-    | EmbeddedIL of string
-    | KeywordString of string
 
 type TriviaNode =
     { Type: string

@@ -7,6 +7,7 @@ nuget FSharp.Core 6.0.1
 nuget FSharp.Compiler.Service 41.0.1
 nuget editorconfig
 nuget MAB.DotIgnore
+nuget System.IO.Abstractions
 nuget Ionide.KeepAChangelog.Tasks copy_local: true
 nuget Dotnet.ReproducibleBuilds copy_local: true
 
@@ -61,7 +62,6 @@ storage: none
 framework: net6.0
 
 nuget FSharp.Core
-nuget FSharp.Compiler.Service 41.0.3
 nuget Thoth.Json.Net 5.0.0
 nuget Microsoft.Net.Http.Headers
 nuget Amazon.Lambda.Core 2.0.0

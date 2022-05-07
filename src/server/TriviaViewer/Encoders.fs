@@ -2,7 +2,7 @@ module TriviaViewer.Server.Encoders
 
 open FSharp.Compiler.Text
 open Thoth.Json.Net
-open Fantomas.TriviaTypes
+open Fantomas.Core.TriviaTypes
 open TriviaViewer
 
 let private mapToComment comment =
@@ -13,16 +13,9 @@ let private mapToComment comment =
 
 let private mapToTriviaContent (tc: TriviaContent) =
     match tc with
-    | Keyword kw -> Shared.Keyword kw.TokenInfo.TokenName
-    | Number n -> Shared.Number n
-    | StringContent sc -> Shared.StringContent sc
-    | CharContent cc -> Shared.CharContent cc
-    | IdentOperatorAsWord i -> Shared.IdentOperatorAsWord i
-    | IdentBetweenTicks i -> Shared.IdentBetweenTicks i
     | Comment c -> Shared.Comment(mapToComment c)
     | Newline -> Shared.Newline
     | Directive d -> Shared.Directive d
-    | EmbeddedIL eil -> Shared.EmbeddedIL eil
 
 let private triviaContentEncoder =
     Encode.Auto.generateEncoder<Shared.TriviaContent> ()

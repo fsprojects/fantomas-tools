@@ -1,13 +1,11 @@
 module FantomasOnlinePreview.FormatCode
 
-open FSharp.Compiler.CodeAnalysis
 open FSharp.Compiler.Diagnostics
-open Fantomas
-open Fantomas.FormatConfig
+open FSharp.Compiler.Text
+open Fantomas.Core
+open Fantomas.Core.FormatConfig
 open FantomasOnline.Shared
 open FantomasOnline.Server.Shared.Http
-
-let private checker = CodeFormatterImpl.sharedChecker.Force()
 
 let private mapFantomasOptionsToRecord options =
     let newValues =
@@ -27,39 +25,41 @@ let private mapFantomasOptionsToRecord options =
     let formatConfigType = typeof<FormatConfig.FormatConfig>
     Microsoft.FSharp.Reflection.FSharpValue.MakeRecord(formatConfigType, newValues) :?> FormatConfig.FormatConfig
 
-let private format fileName code config =
-    let options = CodeFormatterImpl.createParsingOptionsFromFile fileName
+let private format (fileName: string) code config =
+    let isSignature = fileName.EndsWith(".fsi")
+    CodeFormatter.FormatDocumentAsync(isSignature, code, config)
 
-    let source = SourceOrigin.SourceString code
-    CodeFormatter.FormatDocumentAsync(fileName, source, config, options, checker)
+let private validate (fileName: string) code =
+    let isSignature = fileName.EndsWith(".fsi")
+    let sourceCode = SourceText.ofString code
+    let _, diagnostics = Fantomas.FCS.Parse.parseFile isSignature sourceCode []
 
-let private validate fileName code =
-    let options = { FSharpParsingOptions.Default with SourceFiles = [| fileName |] }
+    diagnostics
+    |> List.map (fun e ->
+        let range =
+            match e.Range with
+            | None ->
+                { StartLine = 0
+                  StartCol = 0
+                  EndLine = 0
+                  EndCol = 0 }
+            | Some r ->
+                { StartLine = r.StartLine
+                  StartCol = r.StartColumn
+                  EndLine = r.EndLine
+                  EndCol = r.EndColumn }
 
-    let sourceCode = FSharp.Compiler.Text.SourceText.ofString code
-
-    async {
-        let! result = checker.ParseFile(fileName, sourceCode, options)
-
-        return
-            result.Diagnostics
-            |> Array.map (fun e ->
-                { SubCategory = e.Subcategory
-                  Range =
-                    { StartLine = e.Range.StartLine
-                      StartCol = e.Range.StartColumn
-                      EndLine = e.Range.EndLine
-                      EndCol = e.Range.EndColumn }
-                  Severity =
-                    match e.Severity with
-                    | FSharpDiagnosticSeverity.Warning -> ASTErrorSeverity.Warning
-                    | FSharpDiagnosticSeverity.Error -> ASTErrorSeverity.Error
-                    | FSharpDiagnosticSeverity.Info -> ASTErrorSeverity.Info
-                    | FSharpDiagnosticSeverity.Hidden -> ASTErrorSeverity.Hidden
-                  ErrorNumber = e.ErrorNumber
-                  Message = e.Message })
-            |> Array.toList
-    }
+        { SubCategory = e.SubCategory
+          Range = range
+          Severity =
+            match e.Severity with
+            | FSharpDiagnosticSeverity.Warning -> ASTErrorSeverity.Warning
+            | FSharpDiagnosticSeverity.Error -> ASTErrorSeverity.Error
+            | FSharpDiagnosticSeverity.Info -> ASTErrorSeverity.Info
+            | FSharpDiagnosticSeverity.Hidden -> ASTErrorSeverity.Hidden
+          ErrorNumber = Option.defaultValue -1 e.ErrorNumber
+          Message = e.Message })
+    |> fun errors -> async { return errors }
 
 let getFantomasVersion () =
     let date =
@@ -77,7 +77,7 @@ let getFantomasVersion () =
             System.IO.FileInfo assembly.Location
             |> fun f -> f.LastWriteTime.ToShortDateString()
 
-    sprintf "master branch at %s" date
+    $"master branch at %s{date}"
 
 let getVersion = getFantomasVersion
 
