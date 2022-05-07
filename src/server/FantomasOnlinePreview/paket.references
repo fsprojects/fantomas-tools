@@ -1,5 +1,4 @@
 group Server
-FSharp.Compiler.Service
 FSharp.Core
 Thoth.Json.Net
 Microsoft.Net.Http.Headers

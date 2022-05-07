@@ -4,7 +4,6 @@ type Msg =
     | VersionFound of string
     | SetSourceText of string
     | DoParse
-    | DoTypeCheck
     | ASTParsed of ASTViewer.Shared.Response
     | Error of string
     | DefinesUpdated of string

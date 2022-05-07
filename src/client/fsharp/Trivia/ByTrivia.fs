@@ -8,28 +8,13 @@ open TriviaViewer.Shared
 
 let private contentToClassName c =
     match c with
-    | Keyword _ -> "keyword"
-    | Number _ -> "number-content"
-    | StringContent _ -> "string-content"
-    | CharContent _ -> "char-content"
-    | IdentOperatorAsWord _ -> "ident-operator-keyword"
-    | IdentBetweenTicks _ -> "ident-between-ticks"
     | Comment _ -> "comment"
     | Newline -> "newline"
     | Directive _ -> "directive"
-    | NewlineAfter -> "newline-after"
-    | EmbeddedIL _ -> "embedded-il"
-    | KeywordString _ -> "keyword-string"
     |> sprintf "nav-link-%s"
 
 let private typeName c =
     match c with
-    | Keyword _ -> "Keyword"
-    | Number _ -> "Number"
-    | StringContent _ -> "StringContent"
-    | CharContent _ -> "CharContent"
-    | IdentOperatorAsWord _ -> "IdentOperatorAsWord"
-    | IdentBetweenTicks _ -> "IdentBetweenTicks"
     | Comment c ->
         match c with
         | LineCommentAfterSourceCode _ -> "LineCommentAfterSourceCode"
@@ -38,29 +23,19 @@ let private typeName c =
         |> sprintf "Comment(%s)"
     | Newline -> "Newline"
     | Directive _ -> "Directive"
-    | NewlineAfter -> "Newline-after"
-    | EmbeddedIL _ -> "EmbeddedIL"
-    | KeywordString _ -> "KeywordString"
 
 let private activeTrivia trivia =
-    let title = sprintf "%s %s" (typeName trivia.Item) (rangeToText trivia.Range)
+    let title = $"%s{typeName trivia.Item} %s{rangeToText trivia.Range}"
 
     let content =
         match trivia.Item with
-        | Number i
-        | StringContent i
-        | CharContent i
-        | IdentOperatorAsWord i
-        | IdentBetweenTicks i
-        | Directive i
-        | EmbeddedIL i
-        | KeywordString i -> Some i
+        | Directive d -> Some d
         | Comment c ->
             match c with
             | LineCommentAfterSourceCode c
             | LineCommentOnSingleLine c -> Some c
             | BlockComment (c, nb, na) ->
-                sprintf "%s (newline before: %b) (newline after: %b)" c nb na
+                $"%s{c} (newline before: %b{nb}) (newline after: %b{na})"
                 |> Some
         | _ -> None
         |> Option.map (fun c -> code [] [ str c ])

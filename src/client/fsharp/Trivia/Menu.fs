@@ -23,8 +23,6 @@ let private triviaContentToDetail tc =
 
     match tc with
     | Newline -> str "Newline"
-    | StringContent sc -> fragment [] (wrap "StringContent" sc)
-    | CharContent cc -> fragment [] (wrap "CharContent" cc)
     | Comment c ->
         match c with
         | BlockComment (bc, _, _) -> (wrap "BlockComment" bc)
@@ -37,13 +35,6 @@ let private triviaContentToDetail tc =
                 str ")"
             ]
     | Directive d -> fragment [] (wrap "Directive" d)
-    | IdentOperatorAsWord ioaw -> fragment [] (wrap "IdentOperatorAsWord" ioaw)
-    | IdentBetweenTicks ibt -> fragment [] (wrap "IdentBetweenTicks" ibt)
-    | Number n -> fragment [] (wrap "Number" n)
-    | NewlineAfter -> str "NewlineAfter"
-    | Keyword kw -> fragment [] (wrap "Keyword" kw)
-    | EmbeddedIL eil -> fragment [] (wrap "EmbeddedIL" eil)
-    | KeywordString ks -> fragment [] (wrap "KeywordString" ks)
 
 type MenuItem =
     { ClassName: string

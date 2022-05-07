@@ -1,9 +1,0 @@
-group Server
-FSharp.Compiler.Service
-FSharp.Core
-Thoth.Json.Net
-Microsoft.Net.Http.Headers
-Amazon.Lambda.Core
-Amazon.Lambda.Serialization.SystemTextJson
-Amazon.Lambda.APIGatewayEvents
-Suave

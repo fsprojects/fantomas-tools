@@ -17,7 +17,7 @@ let main argv =
         request (fun req ctx ->
             async {
                 let json = req.BodyText
-                let! astResponse = getTrivia json
+                let astResponse = getTrivia json
                 return! (mapTriviaResponseToWebPart astResponse) ctx
             })
 

@@ -16,7 +16,6 @@ open Fake.JavaScript
 open Fake.Tools
 
 let fablePort = 9060
-let fsharpTokensPort = 7899
 let astPort = 7412
 let triviaPort = 9856
 let fantomasPreviewPort = 11084
@@ -43,11 +42,12 @@ let fsharpFiles =
 
 Target.create "Fantomas-Git" (fun _ ->
     let targetDir = ".deps" @@ "fantomas"
-    let branch = "get-back"
+    let branch = "master"
 
     if Directory.Exists(targetDir) then
         Git.Branches.pull targetDir "origin" branch
     else
+        // git clone -b master --single-branch https://github.com/fsprojects/fantomas.git .deps/fantomas
         Git.Repository.cloneSingleBranch "." "https://github.com/fsprojects/fantomas.git" branch targetDir
 
     DotNet.exec (fun opt -> { opt with WorkingDirectory = targetDir }) "tool" "restore"
@@ -58,7 +58,7 @@ Target.create "Fantomas-Git" (fun _ ->
 
     DotNet.build
         (fun opt -> { opt with Configuration = DotNet.BuildConfiguration.Release })
-        "./.deps/fantomas/src/Fantomas/Fantomas.fsproj")
+        "./.deps/fantomas/src/Fantomas.Core/Fantomas.Core.fsproj")
 
 Target.create "Clean" (fun _ ->
     Shell.rm_rf artifactDir
@@ -70,8 +70,7 @@ Target.create "Clean" (fun _ ->
     |> Seq.iter Shell.rm_rf)
 
 Target.create "Build" (fun _ ->
-    [ "FSharpTokens"
-      "ASTViewer"
+    [ "ASTViewer"
       "TriviaViewer"
       "FantomasOnlineV2"
       "FantomasOnlineV3"
@@ -88,6 +87,7 @@ Target.create "Watch" (fun target ->
 
     let localhostBackend port subPath =
         let gitpodEnv = Environment.environVarOrDefault "GITPOD_WORKSPACE_URL" ""
+
         if String.isNullOrWhiteSpace gitpodEnv then
             sprintf "http://localhost:%i/%s" port subPath
         else
@@ -95,7 +95,6 @@ Target.create "Watch" (fun target ->
             sprintf "https://%i-%s/%s" port gitpodEnv subPath
 
     Environment.setEnvironVar "NODE_ENV" "development"
-    Environment.setEnvironVar "VITE_FSHARP_TOKENS_BACKEND" (localhostBackend fsharpTokensPort "fsharp-tokens")
     Environment.setEnvironVar "VITE_AST_BACKEND" (localhostBackend astPort "ast-viewer")
     Environment.setEnvironVar "VITE_TRIVIA_BACKEND" (localhostBackend triviaPort "trivia-viewer")
     Environment.setEnvironVar "VITE_FANTOMAS_V2" (localhostBackend fantomasV2Port "fantomas/v2")
@@ -123,7 +122,6 @@ Target.create "Watch" (fun target ->
 
         |> mapEvents directory
 
-    let fsharpTokens = runLambda "FSharpTokens"
     let astViewer = runLambda "ASTViewer"
     let triviaViewer = runLambda "TriviaViewer"
     let fantomasV2 = runLambda "FantomasOnlineV2"
@@ -134,7 +132,6 @@ Target.create "Watch" (fun target ->
     let subscription =
         Observable.mergeArray
             [| frontend
-               fsharpTokens
                astViewer
                triviaViewer
                fantomasV2
@@ -167,7 +164,6 @@ Target.create "PublishLambdas" (fun _ ->
       "FantomasOnlineV4"
       "FantomasOnlinePreview"
       "ASTViewer"
-      "FSharpTokens"
       "TriviaViewer" ]
     |> List.map (fun project ->
         async {
@@ -195,7 +191,6 @@ let setViteToProduction () =
     let mainStageUrl =
         "https://arlp8cgo97.execute-api.eu-west-1.amazonaws.com/fantomas-main-stage-1c52a6a"
 
-    Environment.setEnvironVar "VITE_FSHARP_TOKENS_BACKEND" $"{mainStageUrl}/fsharp-tokens"
     Environment.setEnvironVar "VITE_AST_BACKEND" $"{mainStageUrl}/ast-viewer"
     Environment.setEnvironVar "VITE_TRIVIA_BACKEND" $"{mainStageUrl}/trivia-viewer"
     Environment.setEnvironVar "VITE_FANTOMAS_V2" $"{mainStageUrl}/fantomas/v2"

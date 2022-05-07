@@ -9,9 +9,6 @@ let cmdForCurrentTab tab model =
     if not (System.String.IsNullOrWhiteSpace model.SourceCode) then
         match tab with
         | HomeTab -> Cmd.none
-        | TokensTab ->
-            Cmd.ofMsg FSharpTokens.Model.GetTokens
-            |> Cmd.map Msg.FSharpTokensMsg
         | ASTTab ->
             Cmd.ofMsg ASTViewer.Model.DoParse
             |> Cmd.map Msg.ASTMsg
@@ -34,7 +31,6 @@ let toHash =
     function
     | HomeTab -> "#/"
     | TriviaTab -> "#/trivia"
-    | TokensTab -> "#/tokens"
     | ASTTab -> "#/ast"
     | FantomasTab FantomasOnline.Model.V2 -> "#/fantomas/v2"
     | FantomasTab FantomasOnline.Model.V3 -> "#/fantomas/v3"
@@ -43,8 +39,6 @@ let toHash =
 
 let parseUrl segments =
     match segments with
-    | [ "tokens" ]
-    | [ "tokens"; Route.Query [ "data", _ ] ] -> ActiveTab.TokensTab
     | [ "ast" ]
     | [ "ast"; Route.Query [ "data", _ ] ] -> ActiveTab.ASTTab
     | [ "trivia" ]

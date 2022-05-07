@@ -10,19 +10,17 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="paket.references" />
-    <Compile Include="../../../.deps/fantomas/src/Fantomas/RangeHelpers.fs" />
-    <Compile Include="../../../.deps/fantomas/src/Fantomas/TriviaTypes.fs" />
-    <Compile Include="../../../.deps/fantomas/src/Fantomas/Dbg.fs" />
-    <Compile Include="../../../.deps/fantomas/src/Fantomas/Utils.fs" />
-    <Compile Include="../../../.deps/fantomas/src/Fantomas/SourceParser.fs" />
-    <Compile Include="../../../.deps/fantomas/src/Fantomas/AstTransformer.fs" />
-    <Compile Include="../../../.deps/fantomas/src/Fantomas/SourceOrigin.fs" />
-    <Compile Include="../../../.deps/fantomas/src/Fantomas/Version.fs" />
-    <Compile Include="../../../.deps/fantomas/src/Fantomas/FormatConfig.fs" />
-    <Compile Include="../../../.deps/fantomas/src/Fantomas/TriviaTypes.fs" />
-    <Compile Include="../../../.deps/fantomas/src/Fantomas/TokenParserBoolExpr.fs" />
-    <Compile Include="../../../.deps/fantomas/src/Fantomas/TokenParser.fs" />
-    <Compile Include="../../../.deps/fantomas/src/Fantomas/Trivia.fs" />
+    <Compile Include="../../../.deps/fantomas/src/Fantomas.Core/ISourceTextExtensions.fs" />
+    <Compile Include="../../../.deps/fantomas/src/Fantomas.Core/AstExtensions.fs" />
+    <Compile Include="../../../.deps/fantomas/src/Fantomas.Core/RangeHelpers.fs" />
+    <Compile Include="../../../.deps/fantomas/src/Fantomas.Core/TriviaTypes.fs" />
+    <Compile Include="../../../.deps/fantomas/src/Fantomas.Core/Utils.fs" />
+    <Compile Include="../../../.deps/fantomas/src/Fantomas.Core/SourceParser.fs" />
+    <Compile Include="../../../.deps/fantomas/src/Fantomas.Core/AstTransformer.fs" />
+    <Compile Include="../../../.deps/fantomas/src/Fantomas.Core/Version.fs" />
+    <Compile Include="../../../.deps/fantomas/src/Fantomas.Core/FormatConfig.fs" />
+    <Compile Include="../../../.deps/fantomas/src/Fantomas.Core/TriviaTypes.fs" />
+    <Compile Include="../../../.deps/fantomas/src/Fantomas.Core/Trivia.fs" />
     <Compile Include="../../shared/TriviaShared.fs" />
     <Compile Include="..\HttpConstants.fs" />
     <Compile Include="..\AWSLambdaExtensions.fs" />
@@ -32,6 +30,9 @@
     <Compile Include="GetTrivia.fs" />
     <Compile Include="Lambda.fs" />
     <Compile Include="Program.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\.deps\fantomas\src\Fantomas.FCS\Fantomas.FCS.fsproj" />
   </ItemGroup>
   <Import Project="..\..\..\.paket\Paket.Restore.targets" />
 </Project>
