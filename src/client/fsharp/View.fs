@@ -1,6 +1,5 @@
 module FantomasTools.Client.View
 
-open Browser.Types
 open Fable.Core.JsInterop
 open Fable.React
 open Fable.React.Props
@@ -101,12 +100,6 @@ let tabs (model: Model) dispatch =
             Trivia.View.view model.TriviaModel triviaDispatch,
             Trivia.View.settings model.TriviaModel triviaDispatch,
             Trivia.View.commands triviaDispatch
-        | TokensTab ->
-            let tokensDispatch tMsg = dispatch (FSharpTokensMsg tMsg)
-
-            FSharpTokens.View.view model.FSharpTokensModel tokensDispatch,
-            FSharpTokens.View.settings model.FSharpTokensModel tokensDispatch,
-            FSharpTokens.View.commands tokensDispatch
         | ASTTab ->
             let astDispatch aMsg = dispatch (ASTMsg aMsg)
 
@@ -119,10 +112,6 @@ let tabs (model: Model) dispatch =
             FantomasOnline.View.view model.FantomasModel,
             FantomasOnline.View.settings model.FantomasModel fantomasDispatch,
             FantomasOnline.View.commands model.SourceCode model.FantomasModel fantomasDispatch
-
-    let onNavItemClick tab (ev: Event) =
-        ev.preventDefault ()
-        dispatch (SelectTab tab)
 
     let navItem tab label isActive =
         let href =
@@ -152,7 +141,6 @@ let tabs (model: Model) dispatch =
 
     let navItems =
         [ navItem HomeTab "Home" (model.ActiveTab = HomeTab)
-          navItem TokensTab "FSharp Tokens" (model.ActiveTab = TokensTab)
           navItem ASTTab "AST" (model.ActiveTab = ASTTab)
           navItem TriviaTab "Trivia" (model.ActiveTab = TriviaTab)
           navItem

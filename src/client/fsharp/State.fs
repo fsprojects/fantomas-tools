@@ -13,9 +13,6 @@ let init _ =
     let sourceCode = getCodeFromUrl ()
     let currentTab = Navigation.parseUrl (Router.currentUrl ())
 
-    let fsharpTokensModel, fsharpTokensCmd =
-        FSharpTokens.State.init (currentTab = TokensTab)
-
     let astModel, astCmd = ASTViewer.State.init (currentTab = ASTTab)
     let triviaModel, triviaCmd = Trivia.State.init (currentTab = TriviaTab)
 
@@ -32,7 +29,6 @@ let init _ =
           SourceCode = sourceCode
           SettingsOpen = false
           TriviaModel = triviaModel
-          FSharpTokensModel = fsharpTokensModel
           ASTModel = astModel
           FantomasModel = fantomasModel }
 
@@ -40,8 +36,7 @@ let init _ =
     //
     let cmd =
         Cmd.batch
-            [ Cmd.map FSharpTokensMsg fsharpTokensCmd
-              Cmd.map ASTMsg astCmd
+            [ Cmd.map ASTMsg astCmd
               Cmd.map TriviaMsg triviaCmd
               Cmd.map FantomasMsg fantomasCmd
               initialCmd ]
@@ -51,9 +46,6 @@ let init _ =
 let private reload model =
     if not model.SettingsOpen then
         match model.ActiveTab with
-        | TokensTab ->
-            Cmd.ofMsg FantomasTools.Client.FSharpTokens.Model.GetTokens
-            |> Cmd.map FSharpTokensMsg
         | ASTTab ->
             Cmd.ofMsg FantomasTools.Client.ASTViewer.Model.DoParse
             |> Cmd.map ASTMsg
@@ -90,11 +82,6 @@ let update msg model =
         let tModel, tCmd = Trivia.State.update model.SourceCode tMsg model.TriviaModel
 
         { model with TriviaModel = tModel }, Cmd.map TriviaMsg tCmd
-    | FSharpTokensMsg ftMsg ->
-        let fModel, fCmd =
-            FSharpTokens.State.update model.SourceCode ftMsg model.FSharpTokensModel
-
-        { model with FSharpTokensModel = fModel }, Cmd.map FSharpTokensMsg fCmd
     | ASTMsg aMsg ->
         let aModel, aCmd = ASTViewer.State.update model.SourceCode aMsg model.ASTModel
 
