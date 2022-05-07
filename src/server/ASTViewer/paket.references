@@ -1,6 +1,6 @@
 group ASTViewer
 FSharp.Core
-FSharp.Compiler.Service
+Fantomas.FCS
 Thoth.Json.Net
 Microsoft.Net.Http.Headers
 Amazon.Lambda.Core

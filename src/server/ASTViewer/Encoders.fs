@@ -1,9 +1,11 @@
 module ASTViewer.Server.Encoders
 
+open FSharp.Compiler.Text
+open Fantomas.FCS.Parse
 open Thoth.Json.Net
 open FSharp.Compiler.Diagnostics
 
-let private rangeEncoder (range: FSharp.Compiler.Text.Range) =
+let private rangeEncoder (range: Range) =
     Encode.object
         [ "startLine", Encode.int range.StartLine
           "startCol", Encode.int range.StartColumn
@@ -17,18 +19,18 @@ let private encodeFSharpErrorInfoSeverity =
     | FSharpDiagnosticSeverity.Hidden -> Encode.string "hidden"
     | FSharpDiagnosticSeverity.Info -> Encode.string "info"
 
-let private encodeFSharpErrorInfo (info: FSharpDiagnostic) =
+let private encodeFSharpErrorInfo (info: FSharpParserDiagnostic) =
     Encode.object
-        [ "subcategory", Encode.string info.Subcategory
-          "range", rangeEncoder info.Range
+        [ "subcategory", Encode.string info.SubCategory
+          "range", rangeEncoder (Option.defaultValue Range.Zero info.Range)
           "severity", encodeFSharpErrorInfoSeverity info.Severity
-          "errorNumber", Encode.int info.ErrorNumber
+          "errorNumber", Encode.int (Option.defaultValue -1 info.ErrorNumber)
           "message", Encode.string info.Message ]
 
-let encodeResponse string (errors: FSharpDiagnostic array) =
+let encodeResponse string (errors: FSharpParserDiagnostic list) =
     let errors =
-        Array.map encodeFSharpErrorInfo errors
-        |> Encode.array
+        List.map encodeFSharpErrorInfo errors
+        |> Encode.list
 
     Encode.object
         [ "string", Encode.string string
