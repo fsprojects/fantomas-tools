@@ -79,10 +79,6 @@ let commands dispatch =
                         Button.Custom [ OnClick(fun _ -> dispatch DoParse) ] ] [
             str "Show Untyped AST"
         ]
-        Button.button [ Button.Color Primary
-                        Button.Custom [ OnClick(fun _ -> dispatch DoTypeCheck) ] ] [
-            str "Show Typed AST"
-        ]
     ]
 
 let settings model dispatch =
