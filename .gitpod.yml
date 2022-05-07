@@ -1,4 +1,4 @@
-image: gitpod/workspace-dotnet:2022-03-03-09-59-58 # contains .NET 6.0.200
+image: gitpod/workspace-dotnet
 vscode:
   extensions:
     - muhammad-sammy.csharp
