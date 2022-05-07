@@ -105,17 +105,8 @@ let update code (msg: Msg) (model: Model) : Model * Cmd<Msg> =
                   Cmd.ofSub (updateUrl code model) ]
 
         { model with IsLoading = true }, cmd
-    | DoTypeCheck ->
-        let parseRequest = modelToParseRequest code model
-
-        let cmd =
-            Cmd.batch
-                [ Cmd.ofSub (fetchTypedAst parseRequest)
-                  Cmd.ofSub (updateUrl code model) ]
-
-        { model with IsLoading = true }, cmd
 
     | VersionFound version -> { model with Version = version }, Cmd.none
     | DefinesUpdated defines -> { model with Defines = defines }, Cmd.none
     | SetFsiFile isFsi -> { model with IsFsi = isFsi }, Cmd.none
-    | HighLight hlr -> model, Cmd.ofSub (FantomasTools.Client.Editor.selectRange hlr)
+    | HighLight hlr -> model, Cmd.ofSub (Editor.selectRange hlr)
