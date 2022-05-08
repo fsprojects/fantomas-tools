@@ -33,6 +33,7 @@ NOTE: you may see some error output during this process on first run, but those 
 
 * Run 
 > dotnet fake run build.fsx -t "Fantomas-Git"
+
 > dotnet fake run build.fsx -t Watch
 
 * Open browser for port `9060`
