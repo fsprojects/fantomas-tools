@@ -21,10 +21,10 @@ let private tab activeTab tabType tabContent =
         | t when (t = tabType) -> "active show"
         | _ -> System.String.Empty
 
-    TabPane.tabPane [ TabPane.TabId(!^(tabToId tabType))
-                      TabPane.Custom [ ClassName tabClassName ] ] [
-        tabContent
-    ]
+    TabPane.tabPane [
+        TabPane.TabId(!^(tabToId tabType))
+        TabPane.Custom [ ClassName tabClassName ]
+    ] [ tabContent ]
 
 let private byTriviaNodes model dispatch =
     tab model.ActiveTab ByTriviaNodes (ByTriviaNodes.view model dispatch)
@@ -39,24 +39,34 @@ let private results model dispatch =
     let tabHeader label tabType =
         let isActive = tabType = model.ActiveTab
 
-        NavItem.navItem [ NavItem.Custom [ OnClick(fun _ -> dispatch (Msg.SelectTab tabType))
-                                           ClassName "pointer" ] ] [
-            NavLink.navLink [ NavLink.Active isActive
-                              NavLink.Custom [ ClassName "rounded-0" ] ] [
-                str label
+        NavItem.navItem [
+            NavItem.Custom [
+                OnClick(fun _ -> dispatch (Msg.SelectTab tabType))
+                ClassName "pointer"
             ]
+        ] [
+            NavLink.navLink [
+                NavLink.Active isActive
+                NavLink.Custom [ ClassName "rounded-0" ]
+            ] [ str label ]
         ]
 
     div [ Id "results" ] [
-        Nav.nav [ Nav.Tabs true
-                  Nav.Pills true
-                  Nav.Custom [ ClassName "border-bottom border-primary" ] ] [
+        Nav.nav [
+            Nav.Tabs true
+            Nav.Pills true
+            Nav.Custom [
+                ClassName "border-bottom border-primary"
+            ]
+        ] [
             tabHeader "Trivia nodes" ByTriviaNodes
             tabHeader "Trivia node candidates" ByTriviaNodeCandidates
             tabHeader "Trivia" ByTrivia
         ]
-        TabContent.tabContent [ TabContent.Custom [ Id "trivia-result-content" ]
-                                TabContent.ActiveTab(!^(tabToId model.ActiveTab)) ] [
+        TabContent.tabContent [
+            TabContent.Custom [ Id "trivia-result-content" ]
+            TabContent.ActiveTab(!^(tabToId model.ActiveTab))
+        ] [
             byTriviaNodes model dispatch
             byTriviaNodeCandidates model dispatch
             byTrivia model dispatch
@@ -72,9 +82,13 @@ let view model dispatch =
         | Some errors -> Editor true [ MonacoEditorProp.DefaultValue errors ]
 
 let commands dispatch =
-    Button.button [ Button.Color Primary
-                    Button.Custom [ ClassName "rounded-0"
-                                    OnClick(fun _ -> dispatch GetTrivia) ] ] [
+    Button.button [
+        Button.Color Primary
+        Button.Custom [
+            ClassName "rounded-0"
+            OnClick(fun _ -> dispatch GetTrivia)
+        ]
+    ] [
         i [ ClassName "fas fa-code mr-1" ] []
         str "Get trivia"
     ]

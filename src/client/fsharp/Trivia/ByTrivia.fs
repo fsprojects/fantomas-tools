@@ -52,10 +52,12 @@ let view (model: Model) dispatch =
             let className = contentToClassName t.Item
             let label = typeName t.Item
 
-            { Label = label
-              ClassName = className
-              Title = label
-              Range = t.Range })
+            {
+                Label = label
+                ClassName = className
+                Title = label
+                Range = t.Range
+            })
 
     let onClick idx =
         dispatch (Msg.ActiveItemChange(ActiveTab.ByTrivia, idx))
@@ -66,7 +68,7 @@ let view (model: Model) dispatch =
 
     div [ ClassName "d-flex h-100" ] [
         menu onClick model.ActiveByTriviaIndex navItems
-        div [ ClassName "bg-light flex-grow-1 py-2 px-4 tab-content overflow-auto" ] [
-            ofOption activeTrivia
-        ]
+        div [
+            ClassName "bg-light flex-grow-1 py-2 px-4 tab-content overflow-auto"
+        ] [ ofOption activeTrivia ]
     ]

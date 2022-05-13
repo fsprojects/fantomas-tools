@@ -11,62 +11,80 @@ open Reactstrap
 let navigation dispatch =
     let title = sprintf "Fantomas tools"
 
-    Navbar.navbar [ Navbar.Light true
-                    Navbar.Custom [ ClassName "bg-light" ] ] [
-        NavbarBrand.navbarBrand [ NavbarBrand.Custom [ ClassName "py-0" ] ] [
-            str title
-        ]
+    Navbar.navbar [
+        Navbar.Light true
+        Navbar.Custom [ ClassName "bg-light" ]
+    ] [
+        NavbarBrand.navbarBrand [
+            NavbarBrand.Custom [ ClassName "py-0" ]
+        ] [ str title ]
         div [ ClassName "navbar-text py1" ] [
-            Button.button [ Button.Custom [ Href "https://github.com/sponsors/nojaf"
-                                            Target "_blank"
-                                            Id "sponsor-button" ]
-                            Button.Color Success
-                            Button.Outline true ] [
-                i [ ClassName "far fa-heart mr-1 mt-1 text-danger" ] []
+            Button.button [
+                Button.Custom [
+                    Href "https://github.com/sponsors/nojaf"
+                    Target "_blank"
+                    Id "sponsor-button"
+                ]
+                Button.Color Success
+                Button.Outline true
+            ] [
+                i [
+                    ClassName "far fa-heart mr-1 mt-1 text-danger"
+                ] []
                 str "Sponsor"
             ]
-            Button.button [ Button.Custom [ Href "https://github.com/fsprojects/fantomas-tools"
-                                            Target "_blank"
-                                            ClassName "text-white ml-2" ]
-                            Button.Color Dark ] [
+            Button.button [
+                Button.Custom [
+                    Href "https://github.com/fsprojects/fantomas-tools"
+                    Target "_blank"
+                    ClassName "text-white ml-2"
+                ]
+                Button.Color Dark
+            ] [
                 i [ ClassName "fab fa-github mr-1 mt-1" ] []
                 str "GitHub"
             ]
-            Button.button [ Button.Custom [ Href
-                                                "https://www.youtube.com/playlist?list=PLvw_J2kfZCX3Mf6tEbIPZXbzJOD1VGl4K"
-                                            Target "_blank"
-                                            ClassName "text-white ml-2"
-                                            Style [ Background "red"
-                                                    BorderColor "red" ] ] ] [
+            Button.button [
+                Button.Custom [
+                    Href "https://www.youtube.com/playlist?list=PLvw_J2kfZCX3Mf6tEbIPZXbzJOD1VGl4K"
+                    Target "_blank"
+                    ClassName "text-white ml-2"
+                    Style [ Background "red"; BorderColor "red" ]
+                ]
+            ] [
                 i [ ClassName "fab fa-youtube mr-1 mt-1" ] []
                 str "YouTube"
             ]
-            Button.button [ Button.Custom [ ClassName "ml-2 pointer"
-                                            OnClick(fun _ -> dispatch ToggleSettings) ] ] [
+            Button.button [
+                Button.Custom [
+                    ClassName "ml-2 pointer"
+                    OnClick(fun _ -> dispatch ToggleSettings)
+                ]
+            ] [
                 i [ ClassName "fas fa-sliders-h" ] []
             ]
         ]
     ]
 
 let editor model dispatch =
-    Col.col [ Col.Xs(Col.mkCol !^ 5)
-              Col.Custom [ ClassName "border-right h-100 d-flex flex-column" ] ] [
+    Col.col [
+        Col.Xs(Col.mkCol !^ 5)
+        Col.Custom [
+            ClassName "border-right h-100 d-flex flex-column"
+        ]
+    ] [
         div [ Id "source"; ClassName "flex-grow-1" ] [
-            Editor
-                false
-                [ MonacoEditorProp.OnChange(UpdateSourceCode >> dispatch)
-                  MonacoEditorProp.DefaultValue model.SourceCode ]
+            Editor false [
+                MonacoEditorProp.OnChange(UpdateSourceCode >> dispatch)
+                MonacoEditorProp.DefaultValue model.SourceCode
+            ]
         ]
     ]
 //
 let private homeTab =
     Jumbotron.jumbotron [] [
-        h1 [ ClassName "display-3" ] [
-            str "Fantomas tool"
-        ]
-        p [ ClassName "lead" ] [
-            str "Welcome at the Fantomas Tools!"
-        ]
+        h1 [ ClassName "display-3" ] [ str "Fantomas tool" ]
+        p [ ClassName "lead" ] [ str "Welcome at the Fantomas Tools!" ]
         p [] [
             str
                 "if you plan on using these tools extensively, consider cloning the repository and run everything locally."
@@ -76,14 +94,18 @@ let private homeTab =
 let private settings model dispatch inner =
     let className = sprintf "settings %s" (if model.SettingsOpen then "open" else "")
 
-    div [ ClassName className
-          OnClick (fun ev ->
-              if ev.target?className = "settings open" then
-                  dispatch ToggleSettings) ] [
+    div [
+        ClassName className
+        OnClick(fun ev ->
+            if ev.target?className = "settings open" then
+                dispatch ToggleSettings)
+    ] [
         div [ ClassName "inner" ] [
             h1 [ ClassName "text-center" ] [
-                i [ ClassName "fas fa-times close"
-                    OnClick(fun _ -> dispatch ToggleSettings) ] []
+                i [
+                    ClassName "fas fa-times close"
+                    OnClick(fun _ -> dispatch ToggleSettings)
+                ] []
                 str "Settings"
             ]
             inner
@@ -128,10 +150,10 @@ let tabs (model: Model) dispatch =
             sprintf "%s%s" page query
 
         NavItem.navItem [ NavItem.Custom [ Key label ] ] [
-            NavLink.navLink [ NavLink.Custom [ Href href ]
-                              NavLink.Active isActive ] [
-                str label
-            ]
+            NavLink.navLink [
+                NavLink.Custom [ Href href ]
+                NavLink.Active isActive
+            ] [ str label ]
         ]
 
     let isFantomasTab =
@@ -139,21 +161,22 @@ let tabs (model: Model) dispatch =
         | FantomasTab _ -> true
         | _ -> false
 
-    let navItems =
-        [ navItem HomeTab "Home" (model.ActiveTab = HomeTab)
-          navItem ASTTab "AST" (model.ActiveTab = ASTTab)
-          navItem TriviaTab "Trivia" (model.ActiveTab = TriviaTab)
-          navItem
-              (FantomasTab FantomasTools.Client.FantomasOnline.Model.Preview)
-              "Fantomas"
-              (isFantomasTab model.ActiveTab) ]
+    let navItems = [
+        navItem HomeTab "Home" (model.ActiveTab = HomeTab)
+        navItem ASTTab "AST" (model.ActiveTab = ASTTab)
+        navItem TriviaTab "Trivia" (model.ActiveTab = TriviaTab)
+        navItem
+            (FantomasTab FantomasTools.Client.FantomasOnline.Model.Preview)
+            "Fantomas"
+            (isFantomasTab model.ActiveTab)
+    ]
 
     div [ ClassName "col-7 h-100" ] [
         settings model dispatch settingsForTab
-        Nav.nav [ Nav.Tabs true
-                  Nav.Custom [ ClassName "" ] ] [
-            ofList navItems
-        ]
+        Nav.nav [
+            Nav.Tabs true
+            Nav.Custom [ ClassName "" ]
+        ] [ ofList navItems ]
         div [ Id "tab-content" ] [
             activeTab
             div [ Id "commands" ] [ commands ]

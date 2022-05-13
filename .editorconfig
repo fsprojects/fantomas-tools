@@ -2,34 +2,43 @@
 fsharp_max_if_then_else_short_width=50
 fsharp_max_function_binding_width=50
 fsharp_align_function_signature_to_indentation=true
-fsharp_disable_elmish_syntax=true
+fsharp_keep_max_number_of_blank_lines=1
 
 [build.fsx]
-fsharp_disable_elmish_syntax=true
+fsharp_multiline_block_brackets_on_same_column=true
+fsharp_experimental_stroupstrup_style=true
 
 [src/server/**/Program.fs]
 fsharp_max_infix_operator_expression=120
 
 [src/client/fsharp/App.fs]
-fsharp_disable_elmish_syntax=false
+fsharp_multiline_block_brackets_on_same_column=true
+fsharp_experimental_stroupstrup_style=true
 
 [src/client/fsharp/SettingControls.fs]
-fsharp_disable_elmish_syntax=false
+fsharp_multiline_block_brackets_on_same_column=true
+fsharp_experimental_stroupstrup_style=true
 
 [src/client/fsharp/Trivia/Menu.fs]
-fsharp_disable_elmish_syntax=false
+fsharp_multiline_block_brackets_on_same_column=true
+fsharp_experimental_stroupstrup_style=true
 
 [src/client/fsharp/Trivia/ByTrivia.fs]
-fsharp_disable_elmish_syntax=false
+fsharp_multiline_block_brackets_on_same_column=true
+fsharp_experimental_stroupstrup_style=true
 
 [src/client/fsharp/Trivia/ByTriviaNodeCandidates.fs]
-fsharp_disable_elmish_syntax=false
+fsharp_multiline_block_brackets_on_same_column=true
+fsharp_experimental_stroupstrup_style=true
 
 [src/client/fsharp/Trivia/ByTriviaNodes.fs]
-fsharp_disable_elmish_syntax=false
+fsharp_multiline_block_brackets_on_same_column=true
+fsharp_experimental_stroupstrup_style=true
 
 [src/client/fsharp/View.fs]
-fsharp_disable_elmish_syntax=false
+fsharp_multiline_block_brackets_on_same_column=true
+fsharp_experimental_stroupstrup_style=true
 
 [src/client/fsharp/*/View.fs]
-fsharp_disable_elmish_syntax=false
+fsharp_multiline_block_brackets_on_same_column=true
+fsharp_experimental_stroupstrup_style=true

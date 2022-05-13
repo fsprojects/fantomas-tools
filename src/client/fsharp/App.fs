@@ -23,11 +23,14 @@ let App () =
     fragment [] [
         View.navigation dispatch
 
-        Row.row [ Row.Custom [ ClassName "no-gutters"
-                               Id "main" ] ] [
+        Row.row [
+            Row.Custom [ ClassName "no-gutters"; Id "main" ]
+        ] [
             View.editor model dispatch
-            React.router [ router.onUrlChanged onUrlChanged
-                           router.children [ routes ] ]
+            React.router [
+                router.onUrlChanged onUrlChanged
+                router.children [ routes ]
+            ]
         ]
     ]
 

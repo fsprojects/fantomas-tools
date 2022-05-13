@@ -7,10 +7,14 @@ open Reactstrap
 let input key onChange labelValue placeholder value =
     FormGroup.formGroup [] [
         label [] [ str labelValue ]
-        Input.input [ Input.Custom [ Placeholder placeholder
-                                     OnChange(fun ev -> ev.Value |> onChange)
-                                     DefaultValue value
-                                     Key key ] ]
+        Input.input [
+            Input.Custom [
+                Placeholder placeholder
+                OnChange(fun ev -> ev.Value |> onChange)
+                DefaultValue value
+                Key key
+            ]
+        ]
     ]
 
 let private toggleButton_ onClick active label =
@@ -20,27 +24,34 @@ let private toggleButton_ onClick active label =
         else
             "rounded-0"
 
-    Button.button [ Button.Custom [ ClassName className
-                                    Key label
-                                    OnClick onClick ]
-                    Button.Outline(not active) ] [
-        str label
-    ]
+    Button.button [
+        Button.Custom [
+            ClassName className
+            Key label
+            OnClick onClick
+        ]
+        Button.Outline(not active)
+    ] [ str label ]
 
 let toggleButton onTrue onFalse labelTrue labelFalse labelValue value =
     FormGroup.formGroup [] [
         label [] [ str labelValue ]
         br []
-        ButtonGroup.buttonGroup [ ButtonGroup.Custom [ ClassName "btn-group-toggle rounded-0" ] ] [
+        ButtonGroup.buttonGroup [
+            ButtonGroup.Custom [
+                ClassName "btn-group-toggle rounded-0"
+            ]
+        ] [
             toggleButton_ onTrue value labelTrue
             toggleButton_ onFalse (not value) labelFalse
         ]
     ]
 
-type MultiButtonSettings =
-    { Label: string
-      OnClick: obj -> unit
-      IsActive: bool }
+type MultiButtonSettings = {
+    Label: string
+    OnClick: obj -> unit
+    IsActive: bool
+}
 
 let multiButton labelValue (options: MultiButtonSettings list) =
     let buttons =
@@ -50,7 +61,9 @@ let multiButton labelValue (options: MultiButtonSettings list) =
     FormGroup.formGroup [] [
         label [] [ str labelValue ]
         br []
-        ButtonGroup.buttonGroup [ ButtonGroup.Custom [ ClassName "btn-group-toggle rounded-0" ] ] [
-            ofList buttons
-        ]
+        ButtonGroup.buttonGroup [
+            ButtonGroup.Custom [
+                ClassName "btn-group-toggle rounded-0"
+            ]
+        ] [ ofList buttons ]
     ]

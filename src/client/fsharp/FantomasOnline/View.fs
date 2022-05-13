@@ -59,11 +59,10 @@ let private mapToOption dispatch (key, fantomasOption) =
                 key
                 (v = "crlf")
 
-
-    div [ Key key
-          ClassName "fantomas-setting" ] [
-        editor
-    ]
+    div [
+        Key key
+        ClassName "fantomas-setting"
+    ] [ editor ]
 
 let options model dispatch =
     let optionList = Map.toList model.UserOptions |> List.sortBy fst
@@ -72,17 +71,18 @@ let options model dispatch =
     |> List.map (mapToOption dispatch)
     |> ofList
 
-type GithubIssue =
-    { BeforeHeader: string
-      BeforeContent: string
-      AfterHeader: string
-      AfterContent: string
-      Description: string
-      Title: string
-      DefaultOptions: FantomasOption list
-      UserOptions: Map<string, FantomasOption>
-      Version: string
-      IsFsi: bool }
+type GithubIssue = {
+    BeforeHeader: string
+    BeforeContent: string
+    AfterHeader: string
+    AfterContent: string
+    Description: string
+    Title: string
+    DefaultOptions: FantomasOption list
+    UserOptions: Map<string, FantomasOption>
+    Version: string
+    IsFsi: bool
+}
 
 let githubIssueUri (githubIssue: GithubIssue) =
     let location = Browser.Dom.window.location
@@ -131,7 +131,6 @@ let githubIssueUri (githubIssue: GithubIssue) =
     let left, right =
         codeTemplate githubIssue.BeforeHeader githubIssue.BeforeContent,
         codeTemplate githubIssue.AfterHeader githubIssue.AfterContent
-
 
     let fileType =
         if githubIssue.IsFsi then
@@ -186,7 +185,6 @@ Fantomas %s
 
     uri |> Href
 
-
 let private createGitHubIssue code model =
     let description =
         """Please describe here the Fantomas problem you encountered.
@@ -200,25 +198,28 @@ let private createGitHubIssue code model =
 
     match model.Mode with
     | Preview when (not (System.String.IsNullOrWhiteSpace(code))) ->
-        let githubIssue =
-            { BeforeHeader = bh
-              BeforeContent = bc
-              AfterHeader = ah
-              AfterContent = ac
-              Description = description
-              Title = "<Insert meaningful title>"
-              DefaultOptions = model.DefaultOptions
-              UserOptions = model.UserOptions
-              Version = model.Version
-              IsFsi = model.IsFsi }
+        let githubIssue = {
+            BeforeHeader = bh
+            BeforeContent = bc
+            AfterHeader = ah
+            AfterContent = ac
+            Description = description
+            Title = "<Insert meaningful title>"
+            DefaultOptions = model.DefaultOptions
+            UserOptions = model.UserOptions
+            Version = model.Version
+            IsFsi = model.IsFsi
+        }
 
-        Button.button [ Button.Color Danger
-                        Button.Outline true
-                        Button.Custom [ githubIssueUri githubIssue
-                                        Target "_blank"
-                                        ClassName "rounded-0" ] ] [
-            str "Looks wrong? Create an issue!"
-        ]
+        Button.button [
+            Button.Color Danger
+            Button.Outline true
+            Button.Custom [
+                githubIssueUri githubIssue
+                Target "_blank"
+                ClassName "rounded-0"
+            ]
+        ] [ str "Looks wrong? Create an issue!" ]
     | _ ->
         span [ ClassName "text-muted mr-2" ] [
             str "Looks wrong? Try using the preview version!"
@@ -243,17 +244,15 @@ let private viewErrors (model: Model) result isIdempotent errors =
                             sprintf "(%i,%i) (%i, %i)" e.Range.StartLine e.Range.StartCol e.Range.EndLine e.Range.EndCol
                         )
                     ]
-                    Badge.badge [ Badge.Color(badgeColor e) ] [
-                        str (e.Severity.ToString())
-                    ]
-                    Badge.badge [ Badge.Color Color.Dark
-                                  Badge.Custom [ Title "ErrorNumber" ] ] [
-                        ofInt e.ErrorNumber
-                    ]
-                    Badge.badge [ Badge.Color Color.Light
-                                  Badge.Custom [ Title "SubCategory" ] ] [
-                        str e.SubCategory
-                    ]
+                    Badge.badge [ Badge.Color(badgeColor e) ] [ str (e.Severity.ToString()) ]
+                    Badge.badge [
+                        Badge.Color Color.Dark
+                        Badge.Custom [ Title "ErrorNumber" ]
+                    ] [ ofInt e.ErrorNumber ]
+                    Badge.badge [
+                        Badge.Color Color.Light
+                        Badge.Custom [ Title "SubCategory" ]
+                    ] [ str e.SubCategory ]
                     p [] [ str e.Message ]
                 ])
 
@@ -261,40 +260,38 @@ let private viewErrors (model: Model) result isIdempotent errors =
         if isIdempotent then
             None
         else
-            let githubIssue =
-                { BeforeHeader = "Formatted code"
-                  BeforeContent = result.FirstFormat
-                  AfterHeader = "Reformatted code"
-                  AfterContent = Option.defaultValue result.FirstFormat result.SecondFormat
-                  Description = "Fantomas was not able to produce the same code after reformatting the result."
-                  Title = "Idempotency problem when <add use-case>"
-                  DefaultOptions = model.DefaultOptions
-                  UserOptions = model.UserOptions
-                  Version = model.Version
-                  IsFsi = model.IsFsi }
+            let githubIssue = {
+                BeforeHeader = "Formatted code"
+                BeforeContent = result.FirstFormat
+                AfterHeader = "Reformatted code"
+                AfterContent = Option.defaultValue result.FirstFormat result.SecondFormat
+                Description = "Fantomas was not able to produce the same code after reformatting the result."
+                Title = "Idempotency problem when <add use-case>"
+                DefaultOptions = model.DefaultOptions
+                UserOptions = model.UserOptions
+                Version = model.Version
+                IsFsi = model.IsFsi
+            }
 
             div [ ClassName "idempotent-error" ] [
-                h6 [] [
-                    str "The result was not idempotent"
-                ]
+                h6 [] [ str "The result was not idempotent" ]
                 str "Fantomas was able to format the code, but when formatting the result again, the code changed."
                 br []
                 str "The result after the first format is being displayed."
                 br []
-                Button.button [ Button.Color Danger
-                                Button.Custom [ githubIssueUri githubIssue
-                                                Target "_blank"
-                                                ClassName "rounded-0" ] ] [
-                    str "Report idempotancy issue"
-                ]
+                Button.button [
+                    Button.Color Danger
+                    Button.Custom [
+                        githubIssueUri githubIssue
+                        Target "_blank"
+                        ClassName "rounded-0"
+                    ]
+                ] [ str "Report idempotancy issue" ]
             ]
             |> Some
 
     if not isIdempotent || not (List.isEmpty errors) then
-        ul [ Id "ast-errors"; ClassName "" ] [
-            ofOption idempotency
-            ofList errors
-        ]
+        ul [ Id "ast-errors"; ClassName "" ] [ ofOption idempotency; ofList errors ]
         |> Some
     else
         None
@@ -311,9 +308,15 @@ let view model =
             | Some _ -> result.FirstFormat, false, result.FirstValidation
             | None -> result.FirstFormat, true, result.FirstValidation
 
-        div [ ClassName "tab-result fantomas-result" ] [
-            div [ ClassName "fantomas-editor-container" ] [
-                Editor true [ MonacoEditorProp.DefaultValue formattedCode ]
+        div [
+            ClassName "tab-result fantomas-result"
+        ] [
+            div [
+                ClassName "fantomas-editor-container"
+            ] [
+                Editor true [
+                    MonacoEditorProp.DefaultValue formattedCode
+                ]
             ]
             ofOption (viewErrors model result isIdempotent astErrors)
         ]
@@ -330,33 +333,39 @@ let private userChangedSettings (model: Model) =
 
 let commands code model dispatch =
     let formatButton =
-        Button.button [ Button.Color Primary
-                        Button.Custom [ OnClick(fun _ -> dispatch Msg.Format) ] ] [
-            str "Format"
-        ]
+        Button.button [
+            Button.Color Primary
+            Button.Custom [
+                OnClick(fun _ -> dispatch Msg.Format)
+            ]
+        ] [ str "Format" ]
 
     let copySettingButton =
         if userChangedSettings model then
-            Button.button [ Button.Color Secondary
-                            Button.Custom [ ClassName "text-white"
-                                            OnClick(fun _ -> dispatch CopySettings) ] ] [
-                str "Copy settings"
-            ]
+            Button.button [
+                Button.Color Secondary
+                Button.Custom [
+                    ClassName "text-white"
+                    OnClick(fun _ -> dispatch CopySettings)
+                ]
+            ] [ str "Copy settings" ]
             |> Some
         else
             None
 
     match model.State with
     | EditorState.LoadingOptions -> []
-    | EditorState.LoadingFormatRequest ->
-        [ formatButton
-          ofOption copySettingButton ]
+    | EditorState.LoadingFormatRequest -> [
+        formatButton
+        ofOption copySettingButton
+      ]
     | EditorState.OptionsLoaded
-    | EditorState.FormatResult _
-    | EditorState.FormatError _ ->
-        [ createGitHubIssue code model
+      | EditorState.FormatResult _
+      | EditorState.FormatError _ -> [
+          createGitHubIssue code model
           formatButton
-          ofOption copySettingButton ]
+          ofOption copySettingButton
+      ]
     |> fragment []
 
 let settings model dispatch =
@@ -364,14 +373,18 @@ let settings model dispatch =
     | EditorState.LoadingOptions -> Spinner.spinner [ Spinner.Color Primary ] []
     | _ ->
         let fantomasMode =
-            [ FantomasMode.V2, "2.x"
-              FantomasMode.V3, "3.x"
-              FantomasMode.V4, "4.x"
-              FantomasMode.Preview, "Preview" ]
+            [
+                FantomasMode.V2, "2.x"
+                FantomasMode.V3, "3.x"
+                FantomasMode.V4, "4.x"
+                FantomasMode.Preview, "Preview"
+            ]
             |> List.map (fun (m, l) ->
-                { IsActive = model.Mode = m
-                  Label = l
-                  OnClick = (fun _ -> ChangeMode m |> dispatch) }: SettingControls.MultiButtonSettings)
+                {
+                    IsActive = model.Mode = m
+                    Label = l
+                    OnClick = (fun _ -> ChangeMode m |> dispatch)
+                }: SettingControls.MultiButtonSettings)
             |> SettingControls.multiButton "Mode"
 
         let fileExtension =

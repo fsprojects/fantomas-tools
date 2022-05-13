@@ -26,7 +26,10 @@ let fantomasV4Port = 10707
 let clientDir = __SOURCE_DIRECTORY__ </> "src" </> "client"
 
 let setClientDir =
-    (fun (opt: Yarn.YarnParams) -> { opt with WorkingDirectory = clientDir })
+    (fun (opt: Yarn.YarnParams) ->
+        { opt with
+            WorkingDirectory = clientDir
+        })
 
 let serverDir = __SOURCE_DIRECTORY__ </> "src" </> "server"
 
@@ -50,14 +53,29 @@ Target.create "Fantomas-Git" (fun _ ->
         // git clone -b master --single-branch https://github.com/fsprojects/fantomas.git .deps/fantomas
         Git.Repository.cloneSingleBranch "." "https://github.com/fsprojects/fantomas.git" branch targetDir
 
-    DotNet.exec (fun opt -> { opt with WorkingDirectory = targetDir }) "tool" "restore"
+    DotNet.exec
+        (fun opt ->
+            { opt with
+                WorkingDirectory = targetDir
+            })
+        "tool"
+        "restore"
     |> ignore
 
-    DotNet.exec (fun opt -> { opt with WorkingDirectory = targetDir }) "paket" "restore"
+    DotNet.exec
+        (fun opt ->
+            { opt with
+                WorkingDirectory = targetDir
+            })
+        "paket"
+        "restore"
     |> ignore
 
     DotNet.build
-        (fun opt -> { opt with Configuration = DotNet.BuildConfiguration.Release })
+        (fun opt ->
+            { opt with
+                Configuration = DotNet.BuildConfiguration.Release
+            })
         "./.deps/fantomas/src/Fantomas.Core/Fantomas.Core.fsproj")
 
 Target.create "Clean" (fun _ ->
@@ -70,15 +88,20 @@ Target.create "Clean" (fun _ ->
     |> Seq.iter Shell.rm_rf)
 
 Target.create "Build" (fun _ ->
-    [ "ASTViewer"
-      "TriviaViewer"
-      "FantomasOnlineV2"
-      "FantomasOnlineV3"
-      "FantomasOnlineV4"
-      "FantomasOnlinePreview" ]
+    [
+        "ASTViewer"
+        "TriviaViewer"
+        "FantomasOnlineV2"
+        "FantomasOnlineV3"
+        "FantomasOnlineV4"
+        "FantomasOnlinePreview"
+    ]
     |> List.iter (fun project ->
         DotNet.build
-            (fun config -> { config with Configuration = DotNet.BuildConfiguration.Release })
+            (fun config ->
+                { config with
+                    Configuration = DotNet.BuildConfiguration.Release
+                })
             (sprintf "%s/%s/%s.fsproj" serverDir project project)))
 
 Target.create "Watch" (fun target ->
@@ -130,14 +153,15 @@ Target.create "Watch" (fun target ->
     let fantomasPreview = runLambda "FantomasOnlinePreview"
 
     let subscription =
-        Observable.mergeArray
-            [| frontend
-               astViewer
-               triviaViewer
-               fantomasV2
-               fantomasV3
-               fantomasV4
-               fantomasPreview |]
+        Observable.mergeArray [|
+            frontend
+            astViewer
+            triviaViewer
+            fantomasV2
+            fantomasV3
+            fantomasV4
+            fantomasPreview
+        |]
         |> Observable.observeOn System.Reactive.Concurrency.ThreadPoolScheduler.Instance
         |> Observable.subscribe (fun (name, event: CommandEvent) ->
             let info (msg: string) =
@@ -159,24 +183,26 @@ Target.create "Watch" (fun target ->
     cts.Cancel())
 
 Target.create "PublishLambdas" (fun _ ->
-    [ "FantomasOnlineV2"
-      "FantomasOnlineV3"
-      "FantomasOnlineV4"
-      "FantomasOnlinePreview"
-      "ASTViewer"
-      "TriviaViewer" ]
-    |> List.map (fun project ->
-        async {
-            let output = artifactDir </> project
+    [
+        "FantomasOnlineV2"
+        "FantomasOnlineV3"
+        "FantomasOnlineV4"
+        "FantomasOnlinePreview"
+        "ASTViewer"
+        "TriviaViewer"
+    ]
+    |> List.map (fun project -> async {
+        let output = artifactDir </> project
 
-            do
-                DotNet.publish
-                    (fun config ->
-                        { config with
-                            Configuration = DotNet.BuildConfiguration.Release
-                            OutputPath = Some output })
-                    (sprintf "%s/%s/%s.fsproj" serverDir project project)
-        })
+        do
+            DotNet.publish
+                (fun config ->
+                    { config with
+                        Configuration = DotNet.BuildConfiguration.Release
+                        OutputPath = Some output
+                    })
+                (sprintf "%s/%s/%s.fsproj" serverDir project project)
+    })
     |> Async.Parallel
     |> Async.Ignore
     |> Async.RunSynchronously)
@@ -207,7 +233,10 @@ Target.create "RunWithLambdas" (fun target ->
     setViteToProduction ()
 
     DotNet.exec
-        (fun opt -> { opt with WorkingDirectory = clientDir })
+        (fun opt ->
+            { opt with
+                WorkingDirectory = clientDir
+            })
         "fable"
         "watch ./fsharp/FantomasTools.fsproj --outDir ./src/bin --run vite"
     |> printfn "%A")
@@ -234,13 +263,12 @@ Target.create "FormatChanged" (fun _ ->
             Some file
         else
             None)
-    |> Seq.map (fun file ->
-        async {
-            let result = DotNet.exec id "fantomas" file
+    |> Seq.map (fun file -> async {
+        let result = DotNet.exec id "fantomas" file
 
-            if not result.OK then
-                printfn "Problem when formatting %s:\n%A" file result.Errors
-        })
+        if not result.OK then
+            printfn "Problem when formatting %s:\n%A" file result.Errors
+    })
     |> Async.Parallel
     |> Async.RunSynchronously
     |> ignore)
@@ -277,17 +305,21 @@ open Fake.Core.TargetOperators
 "Install" <== [ "YarnInstall"; "NETInstall" ]
 
 "CI"
-<== [ "BundleFrontend"
-      "PublishLambdas"
-      "Clean"
-      "Fantomas-Git"
-      "CheckFormat" ]
+<== [
+    "BundleFrontend"
+    "PublishLambdas"
+    "Clean"
+    "Fantomas-Git"
+    "CheckFormat"
+]
 
 "PR"
-<== [ "BundleFrontend"
-      "Build"
-      "Clean"
-      "Fantomas-Git"
-      "CheckFormat" ]
+<== [
+    "BundleFrontend"
+    "Build"
+    "Clean"
+    "Fantomas-Git"
+    "CheckFormat"
+]
 
 Target.runOrDefault "Build"

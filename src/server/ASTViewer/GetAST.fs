@@ -15,7 +15,6 @@ let getVersion () =
     let version = assembly.GetName().Version
     sprintf "%i.%i.%i" version.Major version.Minor version.Revision
 
-
 [<RequireQualifiedAccess>]
 type ASTResponse =
     | Ok of json: string

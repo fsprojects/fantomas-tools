@@ -2,7 +2,6 @@ module FantomasTools.Client.Trivia.Model
 
 open TriviaViewer.Shared
 
-
 type ActiveTab =
     | ByTriviaNodes
     | ByTrivia
