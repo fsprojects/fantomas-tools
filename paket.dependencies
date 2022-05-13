@@ -3,8 +3,7 @@ source https://api.nuget.org/v3/index.json
 storage: none
 framework: netstandard2.0
 # for the local Fantomas build
-nuget FSharp.Core 6.0.1
-nuget FSharp.Compiler.Service 41.0.1
+nuget FSharp.Core content: none
 nuget editorconfig
 nuget MAB.DotIgnore
 nuget System.IO.Abstractions

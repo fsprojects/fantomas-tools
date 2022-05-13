@@ -57,11 +57,11 @@ let getTrivia json : GetTriviaResponse =
         let trivia =
             [ yield! collectTriviaFromDirectives source directives
               yield! collectTriviaFromCodeComments source codeComments
-              yield! collectTriviaFromBlankLines source triviaNodes codeComments ]
+              yield! collectTriviaFromBlankLines FormatConfig.FormatConfig.Default source triviaNodes codeComments ]
             |> List.sortBy (fun n -> n.Range.Start.Line, n.Range.Start.Column)
 
         let triviaCandidates = collectTriviaCandidates ast
-        let triviaNodes = collectTrivia source ast
+        let triviaNodes = collectTrivia FormatConfig.FormatConfig.Default source ast
 
         Encoders.encodeParseResult trivia triviaNodes triviaCandidates
         |> GetTriviaResponse.Ok
