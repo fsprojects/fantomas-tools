@@ -57,6 +57,20 @@ let navigation dispatch =
             ]
             Button.button [
                 Button.Custom [
+                    Href "https://github.com/fsprojects/fantomas/blob/master/docs/Documentation.md"
+                    Target "_blank"
+                    ClassName "text-white ml-2"
+                    Style [
+                        Background "grey"
+                        BorderColor "grey"
+                    ]
+                ]
+            ] [
+                i [ ClassName "fa fa-book mr-1 mt-1" ] []
+                str "Docs"
+            ]
+            Button.button [
+                Button.Custom [
                     ClassName "ml-2 pointer"
                     OnClick(fun _ -> dispatch ToggleSettings)
                 ]
