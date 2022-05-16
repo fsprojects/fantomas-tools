@@ -15,13 +15,13 @@ To run this tool locally you need:
 
 > dotnet tool restore
 
-* Pull in source dependencies:
+* Pull in source dependencies and packages:
 
-> dotnet fake run build.fsx -t "Fantomas-Git"
+> dotnet fake build -t Install
 
 * Run the Watch target with FAKE:
 
-> dotnet fake run build.fsx -t Watch
+> dotnet fake build -t Watch
 
 NOTE: you may see some error output during this process on first run, but those errors should eventually resolve and subsequent runs work without error.
 
@@ -32,8 +32,8 @@ NOTE: you may see some error output during this process on first run, but those 
 * Open the repository via https://gitpod.io/#https://github.com/fsprojects/fantomas-tools
 
 * Run 
-> dotnet fake run build.fsx -t "Fantomas-Git"
+> dotnet fake build -t Install
 
-> dotnet fake run build.fsx -t Watch
+> dotnet fake build -t Watch
 
 * Open browser for port `9060`
