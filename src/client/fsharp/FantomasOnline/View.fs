@@ -316,6 +316,7 @@ let view model =
             ] [
                 Editor true [
                     MonacoEditorProp.DefaultValue formattedCode
+                    MonacoEditorProp.Options(MonacoEditorProp.rulerOption model.UserOptions model.DefaultOptions)
                 ]
             ]
             ofOption (viewErrors model result isIdempotent astErrors)

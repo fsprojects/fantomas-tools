@@ -22,6 +22,17 @@ type MonacoEditorProp =
     | OnMount of Action<IMonacoEditor, obj>
     | Options of obj
 
+    static member rulerOption userOptions defaultOptions =
+        let maxLineLength =
+            FantomasOnline.Shared.tryGetOptionValue userOptions defaultOptions "MaxLineLength" int
+
+        match maxLineLength with
+        | Some n ->
+            createObj
+                [ "rulers"
+                  ==> [| createObj [ "column" ==> n; "color" ==> "black" ] |] ]
+        | None -> createObj []
+
 let inline private MonacoEditor (props: MonacoEditorProp list) : ReactElement =
     ofImport "default" "@monaco-editor/react" (keyValueList CaseRules.LowerFirst props) []
 

@@ -27,6 +27,23 @@ let optionValue =
     | MultilineFormatterTypeOption (_, _, v)
     | EndOfLineStyleOption (_, _, v) -> v
 
+let tryGetUserOptionValue userOptions key castFunc =
+    userOptions
+    |> Map.tryFind key
+    |> Option.map (optionValue >> castFunc)
+
+let tryGetDefaultOptionValue defaultOptions key castFunc =
+    defaultOptions
+    |> List.tryFind (fun o -> (getOptionKey o) = key)
+    |> Option.map (optionValue >> castFunc)
+
+let tryGetOptionValue userOptions defaultOptions key castFunc =
+    let userOption = tryGetUserOptionValue userOptions key castFunc
+
+    match userOption with
+    | Some n -> Some n
+    | None -> tryGetDefaultOptionValue defaultOptions key castFunc
+
 type FormatRequest =
     { SourceCode: string
       Options: FantomasOption list
