@@ -91,6 +91,7 @@ let editor model dispatch =
             Editor false [
                 MonacoEditorProp.OnChange(UpdateSourceCode >> dispatch)
                 MonacoEditorProp.DefaultValue model.SourceCode
+                MonacoEditorProp.Options(MonacoEditorProp.rulerOption model.FantomasModel.MaxLineLength)
             ]
         ]
     ]

@@ -46,3 +46,7 @@ type Model =
         List.zip defaultValues userValues
         |> List.filter (fun (dv, uv) -> dv <> uv)
         |> List.map snd
+
+    member this.MaxLineLength: int =
+        FantomasOnline.Shared.tryGetOptionValue this.UserOptions this.DefaultOptions "MaxLineLength" int
+        |> Option.defaultValue 120
