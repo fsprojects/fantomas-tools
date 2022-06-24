@@ -66,8 +66,8 @@ let formatCode
                     |> Encode.toString 4
 
                 return FormatResponse.Ok response
-            with
-            | exn -> return FormatResponse.InternalError(string exn)
+            with exn ->
+                return FormatResponse.InternalError(string exn)
         | Error err -> return FormatResponse.BadRequest err
     }
 
