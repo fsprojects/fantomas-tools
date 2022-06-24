@@ -316,7 +316,7 @@ let view model =
             ] [
                 Editor true [
                     MonacoEditorProp.DefaultValue formattedCode
-                    MonacoEditorProp.Options(MonacoEditorProp.rulerOption model.UserOptions model.DefaultOptions)
+                    MonacoEditorProp.Options(MonacoEditorProp.rulerOption model.MaxLineLength)
                 ]
             ]
             ofOption (viewErrors model result isIdempotent astErrors)
