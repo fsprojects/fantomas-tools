@@ -23,15 +23,7 @@ fsharp_experimental_stroustrup_style=true
 fsharp_multiline_block_brackets_on_same_column=true
 fsharp_experimental_stroustrup_style=true
 
-[src/client/fsharp/Trivia/ByTrivia.fs]
-fsharp_multiline_block_brackets_on_same_column=true
-fsharp_experimental_stroustrup_style=true
-
-[src/client/fsharp/Trivia/ByTriviaNodeCandidates.fs]
-fsharp_multiline_block_brackets_on_same_column=true
-fsharp_experimental_stroustrup_style=true
-
-[src/client/fsharp/Trivia/ByTriviaNodes.fs]
+[src/client/fsharp/Trivia/Tabs/*.fs]
 fsharp_multiline_block_brackets_on_same_column=true
 fsharp_experimental_stroustrup_style=true
 

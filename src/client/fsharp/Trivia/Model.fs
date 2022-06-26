@@ -2,19 +2,20 @@ module FantomasTools.Client.Trivia.Model
 
 open TriviaViewer.Shared
 
+[<RequireQualifiedAccess>]
 type ActiveTab =
-    | ByTriviaNodes
-    | ByTrivia
-    | ByTriviaNodeCandidates
+    | TriviaInstructions
+    | Trivia
+    | RootNode
 
 type Model =
     { ActiveTab: ActiveTab
       Trivia: Trivia list
-      TriviaNodeCandidates: TriviaNodeCandidate list
-      TriviaNodes: TriviaNode list
+      RootNode: TriviaNode
+      TriviaInstructions: TriviaInstruction list
       Error: string option
       IsLoading: bool
-      ActiveByTriviaNodeIndex: int
+      ActiveByTriviaInstructionIndex: int
       ActiveByTriviaIndex: int
       Defines: string
       Version: string

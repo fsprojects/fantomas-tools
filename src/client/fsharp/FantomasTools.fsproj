@@ -22,11 +22,10 @@
     <Compile Include="Trivia\Decoders.fs" />
     <Compile Include="Trivia\State.fs" />
     <Compile Include="Trivia\Menu.fs" />
-    <Compile Include="Trivia\ByTrivia.fs" />
-    <Compile Include="Trivia\ByTriviaNodeCandidates.fs" />
-    <Compile Include="Trivia\ByTriviaNodes.fs" />
+    <Compile Include="Trivia\Tabs\Trivia.fs" />
+    <Compile Include="Trivia\Tabs\RootNode.fs" />
+    <Compile Include="Trivia\Tabs\TriviaInstructions.fs" />
     <Compile Include="Trivia\View.fs" />
-
 
     <Compile Include="FantomasOnline\Model.fs" />
     <Compile Include="FantomasOnline\Encoders.fs" />

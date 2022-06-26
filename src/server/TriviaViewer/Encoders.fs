@@ -1,6 +1,7 @@
 module TriviaViewer.Server.Encoders
 
 open FSharp.Compiler.Text
+open Fantomas.Core
 open Thoth.Json.Net
 open Fantomas.Core.TriviaTypes
 open TriviaViewer
@@ -8,7 +9,7 @@ open TriviaViewer
 let private mapToComment comment =
     match comment with
     | LineCommentAfterSourceCode c -> Shared.LineCommentAfterSourceCode c
-    | LineCommentOnSingleLine c -> Shared.LineCommentOnSingleLine c
+    | CommentOnSingleLine c -> Shared.LineCommentOnSingleLine c
     | BlockComment (c, nb, na) -> Shared.BlockComment(c, nb, na)
 
 let private mapToTriviaContent (tc: TriviaContent) =
@@ -29,38 +30,33 @@ let private encodeRange (range: Range) =
           "endLine", Encode.int range.End.Line
           "endColumn", Encode.int range.End.Column ]
 
-let private encodeTriviaNode (tn: TriviaNode) =
+let rec private encodeTriviaNode (tn: TriviaNode) =
     Encode.object
         [ "type", Encode.string (string tn.Type)
-          "contentBefore",
-          List.map encodeTriviaContent tn.ContentBefore
-          |> Encode.list
-          "contentItself",
-          Option.map mapToTriviaContent tn.ContentItself
-          |> Encode.option triviaContentEncoder
-          "contentAfter",
-          List.map encodeTriviaContent tn.ContentAfter
-          |> Encode.list
-          "range", encodeRange tn.Range ]
+          "range", encodeRange tn.Range
+          "children", Encode.array (Array.map encodeTriviaNode tn.Children) ]
 
 let private encodeTrivia (t: Trivia) =
     Encode.object
         [ "item", encodeTriviaContent t.Item
           "range", encodeRange t.Range ]
 
-let private encodeTriviaNodeAssigner (t: TriviaNodeAssigner) =
+let private encodeTriviaInstruction (ti: TriviaInstruction) =
     Encode.object
-        [ "type", Encode.string "main-node"
-          "name", Encode.string (string t.Type)
-          "range", encodeRange t.Range ]
+        [ "trivia", encodeTrivia ti.Trivia
+          "type", Encode.string (string ti.Type)
+          "range", encodeRange ti.Range
+          "addBefore", Encode.bool ti.AddBefore ]
 
-let internal encodeParseResult trivia triviaNodes triviaCandidates =
+let internal encodeParseResult
+    (trivia: Trivia list)
+    (rootNode: TriviaNode)
+    (triviaInstructions: TriviaInstruction list)
+    =
     Encode.object
         [ "trivia", List.map encodeTrivia trivia |> Encode.list
-          "triviaNodes",
-          List.map encodeTriviaNode triviaNodes
-          |> Encode.list
-          "triviaNodeCandidates",
-          List.map encodeTriviaNodeAssigner triviaCandidates
+          "rootNode", encodeTriviaNode rootNode
+          "triviaInstructions",
+          List.map encodeTriviaInstruction triviaInstructions
           |> Encode.list ]
     |> Encode.toString 4
