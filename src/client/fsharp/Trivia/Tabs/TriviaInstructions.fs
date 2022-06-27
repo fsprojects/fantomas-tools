@@ -4,25 +4,14 @@ open FantomasTools.Client.Trivia.Model
 open Fable.Core.JsInterop
 open Fable.React
 open Fable.React.Props
-open FantomasTools.Client.Trivia.Tabs
-open Reactstrap
 open TriviaViewer.Shared
 open FantomasTools.Client.Trivia.Menu
 
-// let private rangeToText (r: Range) =
-//     sprintf "(%i,%i - %i,%i)" r.StartLine r.StartColumn r.EndLine r.EndColumn
-//
-// let private rangeToBadge (r: Range) =
-//     Badge.badge [
-//         Badge.Color Dark
-//         Badge.Custom [ ClassName "px-2 py-1 ml-auto" ]
-//     ] [ (rangeToText r |> str) ]
-//
-// let private isNotAnEmptyList = List.isEmpty >> not
-//
+let private isNotAnEmptyList = List.isEmpty >> not
+
 let private triviaContentToDetail tc =
     let wrap outer inner = [
-        str (sprintf "%s(" outer)
+        str $"%s{outer}("
         code [] [ str inner ]
         str ")"
     ]
@@ -42,31 +31,59 @@ let private triviaContentToDetail tc =
             ]
     | Directive d -> fragment [] (wrap "Directive" d)
 
-let private activeTriviaNode (ti: TriviaInstruction) =
+let private activeTriviaNode (instructions: TriviaInstruction list) =
+    let ti = List.head instructions
     let title = $"%s{ti.Type} %s{rangeToText ti.Range}"
+
+    let before, after =
+        List.partition (fun (ti: TriviaInstruction) -> ti.AddBefore) instructions
+
+    let contentInfo title items =
+        if (isNotAnEmptyList items) then
+            let listItems =
+                items
+                |> List.mapi (fun idx (instruction: TriviaInstruction) ->
+                    li [ Key !!idx ] [
+                        triviaContentToDetail instruction.Trivia.Item
+                    ])
+
+            fragment [] [
+                h4 [] [ str title ]
+                ul [ ClassName "list-unstyled" ] [ ofList listItems ]
+            ]
+        else
+            ofOption None
 
     div [ ClassName "tab-pane active" ] [
         h2 [ ClassName "mb-4" ] [ str title ]
         h4 [] [ str title ]
-        triviaContentToDetail ti.Trivia.Item
+        contentInfo "Content before" before
+        contentInfo "Content after" after
     ]
 
 let view (model: Model) dispatch =
-    let navItems =
+    let groupedInstructions =
         model.TriviaInstructions
-        |> List.map (fun tn -> {
-            Label = tn.Type
-            ClassName = ""
-            Title = "MainNode"
-            Range = tn.Range
-        })
+        |> List.groupBy (fun ti -> $"{ti.Type}_{rangeToText ti.Range}")
+
+    let navItems =
+        groupedInstructions
+        |> List.map (fun (_, g) ->
+            let ti = List.head g
+
+            {
+                Label = ti.Type
+                ClassName = ""
+                Title = "MainNode"
+                Range = ti.Range
+            })
 
     let onClick idx =
         dispatch (Msg.ActiveItemChange(ActiveTab.TriviaInstructions, idx))
 
     let activeNode =
-        List.tryItem model.ActiveByTriviaInstructionIndex model.TriviaInstructions
-        |> Option.map activeTriviaNode
+        List.tryItem model.ActiveByTriviaInstructionIndex groupedInstructions
+        |> Option.map (snd >> activeTriviaNode)
 
     div [ ClassName "d-flex h-100" ] [
         menu onClick model.ActiveByTriviaInstructionIndex navItems
