@@ -4,6 +4,7 @@ open FantomasTools.Client.Trivia.Model
 open Fable.Core.JsInterop
 open Fable.React
 open Fable.React.Props
+open FantomasTools.Client.Trivia.Tabs
 open Reactstrap
 open TriviaViewer.Shared
 open FantomasTools.Client.Trivia.Menu
@@ -19,69 +20,52 @@ open FantomasTools.Client.Trivia.Menu
 //
 // let private isNotAnEmptyList = List.isEmpty >> not
 //
-// let private triviaContentToDetail tc =
-//     let wrap outer inner = [
-//         str (sprintf "%s(" outer)
-//         code [] [ str inner ]
-//         str ")"
-//     ]
-//
-//     match tc with
-//     | Newline -> str "Newline"
-//     | Comment c ->
-//         match c with
-//         | BlockComment (bc, _, _) -> (wrap "BlockComment" bc)
-//         | LineCommentOnSingleLine lc -> (wrap "LineCommentOnSingleLine" lc)
-//         | LineCommentAfterSourceCode lc -> (wrap "LineCommentAfterSourceCode" lc)
-//         |> fun inner ->
-//             fragment [] [
-//                 str "Comment("
-//                 yield! inner
-//                 str ")"
-//             ]
-//     | Directive d -> fragment [] (wrap "Directive" d)
-//
-// let private activeTriviaNode (tn: TriviaNode) =
-//     let title = $"%s{tn.Type} %s{rangeToText tn.Range}"
-//
-//     let contentInfo title items =
-//         if (isNotAnEmptyList items) then
-//             let listItems =
-//                 items
-//                 |> List.mapi (fun idx item -> li [ Key !!idx ] [ triviaContentToDetail item ])
-//
-//             fragment [] [
-//                 h4 [] [ str title ]
-//                 ul [ ClassName "list-unstyled" ] [ ofList listItems ]
-//             ]
-//         else
-//             ofOption None
-//
-//     div [ ClassName "tab-pane active" ] [
-//         h2 [ ClassName "mb-4" ] [ str title ]
-//         contentInfo "Content before" tn.ContentBefore
-//         contentInfo "Content itself" (Option.toList tn.ContentItself)
-//         contentInfo "Content after" tn.ContentAfter
-//     ]
+let private triviaContentToDetail tc =
+    let wrap outer inner = [
+        str (sprintf "%s(" outer)
+        code [] [ str inner ]
+        str ")"
+    ]
 
-let view (model: Model) dispatch = str "todo"
+    match tc with
+    | Newline -> str "Newline"
+    | Comment c ->
+        match c with
+        | BlockComment (bc, _, _) -> (wrap "BlockComment" bc)
+        | LineCommentOnSingleLine lc -> (wrap "LineCommentOnSingleLine" lc)
+        | LineCommentAfterSourceCode lc -> (wrap "LineCommentAfterSourceCode" lc)
+        |> fun inner ->
+            fragment [] [
+                str "Comment("
+                yield! inner
+                str ")"
+            ]
+    | Directive d -> fragment [] (wrap "Directive" d)
+
+let private activeTriviaNode (ti: TriviaInstruction) =
+    let title = $"%s{ti.Type} %s{rangeToText ti.Range}"
+
+    div [ ClassName "tab-pane active" ] [
+        h2 [ ClassName "mb-4" ] [ str title ]
+        h4 [] [ str title ]
+        triviaContentToDetail ti.Trivia.Item
+    ]
+
+let view (model: Model) dispatch =
     let navItems =
-        model.TriviaNodes
-        |> List.map (fun tn ->
-            let className = "nav-link-main-node"
-
-            {
-                Label = tn.Type
-                ClassName = className
-                Title = "MainNode"
-                Range = tn.Range
-            })
+        model.TriviaInstructions
+        |> List.map (fun tn -> {
+            Label = tn.Type
+            ClassName = ""
+            Title = "MainNode"
+            Range = tn.Range
+        })
 
     let onClick idx =
-        dispatch (Msg.ActiveItemChange(ActiveTab.ByTriviaNodes, idx))
+        dispatch (Msg.ActiveItemChange(ActiveTab.TriviaInstructions, idx))
 
     let activeNode =
-        List.tryItem model.ActiveByTriviaInstructionIndex model.TriviaNodes
+        List.tryItem model.ActiveByTriviaInstructionIndex model.TriviaInstructions
         |> Option.map activeTriviaNode
 
     div [ ClassName "d-flex h-100" ] [
