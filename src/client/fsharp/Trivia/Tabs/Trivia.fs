@@ -1,4 +1,4 @@
-module FantomasTools.Client.Trivia.ByTrivia
+module FantomasTools.Client.Trivia.Tabs.Trivia
 
 open Fable.React
 open Fable.React.Props
@@ -60,7 +60,7 @@ let view (model: Model) dispatch =
             })
 
     let onClick idx =
-        dispatch (Msg.ActiveItemChange(ActiveTab.ByTrivia, idx))
+        dispatch (Msg.ActiveItemChange(ActiveTab.Trivia, idx))
 
     let activeTrivia =
         List.tryItem model.ActiveByTriviaIndex model.Trivia

@@ -2,8 +2,10 @@ module TriviaViewer.GetTrivia
 
 open FSharp.Compiler.Syntax
 open Fantomas.Core
+open Fantomas.Core.SourceParser
 open Fantomas.Core.AstTransformer
 open Fantomas.Core.Trivia
+open Fantomas.Core.AstExtensions
 open TriviaViewer.Shared
 open TriviaViewer.Server
 
@@ -11,17 +13,6 @@ let getVersion () : string =
     let assembly = Fantomas.FCS.Parse.parseFile.GetType().Assembly
     let version = assembly.GetName().Version
     sprintf "%i.%i.%i" version.Major version.Minor version.Revision
-
-let private collectTriviaCandidates ast =
-    let triviaNodesFromAST =
-        match ast with
-        | ParsedInput.ImplFile (ParsedImplFileInput.ParsedImplFileInput (hashDirectives = hds; modules = mns)) ->
-            astToNode hds mns
-
-        | ParsedInput.SigFile (ParsedSigFileInput.ParsedSigFileInput (modules = mns)) -> sigAstToNode mns
-
-    triviaNodesFromAST
-    |> List.sortBy (fun n -> n.Range.Start.Line, n.Range.Start.Column)
 
 let private parseAST source defines isFsi = Fantomas.FCS.Parse.parseFile isFsi source defines
 
@@ -43,27 +34,28 @@ let getTrivia json : GetTriviaResponse =
         let source = FSharp.Compiler.Text.SourceText.ofString content
         let ast, _diags = parseAST source (List.ofArray defines) isFsi
 
-        let triviaNodesFromAST, directives, codeComments =
+        let rootNode, directives, codeComments =
             match ast with
-            | ParsedInput.ImplFile (SourceParser.ParsedImplFileInput (hds, mns, directives, codeComments)) ->
-                astToNode hds mns, directives, codeComments
-            | ParsedInput.SigFile (SourceParser.ParsedSigFileInput (_, mns, directives, codeComments)) ->
-                sigAstToNode mns, directives, codeComments
-
-        let triviaNodes =
-            triviaNodesFromAST
-            |> List.sortBy (fun n -> n.Range.Start.Line, n.Range.Start.Column)
+            | ParsedInput.ImplFile (ParsedImplFileInput (hds, mns, directives, codeComments)) ->
+                let rootNode = astToNode ast.FullRange hds mns
+                rootNode, directives, codeComments
+            | ParsedInput.SigFile (ParsedSigFileInput (_, mns, directives, codeComments)) ->
+                let rootNode = sigAstToNode ast.FullRange mns
+                rootNode, directives, codeComments
 
         let trivia =
-            [ yield! collectTriviaFromDirectives source directives
-              yield! collectTriviaFromCodeComments source codeComments
-              yield! collectTriviaFromBlankLines FormatConfig.FormatConfig.Default source triviaNodes codeComments ]
+            let codeRange = ast.FullRange
+
+            [ yield! collectTriviaFromDirectives source directives None
+              yield! collectTriviaFromCodeComments source codeComments None
+              yield!
+                  collectTriviaFromBlankLines FormatConfig.FormatConfig.Default source rootNode codeComments codeRange ]
             |> List.sortBy (fun n -> n.Range.Start.Line, n.Range.Start.Column)
 
-        let triviaCandidates = collectTriviaCandidates ast
-        let triviaNodes = collectTrivia FormatConfig.FormatConfig.Default source ast
+        let triviaInstructions =
+            collectTrivia FormatConfig.FormatConfig.Default source ast None
 
-        Encoders.encodeParseResult trivia triviaNodes triviaCandidates
+        Encoders.encodeParseResult trivia rootNode triviaInstructions
         |> GetTriviaResponse.Ok
 
     | Error err -> GetTriviaResponse.BadRequest(string err)

@@ -32,12 +32,19 @@ let private fetchTrivia (payload: ParseRequest) dispatch =
 let private fetchFSCVersion () = sprintf "%s/version" backend |> Http.getText
 
 let private initialModel: Model =
-    { ActiveTab = ByTriviaNodes
+    { ActiveTab = ActiveTab.Trivia
       Trivia = []
-      TriviaNodeCandidates = []
-      TriviaNodes = []
+      RootNode =
+        { Type = "Root"
+          Range =
+            { StartLine = 0
+              StartColumn = 0
+              EndLine = 0
+              EndColumn = 0 }
+          Children = [||] }
+      TriviaInstructions = []
       ActiveByTriviaIndex = 0
-      ActiveByTriviaNodeIndex = 0
+      ActiveByTriviaInstructionIndex = 0
       Defines = ""
       Version = "???"
       IsFsi = false
@@ -85,10 +92,10 @@ let update code msg model =
         { model with
             IsLoading = false
             Trivia = result.Trivia
-            TriviaNodeCandidates = result.TriviaNodeCandidates
-            TriviaNodes = result.TriviaNodes
+            RootNode = result.RootNode
+            TriviaInstructions = result.TriviaInstructions
             ActiveByTriviaIndex = 0
-            ActiveByTriviaNodeIndex = 0 },
+            ActiveByTriviaInstructionIndex = 0 },
         Cmd.none
     | Error err ->
         { initialModel with
@@ -98,14 +105,16 @@ let update code msg model =
     | ActiveItemChange (tab, index) ->
         let model, range =
             match tab with
-            | ByTriviaNodeCandidates -> model, None
-            | ByTriviaNodes ->
+            | ActiveTab.RootNode -> model, None
+            | ActiveTab.TriviaInstructions ->
                 let range =
-                    List.tryItem index model.TriviaNodes
-                    |> Option.map (fun t -> t.Range)
+                    model.TriviaInstructions
+                    |> List.groupBy (fun ti -> ti.Type, ti.Range)
+                    |> List.tryItem index
+                    |> Option.map (fun (_, g) -> g.Head.Range)
 
-                { model with ActiveByTriviaNodeIndex = index }, range
-            | ByTrivia ->
+                { model with ActiveByTriviaInstructionIndex = index }, range
+            | ActiveTab.Trivia ->
                 let range =
                     List.tryItem index model.Trivia
                     |> Option.map (fun tv -> tv.Range)

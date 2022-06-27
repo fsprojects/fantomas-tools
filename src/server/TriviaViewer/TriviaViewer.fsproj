@@ -11,6 +11,7 @@
   <ItemGroup>
     <None Include="paket.references" />
     <Compile Include="../../../.deps/fantomas/src/Fantomas.Core/ISourceTextExtensions.fs" />
+    <Compile Include="../../../.deps/fantomas/src/Fantomas.Core/RangeHelpers.fs" />
     <Compile Include="../../../.deps/fantomas/src/Fantomas.Core/AstExtensions.fs" />
     <Compile Include="../../../.deps/fantomas/src/Fantomas.Core/RangeHelpers.fs" />
     <Compile Include="../../../.deps/fantomas/src/Fantomas.Core/TriviaTypes.fs" />

@@ -11,9 +11,9 @@ open Reactstrap
 
 let private tabToId tab =
     match tab with
-    | ByTriviaNodes -> "trivia-nodes"
-    | ByTrivia -> "trivia"
-    | ByTriviaNodeCandidates -> "trivia-nodes-candidates"
+    | ActiveTab.Trivia -> "trivia"
+    | ActiveTab.RootNode -> "root-node"
+    | ActiveTab.TriviaInstructions -> "trivia-instructions"
 
 let private tab activeTab tabType tabContent =
     let tabClassName =
@@ -26,14 +26,14 @@ let private tab activeTab tabType tabContent =
         TabPane.Custom [ ClassName tabClassName ]
     ] [ tabContent ]
 
-let private byTriviaNodes model dispatch =
-    tab model.ActiveTab ByTriviaNodes (ByTriviaNodes.view model dispatch)
+let private triviaTab model dispatch =
+    tab model.ActiveTab ActiveTab.Trivia (Tabs.Trivia.view model dispatch)
 
-let private byTriviaNodeCandidates model dispatch =
-    tab model.ActiveTab ByTriviaNodeCandidates (ByTriviaNodeCandidates.view model dispatch)
+let private rootNodeTab model dispatch =
+    tab model.ActiveTab ActiveTab.RootNode (Tabs.RootNode.view model dispatch)
 
-let private byTrivia model dispatch =
-    tab model.ActiveTab ByTrivia (ByTrivia.view model dispatch)
+let private triviaInstructionsTab model dispatch =
+    tab model.ActiveTab ActiveTab.TriviaInstructions (Tabs.TriviaInstructions.view model dispatch)
 
 let private results model dispatch =
     let tabHeader label tabType =
@@ -59,17 +59,17 @@ let private results model dispatch =
                 ClassName "border-bottom border-primary"
             ]
         ] [
-            tabHeader "Trivia nodes" ByTriviaNodes
-            tabHeader "Trivia node candidates" ByTriviaNodeCandidates
-            tabHeader "Trivia" ByTrivia
+            tabHeader "Trivia instructions" ActiveTab.TriviaInstructions
+            tabHeader "Root node" ActiveTab.RootNode
+            tabHeader "Trivia" ActiveTab.Trivia
         ]
         TabContent.tabContent [
             TabContent.Custom [ Id "trivia-result-content" ]
             TabContent.ActiveTab(!^(tabToId model.ActiveTab))
         ] [
-            byTriviaNodes model dispatch
-            byTriviaNodeCandidates model dispatch
-            byTrivia model dispatch
+            triviaInstructionsTab model dispatch
+            rootNodeTab model dispatch
+            triviaTab model dispatch
         ]
     ]
 

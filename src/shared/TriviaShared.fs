@@ -18,22 +18,21 @@ type TriviaContent =
 
 type TriviaNode =
     { Type: string
-      ContentBefore: TriviaContent list
-      ContentItself: TriviaContent option
-      ContentAfter: TriviaContent list
-      Range: Range }
-
-type TriviaNodeCandidate =
-    { Type: string
-      Name: string
-      Range: Range }
+      Range: Range
+      Children: TriviaNode array }
 
 type Trivia = { Item: TriviaContent; Range: Range }
 
+type TriviaInstruction =
+    { Trivia: Trivia
+      Type: string
+      Range: Range
+      AddBefore: bool }
+
 type ParseResult =
     { Trivia: Trivia list
-      TriviaNodeCandidates: TriviaNodeCandidate list
-      TriviaNodes: TriviaNode list }
+      RootNode: TriviaNode
+      TriviaInstructions: TriviaInstruction list }
 
 type ParseRequest =
     { SourceCode: string
