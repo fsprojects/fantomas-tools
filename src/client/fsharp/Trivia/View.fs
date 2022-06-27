@@ -26,12 +26,6 @@ let private tab activeTab tabType tabContent =
         TabPane.Custom [ ClassName tabClassName ]
     ] [ tabContent ]
 
-// let private byTriviaNodes model dispatch =
-//     tab model.ActiveTab ByTriviaNodes (ByTriviaNodes.view model dispatch)
-//
-// let private byTriviaNodeCandidates model dispatch =
-//     tab model.ActiveTab ByTriviaNodeCandidates (ByTriviaNodeCandidates.view model dispatch)
-
 let private triviaTab model dispatch =
     tab model.ActiveTab ActiveTab.Trivia (Tabs.Trivia.view model dispatch)
 
@@ -65,8 +59,7 @@ let private results model dispatch =
                 ClassName "border-bottom border-primary"
             ]
         ] [
-            // tabHeader "Trivia nodes" ByTriviaNodes
-            // tabHeader "Trivia node candidates" ByTriviaNodeCandidates
+            tabHeader "Trivia instructions" ActiveTab.TriviaInstructions
             tabHeader "Root node" ActiveTab.RootNode
             tabHeader "Trivia" ActiveTab.Trivia
         ]
@@ -74,8 +67,7 @@ let private results model dispatch =
             TabContent.Custom [ Id "trivia-result-content" ]
             TabContent.ActiveTab(!^(tabToId model.ActiveTab))
         ] [
-            // byTriviaNodes model dispatch
-            // byTriviaNodeCandidates model dispatch
+            triviaInstructionsTab model dispatch
             rootNodeTab model dispatch
             triviaTab model dispatch
         ]

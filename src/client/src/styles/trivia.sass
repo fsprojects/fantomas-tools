@@ -32,53 +32,13 @@
       border-bottom: 2px solid $white
       border-right: 1px solid $white
 
-$main-node: #e26a6a
-.nav-link-main-node
-  @include custom-nav-link($main-node)
-
-$token-node: #a2ded0
-.nav-link-token
-  @include custom-nav-link($token-node)
-
-tr.trivia-candidate-main-node
-  color: white
-  td:first-child
-    background-color: $main-node
-  td:not(:first-child)
-    color: $dark
-    background-color: transparentize($main-node, 0.95)
-
-tr.trivia-candidate-token-node
-  color: white
-  td:first-child
-    background-color: $token-node
-  td:not(:first-child)
-    color: $dark
-    background-color: transparentize($token-node, 0.95)
-
-tr.trivia-candidate-main-node, tr.trivia-candidate-token-node
-  td
-    padding: 9px
-
 $newline: #51BCD6
 .nav-link-newline
   @include custom-nav-link($newline)
 
-$string-content: #E0477F
-.nav-link-string-content
-  @include custom-nav-link($string-content)
-
-$char-content: #FAC389
-.nav-link-string-content
-  @include custom-nav-link($char-content)
-
 $comment: #46D663
 .nav-link-comment
   @include custom-nav-link($comment)
-
-$number-content: #D6B527
-.nav-link-number-content
-  @include custom-nav-link($number-content)
 
 .mw120
   min-width: 120px
@@ -97,3 +57,15 @@ $number-content: #D6B527
 #trivia-result-content
   overflow-y: auto
   max-height: calc(100vh - 154px)
+
+.trivia-node
+  cursor: pointer
+  border: 1px solid transparent
+  transition: border-bottom 0.4s
+
+  &.highlight
+    border: 1px solid #2FBADC
+
+.trivia-node > .trivia-node
+  margin-left: 10px
+ 

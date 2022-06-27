@@ -65,28 +65,28 @@ open FantomasTools.Client.Trivia.Menu
 //     ]
 
 let view (model: Model) dispatch = str "todo"
-// let navItems =
-//     model.TriviaNodes
-//     |> List.map (fun tn ->
-//         let className = "nav-link-main-node"
-//
-//         {
-//             Label = tn.Type
-//             ClassName = className
-//             Title = "MainNode"
-//             Range = tn.Range
-//         })
-//
-// let onClick idx =
-//     dispatch (Msg.ActiveItemChange(ActiveTab.ByTriviaNodes, idx))
-//
-// let activeNode =
-//     List.tryItem model.ActiveByTriviaInstructionIndex model.TriviaNodes
-//     |> Option.map activeTriviaNode
-//
-// div [ ClassName "d-flex h-100" ] [
-//     menu onClick model.ActiveByTriviaInstructionIndex navItems
-//     div [
-//         ClassName "bg-light flex-grow-1 py-2 px-4 tab-content overflow-auto"
-//     ] [ ofOption activeNode ]
-// ]
+    let navItems =
+        model.TriviaNodes
+        |> List.map (fun tn ->
+            let className = "nav-link-main-node"
+
+            {
+                Label = tn.Type
+                ClassName = className
+                Title = "MainNode"
+                Range = tn.Range
+            })
+
+    let onClick idx =
+        dispatch (Msg.ActiveItemChange(ActiveTab.ByTriviaNodes, idx))
+
+    let activeNode =
+        List.tryItem model.ActiveByTriviaInstructionIndex model.TriviaNodes
+        |> Option.map activeTriviaNode
+
+    div [ ClassName "d-flex h-100" ] [
+        menu onClick model.ActiveByTriviaInstructionIndex navItems
+        div [
+            ClassName "bg-light flex-grow-1 py-2 px-4 tab-content overflow-auto"
+        ] [ ofOption activeNode ]
+    ]

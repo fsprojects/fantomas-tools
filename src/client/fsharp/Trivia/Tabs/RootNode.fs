@@ -1,9 +1,11 @@
 module FantomasTools.Client.Trivia.Tabs.RootNode
 
-open FantomasTools.Client.Trivia.Model
+open Fable.Core
+open Browser.Types
 open Fable.React
 open Fable.React.Props
 open TriviaViewer.Shared
+open FantomasTools.Client.Trivia.Model
 
 let view (model: Model) dispatch =
     let rec printNode (node: TriviaNode) =
@@ -20,7 +22,15 @@ let view (model: Model) dispatch =
         div [
             Class "trivia-node"
             Key $"{node.Type}_{rangeString}"
-            OnClick(fun _ -> HighLight(mapRange node.Range) |> dispatch)
+            OnClick(fun ev ->
+                ev.stopPropagation ()
+                let div = (ev.target :?> Element)
+                div.classList.add "highlight"
+
+                JS.setTimeout (fun () -> div.classList.remove "highlight") 400
+                |> ignore
+
+                HighLight(mapRange node.Range) |> dispatch)
         ] [
             str $"{node.Type} {rangeString}"
             ofArray (Array.map printNode node.Children)
