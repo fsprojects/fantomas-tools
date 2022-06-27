@@ -56,7 +56,6 @@ let private activeTriviaNode (instructions: TriviaInstruction list) =
 
     div [ ClassName "tab-pane active" ] [
         h2 [ ClassName "mb-4" ] [ str title ]
-        h4 [] [ str title ]
         contentInfo "Content before" before
         contentInfo "Content after" after
     ]
@@ -64,7 +63,7 @@ let private activeTriviaNode (instructions: TriviaInstruction list) =
 let view (model: Model) dispatch =
     let groupedInstructions =
         model.TriviaInstructions
-        |> List.groupBy (fun ti -> $"{ti.Type}_{rangeToText ti.Range}")
+        |> List.groupBy (fun ti -> ti.Type, ti.Range)
 
     let navItems =
         groupedInstructions

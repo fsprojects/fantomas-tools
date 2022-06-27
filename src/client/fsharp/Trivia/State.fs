@@ -108,8 +108,10 @@ let update code msg model =
             | ActiveTab.RootNode -> model, None
             | ActiveTab.TriviaInstructions ->
                 let range =
-                    List.tryItem index model.TriviaInstructions
-                    |> Option.map (fun t -> t.Range)
+                    model.TriviaInstructions
+                    |> List.groupBy (fun ti -> ti.Type, ti.Range)
+                    |> List.tryItem index
+                    |> Option.map (fun (_, g) -> g.Head.Range)
 
                 { model with ActiveByTriviaInstructionIndex = index }, range
             | ActiveTab.Trivia ->
