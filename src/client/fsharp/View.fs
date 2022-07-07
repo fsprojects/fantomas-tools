@@ -57,7 +57,7 @@ let navigation dispatch =
             ]
             Button.button [
                 Button.Custom [
-                    Href "https://github.com/fsprojects/fantomas/blob/master/docs/Documentation.md"
+                    Href "https://fsprojects.github.io/fantomas/reference/fsharp-compiler-syntax.html"
                     Target "_blank"
                     ClassName "text-white ml-2"
                     Style [
@@ -67,7 +67,7 @@ let navigation dispatch =
                 ]
             ] [
                 i [ ClassName "fa fa-book mr-1 mt-1" ] []
-                str "Docs"
+                str "Fantomas.FCS Docs"
             ]
             Button.button [
                 Button.Custom [
