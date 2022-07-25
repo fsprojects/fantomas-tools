@@ -174,7 +174,7 @@ let private copySettings (model: Model) _ =
             | FantomasOption.MultilineFormatterTypeOption (_, k, v)
             | FantomasOption.EndOfLineStyleOption (_, k, v) -> sprintf "%s=%s" (toEditorConfigName k) v)
         |> String.concat "\n"
-        |> sprintf "[*.fs]\n%s"
+        |> sprintf "[*.{fs,fsx}]\n%s"
 
     writeText editorconfig
     |> Promise.catch (fun err ->
