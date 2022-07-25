@@ -180,7 +180,7 @@ let private copySettings (model: Model) _ =
     |> Promise.catch (fun err ->
         showError "Something went wrong while copying settings to the clipboard."
         printfn "%A" err)
-    |> Promise.iter (fun () -> showSuccess "Copied .editorconfg settings to clipboard!")
+    |> Promise.iter (fun () -> showSuccess "Copied .editorconfig settings to clipboard!")
 
 let update isActiveTab code msg model =
     match msg with
