@@ -23,7 +23,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\.deps\fantomas\src\Fantomas.Core\Fantomas.Core.fsproj" />
-    <ProjectReference Include="..\..\..\.deps\fantomas\src\Fantomas.Extras\Fantomas.Extras.fsproj" />
   </ItemGroup>
   <Import Project="..\..\..\.paket\Paket.Restore.targets" />
 </Project>
