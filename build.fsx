@@ -36,8 +36,7 @@ let serverDir = __SOURCE_DIRECTORY__ </> "src" </> "server"
 let artifactDir = __SOURCE_DIRECTORY__ </> "artifacts"
 
 let fsharpFiles =
-    !!(serverDir </> "**/*.fs")
-    -- (serverDir </> "**/obj/**/*.fs")
+    !!(serverDir </> "**/*.fs") -- (serverDir </> "**/obj/**/*.fs")
     ++ (clientDir </> "fsharp/*.fs")
     ++ (clientDir </> "fsharp/**/*.fs")
     -- (clientDir </> "**/obj/**/*.fs")
@@ -256,10 +255,7 @@ Target.create "FormatChanged" (fun _ ->
     |> Seq.choose (fun (_, file) ->
         let ext = Path.GetExtension(file)
 
-        if
-            file.StartsWith("src")
-            && (ext = ".fs" || ext = ".fsi")
-        then
+        if file.StartsWith("src") && (ext = ".fs" || ext = ".fsi") then
             Some file
         else
             None)
@@ -305,21 +301,8 @@ open Fake.Core.TargetOperators
 "Install" <== [ "YarnInstall"; "NETInstall" ]
 
 "CI"
-<== [
-    "BundleFrontend"
-    "PublishLambdas"
-    "Clean"
-    "Fantomas-Git"
-    "CheckFormat"
-]
+<== [ "BundleFrontend"; "PublishLambdas"; "Clean"; "Fantomas-Git"; "CheckFormat" ]
 
-"PR"
-<== [
-    "BundleFrontend"
-    "Build"
-    "Clean"
-    "Fantomas-Git"
-    "CheckFormat"
-]
+"PR" <== [ "BundleFrontend"; "Build"; "Clean"; "Fantomas-Git"; "CheckFormat" ]
 
 Target.runOrDefault "Build"
