@@ -1,5 +1,6 @@
 module ASTViewer.GetAST
 
+open System.Reflection
 open FSharp.Compiler.Text
 open Thoth.Json.Net
 open ASTViewer.Shared
@@ -10,10 +11,13 @@ module Const =
     let sourceSizeLimit = 100 * 1024
 
 let getVersion () =
-    let assembly = parseFile.GetType().Assembly
+    let assembly = typeof<FSharpParserDiagnostic>.Assembly
 
-    let version = assembly.GetName().Version
-    sprintf "%i.%i.%i" version.Major version.Minor version.Revision
+    match Option.ofObj (assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()) with
+    | Some attr -> attr.InformationalVersion
+    | None ->
+        let version = assembly.GetName().Version
+        sprintf "%i.%i.%i" version.Major version.Minor version.Revision
 
 [<RequireQualifiedAccess>]
 type ASTResponse =
