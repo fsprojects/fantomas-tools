@@ -29,8 +29,7 @@ let private backend =
           (FantomasMode.Preview, previewBackend) ]
 
 let private getVersion mode =
-    sprintf "%s/%s" (Map.find mode backend) "version"
-    |> Http.getText
+    sprintf "%s/%s" (Map.find mode backend) "version" |> Http.getText
 
 let private getOptions mode =
     let url = sprintf "%s/%s" (Map.find mode backend) "options"
@@ -142,10 +141,7 @@ let private showSuccess message = notify.success message
 let private showError message = notify.error message
 
 let private copySettings (model: Model) _ =
-    let supportedProperties =
-        [ "max_line_length"
-          "indent_size"
-          "end_of_line" ]
+    let supportedProperties = [ "max_line_length"; "indent_size"; "end_of_line" ]
 
     let toEditorConfigName value =
         value
@@ -193,10 +189,7 @@ let update isActiveTab code msg model =
                 optionsListToMap options, model.IsFsi
 
         let cmd =
-            if
-                not (System.String.IsNullOrWhiteSpace code)
-                && isActiveTab
-            then
+            if not (System.String.IsNullOrWhiteSpace code) && isActiveTab then
                 Cmd.ofMsg Format
             else
                 Cmd.none
@@ -209,9 +202,7 @@ let update isActiveTab code msg model =
         cmd
     | Format ->
         let cmd =
-            Cmd.batch
-                [ Cmd.ofSub (getFormattedCode code model)
-                  Cmd.ofSub (updateUrl code model) ]
+            Cmd.batch [ Cmd.ofSub (getFormattedCode code model); Cmd.ofSub (updateUrl code model) ]
 
         { model with State = LoadingFormatRequest }, cmd
 

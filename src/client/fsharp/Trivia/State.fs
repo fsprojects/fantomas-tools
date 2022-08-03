@@ -83,9 +83,7 @@ let update code msg model =
         let parseRequest = modelToParseRequest code model
 
         let cmd =
-            Cmd.batch
-                [ Cmd.ofSub (fetchTrivia parseRequest)
-                  Cmd.ofSub (updateUrl code model) ]
+            Cmd.batch [ Cmd.ofSub (fetchTrivia parseRequest); Cmd.ofSub (updateUrl code model) ]
 
         { model with IsLoading = true }, cmd
     | TriviaReceived result ->
@@ -115,9 +113,7 @@ let update code msg model =
 
                 { model with ActiveByTriviaInstructionIndex = index }, range
             | ActiveTab.Trivia ->
-                let range =
-                    List.tryItem index model.Trivia
-                    |> Option.map (fun tv -> tv.Range)
+                let range = List.tryItem index model.Trivia |> Option.map (fun tv -> tv.Range)
 
                 { model with ActiveByTriviaIndex = index }, range
 

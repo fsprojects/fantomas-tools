@@ -35,12 +35,7 @@ let private useEventListener (target: Element, ``type``: string, listener: Event
         { new IDisposable with
             member this.Dispose() = target.removeEventListener (``type``, listener) }
 
-    React.useEffect (
-        subscribe,
-        [| box target
-           box ``type``
-           box listener |]
-    )
+    React.useEffect (subscribe, [| box target; box ``type``; box listener |])
 
 [<ReactComponent>]
 let Editor (isReadOnly: bool) (props: MonacoEditorProp list) =

@@ -28,10 +28,6 @@ let private encodeFSharpErrorInfo (info: FSharpParserDiagnostic) =
           "message", Encode.string info.Message ]
 
 let encodeResponse string (errors: FSharpParserDiagnostic list) =
-    let errors =
-        List.map encodeFSharpErrorInfo errors
-        |> Encode.list
+    let errors = List.map encodeFSharpErrorInfo errors |> Encode.list
 
-    Encode.object
-        [ "string", Encode.string string
-          "errors", errors ]
+    Encode.object [ "string", Encode.string string; "errors", errors ]

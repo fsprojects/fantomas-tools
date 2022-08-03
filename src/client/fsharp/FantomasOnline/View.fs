@@ -14,12 +14,8 @@ let private mapToOption dispatch (key, fantomasOption) =
         match fantomasOption with
         | FantomasOption.BoolOption (o, _, v) ->
             SettingControls.toggleButton
-                (fun _ ->
-                    UpdateOption(key, BoolOption(o, key, true))
-                    |> dispatch)
-                (fun _ ->
-                    UpdateOption(key, BoolOption(o, key, false))
-                    |> dispatch)
+                (fun _ -> UpdateOption(key, BoolOption(o, key, true)) |> dispatch)
+                (fun _ -> UpdateOption(key, BoolOption(o, key, false)) |> dispatch)
                 "true"
                 "false"
                 key
@@ -30,8 +26,7 @@ let private mapToOption dispatch (key, fantomasOption) =
                 if Regex.IsMatch(nv, "\\d+") then
                     let v = nv |> int
 
-                    UpdateOption(key, IntOption(o, key, v))
-                    |> dispatch
+                    UpdateOption(key, IntOption(o, key, v)) |> dispatch
 
             SettingControls.input key onChange key "integer" v
         | FantomasOption.MultilineFormatterTypeOption (o, _, v) ->
@@ -48,28 +43,19 @@ let private mapToOption dispatch (key, fantomasOption) =
                 (v = "character_width")
         | FantomasOption.EndOfLineStyleOption (o, _, v) ->
             SettingControls.toggleButton
-                (fun _ ->
-                    UpdateOption(key, EndOfLineStyleOption(o, key, "crlf"))
-                    |> dispatch)
-                (fun _ ->
-                    UpdateOption(key, EndOfLineStyleOption(o, key, "lf"))
-                    |> dispatch)
+                (fun _ -> UpdateOption(key, EndOfLineStyleOption(o, key, "crlf")) |> dispatch)
+                (fun _ -> UpdateOption(key, EndOfLineStyleOption(o, key, "lf")) |> dispatch)
                 "CRLF"
                 "LF"
                 key
                 (v = "crlf")
 
-    div [
-        Key key
-        ClassName "fantomas-setting"
-    ] [ editor ]
+    div [ Key key; ClassName "fantomas-setting" ] [ editor ]
 
 let options model dispatch =
     let optionList = Map.toList model.UserOptions |> List.sortBy fst
 
-    optionList
-    |> List.map (mapToOption dispatch)
-    |> ofList
+    optionList |> List.map (mapToOption dispatch) |> ofList
 
 type GithubIssue = {
     BeforeHeader: string
@@ -93,9 +79,7 @@ let githubIssueUri (githubIssue: GithubIssue) =
         |> List.map snd
         |> List.sortBy sortByOption
 
-    let defaultValues =
-        githubIssue.DefaultOptions
-        |> List.sortBy sortByOption
+    let defaultValues = githubIssue.DefaultOptions |> List.sortBy sortByOption
 
     let options =
         let changedOptions =
@@ -214,16 +198,9 @@ let private createGitHubIssue code model =
         Button.button [
             Button.Color Danger
             Button.Outline true
-            Button.Custom [
-                githubIssueUri githubIssue
-                Target "_blank"
-                ClassName "rounded-0"
-            ]
+            Button.Custom [ githubIssueUri githubIssue; Target "_blank"; ClassName "rounded-0" ]
         ] [ str "Looks wrong? Create an issue!" ]
-    | _ ->
-        span [ ClassName "text-muted mr-2" ] [
-            str "Looks wrong? Try using the preview version!"
-        ]
+    | _ -> span [ ClassName "text-muted mr-2" ] [ str "Looks wrong? Try using the preview version!" ]
 
 let private viewErrors (model: Model) result isIdempotent errors =
     let errors =
@@ -245,14 +222,8 @@ let private viewErrors (model: Model) result isIdempotent errors =
                         )
                     ]
                     Badge.badge [ Badge.Color(badgeColor e) ] [ str (e.Severity.ToString()) ]
-                    Badge.badge [
-                        Badge.Color Color.Dark
-                        Badge.Custom [ Title "ErrorNumber" ]
-                    ] [ ofInt e.ErrorNumber ]
-                    Badge.badge [
-                        Badge.Color Color.Light
-                        Badge.Custom [ Title "SubCategory" ]
-                    ] [ str e.SubCategory ]
+                    Badge.badge [ Badge.Color Color.Dark; Badge.Custom [ Title "ErrorNumber" ] ] [ ofInt e.ErrorNumber ]
+                    Badge.badge [ Badge.Color Color.Light; Badge.Custom [ Title "SubCategory" ] ] [ str e.SubCategory ]
                     p [] [ str e.Message ]
                 ])
 
@@ -281,11 +252,7 @@ let private viewErrors (model: Model) result isIdempotent errors =
                 br []
                 Button.button [
                     Button.Color Danger
-                    Button.Custom [
-                        githubIssueUri githubIssue
-                        Target "_blank"
-                        ClassName "rounded-0"
-                    ]
+                    Button.Custom [ githubIssueUri githubIssue; Target "_blank"; ClassName "rounded-0" ]
                 ] [ str "Report idempotancy issue" ]
             ]
             |> Some
@@ -308,12 +275,8 @@ let view model =
             | Some _ -> result.FirstFormat, false, result.FirstValidation
             | None -> result.FirstFormat, true, result.FirstValidation
 
-        div [
-            ClassName "tab-result fantomas-result"
-        ] [
-            div [
-                ClassName "fantomas-editor-container"
-            ] [
+        div [ ClassName "tab-result fantomas-result" ] [
+            div [ ClassName "fantomas-editor-container" ] [
                 Editor true [
                     MonacoEditorProp.DefaultValue formattedCode
                     MonacoEditorProp.Options(MonacoEditorProp.rulerOption model.MaxLineLength)
@@ -323,32 +286,23 @@ let view model =
         ]
 
     | EditorState.FormatError error ->
-        div [ ClassName "tab-result" ] [
-            Editor true [ MonacoEditorProp.DefaultValue error ]
-        ]
+        div [ ClassName "tab-result" ] [ Editor true [ MonacoEditorProp.DefaultValue error ] ]
 
 let private userChangedSettings (model: Model) =
-    model.SettingsChangedByTheUser
-    |> List.isEmpty
-    |> not
+    model.SettingsChangedByTheUser |> List.isEmpty |> not
 
 let commands code model dispatch =
     let formatButton =
         Button.button [
             Button.Color Primary
-            Button.Custom [
-                OnClick(fun _ -> dispatch Msg.Format)
-            ]
+            Button.Custom [ OnClick(fun _ -> dispatch Msg.Format) ]
         ] [ str "Format" ]
 
     let copySettingButton =
         if userChangedSettings model then
             Button.button [
                 Button.Color Secondary
-                Button.Custom [
-                    ClassName "text-white"
-                    OnClick(fun _ -> dispatch CopySettings)
-                ]
+                Button.Custom [ ClassName "text-white"; OnClick(fun _ -> dispatch CopySettings) ]
             ] [ str "Copy settings" ]
             |> Some
         else
@@ -356,17 +310,10 @@ let commands code model dispatch =
 
     match model.State with
     | EditorState.LoadingOptions -> []
-    | EditorState.LoadingFormatRequest -> [
-        formatButton
-        ofOption copySettingButton
-      ]
+    | EditorState.LoadingFormatRequest -> [ formatButton; ofOption copySettingButton ]
     | EditorState.OptionsLoaded
       | EditorState.FormatResult _
-      | EditorState.FormatError _ -> [
-          createGitHubIssue code model
-          formatButton
-          ofOption copySettingButton
-      ]
+      | EditorState.FormatError _ -> [ createGitHubIssue code model; formatButton; ofOption copySettingButton ]
     |> fragment []
 
 let settings model dispatch =

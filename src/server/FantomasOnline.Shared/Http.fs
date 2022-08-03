@@ -11,9 +11,7 @@ module Reflection =
     open FSharp.Reflection
 
     let getRecordFields x =
-        let names =
-            FSharpType.GetRecordFields(x.GetType())
-            |> Seq.map (fun x -> x.Name)
+        let names = FSharpType.GetRecordFields(x.GetType()) |> Seq.map (fun x -> x.Name)
 
         let values = FSharpValue.GetRecordFields x
         Seq.zip names values |> Seq.toArray

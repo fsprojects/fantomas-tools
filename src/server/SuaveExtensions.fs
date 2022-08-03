@@ -11,6 +11,7 @@ open Suave.RequestErrors
 open HttpConstants
 
 type HttpRequest with
+
     member this.BodyText = System.Text.Encoding.UTF8.GetString this.rawForm
 
 let applicationJson = setMimeType HeaderValues.ApplicationJson
@@ -27,8 +28,5 @@ let setCORSHeaders =
 
 let startFantomasTool port routes =
     setCORSHeaders
-    >=> choose
-            [ OPTIONS >=> no_content
-              yield! routes
-              NOT_FOUND "Not found" ]
+    >=> choose [ OPTIONS >=> no_content; yield! routes; NOT_FOUND "Not found" ]
     |> startWebServer { defaultConfig with bindings = [ HttpBinding.create HTTP IPAddress.Loopback port ] }

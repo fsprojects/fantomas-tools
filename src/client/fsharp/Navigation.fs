@@ -9,20 +9,15 @@ let cmdForCurrentTab tab model =
     if not (System.String.IsNullOrWhiteSpace model.SourceCode) then
         match tab with
         | HomeTab -> Cmd.none
-        | ASTTab ->
-            Cmd.ofMsg ASTViewer.Model.DoParse
-            |> Cmd.map Msg.ASTMsg
-        | TriviaTab ->
-            Cmd.ofMsg Trivia.Model.GetTrivia
-            |> Cmd.map Msg.TriviaMsg
+        | ASTTab -> Cmd.ofMsg ASTViewer.Model.DoParse |> Cmd.map Msg.ASTMsg
+        | TriviaTab -> Cmd.ofMsg Trivia.Model.GetTrivia |> Cmd.map Msg.TriviaMsg
         | FantomasTab mode when (mode <> model.FantomasModel.Mode) ->
             Cmd.batch
                 [ Cmd.map FantomasMsg (FantomasOnline.State.getOptionsCmd mode)
                   Cmd.map FantomasMsg (FantomasOnline.State.getVersionCmd mode) ]
 
         | FantomasTab _ when not (List.isEmpty model.FantomasModel.DefaultOptions) ->
-            Cmd.ofMsg FantomasOnline.Model.Format
-            |> Cmd.map FantomasMsg
+            Cmd.ofMsg FantomasOnline.Model.Format |> Cmd.map FantomasMsg
         | FantomasTab _ -> Cmd.none
     else
         Cmd.none

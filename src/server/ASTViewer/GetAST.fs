@@ -29,9 +29,7 @@ let getUntypedAST json : ASTResponse =
         let ast, errors =
             parseFile input.IsFsi (SourceText.ofString input.SourceCode) (List.ofArray input.Defines)
 
-        Encoders.encodeResponse $"%A{ast}" errors
-        |> Encode.toString 2
-        |> ASTResponse.Ok
+        Encoders.encodeResponse $"%A{ast}" errors |> Encode.toString 2 |> ASTResponse.Ok
 
     | Ok _ -> ASTResponse.TooLarge
     | Error err -> ASTResponse.InternalError $"%A{err}"

@@ -52,12 +52,6 @@ let private encodeASTError (astError: ASTError) =
 let encodeFormatResponse (formatResponse: FormatResponse) =
     Encode.object
         [ "firstFormat", Encode.string formatResponse.FirstFormat
-          "firstValidation",
-          (formatResponse.FirstValidation
-           |> List.map encodeASTError
-           |> Encode.list)
+          "firstValidation", (formatResponse.FirstValidation |> List.map encodeASTError |> Encode.list)
           "secondFormat", Encode.option Encode.string formatResponse.SecondFormat
-          "secondValidation",
-          (formatResponse.SecondValidation
-           |> List.map encodeASTError
-           |> Encode.list) ]
+          "secondValidation", (formatResponse.SecondValidation |> List.map encodeASTError |> Encode.list) ]

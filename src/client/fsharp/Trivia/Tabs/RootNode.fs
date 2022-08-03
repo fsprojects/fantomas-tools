@@ -27,8 +27,7 @@ let view (model: Model) dispatch =
                 let div = (ev.target :?> Element)
                 div.classList.add "highlight"
 
-                JS.setTimeout (fun () -> div.classList.remove "highlight") 400
-                |> ignore
+                JS.setTimeout (fun () -> div.classList.remove "highlight") 400 |> ignore
 
                 HighLight(mapRange node.Range) |> dispatch)
         ] [

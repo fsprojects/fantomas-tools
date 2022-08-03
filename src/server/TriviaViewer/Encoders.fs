@@ -37,9 +37,7 @@ let rec private encodeTriviaNode (tn: TriviaNode) =
           "children", Encode.array (Array.map encodeTriviaNode tn.Children) ]
 
 let private encodeTrivia (t: Trivia) =
-    Encode.object
-        [ "item", encodeTriviaContent t.Item
-          "range", encodeRange t.Range ]
+    Encode.object [ "item", encodeTriviaContent t.Item; "range", encodeRange t.Range ]
 
 let private encodeTriviaInstruction (ti: TriviaInstruction) =
     Encode.object
@@ -56,7 +54,5 @@ let internal encodeParseResult
     Encode.object
         [ "trivia", List.map encodeTrivia trivia |> Encode.list
           "rootNode", encodeTriviaNode rootNode
-          "triviaInstructions",
-          List.map encodeTriviaInstruction triviaInstructions
-          |> Encode.list ]
+          "triviaInstructions", List.map encodeTriviaInstruction triviaInstructions |> Encode.list ]
     |> Encode.toString 4

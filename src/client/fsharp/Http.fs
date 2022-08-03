@@ -20,9 +20,7 @@ let postJson<'TResponse> (url: string) (body: string) : JS.Promise<int * string>
 
 let getText (url: string) : JS.Promise<string> =
     let options =
-        requestProps
-            [ requestHeaders [ ContentType "application/json" ]
-              Method HttpMethod.GET ]
+        requestProps [ requestHeaders [ ContentType "application/json" ]; Method HttpMethod.GET ]
 
     GlobalFetch.fetch (RequestInfo.Url url, options)
     |> Promise.bind (fun res -> res.text ())

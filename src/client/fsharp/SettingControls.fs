@@ -25,11 +25,7 @@ let private toggleButton_ onClick active label =
             "rounded-0"
 
     Button.button [
-        Button.Custom [
-            ClassName className
-            Key label
-            OnClick onClick
-        ]
+        Button.Custom [ ClassName className; Key label; OnClick onClick ]
         Button.Outline(not active)
     ] [ str label ]
 
@@ -37,11 +33,7 @@ let toggleButton onTrue onFalse labelTrue labelFalse labelValue value =
     FormGroup.formGroup [] [
         label [] [ str labelValue ]
         br []
-        ButtonGroup.buttonGroup [
-            ButtonGroup.Custom [
-                ClassName "btn-group-toggle rounded-0"
-            ]
-        ] [
+        ButtonGroup.buttonGroup [ ButtonGroup.Custom [ ClassName "btn-group-toggle rounded-0" ] ] [
             toggleButton_ onTrue value labelTrue
             toggleButton_ onFalse (not value) labelFalse
         ]
@@ -61,9 +53,5 @@ let multiButton labelValue (options: MultiButtonSettings list) =
     FormGroup.formGroup [] [
         label [] [ str labelValue ]
         br []
-        ButtonGroup.buttonGroup [
-            ButtonGroup.Custom [
-                ClassName "btn-group-toggle rounded-0"
-            ]
-        ] [ ofList buttons ]
+        ButtonGroup.buttonGroup [ ButtonGroup.Custom [ ClassName "btn-group-toggle rounded-0" ] ] [ ofList buttons ]
     ]

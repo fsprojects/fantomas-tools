@@ -14,9 +14,7 @@ let private encodeOption fantomasOption =
         | EndOfLineStyleOption (o, k, v) ->
             "endOfLineStyle", Encode.tuple3 Encode.int Encode.string Encode.string (o, k, v)
 
-    Encode.object
-        [ "$type", Encode.string key
-          "$value", value ]
+    Encode.object [ "$type", Encode.string key; "$value", value ]
 
 let private encodeUserSettings model =
     model.UserOptions

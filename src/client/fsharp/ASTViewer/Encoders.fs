@@ -13,8 +13,6 @@ let encodeUrlModel code model : JsonValue =
 let encodeInput (input: Request) =
     Encode.object
         [ "sourceCode", Encode.string input.SourceCode
-          "defines",
-          (Array.map Encode.string input.Defines
-           |> Encode.array)
+          "defines", (Array.map Encode.string input.Defines |> Encode.array)
           "isFsi", Encode.bool input.IsFsi ]
     |> Encode.toString 2

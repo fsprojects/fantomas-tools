@@ -24,5 +24,4 @@ let private mapASTResponse response =
 let PostUntypedAST (request: APIGatewayProxyRequest) (_context: ILambdaContext) =
     let astResponse = getUntypedAST request.Body
 
-    mapASTResponse astResponse
-    |> mkAPIGatewayProxyResponse
+    mapASTResponse astResponse |> mkAPIGatewayProxyResponse

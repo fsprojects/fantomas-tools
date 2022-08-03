@@ -40,24 +40,16 @@ let private results model dispatch =
         let isActive = tabType = model.ActiveTab
 
         NavItem.navItem [
-            NavItem.Custom [
-                OnClick(fun _ -> dispatch (Msg.SelectTab tabType))
-                ClassName "pointer"
-            ]
+            NavItem.Custom [ OnClick(fun _ -> dispatch (Msg.SelectTab tabType)); ClassName "pointer" ]
         ] [
-            NavLink.navLink [
-                NavLink.Active isActive
-                NavLink.Custom [ ClassName "rounded-0" ]
-            ] [ str label ]
+            NavLink.navLink [ NavLink.Active isActive; NavLink.Custom [ ClassName "rounded-0" ] ] [ str label ]
         ]
 
     div [ Id "results" ] [
         Nav.nav [
             Nav.Tabs true
             Nav.Pills true
-            Nav.Custom [
-                ClassName "border-bottom border-primary"
-            ]
+            Nav.Custom [ ClassName "border-bottom border-primary" ]
         ] [
             tabHeader "Trivia instructions" ActiveTab.TriviaInstructions
             tabHeader "Root node" ActiveTab.RootNode
@@ -84,14 +76,8 @@ let view model dispatch =
 let commands dispatch =
     Button.button [
         Button.Color Primary
-        Button.Custom [
-            ClassName "rounded-0"
-            OnClick(fun _ -> dispatch GetTrivia)
-        ]
-    ] [
-        i [ ClassName "fas fa-code mr-1" ] []
-        str "Get trivia"
-    ]
+        Button.Custom [ ClassName "rounded-0"; OnClick(fun _ -> dispatch GetTrivia) ]
+    ] [ i [ ClassName "fas fa-code mr-1" ] []; str "Get trivia" ]
 
 let settings (model: Model) dispatch =
     fragment [] [

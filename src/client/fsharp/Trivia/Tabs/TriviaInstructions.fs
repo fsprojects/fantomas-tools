@@ -10,11 +10,7 @@ open FantomasTools.Client.Trivia.Menu
 let private isNotAnEmptyList = List.isEmpty >> not
 
 let private triviaContentToDetail tc =
-    let wrap outer inner = [
-        str $"%s{outer}("
-        code [] [ str inner ]
-        str ")"
-    ]
+    let wrap outer inner = [ str $"%s{outer}("; code [] [ str inner ]; str ")" ]
 
     match tc with
     | Newline -> str "Newline"
@@ -23,12 +19,7 @@ let private triviaContentToDetail tc =
         | BlockComment (bc, _, _) -> (wrap "BlockComment" bc)
         | LineCommentOnSingleLine lc -> (wrap "LineCommentOnSingleLine" lc)
         | LineCommentAfterSourceCode lc -> (wrap "LineCommentAfterSourceCode" lc)
-        |> fun inner ->
-            fragment [] [
-                str "Comment("
-                yield! inner
-                str ")"
-            ]
+        |> fun inner -> fragment [] [ str "Comment("; yield! inner; str ")" ]
     | Directive d -> fragment [] (wrap "Directive" d)
 
 let private activeTriviaNode (instructions: TriviaInstruction list) =
@@ -43,14 +34,9 @@ let private activeTriviaNode (instructions: TriviaInstruction list) =
             let listItems =
                 items
                 |> List.mapi (fun idx (instruction: TriviaInstruction) ->
-                    li [ Key !!idx ] [
-                        triviaContentToDetail instruction.Trivia.Item
-                    ])
+                    li [ Key !!idx ] [ triviaContentToDetail instruction.Trivia.Item ])
 
-            fragment [] [
-                h4 [] [ str title ]
-                ul [ ClassName "list-unstyled" ] [ ofList listItems ]
-            ]
+            fragment [] [ h4 [] [ str title ]; ul [ ClassName "list-unstyled" ] [ ofList listItems ] ]
         else
             ofOption None
 
@@ -62,8 +48,7 @@ let private activeTriviaNode (instructions: TriviaInstruction list) =
 
 let view (model: Model) dispatch =
     let groupedInstructions =
-        model.TriviaInstructions
-        |> List.groupBy (fun ti -> ti.Type, ti.Range)
+        model.TriviaInstructions |> List.groupBy (fun ti -> ti.Type, ti.Range)
 
     let navItems =
         groupedInstructions
@@ -86,7 +71,5 @@ let view (model: Model) dispatch =
 
     div [ ClassName "d-flex h-100" ] [
         menu onClick model.ActiveByTriviaInstructionIndex navItems
-        div [
-            ClassName "bg-light flex-grow-1 py-2 px-4 tab-content overflow-auto"
-        ] [ ofOption activeNode ]
+        div [ ClassName "bg-light flex-grow-1 py-2 px-4 tab-content overflow-auto" ] [ ofOption activeNode ]
     ]

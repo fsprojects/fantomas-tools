@@ -28,9 +28,7 @@ let optionValue =
     | EndOfLineStyleOption (_, _, v) -> v
 
 let tryGetUserOptionValue userOptions key castFunc =
-    userOptions
-    |> Map.tryFind key
-    |> Option.map (optionValue >> castFunc)
+    userOptions |> Map.tryFind key |> Option.map (optionValue >> castFunc)
 
 let tryGetDefaultOptionValue defaultOptions key castFunc =
     defaultOptions

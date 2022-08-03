@@ -10,17 +10,10 @@ let rangeToText (r: Range) =
     sprintf "(%i,%i - %i,%i)" r.StartLine r.StartColumn r.EndLine r.EndColumn
 
 let private rangeToBadge (r: Range) =
-    Badge.badge [
-        Badge.Color Dark
-        Badge.Custom [ ClassName "px-2 py-1 ml-auto" ]
-    ] [ (rangeToText r |> str) ]
+    Badge.badge [ Badge.Color Dark; Badge.Custom [ ClassName "px-2 py-1 ml-auto" ] ] [ (rangeToText r |> str) ]
 
 let private triviaContentToDetail tc =
-    let wrap outer inner = [
-        str (sprintf "%s(" outer)
-        code [] [ str inner ]
-        str ")"
-    ]
+    let wrap outer inner = [ str (sprintf "%s(" outer); code [] [ str inner ]; str ")" ]
 
     match tc with
     | Newline -> str "Newline"
@@ -29,12 +22,7 @@ let private triviaContentToDetail tc =
         | BlockComment (bc, _, _) -> (wrap "BlockComment" bc)
         | LineCommentOnSingleLine lc -> (wrap "LineCommentOnSingleLine" lc)
         | LineCommentAfterSourceCode lc -> (wrap "LineCommentAfterSourceCode" lc)
-        |> fun inner ->
-            fragment [] [
-                str "Comment("
-                yield! inner
-                str ")"
-            ]
+        |> fun inner -> fragment [] [ str "Comment("; yield! inner; str ")" ]
     | Directive d -> fragment [] (wrap "Directive" d)
 
 type MenuItem = {
@@ -61,15 +49,10 @@ let menu onItemClick activeIndex items =
                         onItemClick idx)
                 ]
             ] [
-                NavLink.navLink [
-                    NavLink.Custom [ Href "#"; ClassName className ]
-                ] [
+                NavLink.navLink [ NavLink.Custom [ Href "#"; ClassName className ] ] [
                     span [ ClassName "mr-4" ] [ str mi.Label ]
                     rangeToBadge mi.Range
                 ]
             ])
 
-    Nav.nav [
-        Nav.Pills true
-        Nav.Custom [ ClassName "flex-column" ]
-    ] [ ofList navItems ]
+    Nav.nav [ Nav.Pills true; Nav.Custom [ ClassName "flex-column" ] ] [ ofList navItems ]

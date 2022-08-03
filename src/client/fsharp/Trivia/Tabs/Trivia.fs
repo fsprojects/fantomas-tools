@@ -34,16 +34,11 @@ let private activeTrivia trivia =
             match c with
             | LineCommentAfterSourceCode c
             | LineCommentOnSingleLine c -> Some c
-            | BlockComment (c, nb, na) ->
-                $"%s{c} (newline before: %b{nb}) (newline after: %b{na})"
-                |> Some
+            | BlockComment (c, nb, na) -> $"%s{c} (newline before: %b{nb}) (newline after: %b{na})" |> Some
         | _ -> None
         |> Option.map (fun c -> code [] [ str c ])
 
-    div [ ClassName "tab-pane active" ] [
-        h2 [ ClassName "mb-4" ] [ str title ]
-        ofOption content
-    ]
+    div [ ClassName "tab-pane active" ] [ h2 [ ClassName "mb-4" ] [ str title ]; ofOption content ]
 
 let view (model: Model) dispatch =
     let navItems =
@@ -63,12 +58,9 @@ let view (model: Model) dispatch =
         dispatch (Msg.ActiveItemChange(ActiveTab.Trivia, idx))
 
     let activeTrivia =
-        List.tryItem model.ActiveByTriviaIndex model.Trivia
-        |> Option.map activeTrivia
+        List.tryItem model.ActiveByTriviaIndex model.Trivia |> Option.map activeTrivia
 
     div [ ClassName "d-flex h-100" ] [
         menu onClick model.ActiveByTriviaIndex navItems
-        div [
-            ClassName "bg-light flex-grow-1 py-2 px-4 tab-content overflow-auto"
-        ] [ ofOption activeTrivia ]
+        div [ ClassName "bg-light flex-grow-1 py-2 px-4 tab-content overflow-auto" ] [ ofOption activeTrivia ]
     ]

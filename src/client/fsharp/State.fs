@@ -46,12 +46,8 @@ let init _ =
 let private reload model =
     if not model.SettingsOpen then
         match model.ActiveTab with
-        | ASTTab ->
-            Cmd.ofMsg FantomasTools.Client.ASTViewer.Model.DoParse
-            |> Cmd.map ASTMsg
-        | TriviaTab ->
-            Cmd.ofMsg FantomasTools.Client.Trivia.Model.GetTrivia
-            |> Cmd.map TriviaMsg
+        | ASTTab -> Cmd.ofMsg FantomasTools.Client.ASTViewer.Model.DoParse |> Cmd.map ASTMsg
+        | TriviaTab -> Cmd.ofMsg FantomasTools.Client.Trivia.Model.GetTrivia |> Cmd.map TriviaMsg
         | FantomasTab _ ->
             Cmd.ofMsg FantomasTools.Client.FantomasOnline.Model.Format
             |> Cmd.map FantomasMsg

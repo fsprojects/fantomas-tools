@@ -38,10 +38,7 @@ type Model =
         let defaultValues = this.DefaultOptions |> List.sortBy sortByOption
 
         let userValues =
-            this.UserOptions
-            |> Map.toList
-            |> List.map snd
-            |> List.sortBy sortByOption
+            this.UserOptions |> Map.toList |> List.map snd |> List.sortBy sortByOption
 
         List.zip defaultValues userValues
         |> List.filter (fun (dv, uv) -> dv <> uv)

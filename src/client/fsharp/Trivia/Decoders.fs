@@ -47,13 +47,10 @@ let decodeVersion json = Decode.fromString Decode.string json
 
 let decodeUrlModel (initialModel: Model) : Decoder<Model> =
     Decode.object (fun get ->
-        let defines =
-            get.Optional.Field "defines" Decode.string
-            |> Option.defaultValue ""
+        let defines = get.Optional.Field "defines" Decode.string |> Option.defaultValue ""
 
         let isFsi =
-            get.Optional.Field "isFsi" Decode.bool
-            |> Option.defaultValue initialModel.IsFsi
+            get.Optional.Field "isFsi" Decode.bool |> Option.defaultValue initialModel.IsFsi
 
         { initialModel with
             Defines = defines
