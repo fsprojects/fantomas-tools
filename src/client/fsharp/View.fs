@@ -71,15 +71,16 @@ let editor model dispatch =
     ]
 //
 let private homeTab =
-    Jumbotron.jumbotron [] [
+    Jumbotron.jumbotron [ Jumbotron.Custom [ ClassName "bg-light" ] ] [
         div [ ClassName "d-flex align-items-center mb-4" ] [
             img [ Src "./logo.png" ]
             h1 [ ClassName "display-3 ml-4" ] [ str "Fantomas tool" ]
         ]
-        p [ ClassName "lead" ] [ str "Welcome at the Fantomas Tools!" ]
+        p [ ClassName "lead" ] [ str "Welcome to the Fantomas Tools!" ]
         p [] [
-            str
-                "if you plan on using these tools extensively, consider cloning the repository and run everything locally."
+            str "if you plan on using these tools extensively, consider cloning the "
+            a [ Href "https://github.com/fsprojects/fantomas-tools"; Target "_blank" ] [ str "repository" ]
+            str " and run everything locally."
         ]
         p [] [
             str "Discover more about Fantomas in our "
