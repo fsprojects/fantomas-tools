@@ -9,10 +9,13 @@ open FantomasTools.Client.Editor
 open Reactstrap
 
 let navigation dispatch =
-    let title = sprintf "Fantomas tools"
+    let title = "Fantomas tools"
 
     Navbar.navbar [ Navbar.Light true; Navbar.Custom [ ClassName "bg-light" ] ] [
-        NavbarBrand.navbarBrand [ NavbarBrand.Custom [ ClassName "py-0" ] ] [ str title ]
+        NavbarBrand.navbarBrand [ NavbarBrand.Custom [ ClassName "py-0 my-0 h1" ] ] [
+            img [ Src "./fantomas_logo.png"; ClassName "mr-3" ]
+            str title
+        ]
         div [ ClassName "navbar-text py1" ] [
             Button.button [
                 Button.Custom [
@@ -68,12 +71,24 @@ let editor model dispatch =
     ]
 //
 let private homeTab =
-    Jumbotron.jumbotron [] [
-        h1 [ ClassName "display-3" ] [ str "Fantomas tool" ]
-        p [ ClassName "lead" ] [ str "Welcome at the Fantomas Tools!" ]
+    Jumbotron.jumbotron [ Jumbotron.Custom [ ClassName "bg-light" ] ] [
+        div [ ClassName "d-flex align-items-center mb-4" ] [
+            img [ Src "./logo.png" ]
+            h1 [ ClassName "display-3 ml-4" ] [ str "Fantomas tool" ]
+        ]
+        p [ ClassName "lead" ] [ str "Welcome to the Fantomas Tools!" ]
         p [] [
-            str
-                "if you plan on using these tools extensively, consider cloning the repository and run everything locally."
+            str "if you plan on using these tools extensively, consider cloning the "
+            a [ Href "https://github.com/fsprojects/fantomas-tools"; Target "_blank" ] [ str "repository" ]
+            str " and run everything locally."
+        ]
+        p [] [
+            str "Discover more about Fantomas in our "
+            a [
+                Href "https://fsprojects.github.io/fantomas/docs/index.html"
+                Target "_blank"
+            ] [ str "documentation" ]
+            str "."
         ]
     ]
 

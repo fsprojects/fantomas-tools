@@ -81,7 +81,8 @@ let init (mode: FantomasMode) =
       DefaultOptions = []
       UserOptions = Map.empty
       Mode = mode
-      State = LoadingOptions },
+      State = LoadingOptions
+      SettingsFilter = "" },
     cmd
 
 let optionsListToMap options =
@@ -217,3 +218,5 @@ let update isActiveTab code msg model =
     | SetFsiFile isFsi -> { model with IsFsi = isFsi }, Cmd.none
 
     | CopySettings -> model, Cmd.ofSub (copySettings model)
+
+    | UpdateSettingsFilter v -> { model with SettingsFilter = v }, Cmd.none

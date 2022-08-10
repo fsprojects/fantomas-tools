@@ -53,7 +53,25 @@ let private mapToOption dispatch (key, fantomasOption) =
     div [ Key key; ClassName "fantomas-setting" ] [ editor ]
 
 let options model dispatch =
-    let optionList = Map.toList model.UserOptions |> List.sortBy fst
+    let optionList =
+        Map.toList model.UserOptions
+        |> List.sortBy fst
+        |> fun optionList ->
+            if System.String.IsNullOrWhiteSpace model.SettingsFilter then
+                optionList
+            else
+                let settingsFilter =
+                    model
+                        .SettingsFilter
+                        .Replace("fsharp_", "")
+                        .Replace("_", "")
+                        .Replace(" ", "")
+                        .ToLowerInvariant()
+
+                optionList
+                |> List.filter (fun (n, _) ->
+                    let setting = n.ToLowerInvariant()
+                    setting.Contains(settingsFilter))
 
     optionList |> List.map (mapToOption dispatch) |> ofList
 
@@ -346,10 +364,27 @@ let settings model dispatch =
 
         let options = options model dispatch
 
+        let searchBox =
+            div [ ClassName "fantomas-setting my-3 border-bottom" ] [
+                div [ ClassName "form-group" ] [
+                    label [ ClassName "d-block" ] [
+                        strong [ ClassName "h4 text-center d-block mb-2" ] [ str "Filter settings" ]
+                    ]
+                    input [
+                        Type "search"
+                        ClassName "form-control"
+                        DefaultValue model.SettingsFilter
+                        Placeholder "Filter settings"
+                        Props.OnChange(fun (ev: Browser.Types.Event) -> ev.Value |> UpdateSettingsFilter |> dispatch)
+                    ]
+                ]
+            ]
+
         fragment [] [
             VersionBar.versionBar (sprintf "Version: %s" model.Version)
             fantomasMode
             fileExtension
             hr []
+            searchBox
             options
         ]
