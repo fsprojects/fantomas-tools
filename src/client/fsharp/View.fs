@@ -81,6 +81,14 @@ let private homeTab =
             str
                 "if you plan on using these tools extensively, consider cloning the repository and run everything locally."
         ]
+        p [] [
+            str "Discover more about Fantomas in our "
+            a [
+                Href "https://fsprojects.github.io/fantomas/docs/index.html"
+                Target "_blank"
+            ] [ str "documentation" ]
+            str "."
+        ]
     ]
 
 let private settings model dispatch inner =
