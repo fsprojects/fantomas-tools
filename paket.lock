@@ -58,7 +58,7 @@ NUGET
       Amazon.Lambda.Core (>= 1.2)
     Fable.Core (3.2.8)
       FSharp.Core (>= 4.7.2)
-    Fantomas.FCS (5.0.0-beta-006)
+    Fantomas.FCS (5.0.0-beta-008)
       FSharp.Core (>= 6.0.1)
       FsLexYacc (10.2)
       System.Memory (>= 4.5.4)
