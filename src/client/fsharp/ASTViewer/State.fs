@@ -99,7 +99,9 @@ let update code isFsi (msg: Msg) (model: Model) : Model * Cmd<Msg> =
         let parseRequest = modelToParseRequest code isFsi model
 
         let cmd =
-            Cmd.batch [ Cmd.ofSub (fetchUntypedAST parseRequest); Cmd.ofSub (updateUrl code isFsi model) ]
+            Cmd.batch
+                [ Cmd.ofSub (fetchUntypedAST parseRequest)
+                  Cmd.ofSub (updateUrl code isFsi model) ]
 
         { model with IsLoading = true }, cmd
 

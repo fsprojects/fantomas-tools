@@ -201,7 +201,9 @@ let update isActiveTab code isFsi msg model =
         cmd
     | Format ->
         let cmd =
-            Cmd.batch [ Cmd.ofSub (getFormattedCode code isFsi model); Cmd.ofSub (updateUrl code isFsi model) ]
+            Cmd.batch
+                [ Cmd.ofSub (getFormattedCode code isFsi model)
+                  Cmd.ofSub (updateUrl code isFsi model) ]
 
         { model with State = LoadingFormatRequest }, cmd
 

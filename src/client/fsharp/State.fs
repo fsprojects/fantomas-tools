@@ -79,20 +79,19 @@ let update msg model =
         let m = { model with SettingsOpen = not model.SettingsOpen }
 
         m, reload m
-    | TriviaMsg (Trivia.Model.Msg.SetFsiFile isFsiFile) ->
-        { model with IsFsi = isFsiFile }, Cmd.none
+    | TriviaMsg (Trivia.Model.Msg.SetFsiFile isFsiFile) -> { model with IsFsi = isFsiFile }, Cmd.none
     | TriviaMsg tMsg ->
-        let tModel, tCmd = Trivia.State.update model.SourceCode model.IsFsi tMsg model.TriviaModel
+        let tModel, tCmd =
+            Trivia.State.update model.SourceCode model.IsFsi tMsg model.TriviaModel
 
         { model with TriviaModel = tModel }, Cmd.map TriviaMsg tCmd
-    | ASTMsg (ASTViewer.Model.Msg.SetFsiFile isFsiFile) ->
-        { model with IsFsi = isFsiFile }, Cmd.none
+    | ASTMsg (ASTViewer.Model.Msg.SetFsiFile isFsiFile) -> { model with IsFsi = isFsiFile }, Cmd.none
     | ASTMsg aMsg ->
-        let aModel, aCmd = ASTViewer.State.update model.SourceCode model.IsFsi aMsg model.ASTModel
+        let aModel, aCmd =
+            ASTViewer.State.update model.SourceCode model.IsFsi aMsg model.ASTModel
 
         { model with ASTModel = aModel }, Cmd.map ASTMsg aCmd
-    | FantomasMsg (FantomasOnline.Model.Msg.SetFsiFile isFsiFile) ->
-        { model with IsFsi = isFsiFile }, Cmd.none
+    | FantomasMsg (FantomasOnline.Model.Msg.SetFsiFile isFsiFile) -> { model with IsFsi = isFsiFile }, Cmd.none
     | FantomasMsg (FantomasOnline.Model.ChangeMode mode) ->
         let cmd =
             let changeVersion (hashWithoutQuery: string) =

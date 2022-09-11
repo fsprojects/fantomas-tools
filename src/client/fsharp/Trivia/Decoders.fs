@@ -49,5 +49,4 @@ let decodeUrlModel (initialModel: Model) : Decoder<Model> =
     Decode.object (fun get ->
         let defines = get.Optional.Field "defines" Decode.string |> Option.defaultValue ""
 
-        { initialModel with
-            Defines = defines })
+        { initialModel with Defines = defines })
