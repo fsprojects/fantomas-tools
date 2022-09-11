@@ -118,20 +118,20 @@ let tabs (model: Model) dispatch =
             let triviaDispatch tMsg = dispatch (TriviaMsg tMsg)
 
             Trivia.View.view model.TriviaModel triviaDispatch,
-            Trivia.View.settings model.TriviaModel triviaDispatch,
+            Trivia.View.settings model.TriviaModel model.IsFsi triviaDispatch,
             Trivia.View.commands triviaDispatch
         | ASTTab ->
             let astDispatch aMsg = dispatch (ASTMsg aMsg)
 
             ASTViewer.View.view model.ASTModel astDispatch,
-            ASTViewer.View.settings model.ASTModel astDispatch,
+            ASTViewer.View.settings model.IsFsi model.ASTModel astDispatch,
             ASTViewer.View.commands astDispatch
         | FantomasTab _ ->
             let fantomasDispatch fMsg = dispatch (FantomasMsg fMsg)
 
-            FantomasOnline.View.view model.FantomasModel,
-            FantomasOnline.View.settings model.FantomasModel fantomasDispatch,
-            FantomasOnline.View.commands model.SourceCode model.FantomasModel fantomasDispatch
+            FantomasOnline.View.view model.IsFsi model.FantomasModel,
+            FantomasOnline.View.settings model.IsFsi model.FantomasModel fantomasDispatch,
+            FantomasOnline.View.commands model.SourceCode model.IsFsi model.FantomasModel fantomasDispatch
 
     let navItem tab label isActive =
         let href =

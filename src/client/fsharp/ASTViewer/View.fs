@@ -68,7 +68,7 @@ let commands dispatch =
         ]
     ]
 
-let settings model dispatch =
+let settings isFsi model dispatch =
     fragment [] [
         VersionBar.versionBar (sprintf "FSC - %s" model.Version)
         SettingControls.input
@@ -83,5 +83,5 @@ let settings model dispatch =
             "*.fsi"
             "*.fs"
             "File extension"
-            model.IsFsi
+            isFsi
     ]

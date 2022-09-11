@@ -11,8 +11,8 @@ let encodeParseRequest (pr: ParseRequest) =
           "isFsi", Encode.bool pr.IsFsi ]
     |> Encode.toString 4
 
-let encodeUrlModel code (model: Model) =
+let encodeUrlModel code isFsi (model: Model) =
     Encode.object
         [ "code", Encode.string code // the "code" key is a convention
           "defines", Encode.string model.Defines
-          "isFsi", Encode.bool model.IsFsi ]
+          "isFsi", Encode.bool isFsi ]

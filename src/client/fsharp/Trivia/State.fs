@@ -47,17 +47,16 @@ let private initialModel: Model =
       ActiveByTriviaInstructionIndex = 0
       Defines = ""
       Version = "???"
-      IsFsi = false
       Error = None
       IsLoading = true }
 
 let private splitDefines (value: string) =
     value.Split([| ' '; ';' |], StringSplitOptions.RemoveEmptyEntries)
 
-let private modelToParseRequest sourceCode (model: Model) =
+let private modelToParseRequest sourceCode isFsi (model: Model) =
     { SourceCode = sourceCode
       Defines = splitDefines model.Defines
-      IsFsi = model.IsFsi }
+      IsFsi = isFsi }
 
 let init isActive =
     let model =
@@ -71,19 +70,19 @@ let init isActive =
 
     model, cmd
 
-let private updateUrl code (model: Model) _ =
-    let json = Encode.toString 2 (encodeUrlModel code model)
+let private updateUrl code isFsi (model: Model) _ =
+    let json = Encode.toString 2 (encodeUrlModel code isFsi model)
 
     UrlTools.updateUrlWithData json
 
-let update code msg model =
+let update code isFsi msg model =
     match msg with
     | SelectTab tab -> { model with ActiveTab = tab }, Cmd.none
     | GetTrivia ->
-        let parseRequest = modelToParseRequest code model
+        let parseRequest = modelToParseRequest code isFsi model
 
         let cmd =
-            Cmd.batch [ Cmd.ofSub (fetchTrivia parseRequest); Cmd.ofSub (updateUrl code model) ]
+            Cmd.batch [ Cmd.ofSub (fetchTrivia parseRequest); Cmd.ofSub (updateUrl code isFsi model) ]
 
         { model with IsLoading = true }, cmd
     | TriviaReceived result ->
@@ -136,5 +135,5 @@ let update code msg model =
             Version = version
             IsLoading = false },
         Cmd.none
-    | SetFsiFile v -> { model with IsFsi = v }, Cmd.none
+    | SetFsiFile _ -> model, Cmd.none // handle in upper update function
     | HighLight hlr -> model, Cmd.ofSub (Editor.selectRange hlr)

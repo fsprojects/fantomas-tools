@@ -6,9 +6,7 @@ open Thoth.Json
 
 let decodeUrlModel initialModel : Decoder<Model> =
     Decode.object (fun get ->
-        { initialModel with
-            Defines = get.Required.Field "defines" Decode.string
-            IsFsi = get.Required.Field "isFsi" Decode.bool })
+        { initialModel with Defines = get.Required.Field "defines" Decode.string })
 
 let private rangeDecoder: Decoder<Range> =
     Decode.object (fun get ->

@@ -18,8 +18,7 @@ type Model =
       ActiveByTriviaInstructionIndex: int
       ActiveByTriviaIndex: int
       Defines: string
-      Version: string
-      IsFsi: bool }
+      Version: string }
 
 type UrlModel = { IsFsi: bool; Defines: string }
 

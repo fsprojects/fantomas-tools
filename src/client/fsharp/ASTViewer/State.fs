@@ -41,7 +41,6 @@ let private fetchTypedAst (payload: Shared.Request) dispatch =
 let private initialModel =
     { Source = ""
       Defines = ""
-      IsFsi = false
       Parsed = None
       IsLoading = false
       Version = ""
@@ -64,20 +63,20 @@ let init isActive : Model * Cmd<Msg> =
 let private getDefines (model: Model) =
     model.Defines.Split([| ' '; ','; ';' |], StringSplitOptions.RemoveEmptyEntries)
 
-let private modelToParseRequest sourceCode (model: Model) : Shared.Request =
+let private modelToParseRequest sourceCode isFsi (model: Model) : Shared.Request =
     { SourceCode = sourceCode
       Defines = getDefines model
-      IsFsi = model.IsFsi }
+      IsFsi = isFsi }
 
-let private updateUrl code (model: Model) _ =
-    let json = Encode.toString 2 (encodeUrlModel code model)
+let private updateUrl code isFsi (model: Model) _ =
+    let json = Encode.toString 2 (encodeUrlModel code isFsi model)
 
     UrlTools.updateUrlWithData json
 
 // The update function computes the next state of the application based on the current state and the incoming events/messages
 // It can also run side-effects (encoded as commands) like calling the server via Http.
 // these commands in turn, can dispatch messages to which the update function will react.
-let update code (msg: Msg) (model: Model) : Model * Cmd<Msg> =
+let update code isFsi (msg: Msg) (model: Model) : Model * Cmd<Msg> =
     match msg with
     | SetSourceText x ->
         let nextModel = { model with Source = x }
@@ -97,14 +96,14 @@ let update code (msg: Msg) (model: Model) : Model * Cmd<Msg> =
 
         nextModel, Cmd.none
     | DoParse ->
-        let parseRequest = modelToParseRequest code model
+        let parseRequest = modelToParseRequest code isFsi model
 
         let cmd =
-            Cmd.batch [ Cmd.ofSub (fetchUntypedAST parseRequest); Cmd.ofSub (updateUrl code model) ]
+            Cmd.batch [ Cmd.ofSub (fetchUntypedAST parseRequest); Cmd.ofSub (updateUrl code isFsi model) ]
 
         { model with IsLoading = true }, cmd
 
     | VersionFound version -> { model with Version = version }, Cmd.none
     | DefinesUpdated defines -> { model with Defines = defines }, Cmd.none
-    | SetFsiFile isFsi -> { model with IsFsi = isFsi }, Cmd.none
+    | SetFsiFile _ -> model, Cmd.none // handle in upper update function
     | HighLight hlr -> model, Cmd.ofSub (Editor.selectRange hlr)

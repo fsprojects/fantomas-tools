@@ -41,10 +41,10 @@ let private getOptions mode =
         | Ok v -> v
         | Error e -> failwithf "%A" e)
 
-let private getFormattedCode code model dispatch =
+let private getFormattedCode code isFsi model dispatch =
     let url = sprintf "%s/%s" (Map.find model.Mode backend) "format"
 
-    let json = Encoders.encodeRequest code model
+    let json = Encoders.encodeRequest code isFsi model
 
     Http.postJson url json
     |> Promise.iter (fun (status, body) ->
@@ -59,8 +59,8 @@ let private getFormattedCode code model dispatch =
         | _ -> Msg.FormatException body
         |> dispatch)
 
-let private updateUrl code model _ =
-    let json = Encode.toString 2 (Encoders.encodeUrlModel code model)
+let private updateUrl code isFsi model _ =
+    let json = Encode.toString 2 (Encoders.encodeUrlModel code isFsi model)
 
     UrlTools.updateUrlWithData json
 
@@ -76,8 +76,7 @@ let init (mode: FantomasMode) =
         let optionsCmd = getOptionsCmd mode
         Cmd.batch [ versionCmd; optionsCmd ]
 
-    { IsFsi = false
-      Version = "???"
+    { Version = "???"
       DefaultOptions = []
       UserOptions = Map.empty
       Mode = mode
@@ -179,7 +178,7 @@ let private copySettings (model: Model) _ =
         printfn "%A" err)
     |> Promise.iter (fun () -> showSuccess "Copied .editorconfig settings to clipboard!")
 
-let update isActiveTab code msg model =
+let update isActiveTab code isFsi msg model =
     match msg with
     | VersionReceived version -> { model with Version = version }, Cmd.none
     | OptionsReceived options ->
@@ -187,23 +186,22 @@ let update isActiveTab code msg model =
             if isActiveTab then
                 restoreUserOptionsFromUrl options
             else
-                optionsListToMap options, model.IsFsi
+                optionsListToMap options, isFsi
 
         let cmd =
             if not (System.String.IsNullOrWhiteSpace code) && isActiveTab then
-                Cmd.ofMsg Format
+                Cmd.batch [ Cmd.ofMsg Format; Cmd.ofMsg (SetFsiFile isFsi) ]
             else
-                Cmd.none
+                Cmd.ofMsg (SetFsiFile isFsi)
 
         { model with
             DefaultOptions = options
             UserOptions = userOptions
-            IsFsi = isFsi
             State = OptionsLoaded },
         cmd
     | Format ->
         let cmd =
-            Cmd.batch [ Cmd.ofSub (getFormattedCode code model); Cmd.ofSub (updateUrl code model) ]
+            Cmd.batch [ Cmd.ofSub (getFormattedCode code isFsi model); Cmd.ofSub (updateUrl code isFsi model) ]
 
         { model with State = LoadingFormatRequest }, cmd
 
@@ -215,7 +213,7 @@ let update isActiveTab code msg model =
         { model with UserOptions = userOptions }, Cmd.none
     | ChangeMode _ -> model, Cmd.none // handle in upper update function
 
-    | SetFsiFile isFsi -> { model with IsFsi = isFsi }, Cmd.none
+    | SetFsiFile _ -> model, Cmd.none // handle in upper update function
 
     | CopySettings -> model, Cmd.ofSub (copySettings model)
 
