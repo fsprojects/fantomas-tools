@@ -12,6 +12,7 @@ type Model =
     { ActiveTab: ActiveTab
       SourceCode: string
       SettingsOpen: bool
+      IsFsi: bool
       TriviaModel: Trivia.Model.Model
       ASTModel: ASTViewer.Model.Model
       FantomasModel: FantomasOnline.Model.Model }

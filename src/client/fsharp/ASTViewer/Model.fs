@@ -17,7 +17,6 @@ type EditorState =
 type Model =
     { Source: string
       Defines: string
-      IsFsi: bool
       Parsed: Result<ASTViewer.Shared.Response, string> option
       IsLoading: bool
       Version: string

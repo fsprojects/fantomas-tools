@@ -9,8 +9,12 @@ open Feliz.Router
 let private getCodeFromUrl () =
     UrlTools.restoreModelFromUrl (Decode.object (fun get -> get.Required.Field "code" Decode.string)) ""
 
+let private getIsFsiFileFromUrl () =
+    UrlTools.restoreModelFromUrl (Decode.object (fun get -> get.Required.Field "isFsi" Decode.bool)) false
+
 let init _ =
     let sourceCode = getCodeFromUrl ()
+    let isFsiFile = getIsFsiFileFromUrl ()
     let currentTab = Navigation.parseUrl (Router.currentUrl ())
 
     let astModel, astCmd = ASTViewer.State.init (currentTab = ASTTab)
@@ -28,6 +32,7 @@ let init _ =
         { ActiveTab = currentTab
           SourceCode = sourceCode
           SettingsOpen = false
+          IsFsi = isFsiFile
           TriviaModel = triviaModel
           ASTModel = astModel
           FantomasModel = fantomasModel }
@@ -74,14 +79,19 @@ let update msg model =
         let m = { model with SettingsOpen = not model.SettingsOpen }
 
         m, reload m
+    | TriviaMsg (Trivia.Model.Msg.SetFsiFile isFsiFile) -> { model with IsFsi = isFsiFile }, Cmd.none
     | TriviaMsg tMsg ->
-        let tModel, tCmd = Trivia.State.update model.SourceCode tMsg model.TriviaModel
+        let tModel, tCmd =
+            Trivia.State.update model.SourceCode model.IsFsi tMsg model.TriviaModel
 
         { model with TriviaModel = tModel }, Cmd.map TriviaMsg tCmd
+    | ASTMsg (ASTViewer.Model.Msg.SetFsiFile isFsiFile) -> { model with IsFsi = isFsiFile }, Cmd.none
     | ASTMsg aMsg ->
-        let aModel, aCmd = ASTViewer.State.update model.SourceCode aMsg model.ASTModel
+        let aModel, aCmd =
+            ASTViewer.State.update model.SourceCode model.IsFsi aMsg model.ASTModel
 
         { model with ASTModel = aModel }, Cmd.map ASTMsg aCmd
+    | FantomasMsg (FantomasOnline.Model.Msg.SetFsiFile isFsiFile) -> { model with IsFsi = isFsiFile }, Cmd.none
     | FantomasMsg (FantomasOnline.Model.ChangeMode mode) ->
         let cmd =
             let changeVersion (hashWithoutQuery: string) =
@@ -108,6 +118,6 @@ let update msg model =
             | _ -> false
 
         let fModel, fCmd =
-            FantomasOnline.State.update isActiveTab model.SourceCode fMsg model.FantomasModel
+            FantomasOnline.State.update isActiveTab model.SourceCode model.IsFsi fMsg model.FantomasModel
 
         { model with FantomasModel = fModel }, Cmd.map FantomasMsg fCmd

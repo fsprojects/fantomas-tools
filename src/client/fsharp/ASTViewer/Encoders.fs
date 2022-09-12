@@ -4,10 +4,10 @@ open ASTViewer.Shared
 open FantomasTools.Client.ASTViewer.Model
 open Thoth.Json
 
-let encodeUrlModel code model : JsonValue =
+let encodeUrlModel code isFsi model : JsonValue =
     Encode.object
         [ "defines", Encode.string model.Defines
-          "isFsi", Encode.bool model.IsFsi
+          "isFsi", Encode.bool isFsi
           "code", Encode.string code ]
 
 let encodeInput (input: Request) =

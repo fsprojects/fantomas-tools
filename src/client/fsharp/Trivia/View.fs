@@ -79,7 +79,7 @@ let commands dispatch =
         Button.Custom [ ClassName "rounded-0"; OnClick(fun _ -> dispatch GetTrivia) ]
     ] [ i [ ClassName "fas fa-code mr-1" ] []; str "Get trivia" ]
 
-let settings (model: Model) dispatch =
+let settings (model: Model) isFsi dispatch =
     fragment [] [
         VersionBar.versionBar (sprintf "FSC - %s" model.Version)
         SettingControls.input
@@ -94,5 +94,5 @@ let settings (model: Model) dispatch =
             "*.fsi"
             "*.fs"
             "File extension"
-            model.IsFsi
+            isFsi
     ]

@@ -23,18 +23,18 @@ let private encodeUserSettings model =
     |> List.map (snd >> encodeOption)
     |> Encode.list
 
-let encodeRequest code (model: Model) =
+let encodeRequest code isFsi (model: Model) =
     Encode.object
         [ "sourceCode", Encode.string code
           "options", encodeUserSettings model
-          "isFsi", Encode.bool model.IsFsi ]
+          "isFsi", Encode.bool isFsi ]
     |> Encode.toString 2
 
-let encodeUrlModel code model =
+let encodeUrlModel code isFsi model =
     Encode.object
         [ "code", Encode.string code
           "settings", encodeUserSettings model
-          "isFsi", Encode.bool model.IsFsi ]
+          "isFsi", Encode.bool isFsi ]
 
 let encodeUserSettingToConfiguration options =
     let encodeValue option =

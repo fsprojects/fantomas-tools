@@ -28,8 +28,7 @@ type EditorState =
     | FormatError of string
 
 type Model =
-    { IsFsi: bool
-      Version: string
+    { Version: string
       DefaultOptions: FantomasOption list
       UserOptions: Map<string, FantomasOption>
       Mode: FantomasMode

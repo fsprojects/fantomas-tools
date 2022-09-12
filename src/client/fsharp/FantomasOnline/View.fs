@@ -187,7 +187,7 @@ Fantomas %s
 
     uri |> Href
 
-let private createGitHubIssue code model =
+let private createGitHubIssue code isFsi model =
     let description =
         """Please describe here the Fantomas problem you encountered.
                     Check out our [Contribution Guidelines](https://github.com/fsprojects/fantomas/blob/master/CONTRIBUTING.md#bug-reports)."""
@@ -210,7 +210,7 @@ let private createGitHubIssue code model =
             DefaultOptions = model.DefaultOptions
             UserOptions = model.UserOptions
             Version = model.Version
-            IsFsi = model.IsFsi
+            IsFsi = isFsi
         }
 
         Button.button [
@@ -220,7 +220,7 @@ let private createGitHubIssue code model =
         ] [ str "Looks wrong? Create an issue!" ]
     | _ -> span [ ClassName "text-muted mr-2" ] [ str "Looks wrong? Try using the preview version!" ]
 
-let private viewErrors (model: Model) result isIdempotent errors =
+let private viewErrors (model: Model) isFsi result isIdempotent errors =
     let errors =
         match errors with
         | [] -> []
@@ -259,7 +259,7 @@ let private viewErrors (model: Model) result isIdempotent errors =
                 DefaultOptions = model.DefaultOptions
                 UserOptions = model.UserOptions
                 Version = model.Version
-                IsFsi = model.IsFsi
+                IsFsi = isFsi
             }
 
             div [ ClassName "idempotent-error" ] [
@@ -281,7 +281,7 @@ let private viewErrors (model: Model) result isIdempotent errors =
     else
         None
 
-let view model =
+let view isFsi model =
     match model.State with
     | EditorState.LoadingFormatRequest
     | EditorState.LoadingOptions -> Loader.loader
@@ -300,7 +300,7 @@ let view model =
                     MonacoEditorProp.Options(MonacoEditorProp.rulerOption model.MaxLineLength)
                 ]
             ]
-            ofOption (viewErrors model result isIdempotent astErrors)
+            ofOption (viewErrors model isFsi result isIdempotent astErrors)
         ]
 
     | EditorState.FormatError error ->
@@ -309,7 +309,7 @@ let view model =
 let private userChangedSettings (model: Model) =
     model.SettingsChangedByTheUser |> List.isEmpty |> not
 
-let commands code model dispatch =
+let commands code isFsi model dispatch =
     let formatButton =
         Button.button [
             Button.Color Primary
@@ -331,10 +331,10 @@ let commands code model dispatch =
     | EditorState.LoadingFormatRequest -> [ formatButton; ofOption copySettingButton ]
     | EditorState.OptionsLoaded
       | EditorState.FormatResult _
-      | EditorState.FormatError _ -> [ createGitHubIssue code model; formatButton; ofOption copySettingButton ]
+      | EditorState.FormatError _ -> [ createGitHubIssue code isFsi model; formatButton; ofOption copySettingButton ]
     |> fragment []
 
-let settings model dispatch =
+let settings isFsi model dispatch =
     match model.State with
     | EditorState.LoadingOptions -> Spinner.spinner [ Spinner.Color Primary ] []
     | _ ->
@@ -360,7 +360,7 @@ let settings model dispatch =
                 "*.fsi"
                 "*.fs"
                 "File extension"
-                model.IsFsi
+                isFsi
 
         let options = options model dispatch
 
