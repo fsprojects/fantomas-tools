@@ -177,7 +177,7 @@ Fantomas %s
 %s
 %s
 
-<sub>Did you know that you can ignore files when formatting from fantomas-tool or the FAKE targets by using a [.fantomasignore file](https://github.com/fsprojects/fantomas/blob/master/docs/Documentation.md#ignore-files-fantomasignore)?</sub>
+<sub>Did you know that you can ignore files when formatting from fantomas-tool or the FAKE targets by using a [.fantomasignore file](https://fsprojects.github.io/fantomas/docs/end-users/IgnoreFiles.html)?</sub>
         """
             location.href
             left
@@ -196,7 +196,7 @@ Fantomas %s
 let private createGitHubIssue code isFsi model =
     let description =
         """Please describe here the Fantomas problem you encountered.
-                    Check out our [Contribution Guidelines](https://github.com/fsprojects/fantomas/blob/master/CONTRIBUTING.md#bug-reports)."""
+                    Check out our [Contribution Guidelines](https://github.com/fsprojects/fantomas/blob/main/CONTRIBUTING.md#bug-reports)."""
 
     let bh, bc, ah, ac =
         match model.State with
