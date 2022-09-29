@@ -4,9 +4,9 @@ open Fable.React
 open Fable.React.Props
 open Reactstrap
 
-let input key onChange labelValue placeholder value =
+let input key onChange (labelValue: ReactElement) placeholder value =
     FormGroup.formGroup [] [
-        label [] [ str labelValue ]
+        label [] [ labelValue ]
         Input.input [
             Input.Custom [
                 Placeholder placeholder
@@ -29,9 +29,9 @@ let private toggleButton_ onClick active label =
         Button.Outline(not active)
     ] [ str label ]
 
-let toggleButton onTrue onFalse labelTrue labelFalse labelValue value =
+let toggleButton onTrue onFalse labelTrue labelFalse (labelValue: ReactElement) value =
     FormGroup.formGroup [] [
-        label [] [ str labelValue ]
+        label [] [ labelValue ]
         br []
         ButtonGroup.buttonGroup [ ButtonGroup.Custom [ ClassName "btn-group-toggle rounded-0" ] ] [
             toggleButton_ onTrue value labelTrue

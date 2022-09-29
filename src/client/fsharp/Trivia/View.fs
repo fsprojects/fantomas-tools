@@ -85,7 +85,7 @@ let settings (model: Model) isFsi dispatch =
         SettingControls.input
             "trivia-defines"
             (DefinesUpdated >> dispatch)
-            "Defines"
+            (str "Defines")
             "Enter your defines separated with a space"
             model.Defines
         SettingControls.toggleButton
@@ -93,6 +93,6 @@ let settings (model: Model) isFsi dispatch =
             (fun _ -> dispatch (SetFsiFile false))
             "*.fsi"
             "*.fs"
-            "File extension"
+            (str "File extension")
             isFsi
     ]

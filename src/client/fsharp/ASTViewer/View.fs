@@ -74,7 +74,7 @@ let settings isFsi model dispatch =
         SettingControls.input
             "ast-defines"
             (DefinesUpdated >> dispatch)
-            "Defines"
+            (str "Defines")
             "Enter your defines separated with a space"
             model.Defines
         SettingControls.toggleButton
@@ -82,6 +82,6 @@ let settings isFsi model dispatch =
             (fun _ -> dispatch (SetFsiFile false))
             "*.fsi"
             "*.fs"
-            "File extension"
+            (str "File extension")
             isFsi
     ]

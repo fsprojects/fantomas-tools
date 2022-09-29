@@ -72,3 +72,21 @@ type FormatResponse =
       FirstValidation: ASTError list
       SecondFormat: string option
       SecondValidation: ASTError list }
+
+let private supportedProperties =
+    set [| "max_line_length"; "indent_size"; "end_of_line" |]
+
+let toEditorConfigName value =
+    value
+    |> Seq.map (fun c ->
+        if System.Char.IsUpper(c) then
+            sprintf "_%s" (c.ToString().ToLower())
+        else
+            c.ToString())
+    |> String.concat ""
+    |> fun s -> s.TrimStart([| '_' |])
+    |> fun name ->
+        if Set.contains name supportedProperties then
+            name
+        else
+            sprintf "fsharp_%s" name

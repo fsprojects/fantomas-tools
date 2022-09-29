@@ -11,6 +11,12 @@ open Reactstrap
 
 let private mapToOption dispatch (key, fantomasOption) =
     let editor =
+        let label =
+            a [
+                Href $"https://fsprojects.github.io/fantomas/docs/end-users/Configuration.html#{toEditorConfigName key}"
+                Target "_blank"
+            ] [ str key ]
+
         match fantomasOption with
         | FantomasOption.BoolOption (o, _, v) ->
             SettingControls.toggleButton
@@ -18,7 +24,7 @@ let private mapToOption dispatch (key, fantomasOption) =
                 (fun _ -> UpdateOption(key, BoolOption(o, key, false)) |> dispatch)
                 "true"
                 "false"
-                key
+                label
                 v
 
         | FantomasOption.IntOption (o, _, v) ->
@@ -28,7 +34,7 @@ let private mapToOption dispatch (key, fantomasOption) =
 
                     UpdateOption(key, IntOption(o, key, v)) |> dispatch
 
-            SettingControls.input key onChange key "integer" v
+            SettingControls.input key onChange label "integer" v
         | FantomasOption.MultilineFormatterTypeOption (o, _, v) ->
             SettingControls.toggleButton
                 (fun _ ->
@@ -39,7 +45,7 @@ let private mapToOption dispatch (key, fantomasOption) =
                     |> dispatch)
                 "CharacterWidth"
                 "NumberOfItems"
-                key
+                label
                 (v = "character_width")
         | FantomasOption.EndOfLineStyleOption (o, _, v) ->
             SettingControls.toggleButton
@@ -47,7 +53,7 @@ let private mapToOption dispatch (key, fantomasOption) =
                 (fun _ -> UpdateOption(key, EndOfLineStyleOption(o, key, "lf")) |> dispatch)
                 "CRLF"
                 "LF"
-                key
+                label
                 (v = "crlf")
 
     div [ Key key; ClassName "fantomas-setting" ] [ editor ]
@@ -359,7 +365,7 @@ let settings isFsi model dispatch =
                 (fun _ -> SetFsiFile false |> dispatch)
                 "*.fsi"
                 "*.fs"
-                "File extension"
+                (str "File extension")
                 isFsi
 
         let options = options model dispatch

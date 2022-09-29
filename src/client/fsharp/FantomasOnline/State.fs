@@ -141,23 +141,6 @@ let private showSuccess message = notify.success message
 let private showError message = notify.error message
 
 let private copySettings (model: Model) _ =
-    let supportedProperties = [ "max_line_length"; "indent_size"; "end_of_line" ]
-
-    let toEditorConfigName value =
-        value
-        |> Seq.map (fun c ->
-            if System.Char.IsUpper(c) then
-                sprintf "_%s" (c.ToString().ToLower())
-            else
-                c.ToString())
-        |> String.concat ""
-        |> fun s -> s.TrimStart([| '_' |])
-        |> fun name ->
-            if List.contains name supportedProperties then
-                name
-            else
-                sprintf "fsharp_%s" name
-
     let editorconfig =
         model.SettingsChangedByTheUser
         |> List.map (function
