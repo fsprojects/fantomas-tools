@@ -345,7 +345,11 @@ let settings isFsi model dispatch =
     | EditorState.LoadingOptions -> Spinner.spinner [ Spinner.Color Primary ] []
     | _ ->
         let fantomasMode =
-            [ FantomasMode.V4, "4.x"; FantomasMode.Preview, "Preview" ]
+            [
+                FantomasMode.V4, "4.x"
+                FantomasMode.V5, "5.x"
+                FantomasMode.Preview, "Preview"
+            ]
             |> List.map (fun (m, l) ->
                 {
                     IsActive = model.Mode = m

@@ -28,6 +28,7 @@ let toHash =
     | TriviaTab -> "#/trivia"
     | ASTTab -> "#/ast"
     | FantomasTab FantomasOnline.Model.V4 -> "#/fantomas/v4"
+    | FantomasTab FantomasOnline.Model.V5 -> "#/fantomas/v5"
     | FantomasTab FantomasOnline.Model.Preview -> "#/fantomas/preview"
 
 let parseUrl segments =
