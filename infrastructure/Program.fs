@@ -13,9 +13,7 @@ open Humanizer
 let private commitDecoder: Decoder<string * string> =
     Decode.object (fun get ->
         let sha = get.Required.Field "sha" Decode.string
-
         let timestamp = get.Required.At [ "commit"; "author"; "date" ] Decode.string
-
         sha, timestamp)
 
 let private getLastCommit () =
@@ -90,16 +88,6 @@ let getAllLambdas (lastSha, lastTime) =
           "TriviaViewer"
           [ mkLambdaInfo "GetVersion" "GET" "/trivia-viewer/version" List.empty
             mkLambdaInfo "GetTrivia" "POST" "/trivia-viewer/get-trivia" List.empty ]
-      mkLambdaProject
-          "FantomasOnlineV2"
-          [ mkLambdaInfo "GetVersion" "GET" "/fantomas/v2/version" List.empty
-            mkLambdaInfo "GetOptions" "GET" "/fantomas/v2/options" List.empty
-            mkLambdaInfo "PostFormat" "POST" "/fantomas/v2/format" List.empty ]
-      mkLambdaProject
-          "FantomasOnlineV3"
-          [ mkLambdaInfo "GetVersion" "GET" "/fantomas/v3/version" List.empty
-            mkLambdaInfo "GetOptions" "GET" "/fantomas/v3/options" List.empty
-            mkLambdaInfo "PostFormat" "POST" "/fantomas/v3/format" List.empty ]
       mkLambdaProject
           "FantomasOnlineV4"
           [ mkLambdaInfo "GetVersion" "GET" "/fantomas/v4/version" List.empty
