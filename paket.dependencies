@@ -10,22 +10,6 @@ nuget System.IO.Abstractions
 nuget Ionide.KeepAChangelog.Tasks copy_local: true
 nuget Dotnet.ReproducibleBuilds copy_local: true
 
-group Build
-
-source https://api.nuget.org/v3/index.json
-storage: none
-framework: net6.0
-
-nuget FSharp.Core
-nuget Fake.Core.Target
-nuget Fake.IO.FileSystem
-nuget Fake.JavaScript.Yarn
-nuget Fake.DotNet.Cli
-nuget Fake.IO.Zip
-nuget Fake.Tools.Git
-nuget CliWrap
-nuget FSharp.Control.Reactive
-
 group Infrastructure
 
 source https://api.nuget.org/v3/index.json
