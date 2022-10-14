@@ -97,8 +97,6 @@ let update msg model =
             let changeVersion (hashWithoutQuery: string) =
                 let version m =
                     match m with
-                    | FantomasOnline.Model.V2 -> "v2"
-                    | FantomasOnline.Model.V3 -> "v3"
                     | FantomasOnline.Model.V4 -> "v4"
                     | FantomasOnline.Model.Preview -> "preview"
 
