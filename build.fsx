@@ -16,6 +16,7 @@ let astPort = 7412
 let triviaPort = 9856
 let fantomasPreviewPort = 11084
 let fantomasV4Port = 10707
+let fantomasV5Port = 11009
 let pwd = __SOURCE_DIRECTORY__
 let fantomasDepDir = pwd </> ".deps" </> "fantomas"
 let clientDir = pwd </> "src" </> "client"
@@ -84,6 +85,7 @@ let setViteToProduction () =
     setEnv "VITE_AST_BACKEND" $"{mainStageUrl}/ast-viewer"
     setEnv "VITE_TRIVIA_BACKEND" $"{mainStageUrl}/trivia-viewer"
     setEnv "VITE_FANTOMAS_V4" $"{mainStageUrl}/fantomas/v4"
+    setEnv "VITE_FANTOMAS_V5" $"{mainStageUrl}/fantomas/v5"
     setEnv "VITE_FANTOMAS_PREVIEW" $"{mainStageUrl}/fantomas/preview"
 
 pipeline "Build" {
@@ -113,6 +115,7 @@ pipeline "Build" {
         stage "parallel ones" {
             paralle
             run (publishLambda "FantomasOnlineV4")
+            run (publishLambda "FantomasOnlineV5")
             run (publishLambda "ASTViewer")
         }
         run (publishLambda "FantomasOnlinePreview")
@@ -188,6 +191,7 @@ pipeline "Watch" {
                 setEnv "VITE_AST_BACKEND" (localhostBackend astPort "ast-viewer")
                 setEnv "VITE_TRIVIA_BACKEND" (localhostBackend triviaPort "trivia-viewer")
                 setEnv "VITE_FANTOMAS_V4" (localhostBackend fantomasV4Port "fantomas/v4")
+                setEnv "VITE_FANTOMAS_V5" (localhostBackend fantomasV5Port "fantomas/v5")
                 setEnv "VITE_FANTOMAS_PREVIEW" (localhostBackend fantomasPreviewPort "fantomas/preview")
                 return 0
             })
@@ -197,6 +201,7 @@ pipeline "Watch" {
         run (runLambda "ASTViewer")
         run (runLambda "TriviaViewer")
         run (runLambda "FantomasOnlineV4")
+        run (runLambda "FantomasOnlineV5")
         run (runLambda "FantomasOnlinePreview")
         stage "frontend" {
             paralle

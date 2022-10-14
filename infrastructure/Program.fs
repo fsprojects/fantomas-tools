@@ -94,6 +94,11 @@ let getAllLambdas (lastSha, lastTime) =
             mkLambdaInfo "GetOptions" "GET" "/fantomas/v4/options" List.empty
             mkLambdaInfo "PostFormat" "POST" "/fantomas/v4/format" List.empty ]
       mkLambdaProject
+          "FantomasOnlineV5"
+          [ mkLambdaInfo "GetVersion" "GET" "/fantomas/v5/version" List.empty
+            mkLambdaInfo "GetOptions" "GET" "/fantomas/v5/options" List.empty
+            mkLambdaInfo "PostFormat" "POST" "/fantomas/v5/format" List.empty ]
+      mkLambdaProject
           "FantomasOnlinePreview"
           [ mkLambdaInfo
                 "GetVersion"

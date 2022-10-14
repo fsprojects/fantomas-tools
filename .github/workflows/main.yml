@@ -30,7 +30,7 @@ jobs:
       uses: actions/setup-dotnet@v2
 
     - name: Download Fantomas
-      run: dotnet fsi build.fsx -t Fantomas-Git
+      run: dotnet fsi build.fsx -p Fantomas-Git
       
     - name: Run CI Target
       run: dotnet fsi build.fsx

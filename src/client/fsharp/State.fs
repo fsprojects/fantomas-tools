@@ -98,6 +98,7 @@ let update msg model =
                 let version m =
                     match m with
                     | FantomasOnline.Model.V4 -> "v4"
+                    | FantomasOnline.Model.V5 -> "v5"
                     | FantomasOnline.Model.Preview -> "preview"
 
                 let oldVersion = version model.FantomasModel.Mode
