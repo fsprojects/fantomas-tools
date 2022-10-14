@@ -57,17 +57,8 @@ Target.create "Fantomas-Git" (fun _ ->
             { opt with
                 WorkingDirectory = targetDir
             })
-        "tool"
-        "restore"
-    |> ignore
-
-    DotNet.exec
-        (fun opt ->
-            { opt with
-                WorkingDirectory = targetDir
-            })
-        "paket"
-        "restore"
+        "fsi"
+        "build.fsx -p Init"
     |> ignore
 
     DotNet.build
