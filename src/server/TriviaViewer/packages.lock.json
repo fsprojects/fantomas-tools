@@ -118,9 +118,9 @@
       "fantomas.fcs": {
         "type": "Project",
         "dependencies": {
-          "FSharp.Core": "6.0.1",
-          "System.Memory": "4.5.4",
-          "System.Runtime": "4.3.1"
+          "FSharp.Core": "[6.0.1, )",
+          "System.Memory": "[4.5.4, )",
+          "System.Runtime": "[4.3.1, )"
         }
       }
     }
