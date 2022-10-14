@@ -15,8 +15,6 @@ let fablePort = 9060
 let astPort = 7412
 let triviaPort = 9856
 let fantomasPreviewPort = 11084
-let fantomasV2Port = 2568
-let fantomasV3Port = 9007
 let fantomasV4Port = 10707
 let pwd = __SOURCE_DIRECTORY__
 let fantomasDepDir = pwd </> ".deps" </> "fantomas"
@@ -85,8 +83,6 @@ let setViteToProduction () =
 
     setEnv "VITE_AST_BACKEND" $"{mainStageUrl}/ast-viewer"
     setEnv "VITE_TRIVIA_BACKEND" $"{mainStageUrl}/trivia-viewer"
-    setEnv "VITE_FANTOMAS_V2" $"{mainStageUrl}/fantomas/v2"
-    setEnv "VITE_FANTOMAS_V3" $"{mainStageUrl}/fantomas/v3"
     setEnv "VITE_FANTOMAS_V4" $"{mainStageUrl}/fantomas/v4"
     setEnv "VITE_FANTOMAS_PREVIEW" $"{mainStageUrl}/fantomas/preview"
 
@@ -98,7 +94,6 @@ pipeline "Build" {
     }
     stage "dotnet install" {
         run "dotnet tool restore"
-        run "dotnet paket restore"
         run "dotnet restore"
     }
     stage "check format" { run "dotnet fantomas src infrastructure build.fsx -r --check" }
@@ -117,8 +112,6 @@ pipeline "Build" {
     stage "publish lambdas" {
         stage "parallel ones" {
             paralle
-            run (publishLambda "FantomasOnlineV2")
-            run (publishLambda "FantomasOnlineV3")
             run (publishLambda "FantomasOnlineV4")
             run (publishLambda "ASTViewer")
         }
@@ -194,8 +187,6 @@ pipeline "Watch" {
                 setEnv "NODE_ENV" "development"
                 setEnv "VITE_AST_BACKEND" (localhostBackend astPort "ast-viewer")
                 setEnv "VITE_TRIVIA_BACKEND" (localhostBackend triviaPort "trivia-viewer")
-                setEnv "VITE_FANTOMAS_V2" (localhostBackend fantomasV2Port "fantomas/v2")
-                setEnv "VITE_FANTOMAS_V3" (localhostBackend fantomasV3Port "fantomas/v3")
                 setEnv "VITE_FANTOMAS_V4" (localhostBackend fantomasV4Port "fantomas/v4")
                 setEnv "VITE_FANTOMAS_PREVIEW" (localhostBackend fantomasPreviewPort "fantomas/preview")
                 return 0
@@ -205,8 +196,6 @@ pipeline "Watch" {
         paralle
         run (runLambda "ASTViewer")
         run (runLambda "TriviaViewer")
-        run (runLambda "FantomasOnlineV2")
-        run (runLambda "FantomasOnlineV3")
         run (runLambda "FantomasOnlineV4")
         run (runLambda "FantomasOnlinePreview")
         stage "frontend" {

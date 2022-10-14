@@ -27,8 +27,6 @@ let toHash =
     | HomeTab -> "#/"
     | TriviaTab -> "#/trivia"
     | ASTTab -> "#/ast"
-    | FantomasTab FantomasOnline.Model.V2 -> "#/fantomas/v2"
-    | FantomasTab FantomasOnline.Model.V3 -> "#/fantomas/v3"
     | FantomasTab FantomasOnline.Model.V4 -> "#/fantomas/v4"
     | FantomasTab FantomasOnline.Model.Preview -> "#/fantomas/preview"
 
@@ -38,10 +36,6 @@ let parseUrl segments =
     | [ "ast"; Route.Query [ "data", _ ] ] -> ActiveTab.ASTTab
     | [ "trivia" ]
     | [ "trivia"; Route.Query [ "data", _ ] ] -> ActiveTab.TriviaTab
-    | [ "fantomas"; "v2" ]
-    | [ "fantomas"; "v2"; Route.Query [ "data", _ ] ] -> ActiveTab.FantomasTab(FantomasOnline.Model.V2)
-    | [ "fantomas"; "v3" ]
-    | [ "fantomas"; "v3"; Route.Query [ "data", _ ] ] -> ActiveTab.FantomasTab(FantomasOnline.Model.V3)
     | [ "fantomas"; "v4" ]
     | [ "fantomas"; "v4"; Route.Query [ "data", _ ] ] -> ActiveTab.FantomasTab(FantomasOnline.Model.V4)
     | [ "fantomas"; "preview" ]

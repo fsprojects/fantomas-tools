@@ -1,0 +1,19 @@
+<Project>
+    <PropertyGroup>
+        <DisableImplicitFSharpCoreReference>true</DisableImplicitFSharpCoreReference>
+        <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
+        <WarningsAsErrors>FS0025</WarningsAsErrors>
+        <WarnOn>3390;$(WarnOn)</WarnOn>
+        <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+        <!-- https://www.gresearch.co.uk/blog/article/improve-nuget-restores-with-static-graph-evaluation/ -->
+        <RestoreUseStaticGraphEvaluation>true</RestoreUseStaticGraphEvaluation>
+    </PropertyGroup>
+
+    <ItemGroup Condition="'$(IsLambda)' == 'true'">
+        <PackageReference Include="Microsoft.Net.Http.Headers" Version="2.2.8" />
+        <PackageReference Include="Amazon.Lambda.Core" Version="2.1.0" />
+        <PackageReference Include="Amazon.Lambda.Serialization.SystemTextJson" Version="2.3.0" />
+        <PackageReference Include="Amazon.Lambda.APIGatewayEvents" Version="2.5.0" />
+        <PackageReference Include="Suave" Version="2.6.2" />
+    </ItemGroup>
+</Project>

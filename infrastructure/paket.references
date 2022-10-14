@@ -1,7 +1,0 @@
-group Infrastructure
-
-FSharp.Core
-Pulumi.Aws
-Pulumi.FSharp
-Thoth.Json.Net
-Humanizer.Core
