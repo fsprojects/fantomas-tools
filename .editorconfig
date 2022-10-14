@@ -5,8 +5,8 @@ fsharp_align_function_signature_to_indentation=true
 fsharp_keep_max_number_of_blank_lines=1
 
 [build.fsx]
-fsharp_multiline_block_brackets_on_same_column=true
-fsharp_experimental_stroustrup_style=true
+fsharp_keep_max_number_of_blank_lines=1
+fsharp_blank_lines_around_nested_multiline_expressions=false
 
 [src/server/**/Program.fs]
 fsharp_max_infix_operator_expression=120

@@ -34,9 +34,7 @@ let private getLastCommit () =
 
         let! response = httpClient.SendAsync(request) |> Async.AwaitTask
 
-        let! body =
-            response.Content.ReadAsStringAsync()
-            |> Async.AwaitTask
+        let! body = response.Content.ReadAsStringAsync() |> Async.AwaitTask
 
         let decodeResult =
             match Decode.fromString (Decode.list commitDecoder) body with
@@ -75,11 +73,7 @@ let getAllLambdas (lastSha, lastTime) =
           Environment = environment }
 
     let mkLambdaProject (name: string) lambdas =
-        let archive =
-            __SOURCE_DIRECTORY__
-            </> ".."
-            </> "artifacts"
-            </> name
+        let archive = __SOURCE_DIRECTORY__ </> ".." </> "artifacts" </> name
 
         { Name = name
           FileArchive = archive
@@ -117,8 +111,7 @@ let getAllLambdas (lastSha, lastTime) =
                 "GetVersion"
                 "GET"
                 "/fantomas/preview/version"
-                [ "LAST_COMMIT_TIMESTAMP", lastTime
-                  "LAST_COMMIT_SHA", lastSha ]
+                [ "LAST_COMMIT_TIMESTAMP", lastTime; "LAST_COMMIT_SHA", lastSha ]
             mkLambdaInfo "GetOptions" "GET" "/fantomas/preview/options" List.empty
             mkLambdaInfo "PostFormat" "POST" "/fantomas/preview/format" List.empty ] ]
 
@@ -174,9 +167,7 @@ let infra () =
                 ApiGatewayV2.Inputs.ApiCorsConfigurationArgs(
                     AllowHeaders = inputList [ input "*" ],
                     AllowMethods = inputList [ input "*" ],
-                    AllowOrigins =
-                        inputList [ input "https://fsprojects.github.io"
-                                    input "http://localhost:9060" ]
+                    AllowOrigins = inputList [ input "https://fsprojects.github.io"; input "http://localhost:9060" ]
                 )
 
             let args =
@@ -194,17 +185,13 @@ let infra () =
             |> List.collect (fun lambdaProject ->
                 lambdaProject.Lambdas
                 |> List.map (fun lambdaInfo ->
-                    let lambdaFunctionName =
-                        $"{lambdaProject.Name}{lambdaInfo.Name}"
-                            .Kebaberize()
+                    let lambdaFunctionName = $"{lambdaProject.Name}{lambdaInfo.Name}".Kebaberize()
 
                     let environmentArgs =
                         if lambdaInfo.Environment.IsEmpty then
                             null
                         else
-                            let variables =
-                                lambdaInfo.Environment
-                                |> Seq.map (fun (k, v) -> k, input v)
+                            let variables = lambdaInfo.Environment |> Seq.map (fun (k, v) -> k, input v)
 
                             input (FunctionEnvironmentArgs(Variables = inputMap variables))
 

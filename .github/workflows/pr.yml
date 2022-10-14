@@ -25,8 +25,8 @@ jobs:
       - name: Setup .NET Core 6.0
         uses: actions/setup-dotnet@v2
 
-      - name: Restore
-        run: dotnet tool restore
+      - name: Clone Fantomas
+        run: dotnet fsi build.fsx -p Fantomas-Git
 
       - name: Build
-        run: dotnet fake run build.fsx -t PR
+        run: dotnet fsi build.fsx

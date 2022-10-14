@@ -33,10 +33,10 @@ jobs:
       run: dotnet tool restore
 
     - name: Download Fantomas
-      run: dotnet fake run build.fsx -t Fantomas-Git
+      run: dotnet fsi build.fsx -t Fantomas-Git
       
     - name: Run CI Target
-      run: dotnet fake run build.fsx -t CI
+      run: dotnet fsi build.fsx
 
     - name: Deploy Frontend
       uses: peaceiris/actions-gh-pages@v3
