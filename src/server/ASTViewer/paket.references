@@ -1,9 +1,0 @@
-group ASTViewer
-FSharp.Core
-Fantomas.FCS
-Thoth.Json.Net
-Microsoft.Net.Http.Headers
-Amazon.Lambda.Core
-Amazon.Lambda.Serialization.SystemTextJson
-Amazon.Lambda.APIGatewayEvents
-Suave

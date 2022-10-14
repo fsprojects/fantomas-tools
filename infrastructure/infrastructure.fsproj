@@ -5,9 +5,14 @@
     <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="paket.references" />
     <Compile Include="Program.fs" />
     <Content Include="Pulumi.main.yaml" />
   </ItemGroup>
-  <Import Project="..\.paket\Paket.Restore.targets" />
+  <ItemGroup>
+    <PackageReference Include="FSharp.Core" Version="6.0.6" />
+    <PackageReference Include="Humanizer.Core" Version="2.14.1" />
+    <PackageReference Include="Pulumi.Aws" Version="5.17.0" />
+    <PackageReference Include="Pulumi.FSharp" Version="3.42.0" />
+    <PackageReference Include="Thoth.Json.Net" Version="8.0.0" />
+  </ItemGroup>
 </Project>

@@ -29,9 +29,6 @@ jobs:
     - name: Setup .NET Core 6.0
       uses: actions/setup-dotnet@v2
 
-    - name: Restore
-      run: dotnet tool restore
-
     - name: Download Fantomas
       run: dotnet fsi build.fsx -t Fantomas-Git
       
@@ -43,9 +40,6 @@ jobs:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./artifacts/client
-
-    - name: Restore infrastructure dependencies
-      run: dotnet paket restore --group Infrastructure
 
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1

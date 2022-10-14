@@ -98,7 +98,6 @@ pipeline "Build" {
     }
     stage "dotnet install" {
         run "dotnet tool restore"
-        run "dotnet paket restore"
         run "dotnet restore"
     }
     stage "check format" { run "dotnet fantomas src infrastructure build.fsx -r --check" }

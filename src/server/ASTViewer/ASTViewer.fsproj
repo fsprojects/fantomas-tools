@@ -6,9 +6,9 @@
     <OutputType>exe</OutputType>
     <!-- This property makes the build directory similar to a publish directory and helps the AWS .NET Lambda Mock Test Tool find project dependencies. -->
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <IsLambda>true</IsLambda>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="paket.references" />
     <Compile Include="..\..\shared\ASTViewerShared.fs" />
     <Compile Include="..\HttpConstants.fs" />
     <Compile Include="..\AWSLambdaExtensions.fs" />
@@ -19,5 +19,9 @@
     <Compile Include="Lambda.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
-  <Import Project="..\..\..\.paket\Paket.Restore.targets" />
+  <ItemGroup>
+    <PackageReference Include="Fantomas.FCS" Version="5.1.0-alpha-007" />
+    <PackageReference Include="FSharp.Core" Version="6.0.6" />
+    <PackageReference Include="Thoth.Json.Net" Version="8.0.0" />
+  </ItemGroup>
 </Project>

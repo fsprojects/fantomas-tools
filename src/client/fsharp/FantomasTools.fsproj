@@ -1,12 +1,10 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <AssemblyName>FantomasTools.Client</AssemblyName>
     <RootNamespace>FantomasTools.Client</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="paket.references" />
     <Compile Include="../../shared/TriviaShared.fs" />
     <Compile Include="../../shared/ASTViewerShared.fs" />
     <Compile Include="../../shared/FantomasOnlineShared.fs" />
@@ -37,8 +35,6 @@
     <Compile Include="ASTViewer\Encoders.fs" />
     <Compile Include="ASTViewer\Decoders.fs" />
     <Compile Include="ASTViewer\State.fs" />
-<!--    <Compile Include="ASTViewer\vis.fs" />-->
-<!--    <Compile Include="ASTViewer\GraphView.fs" />-->
     <Compile Include="ASTViewer\View.fs" />
 
     <Compile Include="Model.fs" />
@@ -48,5 +44,16 @@
     <Compile Include="App.fs" />
     
   </ItemGroup>
-  <Import Project="..\..\..\.paket\Paket.Restore.targets" />
+  <ItemGroup>
+    <PackageReference Include="FSharp.Core" Version="6.0.6" />
+    <PackageReference Include="Fable.Browser.Url" Version="1.1.0" />
+    <PackageReference Include="Fable.Core" Version="3.7.1" />
+    <PackageReference Include="Fable.Fetch" Version="2.6.0" />
+    <PackageReference Include="Fable.Reactstrap" Version="0.5.1" />
+    <PackageReference Include="Feliz" Version="1.68.0" />
+    <PackageReference Include="Feliz.CompilerPlugins" Version="1.10.0" />
+    <PackageReference Include="Feliz.Router" Version="3.8.0" />
+    <PackageReference Include="Feliz.UseElmish" Version="1.6.0" />
+    <PackageReference Include="Thoth.Json" Version="7.0.0" />
+  </ItemGroup>
 </Project>
