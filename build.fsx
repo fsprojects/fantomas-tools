@@ -19,6 +19,7 @@ let fantomasV2Port = 2568
 let fantomasV3Port = 9007
 let fantomasV4Port = 10707
 let pwd = __SOURCE_DIRECTORY__
+let fantomasDepDir = pwd </> ".deps" </> "fantomas"
 let clientDir = pwd </> "src" </> "client"
 let serverDir = __SOURCE_DIRECTORY__ </> "src" </> "server"
 let artifactDir = __SOURCE_DIRECTORY__ </> "artifacts"
@@ -49,11 +50,10 @@ pipeline "Fantomas-Git" {
     stage "get fantomas source code" {
         run (fun _ ->
             async {
-                let targetDir = pwd </> ".deps" </> "fantomas"
                 let branch = "main"
 
-                if Directory.Exists(targetDir) then
-                    let! exitCode, _ = git "pull" targetDir
+                if Directory.Exists(fantomasDepDir) then
+                    let! exitCode, _ = git "pull" fantomasDepDir
                     return exitCode
                 else
                     let! exitCode, _ =
@@ -62,6 +62,11 @@ pipeline "Fantomas-Git" {
                             __SOURCE_DIRECTORY__
                     return exitCode
             })
+    }
+    stage "build fantomas" {
+        workingDir fantomasDepDir
+        run "dotnet fsi build.fsx -p Init"
+        run "dotnet build -c Release src/Fantomas.Core"
     }
     runIfOnlySpecified true
 }
