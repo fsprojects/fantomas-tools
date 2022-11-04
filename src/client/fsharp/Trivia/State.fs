@@ -99,7 +99,7 @@ let update code isFsi msg model =
             Error = Some err
             IsLoading = false },
         Cmd.none
-    | ActiveItemChange (tab, index) ->
+    | ActiveItemChange(tab, index) ->
         let model, range =
             match tab with
             | ActiveTab.RootNode -> model, None

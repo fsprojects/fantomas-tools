@@ -11,12 +11,12 @@ let private mapFantomasOptionsToRecord options =
     let newValues =
         options
         |> Seq.map (function
-            | BoolOption (_, _, v) -> box v
-            | IntOption (_, _, v) -> box v
-            | MultilineFormatterTypeOption (_, _, v) ->
+            | BoolOption(_, _, v) -> box v
+            | IntOption(_, _, v) -> box v
+            | MultilineFormatterTypeOption(_, _, v) ->
                 MultilineFormatterType.OfConfigString(v)
                 |> Option.defaultValue (box CharacterWidth)
-            | EndOfLineStyleOption (_, _, v) ->
+            | EndOfLineStyleOption(_, _, v) ->
                 EndOfLineStyle.OfConfigString(v)
                 |> Option.defaultValue EndOfLineStyle.CRLF
                 |> box)

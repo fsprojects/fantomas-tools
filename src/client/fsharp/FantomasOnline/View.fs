@@ -18,7 +18,7 @@ let private mapToOption dispatch (key, fantomasOption) =
             ] [ str key ]
 
         match fantomasOption with
-        | FantomasOption.BoolOption (o, _, v) ->
+        | FantomasOption.BoolOption(o, _, v) ->
             SettingControls.toggleButton
                 (fun _ -> UpdateOption(key, BoolOption(o, key, true)) |> dispatch)
                 (fun _ -> UpdateOption(key, BoolOption(o, key, false)) |> dispatch)
@@ -27,7 +27,7 @@ let private mapToOption dispatch (key, fantomasOption) =
                 label
                 v
 
-        | FantomasOption.IntOption (o, _, v) ->
+        | FantomasOption.IntOption(o, _, v) ->
             let onChange (nv: string) =
                 if Regex.IsMatch(nv, "\\d+") then
                     let v = nv |> int
@@ -35,7 +35,7 @@ let private mapToOption dispatch (key, fantomasOption) =
                     UpdateOption(key, IntOption(o, key, v)) |> dispatch
 
             SettingControls.input key onChange label "integer" v
-        | FantomasOption.MultilineFormatterTypeOption (o, _, v) ->
+        | FantomasOption.MultilineFormatterTypeOption(o, _, v) ->
             SettingControls.toggleButton
                 (fun _ ->
                     UpdateOption(key, MultilineFormatterTypeOption(o, key, "character_width"))
@@ -47,7 +47,7 @@ let private mapToOption dispatch (key, fantomasOption) =
                 "NumberOfItems"
                 label
                 (v = "character_width")
-        | FantomasOption.EndOfLineStyleOption (o, _, v) ->
+        | FantomasOption.EndOfLineStyleOption(o, _, v) ->
             SettingControls.toggleButton
                 (fun _ -> UpdateOption(key, EndOfLineStyleOption(o, key, "crlf")) |> dispatch)
                 (fun _ -> UpdateOption(key, EndOfLineStyleOption(o, key, "lf")) |> dispatch)

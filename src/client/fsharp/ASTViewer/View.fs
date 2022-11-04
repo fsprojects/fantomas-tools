@@ -10,8 +10,8 @@ open Reactstrap
 let private results model =
     let result =
         match model.Parsed with
-        | Some (Ok parsed) -> Editor true [ MonacoEditorProp.DefaultValue parsed.String ]
-        | Some (Result.Error errors) -> Editor true [ MonacoEditorProp.DefaultValue errors ]
+        | Some(Ok parsed) -> Editor true [ MonacoEditorProp.DefaultValue parsed.String ]
+        | Some(Result.Error errors) -> Editor true [ MonacoEditorProp.DefaultValue errors ]
         | None -> str ""
 
     let astErrors =

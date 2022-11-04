@@ -38,7 +38,7 @@ let formatCode
             Result.map (fun r -> r, mapFantomasOptionsToRecord r.Options) model
 
         match configResult with
-        | Ok ({ SourceCode = code; IsFsi = isFsi }, config) ->
+        | Ok({ SourceCode = code; IsFsi = isFsi }, config) ->
             let fileName = if isFsi then "tmp.fsi" else "tmp.fsx"
 
             try

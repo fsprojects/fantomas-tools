@@ -34,7 +34,7 @@ let private activeTrivia trivia =
             match c with
             | LineCommentAfterSourceCode c
             | LineCommentOnSingleLine c -> Some c
-            | BlockComment (c, nb, na) -> $"%s{c} (newline before: %b{nb}) (newline after: %b{na})" |> Some
+            | BlockComment(c, nb, na) -> $"%s{c} (newline before: %b{nb}) (newline after: %b{na})" |> Some
         | _ -> None
         |> Option.map (fun c -> code [] [ str c ])
 

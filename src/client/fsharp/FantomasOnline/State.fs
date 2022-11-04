@@ -89,19 +89,19 @@ let init (mode: FantomasMode) =
 let optionsListToMap options =
     options
     |> List.map (function
-        | FantomasOption.BoolOption (_, k, _) as fo -> k, fo
-        | FantomasOption.IntOption (_, k, _) as fo -> k, fo
-        | FantomasOption.MultilineFormatterTypeOption (_, k, _) as fo -> k, fo
-        | FantomasOption.EndOfLineStyleOption (_, k, _) as fo -> k, fo)
+        | FantomasOption.BoolOption(_, k, _) as fo -> k, fo
+        | FantomasOption.IntOption(_, k, _) as fo -> k, fo
+        | FantomasOption.MultilineFormatterTypeOption(_, k, _) as fo -> k, fo
+        | FantomasOption.EndOfLineStyleOption(_, k, _) as fo -> k, fo)
     |> Map.ofList
 
 let private updateOptionValue defaultOption userOption =
     match defaultOption, userOption with
-    | IntOption (o, k, _), IntOption (_, _, v) -> IntOption(o, k, v)
-    | BoolOption (o, k, _), BoolOption (_, _, v) -> BoolOption(o, k, v)
-    | MultilineFormatterTypeOption (o, k, _), MultilineFormatterTypeOption (_, _, v) ->
+    | IntOption(o, k, _), IntOption(_, _, v) -> IntOption(o, k, v)
+    | BoolOption(o, k, _), BoolOption(_, _, v) -> BoolOption(o, k, v)
+    | MultilineFormatterTypeOption(o, k, _), MultilineFormatterTypeOption(_, _, v) ->
         MultilineFormatterTypeOption(o, k, v)
-    | EndOfLineStyleOption (o, k, _), EndOfLineStyleOption (_, _, v) -> EndOfLineStyleOption(o, k, v)
+    | EndOfLineStyleOption(o, k, _), EndOfLineStyleOption(_, _, v) -> EndOfLineStyleOption(o, k, v)
     | _ -> defaultOption
 
 let private restoreUserOptionsFromUrl (defaultOptions: FantomasOption list) =
@@ -146,14 +146,14 @@ let private copySettings (model: Model) _ =
     let editorconfig =
         model.SettingsChangedByTheUser
         |> List.map (function
-            | FantomasOption.BoolOption (_, k, v) ->
+            | FantomasOption.BoolOption(_, k, v) ->
                 if v then
                     toEditorConfigName k |> sprintf "%s=true"
                 else
                     toEditorConfigName k |> sprintf "%s=false"
-            | FantomasOption.IntOption (_, k, v) -> sprintf "%s=%i" (toEditorConfigName k) v
-            | FantomasOption.MultilineFormatterTypeOption (_, k, v)
-            | FantomasOption.EndOfLineStyleOption (_, k, v) -> sprintf "%s=%s" (toEditorConfigName k) v)
+            | FantomasOption.IntOption(_, k, v) -> sprintf "%s=%i" (toEditorConfigName k) v
+            | FantomasOption.MultilineFormatterTypeOption(_, k, v)
+            | FantomasOption.EndOfLineStyleOption(_, k, v) -> sprintf "%s=%s" (toEditorConfigName k) v)
         |> String.concat "\n"
         |> sprintf "[*.{fs,fsx}]\n%s"
 
@@ -195,7 +195,7 @@ let update isActiveTab code isFsi msg model =
     | FormatException error -> { model with State = FormatError error }, Cmd.none
 
     | FormattedReceived result -> { model with State = FormatResult result }, Cmd.none
-    | UpdateOption (key, value) ->
+    | UpdateOption(key, value) ->
         let userOptions = Map.add key value model.UserOptions
         { model with UserOptions = userOptions }, Cmd.none
     | ChangeMode _ -> model, Cmd.none // handle in upper update function

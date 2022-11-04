@@ -36,10 +36,10 @@ let getTrivia json : GetTriviaResponse =
 
         let rootNode, directives, codeComments =
             match ast with
-            | ParsedInput.ImplFile (ParsedImplFileInput (hds, mns, directives, codeComments)) ->
+            | ParsedInput.ImplFile(ParsedImplFileInput(hds, mns, directives, codeComments)) ->
                 let rootNode = astToNode ast.FullRange hds mns
                 rootNode, directives, codeComments
-            | ParsedInput.SigFile (ParsedSigFileInput (_, mns, directives, codeComments)) ->
+            | ParsedInput.SigFile(ParsedSigFileInput(_, mns, directives, codeComments)) ->
                 let rootNode = sigAstToNode ast.FullRange mns
                 rootNode, directives, codeComments
 

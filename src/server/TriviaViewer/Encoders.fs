@@ -10,7 +10,7 @@ let private mapToComment comment =
     match comment with
     | LineCommentAfterSourceCode c -> Shared.LineCommentAfterSourceCode c
     | CommentOnSingleLine c -> Shared.LineCommentOnSingleLine c
-    | BlockComment (c, nb, na) -> Shared.BlockComment(c, nb, na)
+    | BlockComment(c, nb, na) -> Shared.BlockComment(c, nb, na)
 
 let private mapToTriviaContent (tc: TriviaContent) =
     match tc with

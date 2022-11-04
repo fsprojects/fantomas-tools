@@ -19,7 +19,7 @@ let private triviaContentToDetail tc =
     | Newline -> str "Newline"
     | Comment c ->
         match c with
-        | BlockComment (bc, _, _) -> (wrap "BlockComment" bc)
+        | BlockComment(bc, _, _) -> (wrap "BlockComment" bc)
         | LineCommentOnSingleLine lc -> (wrap "LineCommentOnSingleLine" lc)
         | LineCommentAfterSourceCode lc -> (wrap "LineCommentAfterSourceCode" lc)
         |> fun inner -> fragment [] [ str "Comment("; yield! inner; str ")" ]

@@ -36,7 +36,7 @@ let private getLastCommit () =
 
         let decodeResult =
             match Decode.fromString (Decode.list commitDecoder) body with
-            | Ok (t :: _)
+            | Ok(t :: _)
             | Ok [ t ] ->
                 printfn "Last commit: %A" t
                 Some t
