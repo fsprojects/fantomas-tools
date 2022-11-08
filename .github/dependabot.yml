@@ -21,7 +21,7 @@ updates:
   - dependency-name: "@snowpack/plugin-dotenv"
     versions:
     - 2.1.0
-— package-ecosystem: nuget
+- package-ecosystem: nuget
   directory: "/src/server/ASTViewer"
   schedule:
     interval: daily
