@@ -123,6 +123,7 @@ pipeline "Build" {
     }
     stage "bundle frontend" {
         workingDir clientDir
+        run "dotnet tool restore"
         run (fun _ ->
             async {
                 setViteToProduction ()
@@ -204,8 +205,8 @@ pipeline "Watch" {
         run (runLambda "FantomasOnlineV5")
         run (runLambda "FantomasOnlinePreview")
         stage "frontend" {
-            paralle
             workingDir clientDir
+            run "dotnet tool restore"
             run "dotnet fable watch ./fsharp/FantomasTools.fsproj --outDir ./src/bin --run vite"
         }
     }
