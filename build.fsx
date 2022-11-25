@@ -13,12 +13,14 @@ open Fake.IO.Globbing.Operators
 
 let fablePort = 9060
 let astPort = 7412
+let oakPort = 8904
 let triviaPort = 9856
 let fantomasPreviewPort = 11084
 let fantomasV4Port = 10707
 let fantomasV5Port = 11009
 let pwd = __SOURCE_DIRECTORY__
 let fantomasDepDir = pwd </> ".deps" </> "fantomas"
+let dallasDepDir = pwd </> ".deps" </> "dallas"
 let clientDir = pwd </> "src" </> "client"
 let serverDir = __SOURCE_DIRECTORY__ </> "src" </> "server"
 let artifactDir = __SOURCE_DIRECTORY__ </> "artifacts"
@@ -64,6 +66,27 @@ pipeline "Fantomas-Git" {
     }
     stage "build fantomas" {
         workingDir fantomasDepDir
+        run "dotnet fsi build.fsx -p Init"
+        run "dotnet build -c Release src/Fantomas.Core"
+    }
+    stage "get project Dallas source code" {
+        run (fun _ ->
+            async {
+                let branch = "project-dallas"
+
+                if Directory.Exists(dallasDepDir) then
+                    let! exitCode, _ = git "pull" dallasDepDir
+                    return exitCode
+                else
+                    let! exitCode, _ =
+                        git
+                            $"clone -b {branch} --single-branch https://github.com/nojaf/fantomas.git .deps/dallas"
+                            __SOURCE_DIRECTORY__
+                    return exitCode
+            })
+    }
+    stage "build fantomas" {
+        workingDir dallasDepDir
         run "dotnet fsi build.fsx -p Init"
         run "dotnet build -c Release src/Fantomas.Core"
     }
@@ -190,6 +213,7 @@ pipeline "Watch" {
 
                 setEnv "NODE_ENV" "development"
                 setEnv "VITE_AST_BACKEND" (localhostBackend astPort "ast-viewer")
+                setEnv "VITE_OAK_BACKEND" (localhostBackend oakPort "oak-viewer")
                 setEnv "VITE_TRIVIA_BACKEND" (localhostBackend triviaPort "trivia-viewer")
                 setEnv "VITE_FANTOMAS_V4" (localhostBackend fantomasV4Port "fantomas/v4")
                 setEnv "VITE_FANTOMAS_V5" (localhostBackend fantomasV5Port "fantomas/v5")
@@ -201,6 +225,7 @@ pipeline "Watch" {
         paralle
         run (runLambda "ASTViewer")
         run (runLambda "TriviaViewer")
+        run (runLambda "OakViewer")
         run (runLambda "FantomasOnlineV4")
         run (runLambda "FantomasOnlineV5")
         run (runLambda "FantomasOnlinePreview")
