@@ -87,7 +87,7 @@ let getAllLambdas (lastSha, lastTime) =
       mkLambdaProject
           "OakViewer"
           [ mkLambdaInfo "GetVersion" "GET" "/oak-viewer/version" List.empty
-            mkLambdaInfo "GetOak" "POST" "/oak-viewer/get-trivia" List.empty ]
+            mkLambdaInfo "GetOak" "POST" "/oak-viewer/get-oak" List.empty ]
       mkLambdaProject
           "TriviaViewer"
           [ mkLambdaInfo "GetVersion" "GET" "/trivia-viewer/version" List.empty
