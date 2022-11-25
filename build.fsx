@@ -145,6 +145,7 @@ pipeline "Build" {
             run (publishLambda "ASTViewer")
         }
         run (publishLambda "FantomasOnlineMain")
+        run (publishLambda "FantomasOnlinePreview")
         run (publishLambda "TriviaViewer")
         run (publishLambda "OakViewer")
     }
