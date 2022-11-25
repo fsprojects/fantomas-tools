@@ -5,7 +5,8 @@ open FantomasOnline.Shared
 type FantomasMode =
     | V4
     | V5
-    | Preview // main branch
+    | Main // main branch
+    | Preview // dallas branch
 
 type Msg =
     | VersionReceived of string

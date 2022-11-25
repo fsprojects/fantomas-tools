@@ -85,6 +85,10 @@ let getAllLambdas (lastSha, lastTime) =
             mkLambdaInfo "PostUntypedAST" "POST" "/ast-viewer/untyped-ast" List.empty
             mkLambdaInfo "PostTypedAST" "POST" "/ast-viewer/typed-ast" List.empty ]
       mkLambdaProject
+          "OakViewer"
+          [ mkLambdaInfo "GetVersion" "GET" "/oak-viewer/version" List.empty
+            mkLambdaInfo "GetOak" "POST" "/oak-viewer/get-trivia" List.empty ]
+      mkLambdaProject
           "TriviaViewer"
           [ mkLambdaInfo "GetVersion" "GET" "/trivia-viewer/version" List.empty
             mkLambdaInfo "GetTrivia" "POST" "/trivia-viewer/get-trivia" List.empty ]
@@ -99,12 +103,17 @@ let getAllLambdas (lastSha, lastTime) =
             mkLambdaInfo "GetOptions" "GET" "/fantomas/v5/options" List.empty
             mkLambdaInfo "PostFormat" "POST" "/fantomas/v5/format" List.empty ]
       mkLambdaProject
-          "FantomasOnlinePreview"
+          "FantomasOnlineMain"
           [ mkLambdaInfo
                 "GetVersion"
                 "GET"
-                "/fantomas/preview/version"
+                "/fantomas/main/version"
                 [ "LAST_COMMIT_TIMESTAMP", lastTime; "LAST_COMMIT_SHA", lastSha ]
+            mkLambdaInfo "GetOptions" "GET" "/fantomas/main/options" List.empty
+            mkLambdaInfo "PostFormat" "POST" "/fantomas/main/format" List.empty ]
+      mkLambdaProject
+          "FantomasOnlinePreview"
+          [ mkLambdaInfo "GetVersion" "GET" "/fantomas/preview/version" List.empty
             mkLambdaInfo "GetOptions" "GET" "/fantomas/preview/options" List.empty
             mkLambdaInfo "PostFormat" "POST" "/fantomas/preview/format" List.empty ] ]
 
