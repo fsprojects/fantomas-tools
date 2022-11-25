@@ -1,0 +1,38 @@
+@import "variables"
+@import "../../node_modules/bootstrap/scss/_functions.scss"
+@import "../../node_modules/bootstrap/scss/_variables.scss"
+@import "../../node_modules/bootstrap/scss/_mixins.scss"
+
+#oakResult
+  overflow-y: auto
+  max-height: 100%
+  
+  > div
+    margin: 1px 0
+    padding: 0
+    line-height: 1rem
+    transition: all 0.4s
+    
+    &:hover
+      cursor: pointer
+      border: 1px solid $dark
+
+    & .highlight
+      color: $white
+      background-color: $secondary
+      
+    > pre
+      margin: 0
+      padding: 0
+      
+      &.comment
+        color: $white
+        background: $success
+
+      &.newline
+        color: $white
+        background: $dark
+
+      &.directive
+        color: $white
+        background: $primary

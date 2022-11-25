@@ -10,6 +10,7 @@ let cmdForCurrentTab tab model =
         match tab with
         | HomeTab -> Cmd.none
         | ASTTab -> Cmd.ofMsg ASTViewer.Model.DoParse |> Cmd.map Msg.ASTMsg
+        | OakTab -> Cmd.ofMsg OakViewer.Model.GetOak |> Cmd.map Msg.OakMsg
         | TriviaTab -> Cmd.ofMsg Trivia.Model.GetTrivia |> Cmd.map Msg.TriviaMsg
         | FantomasTab mode when (mode <> model.FantomasModel.Mode) ->
             Cmd.batch
@@ -25,6 +26,7 @@ let cmdForCurrentTab tab model =
 let toHash =
     function
     | HomeTab -> "#/"
+    | OakTab -> "#/oak"
     | TriviaTab -> "#/trivia"
     | ASTTab -> "#/ast"
     | FantomasTab FantomasOnline.Model.V4 -> "#/fantomas/v4"
@@ -35,6 +37,8 @@ let parseUrl segments =
     match segments with
     | [ "ast" ]
     | [ "ast"; Route.Query [ "data", _ ] ] -> ActiveTab.ASTTab
+    | [ "oak" ]
+    | [ "oak"; Route.Query [ "data", _ ] ] -> ActiveTab.OakTab
     | [ "trivia" ]
     | [ "trivia"; Route.Query [ "data", _ ] ] -> ActiveTab.TriviaTab
     | [ "fantomas"; "v4" ]

@@ -63,16 +63,29 @@ let getOak json : GetOakResponse =
             let rec visit (level: int) (node: Node) (continuation: string array -> string array) : string array =
                 let continuations = node.Children |> Array.map (visit (level + 1)) |> Array.toList
 
-                let currentNode =
+                let contentBefore, currentNode, contentAfter =
                     let name = node.GetType().Name
-                    let nodeText = sprintf "%s%s: %A" ("".PadRight(level * 2)) name node.Range
 
-                    [| yield! triviaLines level node.ContentBefore
-                       yield nodeText
-                       yield! triviaLines level node.ContentAfter |]
+                    let nodeText =
+                        match node with
+                        | :? SingleTextNode as stn ->
+                            let text =
+                                if stn.Text.Length > 13 then
+                                    sprintf "%s..." (stn.Text.Substring(0, 10))
+                                else
+                                    stn.Text
+
+                            sprintf "%s\"%s\" %s" ("".PadRight(level * 2)) text (rangeToText node.Range)
+                        | _ -> sprintf "%s%s %s" ("".PadRight(level * 2)) name (rangeToText node.Range)
+
+                    triviaLines level node.ContentBefore, nodeText, triviaLines level node.ContentAfter
 
                 let finalContinuation (lines: string array list) =
-                    [| yield! currentNode; yield! Seq.collect id lines |] |> continuation
+                    [| yield! contentBefore
+                       yield currentNode
+                       yield! Seq.collect id lines
+                       yield! contentAfter |]
+                    |> continuation
 
                 Continuation.sequence continuations finalContinuation
 

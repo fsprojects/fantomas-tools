@@ -126,6 +126,13 @@ let tabs (model: Model) dispatch =
             ASTViewer.View.view model.ASTModel astDispatch,
             ASTViewer.View.settings model.IsFsi model.ASTModel astDispatch,
             ASTViewer.View.commands astDispatch
+        | OakTab ->
+            let oakDispatch oMsg = dispatch (OakMsg oMsg)
+
+            OakViewer.View.view model.OakModel oakDispatch,
+            OakViewer.View.settings model.IsFsi model.OakModel oakDispatch,
+            OakViewer.View.commands oakDispatch
+
         | FantomasTab _ ->
             let fantomasDispatch fMsg = dispatch (FantomasMsg fMsg)
 
@@ -159,6 +166,7 @@ let tabs (model: Model) dispatch =
     let navItems = [
         navItem HomeTab "Home" (model.ActiveTab = HomeTab)
         navItem ASTTab "AST" (model.ActiveTab = ASTTab)
+        navItem OakTab "Oak" (model.ActiveTab = OakTab)
         navItem TriviaTab "Trivia" (model.ActiveTab = TriviaTab)
         navItem
             (FantomasTab FantomasTools.Client.FantomasOnline.Model.Preview)

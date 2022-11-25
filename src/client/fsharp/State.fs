@@ -18,6 +18,7 @@ let init _ =
     let currentTab = Navigation.parseUrl (Router.currentUrl ())
 
     let astModel, astCmd = ASTViewer.State.init (currentTab = ASTTab)
+    let oakModel, oakCmd = OakViewer.State.init (currentTab = OakTab)
     let triviaModel, triviaCmd = Trivia.State.init (currentTab = TriviaTab)
 
     let fantomasModel, fantomasCmd =
@@ -33,6 +34,7 @@ let init _ =
           SourceCode = sourceCode
           SettingsOpen = false
           IsFsi = isFsiFile
+          OakModel = oakModel
           TriviaModel = triviaModel
           ASTModel = astModel
           FantomasModel = fantomasModel }
@@ -42,6 +44,7 @@ let init _ =
     let cmd =
         Cmd.batch
             [ Cmd.map ASTMsg astCmd
+              Cmd.map OakMsg oakCmd
               Cmd.map TriviaMsg triviaCmd
               Cmd.map FantomasMsg fantomasCmd
               initialCmd ]
@@ -79,6 +82,12 @@ let update msg model =
         let m = { model with SettingsOpen = not model.SettingsOpen }
 
         m, reload m
+    | OakMsg(OakViewer.Model.Msg.SetFsiFile isFsiFile) -> { model with IsFsi = isFsiFile }, Cmd.none
+    | OakMsg oMsg ->
+        let oModel, oCmd =
+            OakViewer.State.update model.SourceCode model.IsFsi oMsg model.OakModel
+
+        { model with OakModel = oModel }, Cmd.map OakMsg oCmd
     | TriviaMsg(Trivia.Model.Msg.SetFsiFile isFsiFile) -> { model with IsFsi = isFsiFile }, Cmd.none
     | TriviaMsg tMsg ->
         let tModel, tCmd =
