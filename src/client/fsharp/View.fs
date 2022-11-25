@@ -168,10 +168,7 @@ let tabs (model: Model) dispatch =
         navItem ASTTab "AST" (model.ActiveTab = ASTTab)
         navItem OakTab "Oak" (model.ActiveTab = OakTab)
         navItem TriviaTab "Trivia" (model.ActiveTab = TriviaTab)
-        navItem
-            (FantomasTab FantomasTools.Client.FantomasOnline.Model.Main)
-            "Fantomas"
-            (isFantomasTab model.ActiveTab)
+        navItem (FantomasTab FantomasTools.Client.FantomasOnline.Model.Main) "Fantomas" (isFantomasTab model.ActiveTab)
     ]
 
     div [ ClassName "col-7 h-100" ] [

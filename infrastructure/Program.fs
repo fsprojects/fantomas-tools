@@ -110,7 +110,12 @@ let getAllLambdas (lastSha, lastTime) =
                 "/fantomas/main/version"
                 [ "LAST_COMMIT_TIMESTAMP", lastTime; "LAST_COMMIT_SHA", lastSha ]
             mkLambdaInfo "GetOptions" "GET" "/fantomas/main/options" List.empty
-            mkLambdaInfo "PostFormat" "POST" "/fantomas/main/format" List.empty ] ]
+            mkLambdaInfo "PostFormat" "POST" "/fantomas/main/format" List.empty ]
+      mkLambdaProject
+          "FantomasOnlinePreview"
+          [ mkLambdaInfo "GetVersion" "GET" "/fantomas/preview/version" List.empty
+            mkLambdaInfo "GetOptions" "GET" "/fantomas/preview/options" List.empty
+            mkLambdaInfo "PostFormat" "POST" "/fantomas/preview/format" List.empty ] ]
 
 let infra () =
     async {

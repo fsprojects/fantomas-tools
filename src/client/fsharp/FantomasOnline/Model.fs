@@ -6,6 +6,7 @@ type FantomasMode =
     | V4
     | V5
     | Main // main branch
+    | Preview // dallas branch
 
 type Msg =
     | VersionReceived of string

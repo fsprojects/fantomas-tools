@@ -16,6 +16,7 @@ let astPort = 7412
 let oakPort = 8904
 let triviaPort = 9856
 let fantomasMainPort = 11084
+let fantomasPreviewPort = 12007
 let fantomasV4Port = 10707
 let fantomasV5Port = 11009
 let pwd = __SOURCE_DIRECTORY__
@@ -111,6 +112,7 @@ let setViteToProduction () =
     setEnv "VITE_FANTOMAS_V4" $"{mainStageUrl}/fantomas/v4"
     setEnv "VITE_FANTOMAS_V5" $"{mainStageUrl}/fantomas/v5"
     setEnv "VITE_FANTOMAS_MAIN" $"{mainStageUrl}/fantomas/main"
+    setEnv "VITE_FANTOMAS_PREVIEW" $"{mainStageUrl}/fantomas/preview"
 
 pipeline "Build" {
     workingDir __SOURCE_DIRECTORY__
@@ -220,6 +222,7 @@ pipeline "Watch" {
                 setEnv "VITE_FANTOMAS_V4" (localhostBackend fantomasV4Port "fantomas/v4")
                 setEnv "VITE_FANTOMAS_V5" (localhostBackend fantomasV5Port "fantomas/v5")
                 setEnv "VITE_FANTOMAS_MAIN" (localhostBackend fantomasMainPort "fantomas/main")
+                setEnv "VITE_FANTOMAS_PREVIEW" (localhostBackend fantomasPreviewPort "fantomas/preview")
                 return 0
             })
     }
@@ -231,6 +234,7 @@ pipeline "Watch" {
         run (runLambda "FantomasOnlineV4")
         run (runLambda "FantomasOnlineV5")
         run (runLambda "FantomasOnlineMain")
+        run (runLambda "FantomasOnlinePreview")
         stage "frontend" {
             workingDir clientDir
             run "dotnet tool restore"

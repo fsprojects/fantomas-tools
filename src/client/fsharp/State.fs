@@ -109,6 +109,7 @@ let update msg model =
                     | FantomasOnline.Model.V4 -> "v4"
                     | FantomasOnline.Model.V5 -> "v5"
                     | FantomasOnline.Model.Main -> "main"
+                    | FantomasOnline.Model.Preview -> "preview"
 
                 let oldVersion = version model.FantomasModel.Mode
                 let newVersion = version mode
