@@ -85,6 +85,10 @@ let getAllLambdas (lastSha, lastTime) =
             mkLambdaInfo "PostUntypedAST" "POST" "/ast-viewer/untyped-ast" List.empty
             mkLambdaInfo "PostTypedAST" "POST" "/ast-viewer/typed-ast" List.empty ]
       mkLambdaProject
+          "OakViewer"
+          [ mkLambdaInfo "GetVersion" "GET" "/oak-viewer/version" List.empty
+            mkLambdaInfo "GetOak" "POST" "/oak-viewer/get-trivia" List.empty ]
+      mkLambdaProject
           "TriviaViewer"
           [ mkLambdaInfo "GetVersion" "GET" "/trivia-viewer/version" List.empty
             mkLambdaInfo "GetTrivia" "POST" "/trivia-viewer/get-trivia" List.empty ]

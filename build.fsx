@@ -106,6 +106,7 @@ let setViteToProduction () =
         "https://arlp8cgo97.execute-api.eu-west-1.amazonaws.com/fantomas-main-stage-1c52a6a"
 
     setEnv "VITE_AST_BACKEND" $"{mainStageUrl}/ast-viewer"
+    setEnv "VITE_OAK_BACKEND" $"{mainStageUrl}/oak-viewer"
     setEnv "VITE_TRIVIA_BACKEND" $"{mainStageUrl}/trivia-viewer"
     setEnv "VITE_FANTOMAS_V4" $"{mainStageUrl}/fantomas/v4"
     setEnv "VITE_FANTOMAS_V5" $"{mainStageUrl}/fantomas/v5"
@@ -143,6 +144,7 @@ pipeline "Build" {
         }
         run (publishLambda "FantomasOnlinePreview")
         run (publishLambda "TriviaViewer")
+        run (publishLambda "OakViewer")
     }
     stage "bundle frontend" {
         workingDir clientDir
