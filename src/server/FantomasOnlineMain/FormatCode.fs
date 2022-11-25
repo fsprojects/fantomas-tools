@@ -1,4 +1,4 @@
-module FantomasOnlinePreview.FormatCode
+module FantomasOnlineMain.FormatCode
 
 open FSharp.Compiler.Diagnostics
 open FSharp.Compiler.Text

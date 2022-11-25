@@ -18,17 +18,17 @@ let main argv =
         request (fun req ctx ->
             async {
                 let json = req.BodyText
-                let! formatResponse = FantomasOnlinePreview.FormatCode.formatCode json
+                let! formatResponse = FantomasOnlineMain.FormatCode.formatCode json
                 return! (mapFormatResponseToWebPart formatResponse) ctx
             })
 
     let routes =
-        [ GET >=> path "/fantomas/preview/version" >=> textPlain >=> OK(FantomasOnlinePreview.FormatCode.getVersion ())
+        [ GET >=> path "/fantomas/main/version" >=> textPlain >=> OK(FantomasOnlineMain.FormatCode.getVersion ())
           GET
-          >=> path "/fantomas/preview/options"
+          >=> path "/fantomas/main/options"
           >=> applicationJson
-          >=> OK(FantomasOnlinePreview.FormatCode.getOptions ())
-          POST >=> path "/fantomas/preview/format" >=> formatWebPart ]
+          >=> OK(FantomasOnlineMain.FormatCode.getOptions ())
+          POST >=> path "/fantomas/main/format" >=> formatWebPart ]
 
     let port =
         match List.ofArray argv with

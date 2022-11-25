@@ -1,4 +1,4 @@
-﻿module FantomasOnlinePreview.Lambda
+﻿module FantomasOnlineMain.Lambda
 
 open System.Net
 open Amazon.Lambda.APIGatewayEvents
@@ -6,7 +6,7 @@ open Amazon.Lambda.Core
 open AWSLambdaExtensions
 open HttpConstants
 open FantomasOnline.Server.Shared.Http
-open FantomasOnlinePreview.FormatCode
+open FantomasOnlineMain.FormatCode
 
 // Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
 [<assembly: LambdaSerializer(typeof<Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer>)>]

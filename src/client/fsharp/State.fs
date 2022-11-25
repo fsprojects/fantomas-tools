@@ -25,7 +25,7 @@ let init _ =
         let tab =
             match currentTab with
             | ActiveTab.FantomasTab ft -> ft
-            | _ -> FantomasTools.Client.FantomasOnline.Model.Preview
+            | _ -> FantomasTools.Client.FantomasOnline.Model.Main
 
         FantomasOnline.State.init tab
 
@@ -108,7 +108,7 @@ let update msg model =
                     match m with
                     | FantomasOnline.Model.V4 -> "v4"
                     | FantomasOnline.Model.V5 -> "v5"
-                    | FantomasOnline.Model.Preview -> "preview"
+                    | FantomasOnline.Model.Main -> "main"
 
                 let oldVersion = version model.FantomasModel.Mode
                 let newVersion = version mode

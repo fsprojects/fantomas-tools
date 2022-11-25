@@ -15,7 +15,7 @@ let fablePort = 9060
 let astPort = 7412
 let oakPort = 8904
 let triviaPort = 9856
-let fantomasPreviewPort = 11084
+let fantomasMainPort = 11084
 let fantomasV4Port = 10707
 let fantomasV5Port = 11009
 let pwd = __SOURCE_DIRECTORY__
@@ -110,7 +110,7 @@ let setViteToProduction () =
     setEnv "VITE_TRIVIA_BACKEND" $"{mainStageUrl}/trivia-viewer"
     setEnv "VITE_FANTOMAS_V4" $"{mainStageUrl}/fantomas/v4"
     setEnv "VITE_FANTOMAS_V5" $"{mainStageUrl}/fantomas/v5"
-    setEnv "VITE_FANTOMAS_PREVIEW" $"{mainStageUrl}/fantomas/preview"
+    setEnv "VITE_FANTOMAS_MAIN" $"{mainStageUrl}/fantomas/main"
 
 pipeline "Build" {
     workingDir __SOURCE_DIRECTORY__
@@ -142,7 +142,7 @@ pipeline "Build" {
             run (publishLambda "FantomasOnlineV5")
             run (publishLambda "ASTViewer")
         }
-        run (publishLambda "FantomasOnlinePreview")
+        run (publishLambda "FantomasOnlineMain")
         run (publishLambda "TriviaViewer")
         run (publishLambda "OakViewer")
     }
@@ -219,7 +219,7 @@ pipeline "Watch" {
                 setEnv "VITE_TRIVIA_BACKEND" (localhostBackend triviaPort "trivia-viewer")
                 setEnv "VITE_FANTOMAS_V4" (localhostBackend fantomasV4Port "fantomas/v4")
                 setEnv "VITE_FANTOMAS_V5" (localhostBackend fantomasV5Port "fantomas/v5")
-                setEnv "VITE_FANTOMAS_PREVIEW" (localhostBackend fantomasPreviewPort "fantomas/preview")
+                setEnv "VITE_FANTOMAS_MAIN" (localhostBackend fantomasMainPort "fantomas/main")
                 return 0
             })
     }
@@ -230,7 +230,7 @@ pipeline "Watch" {
         run (runLambda "OakViewer")
         run (runLambda "FantomasOnlineV4")
         run (runLambda "FantomasOnlineV5")
-        run (runLambda "FantomasOnlinePreview")
+        run (runLambda "FantomasOnlineMain")
         stage "frontend" {
             workingDir clientDir
             run "dotnet tool restore"

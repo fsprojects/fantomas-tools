@@ -31,7 +31,7 @@ let toHash =
     | ASTTab -> "#/ast"
     | FantomasTab FantomasOnline.Model.V4 -> "#/fantomas/v4"
     | FantomasTab FantomasOnline.Model.V5 -> "#/fantomas/v5"
-    | FantomasTab FantomasOnline.Model.Preview -> "#/fantomas/preview"
+    | FantomasTab FantomasOnline.Model.Main -> "#/fantomas/main"
 
 let parseUrl segments =
     match segments with
@@ -43,6 +43,6 @@ let parseUrl segments =
     | [ "trivia"; Route.Query [ "data", _ ] ] -> ActiveTab.TriviaTab
     | [ "fantomas"; "v4" ]
     | [ "fantomas"; "v4"; Route.Query [ "data", _ ] ] -> ActiveTab.FantomasTab(FantomasOnline.Model.V4)
-    | [ "fantomas"; "preview" ]
-    | [ "fantomas"; "preview"; Route.Query [ "data", _ ] ] -> ActiveTab.FantomasTab(FantomasOnline.Model.Preview)
+    | [ "fantomas"; "main" ]
+    | [ "fantomas"; "main"; Route.Query [ "data", _ ] ] -> ActiveTab.FantomasTab(FantomasOnline.Model.Main)
     | _ -> ActiveTab.HomeTab

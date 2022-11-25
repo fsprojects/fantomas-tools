@@ -9,6 +9,7 @@
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
     <IsLambda>true</IsLambda>
+    <RootNamespace>FantomasOnlineMain</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="../../shared/FantomasOnlineShared.fs" />

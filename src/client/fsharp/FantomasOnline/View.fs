@@ -205,7 +205,7 @@ let private createGitHubIssue code isFsi model =
         | _ -> "Code", code, "", ""
 
     match model.Mode with
-    | Preview when (not (System.String.IsNullOrWhiteSpace(code))) ->
+    | Main when (not (System.String.IsNullOrWhiteSpace(code))) ->
         let githubIssue = {
             BeforeHeader = bh
             BeforeContent = bc
@@ -224,7 +224,7 @@ let private createGitHubIssue code isFsi model =
             Button.Outline true
             Button.Custom [ githubIssueUri githubIssue; Target "_blank"; ClassName "rounded-0" ]
         ] [ str "Looks wrong? Create an issue!" ]
-    | _ -> span [ ClassName "text-muted mr-2" ] [ str "Looks wrong? Try using the preview version!" ]
+    | _ -> span [ ClassName "text-muted mr-2" ] [ str "Looks wrong? Try using the main version!" ]
 
 let private viewErrors (model: Model) isFsi result isIdempotent errors =
     let errors =
@@ -348,7 +348,7 @@ let settings isFsi model dispatch =
             [
                 FantomasMode.V4, "4.x"
                 FantomasMode.V5, "5.x"
-                FantomasMode.Preview, "Preview"
+                FantomasMode.Main, "Main"
             ]
             |> List.map (fun (m, l) ->
                 {

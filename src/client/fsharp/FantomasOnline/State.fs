@@ -21,14 +21,14 @@ let private v4Backend: string = jsNative
 [<Emit("import.meta.env.VITE_FANTOMAS_V5")>]
 let private v5Backend: string = jsNative
 
-[<Emit("import.meta.env.VITE_FANTOMAS_PREVIEW")>]
-let private previewBackend: string = jsNative
+[<Emit("import.meta.env.VITE_FANTOMAS_MAIN")>]
+let private mainBackend: string = jsNative
 
 let private backend =
     Map.ofList
         [ (FantomasMode.V4, v4Backend)
           (FantomasMode.V5, v5Backend)
-          (FantomasMode.Preview, previewBackend) ]
+          (FantomasMode.Main, mainBackend) ]
 
 let private getVersion mode =
     sprintf "%s/%s" (Map.find mode backend) "version" |> Http.getText

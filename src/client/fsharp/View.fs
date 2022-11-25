@@ -169,7 +169,7 @@ let tabs (model: Model) dispatch =
         navItem OakTab "Oak" (model.ActiveTab = OakTab)
         navItem TriviaTab "Trivia" (model.ActiveTab = TriviaTab)
         navItem
-            (FantomasTab FantomasTools.Client.FantomasOnline.Model.Preview)
+            (FantomasTab FantomasTools.Client.FantomasOnline.Model.Main)
             "Fantomas"
             (isFantomasTab model.ActiveTab)
     ]
