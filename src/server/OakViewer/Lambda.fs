@@ -15,7 +15,7 @@ let GetVersion (_request: APIGatewayProxyRequest) (_context: ILambdaContext) =
     let version = getVersion ()
     mkAPIGatewayProxyResponse (HttpStatusCode.OK, HeaderValues.TextPlain, version)
 
-let GetTrivia (request: APIGatewayProxyRequest) (_context: ILambdaContext) =
+let GetOak (request: APIGatewayProxyRequest) (_context: ILambdaContext) =
     let triviaResponse = getOak request.Body
 
     let responseData =
