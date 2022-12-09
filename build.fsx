@@ -73,7 +73,7 @@ pipeline "Fantomas-Git" {
     stage "get project Dallas source code" {
         run (fun _ ->
             async {
-                let branch = "project-dallas"
+                let branch = "v5.2"
 
                 if Directory.Exists(dallasDepDir) then
                     let! exitCode, _ = git "pull" dallasDepDir
@@ -81,7 +81,7 @@ pipeline "Fantomas-Git" {
                 else
                     let! exitCode, _ =
                         git
-                            $"clone -b {branch} --single-branch https://github.com/nojaf/fantomas.git .deps/dallas"
+                            $"clone -b {branch} --single-branch https://github.com/fsprojects/fantomas.git .deps/dallas"
                             __SOURCE_DIRECTORY__
                     return exitCode
             })
