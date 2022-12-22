@@ -20,7 +20,7 @@
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Fantomas.FCS" Version="5.1.4" />
+    <PackageReference Include="Fantomas.FCS" Version="5.1.5" />
     <PackageReference Include="FSharp.Core" Version="6.0.6" />
     <PackageReference Include="Thoth.Json.Net" Version="8.0.0" />
   </ItemGroup>
