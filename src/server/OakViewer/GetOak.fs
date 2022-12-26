@@ -36,7 +36,8 @@ let getOak json : GetOakResponse =
             if not isStroustrup then
                 FormatConfig.Default
             else
-                { FormatConfig.Default with MultilineBracketStyle = MultilineBracketStyle.ExperimentalStroustrup }
+                { FormatConfig.Default with
+                    MultilineBracketStyle = MultilineBracketStyle.ExperimentalStroustrup }
 
         let oak =
             Fangorn.mkOak config (Some source) ast |> Flowering.enrichTree config source ast

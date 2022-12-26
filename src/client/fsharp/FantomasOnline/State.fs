@@ -196,11 +196,16 @@ let update isActiveTab code isFsi msg model =
                 [ Cmd.ofSub (getFormattedCode code isFsi model)
                   Cmd.ofSub (updateUrl code isFsi model) ]
 
-        { model with State = LoadingFormatRequest }, cmd
+        { model with
+            State = LoadingFormatRequest },
+        cmd
 
     | FormatException error -> { model with State = FormatError error }, Cmd.none
 
-    | FormattedReceived result -> { model with State = FormatResult result }, Cmd.none
+    | FormattedReceived result ->
+        { model with
+            State = FormatResult result },
+        Cmd.none
     | UpdateOption(key, value) ->
         let userOptions = Map.add key value model.UserOptions
         { model with UserOptions = userOptions }, Cmd.none

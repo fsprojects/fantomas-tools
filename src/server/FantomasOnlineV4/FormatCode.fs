@@ -34,7 +34,9 @@ let private format fileName code config =
     CodeFormatter.FormatDocumentAsync(fileName, source, config, options, checker)
 
 let private validate fileName code =
-    let options = { FSharpParsingOptions.Default with SourceFiles = [| fileName |] }
+    let options =
+        { FSharpParsingOptions.Default with
+            SourceFiles = [| fileName |] }
 
     let sourceCode = FSharp.Compiler.Text.SourceText.ofString code
 

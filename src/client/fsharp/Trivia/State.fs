@@ -110,11 +110,15 @@ let update code isFsi msg model =
                     |> List.tryItem index
                     |> Option.map (fun (_, g) -> g.Head.Range)
 
-                { model with ActiveByTriviaInstructionIndex = index }, range
+                { model with
+                    ActiveByTriviaInstructionIndex = index },
+                range
             | ActiveTab.Trivia ->
                 let range = List.tryItem index model.Trivia |> Option.map (fun tv -> tv.Range)
 
-                { model with ActiveByTriviaIndex = index }, range
+                { model with
+                    ActiveByTriviaIndex = index },
+                range
 
         let cmd =
             range

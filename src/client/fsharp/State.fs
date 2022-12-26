@@ -79,7 +79,9 @@ let update msg model =
         nextModel, cmd
     | UpdateSourceCode code -> { model with SourceCode = code }, Cmd.none
     | ToggleSettings ->
-        let m = { model with SettingsOpen = not model.SettingsOpen }
+        let m =
+            { model with
+                SettingsOpen = not model.SettingsOpen }
 
         m, reload m
     | OakMsg(OakViewer.Model.Msg.SetFsiFile isFsiFile) -> { model with IsFsi = isFsiFile }, Cmd.none

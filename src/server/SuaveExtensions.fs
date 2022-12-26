@@ -29,4 +29,6 @@ let setCORSHeaders =
 let startFantomasTool port routes =
     setCORSHeaders
     >=> choose [ OPTIONS >=> no_content; yield! routes; NOT_FOUND "Not found" ]
-    |> startWebServer { defaultConfig with bindings = [ HttpBinding.create HTTP IPAddress.Loopback port ] }
+    |> startWebServer
+        { defaultConfig with
+            bindings = [ HttpBinding.create HTTP IPAddress.Loopback port ] }

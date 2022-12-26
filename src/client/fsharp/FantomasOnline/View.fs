@@ -246,11 +246,18 @@ let private viewErrors (model: Model) isFsi result isIdempotent errors =
                 li [ Key(sprintf "ast-error-%i" i) ] [
                     strong [] [
                         str (
-                            sprintf "(%i,%i) (%i, %i)" e.Range.StartLine e.Range.StartCol e.Range.EndLine e.Range.EndCol
+                            sprintf
+                                "(%i,%i) (%i, %i)"
+                                e.Range.StartLine
+                                e.Range.StartCol
+                                e.Range.EndLine
+                                e.Range.EndCol
                         )
                     ]
                     Badge.badge [ Badge.Color(badgeColor e) ] [ str (e.Severity.ToString()) ]
-                    Badge.badge [ Badge.Color Color.Dark; Badge.Custom [ Title "ErrorNumber" ] ] [ ofInt e.ErrorNumber ]
+                    Badge.badge [ Badge.Color Color.Dark; Badge.Custom [ Title "ErrorNumber" ] ] [
+                        ofInt e.ErrorNumber
+                    ]
                     Badge.badge [ Badge.Color Color.Light; Badge.Custom [ Title "SubCategory" ] ] [ str e.SubCategory ]
                     p [] [ str e.Message ]
                 ])
@@ -340,8 +347,8 @@ let commands code isFsi model dispatch =
     | EditorState.LoadingOptions -> []
     | EditorState.LoadingFormatRequest -> [ formatButton; ofOption copySettingButton ]
     | EditorState.OptionsLoaded
-      | EditorState.FormatResult _
-      | EditorState.FormatError _ -> [ createGitHubIssue code isFsi model; formatButton; ofOption copySettingButton ]
+    | EditorState.FormatResult _
+    | EditorState.FormatError _ -> [ createGitHubIssue code isFsi model; formatButton; ofOption copySettingButton ]
     |> fragment []
 
 let settings isFsi model dispatch =
@@ -360,7 +367,8 @@ let settings isFsi model dispatch =
                     IsActive = model.Mode = m
                     Label = l
                     OnClick = (fun _ -> ChangeMode m |> dispatch)
-                }: SettingControls.MultiButtonSettings)
+                }
+                : SettingControls.MultiButtonSettings)
             |> SettingControls.multiButton "Mode"
 
         let fileExtension =
