@@ -2,6 +2,7 @@ module OakViewer.GetOak
 
 open FSharp.Compiler.Text
 open Fantomas.Core
+open Fantomas.Core.FormatConfig
 open Fantomas.Core.SyntaxOak
 open OakViewer.Server
 
@@ -32,7 +33,10 @@ let getOak json : GetOakResponse =
         let ast, _diags = parseAST source (List.ofArray defines) isFsi
 
         let config =
-            { FormatConfig.FormatConfig.Default with ExperimentalStroustrupStyle = isStroustrup }
+            if not isStroustrup then
+                FormatConfig.Default
+            else
+                { FormatConfig.Default with MultilineBracketStyle = MultilineBracketStyle.ExperimentalStroustrup }
 
         let oak =
             Fangorn.mkOak config (Some source) ast |> Flowering.enrichTree config source ast
