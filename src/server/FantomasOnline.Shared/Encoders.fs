@@ -23,6 +23,10 @@ let encodeOptions options =
         | EndOfLineStyleOption(o, k, v) ->
             Encode.object
                 [ "$type", Encode.string "endOfLineStyle"
+                  "$value", Encode.tuple3 Encode.int Encode.string Encode.string (o, k, v) ]
+        | MultilineBracketStyleOption(o, k, v) ->
+            Encode.object
+                [ "$type", Encode.string "multilineBracketStyle"
                   "$value", Encode.tuple3 Encode.int Encode.string Encode.string (o, k, v) ])
     |> Encode.array
     |> Encode.toString 4

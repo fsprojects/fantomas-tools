@@ -13,6 +13,8 @@ let private encodeOption fantomasOption =
             "multilineFormatterType", Encode.tuple3 Encode.int Encode.string Encode.string (o, k, v)
         | EndOfLineStyleOption(o, k, v) ->
             "endOfLineStyle", Encode.tuple3 Encode.int Encode.string Encode.string (o, k, v)
+        | MultilineBracketStyleOption(o, k, v) ->
+            "multilineBracketStyle", Encode.tuple3 Encode.int Encode.string Encode.string (o, k, v)
 
     Encode.object [ "$type", Encode.string key; "$value", value ]
 
@@ -42,7 +44,8 @@ let encodeUserSettingToConfiguration options =
         | IntOption(_, _, v) -> Encode.int v
         | BoolOption(_, _, v) -> Encode.bool v
         | MultilineFormatterTypeOption(_, _, v)
-        | EndOfLineStyleOption(_, _, v) -> Encode.string v
+        | EndOfLineStyleOption(_, _, v)
+        | MultilineBracketStyleOption(_, _, v) -> Encode.string v
 
     options
     |> List.map (fun option -> getOptionKey option, encodeValue option)

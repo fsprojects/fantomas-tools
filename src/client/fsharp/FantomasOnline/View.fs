@@ -55,6 +55,10 @@ let private mapToOption dispatch (key, fantomasOption) =
                 "LF"
                 label
                 (v = "crlf")
+        | FantomasOption.MultilineBracketStyleOption _ ->
+            p [] [
+                str "You cannot set fsharp_multiline_bracket_style in the online tool. Please contribute!"
+            ]
 
     div [ Key key; ClassName "fantomas-setting" ] [ editor ]
 

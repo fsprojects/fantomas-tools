@@ -20,6 +20,10 @@ let private mapFantomasOptionsToRecord options =
             | EndOfLineStyleOption(_, _, v) ->
                 EndOfLineStyle.OfConfigString(v)
                 |> Option.defaultValue EndOfLineStyle.CRLF
+                |> box
+            | MultilineBracketStyleOption(_, _, v) ->
+                MultilineBracketStyle.OfConfigString(v)
+                |> Option.defaultValue MultilineBracketStyle.Cramped
                 |> box)
         |> Seq.toArray
 
@@ -94,6 +98,9 @@ let getOptions () : string =
             |> Some
         | :? EndOfLineStyle as eol ->
             FantomasOption.EndOfLineStyleOption(idx, k, (EndOfLineStyle.ToConfigString eol))
+            |> Some
+        | :? MultilineBracketStyle as mbs ->
+            FantomasOption.MultilineBracketStyleOption(idx, k, (MultilineBracketStyle.ToConfigString mbs))
             |> Some
         | _ -> None)
     |> Seq.toList

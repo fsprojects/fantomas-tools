@@ -21,7 +21,8 @@ let private mapFantomasOptionsToRecord options =
             | EndOfLineStyleOption(_, _, v) ->
                 EndOfLineStyle.OfConfigString(v)
                 |> Option.defaultValue EndOfLineStyle.CRLF
-                |> box)
+                |> box
+            | MultilineBracketStyleOption _ -> failwith "Version 4 does not accept fsharp_multiline_bracket_style")
         |> Seq.toArray
 
     let formatConfigType = typeof<FormatConfig.FormatConfig>

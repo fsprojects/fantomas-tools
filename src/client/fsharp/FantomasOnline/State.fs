@@ -96,7 +96,8 @@ let optionsListToMap options =
         | FantomasOption.BoolOption(_, k, _) as fo -> k, fo
         | FantomasOption.IntOption(_, k, _) as fo -> k, fo
         | FantomasOption.MultilineFormatterTypeOption(_, k, _) as fo -> k, fo
-        | FantomasOption.EndOfLineStyleOption(_, k, _) as fo -> k, fo)
+        | FantomasOption.EndOfLineStyleOption(_, k, _) as fo -> k, fo
+        | FantomasOption.MultilineBracketStyleOption(_, k, _) as fo -> k, fo)
     |> Map.ofList
 
 let private updateOptionValue defaultOption userOption =
@@ -157,7 +158,8 @@ let private copySettings (model: Model) _ =
                     toEditorConfigName k |> sprintf "%s=false"
             | FantomasOption.IntOption(_, k, v) -> sprintf "%s=%i" (toEditorConfigName k) v
             | FantomasOption.MultilineFormatterTypeOption(_, k, v)
-            | FantomasOption.EndOfLineStyleOption(_, k, v) -> sprintf "%s=%s" (toEditorConfigName k) v)
+            | FantomasOption.EndOfLineStyleOption(_, k, v)
+            | FantomasOption.MultilineBracketStyleOption(_, k, v) -> sprintf "%s=%s" (toEditorConfigName k) v)
         |> String.concat "\n"
         |> sprintf "[*.{fs,fsx}]\n%s"
 
