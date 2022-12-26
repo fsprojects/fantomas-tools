@@ -153,13 +153,13 @@ let private copySettings (model: Model) _ =
         |> List.map (function
             | FantomasOption.BoolOption(_, k, v) ->
                 if v then
-                    toEditorConfigName k |> sprintf "%s=true"
+                    toEditorConfigName k |> sprintf "%s = true"
                 else
-                    toEditorConfigName k |> sprintf "%s=false"
-            | FantomasOption.IntOption(_, k, v) -> sprintf "%s=%i" (toEditorConfigName k) v
+                    toEditorConfigName k |> sprintf "%s = false"
+            | FantomasOption.IntOption(_, k, v) -> sprintf "%s = %i" (toEditorConfigName k) v
             | FantomasOption.MultilineFormatterTypeOption(_, k, v)
             | FantomasOption.EndOfLineStyleOption(_, k, v)
-            | FantomasOption.MultilineBracketStyleOption(_, k, v) -> sprintf "%s=%s" (toEditorConfigName k) v)
+            | FantomasOption.MultilineBracketStyleOption(_, k, v) -> sprintf "%s = %s" (toEditorConfigName k) v)
         |> String.concat "\n"
         |> sprintf "[*.{fs,fsx}]\n%s"
 

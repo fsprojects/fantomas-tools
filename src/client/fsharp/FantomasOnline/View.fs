@@ -55,9 +55,35 @@ let private mapToOption dispatch (key, fantomasOption) =
                 "LF"
                 label
                 (v = "crlf")
-        | FantomasOption.MultilineBracketStyleOption _ ->
-            p [] [
-                str "You cannot set fsharp_multiline_bracket_style in the online tool. Please contribute!"
+        | FantomasOption.MultilineBracketStyleOption(o, _, v) ->
+            let mkButton (value: string) =
+                let className =
+                    if value = v then
+                        "rounded-0 text-white"
+                    else
+                        "rounded-0"
+
+                let label =
+                    let capital = System.Char.ToUpper value.[0]
+                    $"{capital}{value.[1..]}".Replace("_", " ")
+
+                Button.button [
+                    Button.Custom [
+                        ClassName className
+                        Key value
+                        OnClick(fun _ -> UpdateOption(key, MultilineBracketStyleOption(o, key, value)) |> dispatch)
+                    ]
+                    Button.Outline(v <> value)
+                ] [ str label ]
+
+            FormGroup.formGroup [] [
+                Standard.label [] [ label ]
+                br []
+                ButtonGroup.buttonGroup [ ButtonGroup.Custom [ ClassName "btn-group-toggle rounded-0" ] ] [
+                    mkButton "cramped"
+                    mkButton "aligned"
+                    mkButton "experimental_stroustrup"
+                ]
             ]
 
     div [ Key key; ClassName "fantomas-setting" ] [ editor ]
@@ -235,7 +261,7 @@ let private viewErrors (model: Model) isFsi result isIdempotent errors =
         match errors with
         | [] -> []
         | errors ->
-            let badgeColor (e: FantomasOnline.Shared.ASTError) =
+            let badgeColor (e: ASTError) =
                 match e.Severity with
                 | ASTErrorSeverity.Error -> Danger
                 | ASTErrorSeverity.Warning -> Warning
