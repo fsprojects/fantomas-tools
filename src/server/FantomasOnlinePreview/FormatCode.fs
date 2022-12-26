@@ -15,7 +15,8 @@ let private mapFantomasOptionsToRecord options =
             | IntOption(_, _, v) -> box v
             | MultilineFormatterTypeOption(_, _, v) ->
                 MultilineFormatterType.OfConfigString(v)
-                |> Option.defaultValue (box CharacterWidth)
+                |> Option.defaultValue CharacterWidth
+                |> box
             | EndOfLineStyleOption(_, _, v) ->
                 EndOfLineStyle.OfConfigString(v)
                 |> Option.defaultValue EndOfLineStyle.CRLF
