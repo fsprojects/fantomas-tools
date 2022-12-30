@@ -68,7 +68,7 @@ pipeline "Fantomas-Git" {
     stage "build fantomas" {
         workingDir fantomasDepDir
         run "dotnet fsi build.fsx -p Init"
-        run "dotnet build -c Release src/Fantomas.Core"
+        run "dotnet build src/Fantomas.Core"
     }
     stage "get project Dallas source code" {
         run (fun _ ->
