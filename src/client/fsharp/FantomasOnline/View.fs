@@ -234,27 +234,31 @@ let private createGitHubIssue code isFsi model =
         | FormatResult result -> "Code", code, "Result", (Option.defaultValue result.FirstFormat result.SecondFormat)
         | _ -> "Code", code, "", ""
 
-    match model.Mode with
-    | Main when (not (System.String.IsNullOrWhiteSpace(code))) ->
-        let githubIssue = {
-            BeforeHeader = bh
-            BeforeContent = bc
-            AfterHeader = ah
-            AfterContent = ac
-            Description = description
-            Title = "<Insert meaningful title>"
-            DefaultOptions = model.DefaultOptions
-            UserOptions = model.UserOptions
-            Version = model.Version
-            IsFsi = isFsi
-        }
+    if System.String.IsNullOrWhiteSpace(code) then
+        span [ ClassName "text-muted mr-2" ] [ str "Looks wrong? Try using the main version!" ]
+    else
+        match model.Mode with
+        | Main
+        | Preview ->
+            let githubIssue = {
+                BeforeHeader = bh
+                BeforeContent = bc
+                AfterHeader = ah
+                AfterContent = ac
+                Description = description
+                Title = "<Insert meaningful title>"
+                DefaultOptions = model.DefaultOptions
+                UserOptions = model.UserOptions
+                Version = model.Version
+                IsFsi = isFsi
+            }
 
-        Button.button [
-            Button.Color Danger
-            Button.Outline true
-            Button.Custom [ githubIssueUri githubIssue; Target "_blank"; ClassName "rounded-0" ]
-        ] [ str "Looks wrong? Create an issue!" ]
-    | _ -> span [ ClassName "text-muted mr-2" ] [ str "Looks wrong? Try using the main version!" ]
+            Button.button [
+                Button.Color Danger
+                Button.Outline true
+                Button.Custom [ githubIssueUri githubIssue; Target "_blank"; ClassName "rounded-0" ]
+            ] [ str "Looks wrong? Create an issue!" ]
+        | _ -> span [ ClassName "text-muted mr-2" ] [ str "Looks wrong? Try using the main version!" ]
 
 let private viewErrors (model: Model) isFsi result isIdempotent errors =
     let errors =

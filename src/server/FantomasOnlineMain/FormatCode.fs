@@ -62,7 +62,7 @@ let private validate (fileName: string) code =
           Message = e.Message })
     |> fun errors -> async { return errors }
 
-let getFantomasVersion () =
+let getVersion () =
     let date =
         let lastCommitInfo =
             sprintf
@@ -79,8 +79,6 @@ let getFantomasVersion () =
             |> fun f -> f.LastWriteTime.ToShortDateString()
 
     $"main branch at %s{date}"
-
-let getVersion = getFantomasVersion
 
 let getOptions () : string =
     Reflection.getRecordFields FormatConfig.FormatConfig.Default
