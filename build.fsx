@@ -85,11 +85,11 @@ pipeline "Fantomas-Git" {
     //                 return exitCode
     //         })
     // }
-    stage "build fantomas" {
-        workingDir dallasDepDir
-        run "dotnet fsi build.fsx -p Init"
-        run "dotnet build -c Release src/Fantomas.Core"
-    }
+    // stage "build fantomas" {
+    //     workingDir dallasDepDir
+    //     run "dotnet fsi build.fsx -p Init"
+    //     run "dotnet build -c Release src/Fantomas.Core"
+    // }
     runIfOnlySpecified true
 }
 
