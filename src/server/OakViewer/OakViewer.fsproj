@@ -11,15 +11,15 @@
     <IsLambda>true</IsLambda>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="../../../.deps/dallas/src/Fantomas.Core/ISourceTextExtensions.fs" />
-    <Compile Include="../../../.deps/dallas/src/Fantomas.Core/RangeHelpers.fs" />
-    <Compile Include="../../../.deps/dallas/src/Fantomas.Core/Utils.fs" />
-    <Compile Include="../../../.deps/dallas/src/Fantomas.Core/FormatConfig.fs" />
-    <Compile Include="../../../.deps/dallas/src/Fantomas.Core/SyntaxOak.fs" />
-    <Compile Include="../../../.deps/dallas/src/Fantomas.Core/Fangorn.fsi" />
-    <Compile Include="../../../.deps/dallas/src/Fantomas.Core/Fangorn.fs" />
-    <Compile Include="../../../.deps/dallas/src/Fantomas.Core/Flowering.fsi" />
-    <Compile Include="../../../.deps/dallas/src/Fantomas.Core/Flowering.fs" />
+    <Compile Include="../../../.deps/fantomas/src/Fantomas.Core/ISourceTextExtensions.fs" />
+    <Compile Include="../../../.deps/fantomas/src/Fantomas.Core/RangeHelpers.fs" />
+    <Compile Include="../../../.deps/fantomas/src/Fantomas.Core/Utils.fs" />
+    <Compile Include="../../../.deps/fantomas/src/Fantomas.Core/FormatConfig.fs" />
+    <Compile Include="../../../.deps/fantomas/src/Fantomas.Core/SyntaxOak.fs" />
+    <Compile Include="../../../.deps/fantomas/src/Fantomas.Core/ASTTransformer.fsi" />
+    <Compile Include="../../../.deps/fantomas/src/Fantomas.Core/ASTTransformer.fs" />
+    <Compile Include="../../../.deps/fantomas/src/Fantomas.Core/Trivia.fsi" />
+    <Compile Include="../../../.deps/fantomas/src/Fantomas.Core/Trivia.fs" />
     <Compile Include="../../shared/OakShared.fs" />
     <Compile Include="..\HttpConstants.fs" />
     <Compile Include="..\AWSLambdaExtensions.fs" />
@@ -30,7 +30,7 @@
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\.deps\dallas\src\Fantomas.FCS\Fantomas.FCS.fsproj" />
+    <ProjectReference Include="..\..\..\.deps\fantomas\src\Fantomas.FCS\Fantomas.FCS.fsproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="FSharp.Core" Version="6.0.6" />

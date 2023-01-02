@@ -14,7 +14,6 @@ open Fake.IO.Globbing.Operators
 let fablePort = 9060
 let astPort = 7412
 let oakPort = 8904
-let triviaPort = 9856
 let fantomasMainPort = 11084
 let fantomasPreviewPort = 12007
 let fantomasV4Port = 10707
@@ -70,22 +69,22 @@ pipeline "Fantomas-Git" {
         run "dotnet fsi build.fsx -p Init"
         run "dotnet build src/Fantomas.Core"
     }
-    stage "get project Dallas source code" {
-        run (fun _ ->
-            async {
-                let branch = "v5.2"
-
-                if Directory.Exists(dallasDepDir) then
-                    let! exitCode, _ = git "pull" dallasDepDir
-                    return exitCode
-                else
-                    let! exitCode, _ =
-                        git
-                            $"clone -b {branch} --single-branch https://github.com/fsprojects/fantomas.git .deps/dallas"
-                            __SOURCE_DIRECTORY__
-                    return exitCode
-            })
-    }
+    // stage "get project Dallas source code" {
+    //     run (fun _ ->
+    //         async {
+    //             let branch = "v5.2"
+    //
+    //             if Directory.Exists(dallasDepDir) then
+    //                 let! exitCode, _ = git "pull" dallasDepDir
+    //                 return exitCode
+    //             else
+    //                 let! exitCode, _ =
+    //                     git
+    //                         $"clone -b {branch} --single-branch https://github.com/fsprojects/fantomas.git .deps/dallas"
+    //                         __SOURCE_DIRECTORY__
+    //                 return exitCode
+    //         })
+    // }
     stage "build fantomas" {
         workingDir dallasDepDir
         run "dotnet fsi build.fsx -p Init"
@@ -108,7 +107,6 @@ let setViteToProduction () =
 
     setEnv "VITE_AST_BACKEND" $"{mainStageUrl}/ast-viewer"
     setEnv "VITE_OAK_BACKEND" $"{mainStageUrl}/oak-viewer"
-    setEnv "VITE_TRIVIA_BACKEND" $"{mainStageUrl}/trivia-viewer"
     setEnv "VITE_FANTOMAS_V4" $"{mainStageUrl}/fantomas/v4"
     setEnv "VITE_FANTOMAS_V5" $"{mainStageUrl}/fantomas/v5"
     setEnv "VITE_FANTOMAS_MAIN" $"{mainStageUrl}/fantomas/main"
@@ -146,7 +144,6 @@ pipeline "Build" {
         }
         run (publishLambda "FantomasOnlineMain")
         run (publishLambda "FantomasOnlinePreview")
-        run (publishLambda "TriviaViewer")
         run (publishLambda "OakViewer")
     }
     stage "bundle frontend" {
@@ -219,7 +216,6 @@ pipeline "Watch" {
                 setEnv "NODE_ENV" "development"
                 setEnv "VITE_AST_BACKEND" (localhostBackend astPort "ast-viewer")
                 setEnv "VITE_OAK_BACKEND" (localhostBackend oakPort "oak-viewer")
-                setEnv "VITE_TRIVIA_BACKEND" (localhostBackend triviaPort "trivia-viewer")
                 setEnv "VITE_FANTOMAS_V4" (localhostBackend fantomasV4Port "fantomas/v4")
                 setEnv "VITE_FANTOMAS_V5" (localhostBackend fantomasV5Port "fantomas/v5")
                 setEnv "VITE_FANTOMAS_MAIN" (localhostBackend fantomasMainPort "fantomas/main")
@@ -230,7 +226,6 @@ pipeline "Watch" {
     stage "launch services" {
         paralle
         run (runLambda "ASTViewer")
-        run (runLambda "TriviaViewer")
         run (runLambda "OakViewer")
         run (runLambda "FantomasOnlineV4")
         run (runLambda "FantomasOnlineV5")

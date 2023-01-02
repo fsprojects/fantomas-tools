@@ -40,7 +40,8 @@ let getOak json : GetOakResponse =
                     MultilineBracketStyle = MultilineBracketStyle.ExperimentalStroustrup }
 
         let oak =
-            Fangorn.mkOak config (Some source) ast |> Flowering.enrichTree config source ast
+            ASTTransformer.mkOak config (Some source) ast
+            |> Trivia.enrichTree config source ast
 
         let responseText =
             let rangeToText (m: range) =

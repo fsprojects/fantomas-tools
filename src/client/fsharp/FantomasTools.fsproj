@@ -6,7 +6,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="../../shared/OakShared.fs" />
-    <Compile Include="../../shared/TriviaShared.fs" />
     <Compile Include="../../shared/ASTViewerShared.fs" />
     <Compile Include="../../shared/FantomasOnlineShared.fs" />
     <Compile Include="Editor.fs" />
@@ -21,16 +20,6 @@
     <Compile Include="Oak\Decoders.fs" />
     <Compile Include="Oak\State.fs" />
     <Compile Include="Oak\View.fs" />
-    
-    <Compile Include="Trivia\Model.fs" />
-    <Compile Include="Trivia\Encoders.fs" />
-    <Compile Include="Trivia\Decoders.fs" />
-    <Compile Include="Trivia\State.fs" />
-    <Compile Include="Trivia\Menu.fs" />
-    <Compile Include="Trivia\Tabs\Trivia.fs" />
-    <Compile Include="Trivia\Tabs\RootNode.fs" />
-    <Compile Include="Trivia\Tabs\TriviaInstructions.fs" />
-    <Compile Include="Trivia\View.fs" />
 
     <Compile Include="FantomasOnline\Model.fs" />
     <Compile Include="FantomasOnline\Encoders.fs" />

@@ -114,12 +114,6 @@ let tabs (model: Model) dispatch =
     let activeTab, settingsForTab, commands =
         match model.ActiveTab with
         | HomeTab -> homeTab, null, null
-        | TriviaTab ->
-            let triviaDispatch tMsg = dispatch (TriviaMsg tMsg)
-
-            Trivia.View.view model.TriviaModel triviaDispatch,
-            Trivia.View.settings model.TriviaModel model.IsFsi triviaDispatch,
-            Trivia.View.commands triviaDispatch
         | ASTTab ->
             let astDispatch aMsg = dispatch (ASTMsg aMsg)
 
@@ -167,7 +161,6 @@ let tabs (model: Model) dispatch =
         navItem HomeTab "Home" (model.ActiveTab = HomeTab)
         navItem ASTTab "AST" (model.ActiveTab = ASTTab)
         navItem OakTab "Oak" (model.ActiveTab = OakTab)
-        navItem TriviaTab "Trivia" (model.ActiveTab = TriviaTab)
         navItem (FantomasTab FantomasTools.Client.FantomasOnline.Model.Main) "Fantomas" (isFantomasTab model.ActiveTab)
     ]
 

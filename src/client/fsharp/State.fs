@@ -19,7 +19,6 @@ let init _ =
 
     let astModel, astCmd = ASTViewer.State.init (currentTab = ASTTab)
     let oakModel, oakCmd = OakViewer.State.init (currentTab = OakTab)
-    let triviaModel, triviaCmd = Trivia.State.init (currentTab = TriviaTab)
 
     let fantomasModel, fantomasCmd =
         let tab =
@@ -35,7 +34,6 @@ let init _ =
           SettingsOpen = false
           IsFsi = isFsiFile
           OakModel = oakModel
-          TriviaModel = triviaModel
           ASTModel = astModel
           FantomasModel = fantomasModel }
 
@@ -45,7 +43,6 @@ let init _ =
         Cmd.batch
             [ Cmd.map ASTMsg astCmd
               Cmd.map OakMsg oakCmd
-              Cmd.map TriviaMsg triviaCmd
               Cmd.map FantomasMsg fantomasCmd
               initialCmd ]
 
@@ -55,7 +52,6 @@ let private reload model =
     if not model.SettingsOpen then
         match model.ActiveTab with
         | ASTTab -> Cmd.ofMsg FantomasTools.Client.ASTViewer.Model.DoParse |> Cmd.map ASTMsg
-        | TriviaTab -> Cmd.ofMsg FantomasTools.Client.Trivia.Model.GetTrivia |> Cmd.map TriviaMsg
         | FantomasTab _ ->
             Cmd.ofMsg FantomasTools.Client.FantomasOnline.Model.Format
             |> Cmd.map FantomasMsg
@@ -90,12 +86,6 @@ let update msg model =
             OakViewer.State.update model.SourceCode model.IsFsi oMsg model.OakModel
 
         { model with OakModel = oModel }, Cmd.map OakMsg oCmd
-    | TriviaMsg(Trivia.Model.Msg.SetFsiFile isFsiFile) -> { model with IsFsi = isFsiFile }, Cmd.none
-    | TriviaMsg tMsg ->
-        let tModel, tCmd =
-            Trivia.State.update model.SourceCode model.IsFsi tMsg model.TriviaModel
-
-        { model with TriviaModel = tModel }, Cmd.map TriviaMsg tCmd
     | ASTMsg(ASTViewer.Model.Msg.SetFsiFile isFsiFile) -> { model with IsFsi = isFsiFile }, Cmd.none
     | ASTMsg aMsg ->
         let aModel, aCmd =
