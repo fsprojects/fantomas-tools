@@ -9,6 +9,7 @@
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
     <IsLambda>true</IsLambda>
+    <Tailcalls>true</Tailcalls>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="../../../.deps/fantomas/src/Fantomas.Core/ISourceTextExtensions.fs" />
