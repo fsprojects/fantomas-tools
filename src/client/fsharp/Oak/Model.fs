@@ -2,6 +2,7 @@
 
 type Msg =
     | GetOak
+    | ShowGraph
     | OakReceived of string
     | DefinesUpdated of string
     | FSCVersionReceived of string
@@ -16,4 +17,5 @@ type Model =
       IsLoading: bool
       Defines: string
       Version: string
-      IsStroustrup: bool }
+      IsStroustrup: bool
+      ShowGraph: bool }

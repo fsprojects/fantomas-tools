@@ -31,7 +31,8 @@ let private initialModel: Model =
       IsLoading = true
       Defines = ""
       Version = "???"
-      IsStroustrup = false }
+      IsStroustrup = false
+      ShowGraph = false }
 
 let private splitDefines (value: string) =
     value.Split([| ' '; ';' |], StringSplitOptions.RemoveEmptyEntries)
@@ -67,6 +68,10 @@ let update code isFsi (msg: Msg) model : Model * Cmd<Msg> =
             Cmd.batch [ Cmd.ofSub (fetchOak parseRequest); Cmd.ofSub (updateUrl code isFsi model) ]
 
         { model with IsLoading = true }, cmd
+    | Msg.ShowGraph ->
+        { model with
+            ShowGraph = not model.ShowGraph },
+        Cmd.none
     | Msg.OakReceived result ->
         { model with
             IsLoading = false

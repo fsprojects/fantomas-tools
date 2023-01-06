@@ -19,6 +19,7 @@
     <Compile Include="Oak\Encoders.fs" />
     <Compile Include="Oak\Decoders.fs" />
     <Compile Include="Oak\State.fs" />
+    <Compile Include="Oak\Graph.fs" />
     <Compile Include="Oak\View.fs" />
 
     <Compile Include="FantomasOnline\Model.fs" />
