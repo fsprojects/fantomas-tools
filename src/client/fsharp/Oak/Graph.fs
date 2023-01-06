@@ -15,8 +15,6 @@ module VisReact =
             | LeftRight -> {| hierarchical = {| enabled = true; direction = "LR" |} |}
             | Free -> {| hierarchical = {| enabled = false; direction = "UD" |} |}
 
-        Fable.Core.JS.console.log (Map.toArray nodes)
-
         ofImport
             "default"
             "vis-react"
