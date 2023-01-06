@@ -1,6 +1,7 @@
 ﻿module FantomasTools.Client.OakViewer.View
 
 open System
+open System.Collections.Generic
 open Browser.Types
 open Fable.Core
 open FantomasTools.Client.Editor
@@ -10,6 +11,7 @@ open Fable.React.Props
 open FantomasTools.Client
 open FantomasTools.Client.OakViewer.Model
 open FantomasTools.Client.OakViewer.Graph
+open FantomasTools.Client.OakViewer.Model.GraphView
 open Feliz
 open Reactstrap
 
@@ -19,11 +21,14 @@ type NodeType =
     | Newline
     | Directive
 
-type OakLine = {
+type OakNode = {
     Id: int
     Node: string
     Type: NodeType
     Coords: HighLightRange
+    CoordsUnion: HighLightRange
+    Childs: OakNode list
+    Limited: bool
 }
 
 let memoizeBy (g: 'a -> 'c) (f: 'a -> 'b) =
@@ -41,10 +46,21 @@ let memoizeBy (g: 'a -> 'c) (f: 'a -> 'b) =
 
 let inline memoize f = memoizeBy id f
 
+let inline memoize2 f =
+    memoizeBy id (fun (x, y) -> f x y) |> fun f -> fun x y -> f (x, y)
+
+let nodesFromRoot root =
+    let rec getChilds acc n =
+        n.Childs |> Seq.fold (fun s x -> getChilds s x |> Set.add x) (acc |> Set.add n)
+
+    let oakNodes = getChilds Set.empty root
+    let nodeMap = oakNodes |> Seq.map (fun n -> NodeId n.Id, n) |> Map.ofSeq
+    nodeMap
+
 let private parseResults =
     memoize
     <| fun (model: Model) ->
-        let lines =
+        let nodes =
             model.Oak.Split([| '\n' |])
             |> Array.mapi (fun idx line ->
                 let nodeType =
@@ -104,51 +120,159 @@ let private parseResults =
                     Id = idx
                     Node = nodeString
                     Coords = r
+                    CoordsUnion = r
                     Type = nodeType
+                    Childs = []
+                    Limited = false
                 }))
             |> Array.choose id
             |> Array.toList
 
-        // create edges in graph based on indentation of lines
-        let edges =
-            let getLevel s = s |> Seq.takeWhile ((=) ' ') |> Seq.length
+        if nodes = [] then
+            Map.empty
+        else
+            let nodesMap = nodes |> Seq.map (fun n -> n.Id, n) |> Map.ofSeq
 
-            match lines with
-            | [] -> []
-            | hd :: tl ->
-                (([ hd, getLevel hd.Node ], []), tl)
-                ||> Seq.fold (fun (parents, acc) n ->
-                    match parents with
-                    | [] -> [], acc
-                    | (parent, level) :: otherParents ->
-                        let l = getLevel n.Node
+            // create edges in graph based on indentation of lines
+            let edges =
+                let getLevel s = s |> Seq.takeWhile ((=) ' ') |> Seq.length
 
-                        if l > level then
-                            ((n, l) :: parents), ((parent.Id, n.Id) :: acc)
-                        else
-                            match otherParents |> List.skipWhile (fun (_, lp) -> l < lp) with
-                            | [] -> (otherParents, acc)
-                            | (p, _) :: _ as filteredParents -> ((n, l) :: filteredParents), ((p.Id, n.Id) :: acc))
-                |> snd
+                match nodes with
+                | [] -> []
+                | hd :: tl ->
+                    (([ hd, getLevel hd.Node ], []), tl)
+                    ||> Seq.fold (fun (parents, acc) n ->
+                        match parents with
+                        | [] -> [], acc
+                        | (parent, level) :: otherParents ->
+                            let l = getLevel n.Node
 
-        lines, edges
+                            if l > level then
+                                ((n, l) :: parents), ((parent.Id, n.Id) :: acc)
+                            else
+                                match otherParents |> List.skipWhile (fun (_, lp) -> l < lp) with
+                                | [] -> (otherParents, acc)
+                                | (p, _) :: _ as filteredParents -> ((n, l) :: filteredParents), ((p.Id, n.Id) :: acc))
+                    |> snd
+                |> List.groupBy fst
+                |> Seq.map (fun (k, g) -> k, g |> List.map snd)
+                |> Map.ofSeq
+
+            let rec setChilds (n: OakNode) =
+                let childs =
+                    edges
+                    |> Map.tryFind n.Id
+                    |> Option.defaultValue []
+                    |> List.map (fun idx -> nodesMap[idx] |> setChilds)
+
+                let ranges = n.Coords :: (childs |> List.map (fun x -> x.CoordsUnion))
+
+                let unionRange = {
+                    StartLine = ranges |> Seq.map (fun n -> n.StartLine) |> Seq.min
+                    StartColumn = ranges |> Seq.map (fun n -> n.StartColumn) |> Seq.min
+                    EndLine = ranges |> Seq.map (fun n -> n.EndLine) |> Seq.max
+                    EndColumn = ranges |> Seq.map (fun n -> n.EndColumn) |> Seq.max
+                }
+
+                { n with
+                    Childs = childs
+                    CoordsUnion = unionRange
+                }
+
+            let root = nodes |> List.head |> setChilds
+            nodesFromRoot root
+
+let fullGraph = memoize <| fun model -> parseResults model
+
+let limitTree =
+    memoize2
+    <| fun allowedSet n ->
+        let rec f n =
+            let childs = n.Childs |> List.filter (fun c -> List.contains c allowedSet)
+            let limit = not (List.isEmpty n.Childs) && List.isEmpty childs
+
+            { n with
+                Childs = childs |> List.map f
+                Limited = limit
+            }
+
+        f n
+
+let limitTreeByNodes =
+    memoize2
+    <| fun maxNodes n ->
+        let q = Queue<OakNode>()
+        q.Enqueue n
+
+        let rec loop acc i =
+            if i >= maxNodes then
+                acc
+            else
+                match q.TryDequeue() with
+                | false, _ -> acc
+                | true, x ->
+                    x.Childs |> List.iter q.Enqueue
+                    loop (x :: acc) (i + 1)
+
+        let allowedNodes = loop [] 1
+        limitTree allowedNodes n
 
 let createGraph =
+    let getColor =
+        function
+        | Std -> "skyblue"
+        | Comment -> "lightgreen"
+        | Newline -> "gray"
+        | Directive -> "fuchsia"
+
     memoizeBy fst
     <| fun (model, dispatch: Msg -> unit) ->
-        let lines, parsedEdges = parseResults model
-        let lines = lines |> Seq.map (fun n -> NodeId n.Id, n) |> Map.ofSeq
-        let Nodes = lines |> Map.map (fun _ n -> NodeLabel(n.Node.Trim()))
-        let Edges = parsedEdges |> Seq.map (fun (i, j) -> NodeId i, NodeId j) |> set
+        let nodeMap = fullGraph model
 
-        VisReact.graph Nodes Edges (fun nId -> Fable.Core.JS.console.log lines[nId]) (fun nId ->
-            dispatch (HighLight lines[nId].Coords))
+        let root =
+            if Map.isEmpty nodeMap then
+                None
+            else
+                model.GraphViewRootNodes
+                |> List.tryHead
+                |> Option.bind (fun nId -> Map.tryFind nId nodeMap)
+                |> Option.orElse (nodeMap |> Map.tryFind (NodeId 0))
+
+        match root with
+        | Some root ->
+            let root = limitTreeByNodes model.GraphViewOptions.NodeLimit root
+            let oakNodes = nodesFromRoot root
+
+            let nodes =
+                oakNodes
+                |> Map.map (fun _ n -> {
+                    Label = NodeLabel(n.Node.Trim())
+                    Color = NodeColor(getColor n.Type)
+                    Shape = if n.Limited then Box else Ellipse
+                })
+
+            let edges =
+                oakNodes
+                |> Map.values
+                |> Seq.collect (fun n -> n.Childs |> Seq.map (fun m -> NodeId n.Id, NodeId m.Id))
+                |> set
+
+            VisReact.graph
+                model.GraphViewOptions
+                nodes
+                edges
+                (fun nId ->
+                    Fable.Core.JS.console.log nodeMap[nId]
+                    dispatch (GraphViewSetRoot nId))
+                (fun nId -> dispatch (HighLight nodeMap[nId].CoordsUnion))
+        | None -> div [] []
 
 let private results (model: Model) dispatch =
     let lines =
         parseResults model
-        |> fst
-        |> Seq.map (fun n ->
+        |> Map.toSeq
+        |> Seq.sortBy fst
+        |> Seq.map (fun (_, n) ->
             let className =
                 match n.Type with
                 | Comment -> "comment"
@@ -174,21 +298,22 @@ let view model dispatch =
     if model.IsLoading then
         Loader.loader
     else
-        match model.Error, model.ShowGraph with
+        match model.Error, model.IsGraphView with
         | None, false -> results model dispatch
         | None, true -> createGraph (model, dispatch)
         | Some errors, _ -> Editor true [ MonacoEditorProp.DefaultValue errors ]
 
-let commands dispatch =
+let commands model dispatch =
     fragment [] [
         Button.button [
             Button.Color Primary
             Button.Custom [ ClassName "rounded-0"; OnClick(fun _ -> dispatch GetOak) ]
         ] [ i [ ClassName "fas fa-code mr-1" ] []; str "Get oak" ]
-        Button.button [
-            Button.Color Secondary
-            Button.Custom [ ClassName "rounded-0"; OnClick(fun _ -> dispatch ShowGraph) ]
-        ] [ i [ ClassName "fas fa-code mr-1" ] []; str "Show graph" ]
+        if model.GraphViewRootNodes <> [] then
+            Button.button [
+                Button.Color Primary
+                Button.Custom [ ClassName "rounded-0"; OnClick(fun _ -> dispatch GraphViewGoBack) ]
+            ] [ str $"<- back({model.GraphViewRootNodes.Length})" ]
     ]
 
 let settings isFsi (model: Model) dispatch =
@@ -214,4 +339,37 @@ let settings isFsi (model: Model) dispatch =
             "Stroustrup disabled"
             (str "Is stroustrup?")
             model.IsStroustrup
+        SettingControls.toggleButton
+            (fun _ -> dispatch (SetGraphView true))
+            (fun _ -> dispatch (SetGraphView false))
+            "Graph view enabled"
+            "Graph view disabled"
+            (str "Show AST in interactive graph view")
+            model.IsGraphView
+        if model.IsGraphView then
+            yield! [
+                SettingControls.multiButton "Graph view layout" [
+                    {
+                        Label = "Top-down layout"
+                        OnClick = (fun _ -> dispatch (SetGraphViewLayout TopDown))
+                        IsActive = model.GraphViewOptions.Layout = TopDown
+                    }
+                    {
+                        Label = "Left-right layout"
+                        OnClick = (fun _ -> dispatch (SetGraphViewLayout LeftRight))
+                        IsActive = model.GraphViewOptions.Layout = LeftRight
+                    }
+                    {
+                        Label = "Free layout"
+                        OnClick = (fun _ -> dispatch (SetGraphViewLayout Free))
+                        IsActive = model.GraphViewOptions.Layout = Free
+                    }
+                ]
+                SettingControls.input
+                    "graph-view-node-limit"
+                    (int >> SetGraphViewNodeLimit >> dispatch)
+                    (str "Graph view node limit")
+                    "Max nodes in graph view"
+                    model.GraphViewOptions.NodeLimit
+            ]
     ]

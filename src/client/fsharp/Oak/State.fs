@@ -32,7 +32,11 @@ let private initialModel: Model =
       Defines = ""
       Version = "???"
       IsStroustrup = false
-      ShowGraph = false }
+      IsGraphView = true
+      GraphViewOptions =
+        { Layout = GraphView.TopDown
+          NodeLimit = 20 }
+      GraphViewRootNodes = [] }
 
 let private splitDefines (value: string) =
     value.Split([| ' '; ';' |], StringSplitOptions.RemoveEmptyEntries)
@@ -68,10 +72,6 @@ let update code isFsi (msg: Msg) model : Model * Cmd<Msg> =
             Cmd.batch [ Cmd.ofSub (fetchOak parseRequest); Cmd.ofSub (updateUrl code isFsi model) ]
 
         { model with IsLoading = true }, cmd
-    | Msg.ShowGraph ->
-        { model with
-            ShowGraph = not model.ShowGraph },
-        Cmd.none
     | Msg.OakReceived result ->
         { model with
             IsLoading = false
@@ -90,4 +90,29 @@ let update code isFsi (msg: Msg) model : Model * Cmd<Msg> =
         Cmd.none
     | SetFsiFile _ -> model, Cmd.none // handle in upper update function
     | SetStroustrup value -> { model with IsStroustrup = value }, Cmd.none
+    | SetGraphView value -> { model with IsGraphView = value }, Cmd.none
+    | SetGraphViewLayout value ->
+        { model with
+            GraphViewOptions =
+                { model.GraphViewOptions with
+                    Layout = value } },
+        Cmd.none
+    | SetGraphViewNodeLimit value ->
+        { model with
+            GraphViewOptions =
+                { model.GraphViewOptions with
+                    NodeLimit = value } },
+        Cmd.none
+    | GraphViewSetRoot nodeId ->
+        { model with
+            GraphViewRootNodes = nodeId :: model.GraphViewRootNodes },
+        Cmd.none
+    | GraphViewGoBack ->
+        { model with
+            GraphViewRootNodes =
+                if model.GraphViewRootNodes = [] then
+                    []
+                else
+                    List.tail model.GraphViewRootNodes },
+        Cmd.none
     | HighLight hlr -> model, Cmd.ofSub (Editor.selectRange hlr)
