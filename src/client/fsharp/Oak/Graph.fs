@@ -1,4 +1,4 @@
-﻿module FantomasTools.Client.OakViewer.Graph
+module FantomasTools.Client.OakViewer.Graph
 
 open Fable.Core
 open Fable.React
@@ -10,10 +10,11 @@ module VisReact =
     // vis-react component
     let inline graph (graphOptions: Options) nodes edges selectNodeCallback hoverNodeCallback : ReactElement =
         let layout =
+            let hier = {| enabled = true; direction = "UD"; levelSeparation = 75 |}
             match graphOptions.Layout with
-            | TopDown -> {| hierarchical = {| enabled = true; direction = "UD" |} |}
-            | LeftRight -> {| hierarchical = {| enabled = true; direction = "LR" |} |}
-            | Free -> {| hierarchical = {| enabled = false; direction = "UD" |} |}
+            | TopDown -> {| hierarchical = hier |}
+            | LeftRight -> {| hierarchical = {| hier with direction = "LR" |} |}
+            | Free -> {| hierarchical = {| hier with enabled = false |} |}
 
         ofImport
             "default"
