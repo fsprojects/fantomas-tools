@@ -77,7 +77,8 @@ let update code isFsi (msg: Msg) model : Model * Cmd<Msg> =
     | Msg.OakReceived result ->
         { model with
             IsLoading = false
-            Oak = result },
+            Oak = result
+            GraphViewRootNodes = [] },
         Cmd.none
     | Msg.Error error ->
         { initialModel with
