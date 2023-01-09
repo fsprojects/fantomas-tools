@@ -28,6 +28,16 @@ module VisReact =
             | LeftRight -> {| hierarchical = {| hier with direction = "LR" |} |}
             | Free -> {| hierarchical = {| hier with enabled = false |} |}
 
+        let scalingLabel =
+            let opt =
+                {| enabled = true
+                   max = graphOptions.ScaleMaxSize |}
+
+            match graphOptions.Scale with
+            | NoScale -> {| opt with enabled = false |}
+            | SubTreeNodes
+            | AllNodes -> opt
+
         let parentElement = Browser.Dom.document.getElementById parentElementId
 
         ofImport
@@ -42,11 +52,13 @@ module VisReact =
                             (NodeId i,
                              { Label = NodeLabel l
                                Color = NodeColor c
-                               Shape = s }) ->
+                               Shape = s
+                               ScaleValue = v }) ->
                             {| id = i
                                label = l
                                color = c
-                               shape = (string s).ToLower() |})
+                               shape = (string s).ToLower()
+                               value = v |})
                    edges =
                     edges
                     |> Set.toArray
@@ -54,6 +66,7 @@ module VisReact =
                options =
                 {| layout = layout
                    interaction = {| hover = true |}
+                   nodes = {| scaling = {| label = scalingLabel |} |}
                    width = string parentElement.clientWidth
                    height = string parentElement.clientHeight |}
                events =

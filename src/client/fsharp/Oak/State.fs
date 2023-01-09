@@ -35,7 +35,9 @@ let private initialModel: Model =
       IsGraphView = false
       GraphViewOptions =
         { Layout = GraphView.TopDown
-          NodeLimit = 25 }
+          NodeLimit = 25
+          Scale = GraphView.SubTreeNodes
+          ScaleMaxSize = 20 }
       GraphViewRootNodes = [] }
 
 let private splitDefines (value: string) =

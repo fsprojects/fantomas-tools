@@ -29,6 +29,7 @@ type OakNode = {
     CoordsUnion: HighLightRange
     Childs: OakNode list
     Limited: bool
+    Size: int
 }
 
 let nodesFromRoot root =
@@ -106,6 +107,7 @@ let private parseResults =
                     Type = nodeType
                     Childs = []
                     Limited = false
+                    Size = 1
                 }))
             |> Array.choose id
             |> Array.toList
@@ -140,6 +142,7 @@ let private parseResults =
                 |> Seq.map (fun (k, g) -> k, g |> List.map snd)
                 |> Map.ofSeq
 
+            /// Recursively update nodes with links to childs, range info and size
             let rec setChilds (n: OakNode) =
                 let childs =
                     edges
@@ -159,6 +162,7 @@ let private parseResults =
                 { n with
                     Childs = childs
                     CoordsUnion = unionRange
+                    Size = n.Size + (childs |> Seq.sumBy (fun x -> x.Size))
                 }
 
             let root = nodes |> List.head |> setChilds
@@ -231,6 +235,11 @@ let createGraph =
                     Label = NodeLabel(n.Node.Trim())
                     Color = NodeColor(getColor n.Type)
                     Shape = if n.Limited then Box else Ellipse
+                    ScaleValue =
+                        match model.GraphViewOptions.Scale with
+                        | NoScale -> 1
+                        | SubTreeNodes -> if not n.Limited then 1 else n.Size
+                        | AllNodes -> n.Size
                 })
 
             let edges =
@@ -359,6 +368,29 @@ let settings isFsi (model: Model) dispatch =
                     (int >> SetGraphViewNodeLimit >> dispatch)
                     (str "Graph view node limit")
                     "Max nodes in graph view"
+                    model.GraphViewOptions.NodeLimit
+                SettingControls.multiButton "Graph view scaling by subtree size" [
+                    {
+                        Label = "No scaling"
+                        OnClick = (fun _ -> dispatch (SetGraphViewScale NoScale))
+                        IsActive = model.GraphViewOptions.Scale = NoScale
+                    }
+                    {
+                        Label = "Scale only collapsed subtree nodes"
+                        OnClick = (fun _ -> dispatch (SetGraphViewScale SubTreeNodes))
+                        IsActive = model.GraphViewOptions.Scale = SubTreeNodes
+                    }
+                    {
+                        Label = "Scale all nodes"
+                        OnClick = (fun _ -> dispatch (SetGraphViewScale AllNodes))
+                        IsActive = model.GraphViewOptions.Scale = AllNodes
+                    }
+                ]
+                SettingControls.input
+                    "graph-view-scale-max-size"
+                    (int >> SetGraphViewScaleMax >> dispatch)
+                    (str "Graph view scale max size limit")
+                    "Max size of scaled node"
                     model.GraphViewOptions.NodeLimit
             ]
     ]

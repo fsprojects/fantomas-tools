@@ -20,14 +20,24 @@ module GraphView =
     type Node =
         { Label: NodeLabel
           Color: NodeColor
-          Shape: NodeShape }
+          Shape: NodeShape
+          ScaleValue: int }
 
     type Layout =
         | TopDown
         | LeftRight
         | Free
 
-    type Options = { NodeLimit: int; Layout: Layout }
+    type Scale =
+        | NoScale
+        | SubTreeNodes
+        | AllNodes
+
+    type Options =
+        { NodeLimit: int
+          Layout: Layout
+          Scale: Scale
+          ScaleMaxSize: int }
 
 type Msg =
     | GetOak
@@ -39,6 +49,8 @@ type Msg =
     | SetGraphView of bool
     | SetGraphViewNodeLimit of int
     | SetGraphViewLayout of GraphView.Layout
+    | SetGraphViewScale of GraphView.Scale
+    | SetGraphViewScaleMax of int
     | GraphViewSetRoot of GraphView.NodeId
     | GraphViewGoBack
     | Error of string
