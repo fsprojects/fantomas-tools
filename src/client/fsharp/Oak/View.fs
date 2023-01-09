@@ -16,7 +16,7 @@ open FantomasTools.Client.OakViewer.Model.GraphView
 open Reactstrap
 
 type NodeType =
-    | Std
+    | Standard
     | Comment
     | Newline
     | Directive
@@ -55,7 +55,7 @@ let private parseResults =
                     elif trimmedLine.StartsWith("#") then
                         Directive
                     else
-                        Std
+                        Standard
 
                 let range =
                     if line.Trim() = "" then
@@ -201,12 +201,22 @@ let limitTreeByNodes =
         limitTree allowedNodes n)
 
 let createGraph =
+    // copied from variables.sass
+    let colors = {|
+        dark = "#222222"
+        primary = "#338CBB"
+        secondary = "#2FBADC"
+        danger = "#C74910"
+        warning = "#C7901B"
+        success = "#88D1A6"
+        white = "#FFF"
+    |}
     let getColor =
         function
-        | Std -> "skyblue"
-        | Comment -> "lightgreen"
-        | Newline -> "gray"
-        | Directive -> "fuchsia"
+        | Standard -> colors.secondary
+        | Comment -> colors.success
+        | Newline -> colors.warning
+        | Directive -> colors.primary
 
     memoizeBy fst (fun (model, dispatch: Msg -> unit) ->
         let nodeMap = fullGraph model
@@ -276,7 +286,7 @@ let private results (model: Model) dispatch =
                 | Comment -> "comment"
                 | Newline -> "newline"
                 | Directive -> "directive"
-                | Std -> ""
+                | Standard -> ""
 
             div [
                 Key !!n.Id
