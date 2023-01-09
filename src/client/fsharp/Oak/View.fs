@@ -41,106 +41,106 @@ let nodesFromRoot root =
     let nodeMap = oakNodes |> Seq.map (fun n -> NodeId n.Id, n) |> Map.ofSeq
     nodeMap
 
-let mutable private nodeIdCounter = 0
-
-let rec private parseNode level (n: OakNode) =
-    let parseRange (s: string) =
-        if s.Trim() = "" then
-            None
-        else
-            let coords =
-                s
-                |> Seq.filter (fun (c: char) -> Char.IsDigit c || c = '-' || c = ',')
-                |> fun chars ->
-                    Seq.foldBack
-                        (fun (c: char) (acc: string list) ->
-                            match acc with
-                            | [] -> acc
-                            | current :: rest ->
-                                if Char.IsDigit c then
-                                    $"{c}{current}" :: rest
-                                else
-                                    "" :: acc)
-                        chars
-                        [ "" ]
-                |> Seq.map int
-                |> Seq.toList
-
-            match coords with
-            | [ startLine; startColumn; endLine; endColumn ] ->
-                let highlightRange: HighLightRange = {
-                    StartLine = startLine
-                    StartColumn = startColumn
-                    EndLine = endLine
-                    EndColumn = endColumn
-                }
-
-                Some highlightRange
-            | _ ->
-                JS.console.log $"Could not construct highlight range, got %A{coords}"
-                None
-
-    let mkNode level text range t =
-        let r = parseRange range |> Option.get
-
-        let n = {
-            Id = nodeIdCounter
-            Node = text
-            Coords = r
-            CoordsUnion = r
-            Type = t
-            Childs = []
-            Limited = false
-            Level = level
-            Size = 1
-        }
-
-        nodeIdCounter <- nodeIdCounter + 1
-        n
-
-    let parseTriviaNode level (t: TriviaNode) =
-        let typ =
-            match t.Type with
-            | "directive" -> Directive
-            | "newline" -> Newline
-            | s when s.StartsWith "comment" -> Comment
-            | _ -> Standard
-
-        mkNode level (t.Content |> Option.defaultValue t.Type) t.Range typ
-
-    let parseNodeOrTriviaNode level n =
-        match n with
-        | Choice1Of2 x -> parseNode level x
-        | Choice2Of2 x -> parseTriviaNode level x
-
-    let childs =
-        [
-            yield! n.ContentBefore |> Array.map Choice2Of2
-            yield! n.Children |> Array.map Choice1Of2
-            yield! n.ContentAfter |> Array.map Choice2Of2
-        ]
-        |> List.map (parseNodeOrTriviaNode (level + 1))
-
-    let node =
-        let n = mkNode level n.Type n.Range Standard
-        let ranges = n.Coords :: (childs |> List.map (fun x -> x.CoordsUnion))
-
-        let unionRange = {
-            StartLine = ranges |> Seq.map (fun n -> n.StartLine) |> Seq.min
-            StartColumn = ranges |> Seq.map (fun n -> n.StartColumn) |> Seq.min
-            EndLine = ranges |> Seq.map (fun n -> n.EndLine) |> Seq.max
-            EndColumn = ranges |> Seq.map (fun n -> n.EndColumn) |> Seq.max
-        }
-
-        { n with
-            Childs = childs
-            CoordsUnion = unionRange
-            Size = n.Size + (childs |> Seq.sumBy (fun x -> x.Size))
-        }
-
-    node
-
 let private parseResults =
+    let mutable nodeIdCounter = 0
+
+    let rec parseNode level (n: OakNode) =
+        let parseRange (s: string) =
+            if s.Trim() = "" then
+                None
+            else
+                let coords =
+                    s
+                    |> Seq.filter (fun (c: char) -> Char.IsDigit c || c = '-' || c = ',')
+                    |> fun chars ->
+                        Seq.foldBack
+                            (fun (c: char) (acc: string list) ->
+                                match acc with
+                                | [] -> acc
+                                | current :: rest ->
+                                    if Char.IsDigit c then
+                                        $"{c}{current}" :: rest
+                                    else
+                                        "" :: acc)
+                            chars
+                            [ "" ]
+                    |> Seq.map int
+                    |> Seq.toList
+
+                match coords with
+                | [ startLine; startColumn; endLine; endColumn ] ->
+                    let highlightRange: HighLightRange = {
+                        StartLine = startLine
+                        StartColumn = startColumn
+                        EndLine = endLine
+                        EndColumn = endColumn
+                    }
+
+                    Some highlightRange
+                | _ ->
+                    JS.console.log $"Could not construct highlight range, got %A{coords}"
+                    None
+
+        let mkNode level text range t =
+            let r = parseRange range |> Option.get
+
+            let n = {
+                Id = nodeIdCounter
+                Node = text
+                Coords = r
+                CoordsUnion = r
+                Type = t
+                Childs = []
+                Limited = false
+                Level = level
+                Size = 1
+            }
+
+            nodeIdCounter <- nodeIdCounter + 1
+            n
+
+        let parseTriviaNode level (t: TriviaNode) =
+            let typ =
+                match t.Type with
+                | "directive" -> Directive
+                | "newline" -> Newline
+                | s when s.StartsWith "comment" -> Comment
+                | _ -> Standard
+
+            mkNode level (t.Content |> Option.defaultValue t.Type) t.Range typ
+
+        let parseNodeOrTriviaNode level n =
+            match n with
+            | Choice1Of2 x -> parseNode level x
+            | Choice2Of2 x -> parseTriviaNode level x
+
+        let childs =
+            [
+                yield! n.ContentBefore |> Array.map Choice2Of2
+                yield! n.Children |> Array.map Choice1Of2
+                yield! n.ContentAfter |> Array.map Choice2Of2
+            ]
+            |> List.map (parseNodeOrTriviaNode (level + 1))
+
+        let node =
+            let n = mkNode level n.Type n.Range Standard
+            let ranges = n.Coords :: (childs |> List.map (fun x -> x.CoordsUnion))
+
+            let unionRange = {
+                StartLine = ranges |> Seq.map (fun n -> n.StartLine) |> Seq.min
+                StartColumn = ranges |> Seq.map (fun n -> n.StartColumn) |> Seq.min
+                EndLine = ranges |> Seq.map (fun n -> n.EndLine) |> Seq.max
+                EndColumn = ranges |> Seq.map (fun n -> n.EndColumn) |> Seq.max
+            }
+
+            { n with
+                Childs = childs
+                CoordsUnion = unionRange
+                Size = n.Size + (childs |> Seq.sumBy (fun x -> x.Size))
+            }
+
+        node
+
     memoize (fun (model: Model) ->
         if model.Oak = Unchecked.defaultof<_> then
             None
