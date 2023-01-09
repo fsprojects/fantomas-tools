@@ -1,6 +1,5 @@
 ﻿module FantomasTools.Client.OakViewer.View
 
-open System
 open System.Collections.Generic
 open Browser.Types
 open Fable.Core
@@ -27,17 +26,18 @@ type GraphOakNode = {
     Type: NodeType
     Coords: HighLightRange
     CoordsUnion: HighLightRange
-    Childs: GraphOakNode list
+    Children: GraphOakNode list
     Limited: bool
     Level: int
     Size: int
 }
 
 let nodesFromRoot root =
-    let rec getChilds acc n =
-        n.Childs |> Seq.fold (fun s x -> getChilds s x |> Set.add x) (acc |> Set.add n)
+    let rec getChildren acc n =
+        n.Children
+        |> Seq.fold (fun s x -> getChildren s x |> Set.add x) (acc |> Set.add n)
 
-    let oakNodes = getChilds Set.empty root
+    let oakNodes = getChildren Set.empty root
     let nodeMap = oakNodes |> Seq.map (fun n -> NodeId n.Id, n) |> Map.ofSeq
     nodeMap
 
@@ -45,52 +45,14 @@ let private parseResults =
     let mutable nodeIdCounter = 0
 
     let rec parseNode level (n: OakNode) =
-        let parseRange (s: string) =
-            if s.Trim() = "" then
-                None
-            else
-                let coords =
-                    s
-                    |> Seq.filter (fun (c: char) -> Char.IsDigit c || c = '-' || c = ',')
-                    |> fun chars ->
-                        Seq.foldBack
-                            (fun (c: char) (acc: string list) ->
-                                match acc with
-                                | [] -> acc
-                                | current :: rest ->
-                                    if Char.IsDigit c then
-                                        $"{c}{current}" :: rest
-                                    else
-                                        "" :: acc)
-                            chars
-                            [ "" ]
-                    |> Seq.map int
-                    |> Seq.toList
-
-                match coords with
-                | [ startLine; startColumn; endLine; endColumn ] ->
-                    let highlightRange: HighLightRange = {
-                        StartLine = startLine
-                        StartColumn = startColumn
-                        EndLine = endLine
-                        EndColumn = endColumn
-                    }
-
-                    Some highlightRange
-                | _ ->
-                    JS.console.log $"Could not construct highlight range, got %A{coords}"
-                    None
-
-        let mkNode level text range t =
-            let r = parseRange range |> Option.get
-
+        let mkNode (level: int) (text: string) (range: HighLightRange) (t: NodeType) : GraphOakNode =
             let n = {
                 Id = nodeIdCounter
                 Node = text
-                Coords = r
-                CoordsUnion = r
+                Coords = range
+                CoordsUnion = range
                 Type = t
-                Childs = []
+                Children = []
                 Limited = false
                 Level = level
                 Size = 1
@@ -114,7 +76,7 @@ let private parseResults =
             | Choice1Of2 x -> parseNode level x
             | Choice2Of2 x -> parseTriviaNode level x
 
-        let childs =
+        let children =
             [
                 yield! n.ContentBefore |> Array.map Choice2Of2
                 yield! n.Children |> Array.map Choice1Of2
@@ -124,7 +86,7 @@ let private parseResults =
 
         let node =
             let n = mkNode level n.Type n.Range Standard
-            let ranges = n.Coords :: (childs |> List.map (fun x -> x.CoordsUnion))
+            let ranges = n.Coords :: (children |> List.map (fun x -> x.CoordsUnion))
 
             let unionRange = {
                 StartLine = ranges |> Seq.map (fun n -> n.StartLine) |> Seq.min
@@ -134,20 +96,19 @@ let private parseResults =
             }
 
             { n with
-                Childs = childs
+                Children = children
                 CoordsUnion = unionRange
-                Size = n.Size + (childs |> Seq.sumBy (fun x -> x.Size))
+                Size = n.Size + (children |> Seq.sumBy (fun x -> x.Size))
             }
 
         node
 
     memoize (fun (model: Model) ->
-        if model.Oak = Unchecked.defaultof<_> then
-            None
-        else
-            nodeIdCounter <- 0
-            let root = parseNode 0 model.Oak
-            Some root)
+        Option.map
+            (fun oak ->
+                nodeIdCounter <- 0
+                parseNode 0 oak)
+            model.Oak)
 
 let fullGraph =
     memoize (fun model -> parseResults model |> Option.map (fun r -> r, nodesFromRoot r))
@@ -155,11 +116,11 @@ let fullGraph =
 let limitTree =
     memoize2 (fun allowedSet n ->
         let rec f n =
-            let childs = n.Childs |> List.filter (fun c -> List.contains c allowedSet)
-            let limit = not (List.isEmpty n.Childs) && List.isEmpty childs
+            let children = n.Children |> List.filter (fun c -> List.contains c allowedSet)
+            let limit = not (List.isEmpty n.Children) && List.isEmpty children
 
             { n with
-                Childs = childs |> List.map f
+                Children = children |> List.map f
                 Limited = limit
             }
 
@@ -177,7 +138,7 @@ let limitTreeByNodes =
                 match q.TryDequeue() with
                 | false, _ -> acc
                 | true, x ->
-                    x.Childs |> List.iter q.Enqueue
+                    x.Children |> List.iter q.Enqueue
                     loop (x :: acc) (i + 1)
 
         let allowedNodes = loop [] 1
@@ -232,7 +193,7 @@ let createGraph =
             let edges =
                 oakNodes
                 |> Map.values
-                |> Seq.collect (fun n -> n.Childs |> Seq.map (fun m -> NodeId n.Id, NodeId m.Id))
+                |> Seq.collect (fun n -> n.Children |> Seq.map (fun m -> NodeId n.Id, NodeId m.Id))
                 |> set
 
             let graph =
@@ -257,43 +218,47 @@ let createGraph =
         | None -> div [] [])
 
 let private results (model: Model) dispatch =
-    let lines =
-        parseResults model
-        |> Option.map nodesFromRoot
-        |> Option.defaultValue Map.empty
-        |> Map.values
-        |> Seq.sortBy (fun n -> n.Coords.StartLine, n.Level)
-        |> Seq.map (fun n ->
-            let className =
-                match n.Type with
-                | Comment -> "comment"
-                | Newline -> "newline"
-                | Directive -> "directive"
-                | Standard -> ""
+    match model.Oak with
+    | None -> div [ Id "oakResult" ] []
+    | Some oak ->
 
-            let content =
-                let range =
-                    let r = n.Coords
-                    $"({r.StartLine},{r.StartColumn}-{r.EndLine},{r.EndColumn})"
+        let lines =
+            parseResults model
+            |> Option.map nodesFromRoot
+            |> Option.defaultValue Map.empty
+            |> Map.values
+            |> Seq.sortBy (fun n -> n.Coords.StartLine, n.Level)
+            |> Seq.map (fun n ->
+                let className =
+                    match n.Type with
+                    | Comment -> "comment"
+                    | Newline -> "newline"
+                    | Directive -> "directive"
+                    | Standard -> ""
 
-                if n.Node.Trim() = "" then
-                    ""
-                else
-                    (String.replicate n.Level "  ") + n.Node + " " + range
+                let content =
+                    let range =
+                        let r = n.Coords
+                        $"({r.StartLine},{r.StartColumn}-{r.EndLine},{r.EndColumn})"
 
-            div [
-                Key !!n.Id
-                OnClick(fun ev ->
-                    ev.stopPropagation ()
-                    let div = (ev.target :?> Element)
-                    div.classList.add "highlight"
-                    JS.setTimeout (fun () -> div.classList.remove "highlight") 400 |> ignore
+                    if n.Node.Trim() = "" then
+                        ""
+                    else
+                        (String.replicate n.Level "  ") + n.Node + " " + range
 
-                    dispatch (HighLight n.Coords))
-            ] [ pre [ ClassName className ] [ str content ] ])
-        |> Seq.toArray
+                div [
+                    Key !!n.Id
+                    OnClick(fun ev ->
+                        ev.stopPropagation ()
+                        let div = (ev.target :?> Element)
+                        div.classList.add "highlight"
+                        JS.setTimeout (fun () -> div.classList.remove "highlight") 400 |> ignore
 
-    div [ Id "oakResult" ] [ ofArray lines ]
+                        dispatch (HighLight n.Coords))
+                ] [ pre [ ClassName className ] [ str content ] ])
+            |> Seq.toArray
+
+        div [ Id "oakResult" ] [ ofArray lines ]
 
 let view model dispatch =
     if model.IsLoading then
@@ -304,7 +269,7 @@ let view model dispatch =
         | None, true -> createGraph (model, dispatch)
         | Some errors, _ -> Editor true [ MonacoEditorProp.DefaultValue errors ]
 
-let commands model dispatch =
+let commands dispatch =
     fragment [] [
         Button.button [
             Button.Color Primary

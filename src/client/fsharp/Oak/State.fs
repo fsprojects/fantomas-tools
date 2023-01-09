@@ -29,7 +29,7 @@ let private fetchOak (payload: OakViewer.ParseRequest) dispatch =
 let private fetchFSCVersion () = sprintf "%s/version" backend |> Http.getText
 
 let private initialModel: Model =
-    { Oak = Unchecked.defaultof<OakNode>
+    { Oak = None
       Error = None
       IsLoading = true
       Defines = ""
@@ -80,7 +80,7 @@ let update code isFsi (msg: Msg) model : Model * Cmd<Msg> =
     | Msg.OakReceived result ->
         { model with
             IsLoading = false
-            Oak = result
+            Oak = Some result
             GraphViewRootNodes = [] },
         Cmd.none
     | Msg.Error error ->

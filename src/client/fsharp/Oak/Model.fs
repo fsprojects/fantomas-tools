@@ -1,15 +1,16 @@
 ﻿module FantomasTools.Client.OakViewer.Model
 
 open Fable.Core
+open FantomasTools.Client.Editor
 
 type TriviaNode =
     { Type: string
-      Range: string
+      Range: HighLightRange
       Content: string option }
 
 type OakNode =
     { Type: string
-      Range: string
+      Range: HighLightRange
       ContentBefore: TriviaNode array
       Children: OakNode array
       ContentAfter: TriviaNode array }
@@ -69,7 +70,7 @@ type Msg =
     | HighLight of FantomasTools.Client.Editor.HighLightRange
 
 type Model =
-    { Oak: OakNode
+    { Oak: OakNode option
       Error: string option
       IsLoading: bool
       Defines: string

@@ -125,7 +125,7 @@ let tabs (model: Model) dispatch =
 
             OakViewer.View.view model.OakModel oakDispatch,
             OakViewer.View.settings model.IsFsi model.OakModel oakDispatch,
-            OakViewer.View.commands model.OakModel oakDispatch
+            OakViewer.View.commands oakDispatch
 
         | FantomasTab _ ->
             let fantomasDispatch fMsg = dispatch (FantomasMsg fMsg)
