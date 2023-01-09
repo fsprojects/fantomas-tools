@@ -257,13 +257,25 @@ let createGraph =
                 |> Seq.collect (fun n -> n.Childs |> Seq.map (fun m -> NodeId n.Id, NodeId m.Id))
                 |> set
 
-            VisReact.graph
-                model.GraphViewOptions
-                "tab-content"
-                nodes
-                edges
-                (fun nId -> dispatch (GraphViewSetRoot nId))
-                (fun nId -> dispatch (HighLight nodeMap[nId].CoordsUnion))
+            let graph =
+                VisReact.graph
+                    model.GraphViewOptions
+                    "tab-content"
+                    nodes
+                    edges
+                    (fun nId -> dispatch (GraphViewSetRoot nId))
+                    (fun nId -> dispatch (HighLight nodeMap[nId].CoordsUnion))
+
+            fragment [] [
+                graph
+                div [ Id "graph-view-commands" ] [
+                    if model.GraphViewRootNodes <> [] then
+                        Button.button [
+                            Button.Color Primary
+                            Button.Custom [ ClassName "rounded-0"; OnClick(fun _ -> dispatch GraphViewGoBack) ]
+                        ] [ str $"<- back({model.GraphViewRootNodes.Length})" ]
+                ]
+            ]
         | None -> div [] []
 
 let private results (model: Model) dispatch =
@@ -308,11 +320,7 @@ let commands model dispatch =
             Button.Color Primary
             Button.Custom [ ClassName "rounded-0"; OnClick(fun _ -> dispatch GetOak) ]
         ] [ i [ ClassName "fas fa-code mr-1" ] []; str "Get oak" ]
-        if model.GraphViewRootNodes <> [] then
-            Button.button [
-                Button.Color Primary
-                Button.Custom [ ClassName "rounded-0"; OnClick(fun _ -> dispatch GraphViewGoBack) ]
-            ] [ str $"<- back({model.GraphViewRootNodes.Length})" ]
+
     ]
 
 let settings isFsi (model: Model) dispatch =
