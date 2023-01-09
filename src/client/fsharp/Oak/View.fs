@@ -21,14 +21,15 @@ type NodeType =
     | Newline
     | Directive
 
-type OakNode = {
+type GraphOakNode = {
     Id: int
     Node: string
     Type: NodeType
     Coords: HighLightRange
     CoordsUnion: HighLightRange
-    Childs: OakNode list
+    Childs: GraphOakNode list
     Limited: bool
+    Level: int
     Size: int
 }
 
@@ -40,134 +41,119 @@ let nodesFromRoot root =
     let nodeMap = oakNodes |> Seq.map (fun n -> NodeId n.Id, n) |> Map.ofSeq
     nodeMap
 
+let mutable private nodeIdCounter = 0
+
+let rec private parseNode level (n: OakNode) =
+    let parseRange (s: string) =
+        if s.Trim() = "" then
+            None
+        else
+            let coords =
+                s
+                |> Seq.filter (fun (c: char) -> Char.IsDigit c || c = '-' || c = ',')
+                |> fun chars ->
+                    Seq.foldBack
+                        (fun (c: char) (acc: string list) ->
+                            match acc with
+                            | [] -> acc
+                            | current :: rest ->
+                                if Char.IsDigit c then
+                                    $"{c}{current}" :: rest
+                                else
+                                    "" :: acc)
+                        chars
+                        [ "" ]
+                |> Seq.map int
+                |> Seq.toList
+
+            match coords with
+            | [ startLine; startColumn; endLine; endColumn ] ->
+                let highlightRange: HighLightRange = {
+                    StartLine = startLine
+                    StartColumn = startColumn
+                    EndLine = endLine
+                    EndColumn = endColumn
+                }
+
+                Some highlightRange
+            | _ ->
+                JS.console.log $"Could not construct highlight range, got %A{coords}"
+                None
+
+    let mkNode level text range t =
+        let r = parseRange range |> Option.get
+
+        let n = {
+            Id = nodeIdCounter
+            Node = text
+            Coords = r
+            CoordsUnion = r
+            Type = t
+            Childs = []
+            Limited = false
+            Level = level
+            Size = 1
+        }
+
+        nodeIdCounter <- nodeIdCounter + 1
+        n
+
+    let parseTriviaNode level (t: TriviaNode) =
+        let typ =
+            match t.Type with
+            | "directive" -> Directive
+            | "newline" -> Newline
+            | s when s.StartsWith "comment" -> Comment
+            | _ -> Standard
+
+        mkNode level (t.Content |> Option.defaultValue t.Type) t.Range typ
+
+    let parseNodeOrTriviaNode level n =
+        match n with
+        | Choice1Of2 x -> parseNode level x
+        | Choice2Of2 x -> parseTriviaNode level x
+
+    let childs =
+        [
+            yield! n.ContentBefore |> Array.map Choice2Of2
+            yield! n.Children |> Array.map Choice1Of2
+            yield! n.ContentAfter |> Array.map Choice2Of2
+        ]
+        |> List.map (parseNodeOrTriviaNode (level + 1))
+
+    let node =
+        let n = mkNode level n.Type n.Range Standard
+        let ranges = n.Coords :: (childs |> List.map (fun x -> x.CoordsUnion))
+
+        let unionRange = {
+            StartLine = ranges |> Seq.map (fun n -> n.StartLine) |> Seq.min
+            StartColumn = ranges |> Seq.map (fun n -> n.StartColumn) |> Seq.min
+            EndLine = ranges |> Seq.map (fun n -> n.EndLine) |> Seq.max
+            EndColumn = ranges |> Seq.map (fun n -> n.EndColumn) |> Seq.max
+        }
+
+        { n with
+            Childs = childs
+            CoordsUnion = unionRange
+            Size = n.Size + (childs |> Seq.sumBy (fun x -> x.Size))
+        }
+
+    node
+
 let private parseResults =
     memoize (fun (model: Model) ->
-        let nodes =
-            model.Oak.Split([| '\n' |])
-            |> Array.mapi (fun idx line ->
-                let nodeType =
-                    let trimmedLine = line.TrimStart()
+        JS.console.log model.Oak
 
-                    if trimmedLine.StartsWith("//") || trimmedLine.StartsWith("(*") then
-                        Comment
-                    elif trimmedLine.StartsWith("Newline") then
-                        Newline
-                    elif trimmedLine.StartsWith("#") then
-                        Directive
-                    else
-                        Standard
-
-                let range =
-                    if line.Trim() = "" then
-                        None
-                    else
-                        let coords =
-                            line
-                            |> Seq.filter (fun (c: char) -> Char.IsDigit c || c = '-' || c = ',')
-                            |> Seq.skipWhile (fun (c: char) -> not (Char.IsDigit c))
-                            |> fun chars ->
-                                Seq.foldBack
-                                    (fun (c: char) (acc: string list) ->
-                                        match acc with
-                                        | [] -> acc
-                                        | current :: rest ->
-                                            if Char.IsDigit c then
-                                                $"{c}{current}" :: rest
-                                            else
-                                                "" :: acc)
-                                    chars
-                                    [ "" ]
-                            |> Seq.map int
-                            |> Seq.toList
-
-                        match coords with
-                        | [ startLine; startColumn; endLine; endColumn ] ->
-                            let highlightRange: HighLightRange = {
-                                StartLine = startLine
-                                StartColumn = startColumn
-                                EndLine = endLine
-                                EndColumn = endColumn
-                            }
-
-                            Some highlightRange
-                        | _ ->
-                            JS.console.log $"Could not construct highlight range, got %A{coords}"
-                            None
-
-                let nodeString =
-                    line |> Seq.takeWhile ((<>) '(') |> Seq.map string |> String.concat ""
-
-                range
-                |> Option.map (fun r -> {
-                    Id = idx
-                    Node = nodeString
-                    Coords = r
-                    CoordsUnion = r
-                    Type = nodeType
-                    Childs = []
-                    Limited = false
-                    Size = 1
-                }))
-            |> Array.choose id
-            |> Array.toList
-
-        if nodes = [] then
-            Map.empty
+        if model.Oak = Unchecked.defaultof<_> then
+            None
         else
-            let nodesMap = nodes |> Seq.map (fun n -> n.Id, n) |> Map.ofSeq
+            nodeIdCounter <- 0
+            let root = parseNode 0 model.Oak
+            JS.console.log root
+            Some root)
 
-            // create edges in graph based on indentation of lines
-            let edges =
-                let getLevel s = s |> Seq.takeWhile ((=) ' ') |> Seq.length
-
-                match nodes with
-                | [] -> []
-                | hd :: tl ->
-                    (([ hd, getLevel hd.Node ], []), tl)
-                    ||> Seq.fold (fun (parents, acc) n ->
-                        match parents with
-                        | [] -> [], acc
-                        | (parent, level) :: otherParents ->
-                            let l = getLevel n.Node
-
-                            if l > level then
-                                ((n, l) :: parents), ((parent.Id, n.Id) :: acc)
-                            else
-                                match otherParents |> List.skipWhile (fun (_, lp) -> l <= lp) with
-                                | [] -> (otherParents, acc)
-                                | (p, _) :: _ as filteredParents -> ((n, l) :: filteredParents), ((p.Id, n.Id) :: acc))
-                    |> snd
-                |> List.groupBy fst
-                |> Seq.map (fun (k, g) -> k, g |> List.map snd)
-                |> Map.ofSeq
-
-            /// Recursively update nodes with links to childs, range info and size
-            let rec setChilds (n: OakNode) =
-                let childs =
-                    edges
-                    |> Map.tryFind n.Id
-                    |> Option.defaultValue []
-                    |> List.map (fun idx -> nodesMap[idx] |> setChilds)
-
-                let ranges = n.Coords :: (childs |> List.map (fun x -> x.CoordsUnion))
-
-                let unionRange = {
-                    StartLine = ranges |> Seq.map (fun n -> n.StartLine) |> Seq.min
-                    StartColumn = ranges |> Seq.map (fun n -> n.StartColumn) |> Seq.min
-                    EndLine = ranges |> Seq.map (fun n -> n.EndLine) |> Seq.max
-                    EndColumn = ranges |> Seq.map (fun n -> n.EndColumn) |> Seq.max
-                }
-
-                { n with
-                    Childs = childs
-                    CoordsUnion = unionRange
-                    Size = n.Size + (childs |> Seq.sumBy (fun x -> x.Size))
-                }
-
-            let root = nodes |> List.head |> setChilds
-            nodesFromRoot root)
-
-let fullGraph = memoize (fun model -> parseResults model)
+let fullGraph =
+    memoize (fun model -> parseResults model |> Option.map (fun r -> r, nodesFromRoot r))
 
 let limitTree =
     memoize2 (fun allowedSet n ->
@@ -184,7 +170,7 @@ let limitTree =
 
 let limitTreeByNodes =
     memoize2 (fun maxNodes n ->
-        let q = Queue<OakNode>()
+        let q = Queue<GraphOakNode>()
         q.Enqueue n
 
         let rec loop acc i =
@@ -220,16 +206,13 @@ let createGraph =
         | Directive -> colors.primary
 
     memoizeBy fst (fun (model, dispatch: Msg -> unit) ->
-        let nodeMap = fullGraph model
-
         let root =
-            if Map.isEmpty nodeMap then
-                None
-            else
+            fullGraph model
+            |> Option.map (fun (root, nodeMap) ->
                 model.GraphViewRootNodes
                 |> List.tryHead
                 |> Option.bind (fun nId -> Map.tryFind nId nodeMap)
-                |> Option.orElse (nodeMap |> Map.tryFind (NodeId 0))
+                |> Option.defaultValue root)
 
         match root with
         | Some root ->
@@ -262,7 +245,7 @@ let createGraph =
                     nodes
                     edges
                     (fun nId -> dispatch (GraphViewSetRoot nId))
-                    (fun nId -> dispatch (HighLight nodeMap[nId].CoordsUnion))
+                    (fun nId -> dispatch (HighLight oakNodes[nId].CoordsUnion))
 
             fragment [] [
                 graph
@@ -279,15 +262,27 @@ let createGraph =
 let private results (model: Model) dispatch =
     let lines =
         parseResults model
-        |> Map.toSeq
-        |> Seq.sortBy fst
-        |> Seq.map (fun (_, n) ->
+        |> Option.map nodesFromRoot
+        |> Option.defaultValue Map.empty
+        |> Map.values
+        |> Seq.sortBy (fun n -> n.Coords.StartLine, n.Level)
+        |> Seq.map (fun n ->
             let className =
                 match n.Type with
                 | Comment -> "comment"
                 | Newline -> "newline"
                 | Directive -> "directive"
                 | Standard -> ""
+
+            let content =
+                let range =
+                    let r = n.Coords
+                    $"({r.StartLine},{r.StartColumn}-{r.EndLine},{r.EndColumn})"
+
+                if n.Node.Trim() = "" then
+                    ""
+                else
+                    (String.replicate n.Level "  ") + n.Node + " " + range
 
             div [
                 Key !!n.Id
@@ -298,7 +293,7 @@ let private results (model: Model) dispatch =
                     JS.setTimeout (fun () -> div.classList.remove "highlight") 400 |> ignore
 
                     dispatch (HighLight n.Coords))
-            ] [ pre [ ClassName className ] [ str n.Node ] ])
+            ] [ pre [ ClassName className ] [ str content ] ])
         |> Seq.toArray
 
     div [ Id "oakResult" ] [ ofArray lines ]
