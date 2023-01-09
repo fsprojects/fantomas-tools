@@ -29,9 +29,20 @@ let private encodeTriviaNode (triviaNode: TriviaNode) : JsonValue =
 let rec encodeNode (node: Node) (continuation: JsonValue -> JsonValue) : JsonValue =
     let continuations = List.map encodeNode (Array.toList node.Children)
 
+    let text =
+        match node with
+        | :? SingleTextNode as stn ->
+            if stn.Text.Length > 13 then
+                sprintf "\"%s...\"" (stn.Text.Substring(0, 10))
+            else
+                $"\"{stn.Text}\""
+            |> Some
+        | _ -> None
+
     let finalContinuation (children: JsonValue list) =
         Encode.object
             [ "type", Encode.string (node.GetType().Name)
+              "text", Encode.option Encode.string text
               "range", encodeRange node.Range
               "contentBefore", Encode.seq (Seq.map encodeTriviaNode node.ContentBefore)
               "children", Encode.list children

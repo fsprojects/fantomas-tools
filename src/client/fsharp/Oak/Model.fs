@@ -10,6 +10,7 @@ type TriviaNode =
 
 type OakNode =
     { Type: string
+      Text: string option
       Range: HighLightRange
       ContentBefore: TriviaNode array
       Children: OakNode array

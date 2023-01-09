@@ -32,6 +32,7 @@ let rec decodeOak (name: string) (value: JsonValue) : Result<OakNode, DecoderErr
     Decode.object
         (fun get ->
             { Type = get.Required.Field "type" Decode.string
+              Text = get.Optional.Field "text" Decode.string
               Range = get.Required.Field "range" decodeRange
               ContentBefore = get.Required.Field "contentBefore" (Decode.array decodeTriviaNode)
               Children = get.Required.Field "children" (Decode.array decodeOak)

@@ -4,7 +4,6 @@ open System.Collections.Generic
 open Browser.Types
 open Fable.Core
 open FantomasTools.Client.Editor
-open Fable.Core.JsInterop
 open Fable.React
 open Fable.React.Props
 open FantomasTools.Client
@@ -217,47 +216,92 @@ let createGraph =
             ]
         | None -> div [] [])
 
+[<RequireQualifiedAccess>]
+module Continuation =
+    let rec sequence<'a, 'ret> (recursions: (('a -> 'ret) -> 'ret) list) (finalContinuation: 'a list -> 'ret) : 'ret =
+        match recursions with
+        | [] -> [] |> finalContinuation
+        | recurse :: recurses -> recurse (fun ret -> sequence recurses (fun rets -> ret :: rets |> finalContinuation))
+
+let mkResultDivContent level range text =
+    let range =
+        $"({range.StartLine},{range.StartColumn}-{range.EndLine},{range.EndColumn})"
+
+    sprintf "%s%s %s" (String.replicate level "  ") text range
+
+let mkTriviaResultDiv dispatch level (key: string) (triviaNode: TriviaNode) : ReactElement =
+    let className =
+        match triviaNode.Type with
+        | "commentOnSingleLine"
+        | "lineCommentAfterSourceCode"
+        | "blockComment" -> "comment"
+        | "newline" -> "newline"
+        | "directive" -> "directive"
+        | _ -> ""
+
+    let content =
+        mkResultDivContent level triviaNode.Range (Option.defaultValue "Newline" triviaNode.Content)
+
+    div [
+        Key key
+        OnClick(fun ev ->
+            ev.stopPropagation ()
+            let div = (ev.target :?> Element)
+            div.classList.add "highlight"
+            JS.setTimeout (fun () -> div.classList.remove "highlight") 400 |> ignore
+            dispatch (HighLight triviaNode.Range))
+    ] [ pre [ ClassName className ] [ str content ] ]
+
+let rec mkResultDiv
+    dispatch
+    (level: int)
+    (key: string)
+    (node: OakNode)
+    (continuation: ReactElement array -> ReactElement array)
+    =
+    let continuations =
+        node.Children
+        |> Array.mapi (fun idx child ->
+            let key = $"{key}_{idx}"
+            mkResultDiv dispatch (level + 1) key child)
+        |> Array.toList
+
+    let current =
+        let content =
+            mkResultDivContent level node.Range (Option.defaultValue node.Type node.Text)
+
+        div [
+            Key key
+            OnClick(fun ev ->
+                ev.stopPropagation ()
+                let div = (ev.target :?> Element)
+                div.classList.add "highlight"
+                JS.setTimeout (fun () -> div.classList.remove "highlight") 400 |> ignore
+
+                dispatch (HighLight node.Range))
+        ] [ pre [] [ str content ] ]
+
+    let contentBefore =
+        Array.mapi (fun idx tn -> mkTriviaResultDiv dispatch level $"{key}_cb_{idx}" tn) node.ContentBefore
+
+    let contentAfter =
+        Array.mapi (fun idx tn -> mkTriviaResultDiv dispatch level $"{key}_ca_{idx}" tn) node.ContentAfter
+
+    let finalContinuation (elements: ReactElement array list) =
+        continuation [|
+            yield! contentBefore
+            yield current
+            yield! (Seq.collect id elements)
+            yield! contentAfter
+        |]
+
+    Continuation.sequence continuations finalContinuation
+
 let private results (model: Model) dispatch =
     match model.Oak with
     | None -> div [ Id "oakResult" ] []
     | Some oak ->
-
-        let lines =
-            parseResults model
-            |> Option.map nodesFromRoot
-            |> Option.defaultValue Map.empty
-            |> Map.values
-            |> Seq.sortBy (fun n -> n.Coords.StartLine, n.Level)
-            |> Seq.map (fun n ->
-                let className =
-                    match n.Type with
-                    | Comment -> "comment"
-                    | Newline -> "newline"
-                    | Directive -> "directive"
-                    | Standard -> ""
-
-                let content =
-                    let range =
-                        let r = n.Coords
-                        $"({r.StartLine},{r.StartColumn}-{r.EndLine},{r.EndColumn})"
-
-                    if n.Node.Trim() = "" then
-                        ""
-                    else
-                        (String.replicate n.Level "  ") + n.Node + " " + range
-
-                div [
-                    Key !!n.Id
-                    OnClick(fun ev ->
-                        ev.stopPropagation ()
-                        let div = (ev.target :?> Element)
-                        div.classList.add "highlight"
-                        JS.setTimeout (fun () -> div.classList.remove "highlight") 400 |> ignore
-
-                        dispatch (HighLight n.Coords))
-                ] [ pre [ ClassName className ] [ str content ] ])
-            |> Seq.toArray
-
+        let lines = mkResultDiv dispatch 0 "root" oak id
         div [ Id "oakResult" ] [ ofArray lines ]
 
 let view model dispatch =
@@ -275,7 +319,6 @@ let commands dispatch =
             Button.Color Primary
             Button.Custom [ ClassName "rounded-0"; OnClick(fun _ -> dispatch GetOak) ]
         ] [ i [ ClassName "fas fa-code mr-1" ] []; str "Get oak" ]
-
     ]
 
 let settings isFsi (model: Model) dispatch =
