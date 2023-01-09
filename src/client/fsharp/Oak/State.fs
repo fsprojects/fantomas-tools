@@ -105,6 +105,18 @@ let update code isFsi (msg: Msg) model : Model * Cmd<Msg> =
                 { model.GraphViewOptions with
                     NodeLimit = value } },
         Cmd.none
+    | SetGraphViewScale value ->
+        { model with
+            GraphViewOptions =
+                { model.GraphViewOptions with
+                    Scale = value } },
+        Cmd.none
+    | SetGraphViewScaleMax value ->
+        { model with
+            GraphViewOptions =
+                { model.GraphViewOptions with
+                    ScaleMaxSize = value } },
+        Cmd.none
     | GraphViewSetRoot nodeId ->
         { model with
             GraphViewRootNodes = nodeId :: model.GraphViewRootNodes },
