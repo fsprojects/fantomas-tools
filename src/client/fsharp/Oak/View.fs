@@ -211,6 +211,7 @@ let createGraph =
         success = "#88D1A6"
         white = "#FFF"
     |}
+
     let getColor =
         function
         | Standard -> colors.secondary
