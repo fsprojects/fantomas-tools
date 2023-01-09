@@ -19,14 +19,17 @@ let private fetchOak (payload: OakViewer.ParseRequest) dispatch =
     Http.postJson url json
     |> Promise.iter (fun (status, body) ->
         match status with
-        | 200 -> Msg.OakReceived body
+        | 200 ->
+            match Decode.fromString decodeOak body with
+            | Ok oak -> Msg.OakReceived oak
+            | Result.Error err -> Msg.Error err
         | _ -> Msg.Error body
         |> dispatch)
 
 let private fetchFSCVersion () = sprintf "%s/version" backend |> Http.getText
 
 let private initialModel: Model =
-    { Oak = ""
+    { Oak = Unchecked.defaultof<OakNode>
       Error = None
       IsLoading = true
       Defines = ""

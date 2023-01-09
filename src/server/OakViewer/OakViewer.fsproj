@@ -26,6 +26,7 @@
     <Compile Include="..\AWSLambdaExtensions.fs" />
     <Compile Include="..\SuaveExtensions.fs" />
     <Compile Include="Decoders.fs" />
+    <Compile Include="Encoders.fs" />
     <Compile Include="GetOak.fs" />
     <Compile Include="Lambda.fs" />
     <Compile Include="Program.fs" />

@@ -2,6 +2,18 @@
 
 open Fable.Core
 
+type TriviaNode =
+    { Type: string
+      Range: string
+      Content: string option }
+
+type OakNode =
+    { Type: string
+      Range: string
+      ContentBefore: TriviaNode array
+      Children: OakNode array
+      ContentAfter: TriviaNode array }
+
 module GraphView =
     [<Erase>]
     type NodeId = NodeId of int
@@ -41,7 +53,7 @@ module GraphView =
 
 type Msg =
     | GetOak
-    | OakReceived of string
+    | OakReceived of OakNode
     | DefinesUpdated of string
     | FSCVersionReceived of string
     | SetFsiFile of bool
@@ -57,7 +69,7 @@ type Msg =
     | HighLight of FantomasTools.Client.Editor.HighLightRange
 
 type Model =
-    { Oak: string
+    { Oak: OakNode
       Error: string option
       IsLoading: bool
       Defines: string
