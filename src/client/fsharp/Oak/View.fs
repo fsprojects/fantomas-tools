@@ -257,8 +257,13 @@ let createGraph =
                 |> Seq.collect (fun n -> n.Childs |> Seq.map (fun m -> NodeId n.Id, NodeId m.Id))
                 |> set
 
-            VisReact.graph model.GraphViewOptions nodes edges (fun nId -> dispatch (GraphViewSetRoot nId)) (fun nId ->
-                dispatch (HighLight nodeMap[nId].CoordsUnion))
+            VisReact.graph
+                model.GraphViewOptions
+                "tab-content"
+                nodes
+                edges
+                (fun nId -> dispatch (GraphViewSetRoot nId))
+                (fun nId -> dispatch (HighLight nodeMap[nId].CoordsUnion))
         | None -> div [] []
 
 let private results (model: Model) dispatch =

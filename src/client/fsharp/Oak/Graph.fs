@@ -8,7 +8,15 @@ open FantomasTools.Client.OakViewer.Model.GraphView
 module VisReact =
 
     // vis-react component
-    let inline graph (graphOptions: Options) nodes edges selectNodeCallback hoverNodeCallback : ReactElement =
+    let inline graph
+        (graphOptions: Options)
+        (parentElementId: string)
+        nodes
+        edges
+        selectNodeCallback
+        hoverNodeCallback
+        : ReactElement
+        =
         let layout =
             let hier =
                 {| enabled = true
@@ -19,6 +27,8 @@ module VisReact =
             | TopDown -> {| hierarchical = hier |}
             | LeftRight -> {| hierarchical = {| hier with direction = "LR" |} |}
             | Free -> {| hierarchical = {| hier with enabled = false |} |}
+
+        let parentElement = Browser.Dom.document.getElementById parentElementId
 
         ofImport
             "default"
@@ -44,8 +54,8 @@ module VisReact =
                options =
                 {| layout = layout
                    interaction = {| hover = true |}
-                   width = "1000"
-                   height = "700" |}
+                   width = string parentElement.clientWidth
+                   height = string parentElement.clientHeight |}
                events =
                 {| selectNode = fun (ev: {| nodes: int[] |}) -> selectNodeCallback (NodeId ev.nodes[0])
                    hoverNode = fun (ev: {| node: int |}) -> hoverNodeCallback (NodeId ev.node) |}
