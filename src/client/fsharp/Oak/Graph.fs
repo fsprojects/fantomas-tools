@@ -10,7 +10,11 @@ module VisReact =
     // vis-react component
     let inline graph (graphOptions: Options) nodes edges selectNodeCallback hoverNodeCallback : ReactElement =
         let layout =
-            let hier = {| enabled = true; direction = "UD"; levelSeparation = 75 |}
+            let hier =
+                {| enabled = true
+                   direction = "UD"
+                   levelSeparation = 75 |}
+
             match graphOptions.Layout with
             | TopDown -> {| hierarchical = hier |}
             | LeftRight -> {| hierarchical = {| hier with direction = "LR" |} |}
