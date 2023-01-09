@@ -133,7 +133,7 @@ let private parseResults =
                             if l > level then
                                 ((n, l) :: parents), ((parent.Id, n.Id) :: acc)
                             else
-                                match otherParents |> List.skipWhile (fun (_, lp) -> l < lp) with
+                                match otherParents |> List.skipWhile (fun (_, lp) -> l <= lp) with
                                 | [] -> (otherParents, acc)
                                 | (p, _) :: _ as filteredParents -> ((n, l) :: filteredParents), ((p.Id, n.Id) :: acc))
                     |> snd
