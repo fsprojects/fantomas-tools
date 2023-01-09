@@ -142,14 +142,11 @@ let rec private parseNode level (n: OakNode) =
 
 let private parseResults =
     memoize (fun (model: Model) ->
-        JS.console.log model.Oak
-
         if model.Oak = Unchecked.defaultof<_> then
             None
         else
             nodeIdCounter <- 0
             let root = parseNode 0 model.Oak
-            JS.console.log root
             Some root)
 
 let fullGraph =
