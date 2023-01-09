@@ -41,8 +41,7 @@ let nodesFromRoot root =
     nodeMap
 
 let private parseResults =
-    memoize
-    <| fun (model: Model) ->
+    memoize (fun (model: Model) ->
         let nodes =
             model.Oak.Split([| '\n' |])
             |> Array.mapi (fun idx line ->
@@ -166,13 +165,12 @@ let private parseResults =
                 }
 
             let root = nodes |> List.head |> setChilds
-            nodesFromRoot root
+            nodesFromRoot root)
 
-let fullGraph = memoize <| fun model -> parseResults model
+let fullGraph = memoize (fun model -> parseResults model)
 
 let limitTree =
-    memoize2
-    <| fun allowedSet n ->
+    memoize2 (fun allowedSet n ->
         let rec f n =
             let childs = n.Childs |> List.filter (fun c -> List.contains c allowedSet)
             let limit = not (List.isEmpty n.Childs) && List.isEmpty childs
@@ -182,11 +180,10 @@ let limitTree =
                 Limited = limit
             }
 
-        f n
+        f n)
 
 let limitTreeByNodes =
-    memoize2
-    <| fun maxNodes n ->
+    memoize2 (fun maxNodes n ->
         let q = Queue<OakNode>()
         q.Enqueue n
 
@@ -201,7 +198,7 @@ let limitTreeByNodes =
                     loop (x :: acc) (i + 1)
 
         let allowedNodes = loop [] 1
-        limitTree allowedNodes n
+        limitTree allowedNodes n)
 
 let createGraph =
     let getColor =
@@ -211,8 +208,7 @@ let createGraph =
         | Newline -> "gray"
         | Directive -> "fuchsia"
 
-    memoizeBy fst
-    <| fun (model, dispatch: Msg -> unit) ->
+    memoizeBy fst (fun (model, dispatch: Msg -> unit) ->
         let nodeMap = fullGraph model
 
         let root =
@@ -267,7 +263,7 @@ let createGraph =
                         ] [ str $"<- back({model.GraphViewRootNodes.Length})" ]
                 ]
             ]
-        | None -> div [] []
+        | None -> div [] [])
 
 let private results (model: Model) dispatch =
     let lines =
