@@ -9,6 +9,7 @@
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
     <IsLambda>true</IsLambda>
+    <Tailcalls>true</Tailcalls>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="../../../.deps/fantomas/src/Fantomas.Core/ISourceTextExtensions.fs" />
@@ -25,6 +26,7 @@
     <Compile Include="..\AWSLambdaExtensions.fs" />
     <Compile Include="..\SuaveExtensions.fs" />
     <Compile Include="Decoders.fs" />
+    <Compile Include="Encoders.fs" />
     <Compile Include="GetOak.fs" />
     <Compile Include="Lambda.fs" />
     <Compile Include="Program.fs" />

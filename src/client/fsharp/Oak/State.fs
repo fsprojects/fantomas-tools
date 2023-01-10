@@ -19,19 +19,29 @@ let private fetchOak (payload: OakViewer.ParseRequest) dispatch =
     Http.postJson url json
     |> Promise.iter (fun (status, body) ->
         match status with
-        | 200 -> Msg.OakReceived body
+        | 200 ->
+            match Decode.fromString decodeOak body with
+            | Ok oak -> Msg.OakReceived oak
+            | Result.Error err -> Msg.Error err
         | _ -> Msg.Error body
         |> dispatch)
 
 let private fetchFSCVersion () = sprintf "%s/version" backend |> Http.getText
 
 let private initialModel: Model =
-    { Oak = ""
+    { Oak = None
       Error = None
       IsLoading = true
       Defines = ""
       Version = "???"
-      IsStroustrup = false }
+      IsStroustrup = false
+      IsGraphView = false
+      GraphViewOptions =
+        { Layout = GraphView.TopDown
+          NodeLimit = 25
+          Scale = GraphView.SubTreeNodes
+          ScaleMaxSize = 20 }
+      GraphViewRootNodes = [] }
 
 let private splitDefines (value: string) =
     value.Split([| ' '; ';' |], StringSplitOptions.RemoveEmptyEntries)
@@ -70,7 +80,8 @@ let update code isFsi (msg: Msg) model : Model * Cmd<Msg> =
     | Msg.OakReceived result ->
         { model with
             IsLoading = false
-            Oak = result },
+            Oak = Some result
+            GraphViewRootNodes = [] },
         Cmd.none
     | Msg.Error error ->
         { initialModel with
@@ -85,4 +96,41 @@ let update code isFsi (msg: Msg) model : Model * Cmd<Msg> =
         Cmd.none
     | SetFsiFile _ -> model, Cmd.none // handle in upper update function
     | SetStroustrup value -> { model with IsStroustrup = value }, Cmd.none
+    | SetGraphView value -> { model with IsGraphView = value }, Cmd.none
+    | SetGraphViewLayout value ->
+        { model with
+            GraphViewOptions =
+                { model.GraphViewOptions with
+                    Layout = value } },
+        Cmd.none
+    | SetGraphViewNodeLimit value ->
+        { model with
+            GraphViewOptions =
+                { model.GraphViewOptions with
+                    NodeLimit = value } },
+        Cmd.none
+    | SetGraphViewScale value ->
+        { model with
+            GraphViewOptions =
+                { model.GraphViewOptions with
+                    Scale = value } },
+        Cmd.none
+    | SetGraphViewScaleMax value ->
+        { model with
+            GraphViewOptions =
+                { model.GraphViewOptions with
+                    ScaleMaxSize = value } },
+        Cmd.none
+    | GraphViewSetRoot nodeId ->
+        { model with
+            GraphViewRootNodes = nodeId :: model.GraphViewRootNodes },
+        Cmd.none
+    | GraphViewGoBack ->
+        { model with
+            GraphViewRootNodes =
+                if model.GraphViewRootNodes = [] then
+                    []
+                else
+                    List.tail model.GraphViewRootNodes },
+        Cmd.none
     | HighLight hlr -> model, Cmd.ofSub (Editor.selectRange hlr)

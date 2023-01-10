@@ -14,11 +14,14 @@
     <Compile Include="UrlTools.fs" />
     <Compile Include="SettingControls.fs" />
     <Compile Include="Http.fs" />
+    <Compile Include="Utils.fs" />
 
     <Compile Include="Oak\Model.fs" />
     <Compile Include="Oak\Encoders.fs" />
     <Compile Include="Oak\Decoders.fs" />
     <Compile Include="Oak\State.fs" />
+    <Compile Include="Oak\Graph.fs" />
+    <Compile Include="Oak\GraphView.fs" />
     <Compile Include="Oak\View.fs" />
 
     <Compile Include="FantomasOnline\Model.fs" />
