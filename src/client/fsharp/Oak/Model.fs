@@ -38,6 +38,11 @@ module GraphView =
           Shape: NodeShape
           ScaleValue: int }
 
+    type Edge =
+        { From: NodeId
+          To: NodeId
+          Dashed: bool }
+
     type Layout =
         | TopDown
         | LeftRight

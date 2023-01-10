@@ -64,7 +64,11 @@ module VisReact =
                    edges =
                     edges
                     |> Set.toArray
-                    |> Array.map (fun (NodeId f, NodeId t) -> {| from = f; ``to`` = t |}) |}
+                    |> Array.map
+                        (fun
+                            { From = NodeId f
+                              To = NodeId t
+                              Dashed = d } -> {| from = f; ``to`` = t; dashes = d |}) |}
                options =
                 {| layout = layout
                    interaction = {| hover = true |}

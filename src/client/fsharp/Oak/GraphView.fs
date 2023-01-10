@@ -181,7 +181,17 @@ let view =
             let edges =
                 oakNodes
                 |> Map.values
-                |> Seq.collect (fun n -> n.Children |> Seq.map (fun m -> NodeId n.Id, NodeId m.Id))
+                |> Seq.collect (fun n ->
+                    n.Children
+                    |> Seq.map (fun m ->
+                        if m.Type = Standard then
+                            { From = NodeId n.Id
+                              To = NodeId m.Id
+                              Dashed = false }
+                        else
+                            { From = NodeId m.Id
+                              To = NodeId n.Id
+                              Dashed = true }))
                 |> set
 
             let graph =
