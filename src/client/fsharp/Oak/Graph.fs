@@ -51,11 +51,13 @@ module VisReact =
                         (fun
                             (NodeId i,
                              { Label = NodeLabel l
+                               Level = level
                                Color = NodeColor c
                                Shape = s
                                ScaleValue = v }) ->
                             {| id = i
                                label = l
+                               level = level
                                color = c
                                shape = (string s).ToLower()
                                value = v |})

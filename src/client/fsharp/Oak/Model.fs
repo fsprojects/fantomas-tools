@@ -33,6 +33,7 @@ module GraphView =
 
     type Node =
         { Label: NodeLabel
+          Level: int
           Color: NodeColor
           Shape: NodeShape
           ScaleValue: int }

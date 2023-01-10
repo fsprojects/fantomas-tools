@@ -169,6 +169,7 @@ let view =
                 oakNodes
                 |> Map.map (fun _ n ->
                     { Label = NodeLabel(n.Node.Trim())
+                      Level = n.Level
                       Color = NodeColor(getColor n.Type)
                       Shape = if n.Limited then Box else Ellipse
                       ScaleValue =
