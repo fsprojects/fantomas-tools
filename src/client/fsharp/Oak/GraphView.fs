@@ -142,13 +142,14 @@ let view =
            danger = "#C74910"
            warning = "#C7901B"
            success = "#88D1A6"
-           white = "#FFF" |}
+           white = "#FFF"
+           grey = "#DDD" |}
 
     let getColor =
         function
         | Standard -> colors.secondary
         | Comment -> colors.success
-        | Newline -> colors.warning
+        | Newline -> colors.grey
         | Directive -> colors.primary
 
     memoizeBy fst (fun (model, dispatch: Msg -> unit) ->
