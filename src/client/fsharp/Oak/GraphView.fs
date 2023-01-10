@@ -60,7 +60,7 @@ let private parseResults =
                 match t.Type with
                 | "directive" -> Directive
                 | "newline" -> Newline
-                | s when s.StartsWith "comment" -> Comment
+                | s when s.ToLower().Contains "comment" -> Comment
                 | _ -> Standard
 
             mkNode level (t.Content |> Option.defaultValue t.Type) t.Range typ
