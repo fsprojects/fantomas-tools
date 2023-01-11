@@ -17,4 +17,5 @@ let encodeUrlModel code isFsi (model: Model) =
         [ "code", Encode.string code // the "code" key is a convention
           "defines", Encode.string model.Defines
           "isFsi", Encode.bool isFsi
-          "isStroustrup", Encode.bool model.IsStroustrup ]
+          "isStroustrup", Encode.bool model.IsStroustrup
+          "isGraphView", Encode.bool model.IsGraphView ]
