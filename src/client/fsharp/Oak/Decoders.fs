@@ -11,9 +11,13 @@ let decodeUrlModel (initialModel: Model) : Decoder<Model> =
         let isStroustrup =
             get.Optional.Field "isStroustrup" Decode.bool |> Option.defaultValue false
 
+        let isGraphView =
+            get.Optional.Field "isGraphView" Decode.bool |> Option.defaultValue false
+
         { initialModel with
             Defines = defines
-            IsStroustrup = isStroustrup })
+            IsStroustrup = isStroustrup
+            IsGraphView = isGraphView })
 
 let decodeRange: Decoder<HighLightRange> =
     Decode.object (fun get ->

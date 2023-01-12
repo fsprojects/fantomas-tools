@@ -96,7 +96,7 @@ let update code isFsi (msg: Msg) model : Model * Cmd<Msg> =
         Cmd.none
     | SetFsiFile _ -> model, Cmd.none // handle in upper update function
     | SetStroustrup value -> { model with IsStroustrup = value }, Cmd.none
-    | SetGraphView value -> { model with IsGraphView = value }, Cmd.none
+    | SetGraphView value -> let m = { model with IsGraphView = value } in m, Cmd.ofSub (updateUrl code isFsi m)
     | SetGraphViewLayout value ->
         { model with
             GraphViewOptions =
