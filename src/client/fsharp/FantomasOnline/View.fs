@@ -97,8 +97,7 @@ let options model dispatch =
                 optionList
             else
                 let settingsFilter =
-                    model
-                        .SettingsFilter
+                    model.SettingsFilter
                         .Replace("fsharp_", "")
                         .Replace("_", "")
                         .Replace(" ", "")
