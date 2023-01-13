@@ -28,9 +28,10 @@ let artifactDir = __SOURCE_DIRECTORY__ </> "artifacts"
 let git (arguments: string) workingDir =
     async {
         let! result =
-            Cli.Wrap("git").WithArguments(arguments).WithWorkingDirectory(
-                workingDir
-            )
+            Cli
+                .Wrap("git")
+                .WithArguments(arguments)
+                .WithWorkingDirectory(workingDir)
                 .ExecuteBufferedAsync()
                 .Task
             |> Async.AwaitTask
