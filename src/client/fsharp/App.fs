@@ -1,6 +1,7 @@
 module FantomasTools.Client.App
 
-// open FantomasTools.Client
+open Fable.Core.JsInterop
+open Browser.Types
 open Fable.React
 open Fable.React.Props
 open Feliz
@@ -29,4 +30,8 @@ let App () =
         ]
     ]
 
-ReactDOM.render (App(), document.getElementById "app")
+let createRoot: Element -> {| render: ReactElement -> unit |} =
+    import "createRoot" "react-dom/client"
+
+let root = createRoot (document.getElementById "app")
+root.render (App())
