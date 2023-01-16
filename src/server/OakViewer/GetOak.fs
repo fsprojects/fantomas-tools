@@ -2,8 +2,6 @@ module OakViewer.GetOak
 
 open FSharp.Compiler.Text
 open Fantomas.Core
-open Fantomas.Core.FormatConfig
-open Fantomas.Core.SyntaxOak
 open OakViewer.Server
 
 let getVersion () : string =
@@ -25,23 +23,15 @@ let getOak json : GetOakResponse =
     | Ok pr ->
         let { SourceCode = content
               Defines = defines
-              IsFsi = isFsi
-              IsStroustrup = isStroustrup } =
+              IsFsi = isFsi } =
             pr
 
         let source = SourceText.ofString content
         let ast, _diags = parseAST source (List.ofArray defines) isFsi
 
-        let config =
-            if not isStroustrup then
-                FormatConfig.Default
-            else
-                { FormatConfig.Default with
-                    MultilineBracketStyle = MultilineBracketStyle.ExperimentalStroustrup }
-
         let oak =
-            ASTTransformer.mkOak config (Some source) ast
-            |> Trivia.enrichTree config source ast
+            ASTTransformer.mkOak (Some source) ast
+            |> Trivia.enrichTree FormatConfig.FormatConfig.Default source ast
 
         let responseText = Encoders.encodeNode oak id |> Thoth.Json.Net.Encode.toString 4
 

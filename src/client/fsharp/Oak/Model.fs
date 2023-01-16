@@ -65,7 +65,6 @@ type Msg =
     | DefinesUpdated of string
     | FSCVersionReceived of string
     | SetFsiFile of bool
-    | SetStroustrup of bool
     | SetGraphView of bool
     | SetGraphViewNodeLimit of int
     | SetGraphViewLayout of GraphView.Layout
@@ -82,7 +81,6 @@ type Model =
       IsLoading: bool
       Defines: string
       Version: string
-      IsStroustrup: bool
       IsGraphView: bool
       GraphViewOptions: GraphView.Options
       GraphViewRootNodes: GraphView.NodeId list }

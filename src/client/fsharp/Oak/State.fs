@@ -34,7 +34,6 @@ let private initialModel: Model =
       IsLoading = true
       Defines = ""
       Version = "???"
-      IsStroustrup = false
       IsGraphView = false
       GraphViewOptions =
         { Layout = GraphView.TopDown
@@ -49,8 +48,7 @@ let private splitDefines (value: string) =
 let private modelToParseRequest sourceCode isFsi (model: Model) : OakViewer.ParseRequest =
     { SourceCode = sourceCode
       Defines = splitDefines model.Defines
-      IsFsi = isFsi
-      IsStroustrup = model.IsStroustrup }
+      IsFsi = isFsi }
 
 let init isActive =
     let model =
@@ -95,7 +93,6 @@ let update code isFsi (msg: Msg) model : Model * Cmd<Msg> =
             IsLoading = false },
         Cmd.none
     | SetFsiFile _ -> model, Cmd.none // handle in upper update function
-    | SetStroustrup value -> { model with IsStroustrup = value }, Cmd.none
     | SetGraphView value -> let m = { model with IsGraphView = value } in m, Cmd.ofSub (updateUrl code isFsi m)
     | SetGraphViewLayout value ->
         { model with

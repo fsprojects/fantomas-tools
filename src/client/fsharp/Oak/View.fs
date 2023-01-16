@@ -132,13 +132,6 @@ let settings isFsi (model: Model) dispatch =
             (str "File extension")
             isFsi
         SettingControls.toggleButton
-            (fun _ -> dispatch (SetStroustrup true))
-            (fun _ -> dispatch (SetStroustrup false))
-            "Stroustrup enabled"
-            "Stroustrup disabled"
-            (str "Is stroustrup?")
-            model.IsStroustrup
-        SettingControls.toggleButton
             (fun _ -> dispatch (SetGraphView true))
             (fun _ -> dispatch (SetGraphView false))
             "Graph view enabled"
