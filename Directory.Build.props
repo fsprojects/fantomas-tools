@@ -7,6 +7,8 @@
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
         <!-- https://www.gresearch.co.uk/blog/article/improve-nuget-restores-with-static-graph-evaluation/ -->
         <RestoreUseStaticGraphEvaluation>true</RestoreUseStaticGraphEvaluation>
+        <!-- Override this value to point to your local fantomas repository -->
+        <FantomasRepository>$(MSBuildThisFileDirectory).deps\fantomas</FantomasRepository>
     </PropertyGroup>
 
     <ItemGroup Condition="'$(IsLambda)' == 'true'">
