@@ -389,7 +389,7 @@ let settings isFsi model dispatch =
                 FantomasMode.V4, "4.x"
                 FantomasMode.V5, "5.x"
                 FantomasMode.Main, "Main"
-                FantomasMode.Preview, "Dallas"
+                FantomasMode.Preview, "v6 preview"
             ]
             |> List.map (fun (m, l) ->
                 {

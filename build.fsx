@@ -20,7 +20,7 @@ let fantomasV4Port = 10707
 let fantomasV5Port = 11009
 let pwd = __SOURCE_DIRECTORY__
 let fantomasDepDir = pwd </> ".deps" </> "fantomas"
-let dallasDepDir = pwd </> ".deps" </> "dallas"
+let v6DepDir = pwd </> ".deps" </> "v6.0"
 let clientDir = pwd </> "src" </> "client"
 let serverDir = __SOURCE_DIRECTORY__ </> "src" </> "server"
 let artifactDir = __SOURCE_DIRECTORY__ </> "artifacts"
@@ -49,7 +49,8 @@ let setEnv name value =
     Environment.SetEnvironmentVariable(name, value)
 
 pipeline "Fantomas-Git" {
-    stage "get fantomas source code" {
+    stage "git" {
+        paralle
         run (fun _ ->
             async {
                 let branch = "main"
@@ -64,33 +65,34 @@ pipeline "Fantomas-Git" {
                             __SOURCE_DIRECTORY__
                     return exitCode
             })
+        run (fun _ ->
+            async {
+                let branch = "v6.0"
+
+                if Directory.Exists(v6DepDir) then
+                    let! exitCode, _ = git "pull" v6DepDir
+                    return exitCode
+                else
+                    let! exitCode, _ =
+                        git
+                            $"clone -b {branch} --single-branch https://github.com/fsprojects/fantomas.git .deps/v6.0"
+                            __SOURCE_DIRECTORY__
+                    return exitCode
+            })
     }
-    stage "build fantomas" {
-        workingDir fantomasDepDir
-        run "dotnet fsi build.fsx -p Init"
-        run "dotnet build src/Fantomas.Core"
+    stage "build" {
+        paralle
+        stage "build fantomas main" {
+            workingDir fantomasDepDir
+            run "dotnet fsi build.fsx -p Init"
+            run "dotnet build src/Fantomas.Core"
+        }
+        stage "build fantomas preview" {
+            workingDir v6DepDir
+            run "dotnet fsi build.fsx -p Init"
+            run "dotnet build src/Fantomas.Core"
+        }
     }
-    // stage "get project Dallas source code" {
-    //     run (fun _ ->
-    //         async {
-    //             let branch = "v5.2"
-    //
-    //             if Directory.Exists(dallasDepDir) then
-    //                 let! exitCode, _ = git "pull" dallasDepDir
-    //                 return exitCode
-    //             else
-    //                 let! exitCode, _ =
-    //                     git
-    //                         $"clone -b {branch} --single-branch https://github.com/fsprojects/fantomas.git .deps/dallas"
-    //                         __SOURCE_DIRECTORY__
-    //                 return exitCode
-    //         })
-    // }
-    // stage "build fantomas" {
-    //     workingDir dallasDepDir
-    //     run "dotnet fsi build.fsx -p Init"
-    //     run "dotnet build -c Release src/Fantomas.Core"
-    // }
     runIfOnlySpecified true
 }
 
