@@ -31,7 +31,7 @@ let getOak json : GetOakResponse =
 
         let oak =
             ASTTransformer.mkOak (Some source) ast
-            |> Trivia.enrichTree FormatConfig.FormatConfig.Default source ast
+            |> Trivia.enrichTree FormatConfig.Default source ast
 
         let responseText = Encoders.encodeNode oak id |> Thoth.Json.Net.Encode.toString 4
 

@@ -20,6 +20,7 @@ let private encodeTriviaNode (triviaNode: TriviaNode) : JsonValue =
         | BlockComment(comment, _, _) -> "blockComment", Some comment
         | Newline -> "newline", None
         | Directive directive -> "directive", Some directive
+        | Cursor -> "cursor", None
 
     Encode.object
         [ "range", encodeRange triviaNode.Range
