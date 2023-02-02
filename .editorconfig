@@ -12,25 +12,19 @@ fsharp_blank_lines_around_nested_multiline_expressions=false
 fsharp_max_infix_operator_expression=120
 
 [src/client/fsharp/App.fs]
-fsharp_multiline_block_brackets_on_same_column=true
-fsharp_experimental_stroustrup_style=true
+fsharp_multiline_bracket_style = stroustrup
 
 [src/client/fsharp/SettingControls.fs]
-fsharp_multiline_block_brackets_on_same_column=true
-fsharp_experimental_stroustrup_style=true
+fsharp_multiline_bracket_style = stroustrup
 
 [src/client/fsharp/Trivia/Menu.fs]
-fsharp_multiline_block_brackets_on_same_column=true
-fsharp_experimental_stroustrup_style=true
+fsharp_multiline_bracket_style = stroustrup
 
 [src/client/fsharp/Trivia/Tabs/*.fs]
-fsharp_multiline_block_brackets_on_same_column=true
-fsharp_experimental_stroustrup_style=true
+fsharp_multiline_bracket_style = stroustrup
 
 [src/client/fsharp/View.fs]
-fsharp_multiline_block_brackets_on_same_column=true
-fsharp_experimental_stroustrup_style=true
+fsharp_multiline_bracket_style = stroustrup
 
 [src/client/fsharp/*/View.fs]
-fsharp_multiline_block_brackets_on_same_column=true
-fsharp_experimental_stroustrup_style=true
+fsharp_multiline_bracket_style = stroustrup

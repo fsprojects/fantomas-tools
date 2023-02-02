@@ -12,15 +12,6 @@
     <Tailcalls>true</Tailcalls>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(FantomasPreviewRepository)\src/Fantomas.Core/ISourceTextExtensions.fs" />
-    <Compile Include="$(FantomasPreviewRepository)\src/Fantomas.Core/RangeHelpers.fs" />
-    <Compile Include="$(FantomasPreviewRepository)\src/Fantomas.Core/Utils.fs" />
-    <Compile Include="$(FantomasPreviewRepository)\src/Fantomas.Core/FormatConfig.fs" />
-    <Compile Include="$(FantomasPreviewRepository)\src/Fantomas.Core/SyntaxOak.fs" />
-    <Compile Include="$(FantomasPreviewRepository)\src/Fantomas.Core/ASTTransformer.fsi" />
-    <Compile Include="$(FantomasPreviewRepository)\src/Fantomas.Core/ASTTransformer.fs" />
-    <Compile Include="$(FantomasPreviewRepository)\src/Fantomas.Core/Trivia.fsi" />
-    <Compile Include="$(FantomasPreviewRepository)\src/Fantomas.Core/Trivia.fs" />
     <Compile Include="../../shared/OakShared.fs" />
     <Compile Include="..\HttpConstants.fs" />
     <Compile Include="..\AWSLambdaExtensions.fs" />
@@ -32,7 +23,7 @@
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="$(FantomasPreviewRepository)\src\Fantomas.FCS\Fantomas.FCS.fsproj" />
+    <ProjectReference Include="$(FantomasPreviewRepository)\src\Fantomas.Core\Fantomas.Core.fsproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="FSharp.Core" Version="6.0.6" />

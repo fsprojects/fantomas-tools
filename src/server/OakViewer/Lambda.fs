@@ -16,10 +16,10 @@ let GetVersion (_request: APIGatewayProxyRequest) (_context: ILambdaContext) =
     mkAPIGatewayProxyResponse (HttpStatusCode.OK, HeaderValues.TextPlain, version)
 
 let GetOak (request: APIGatewayProxyRequest) (_context: ILambdaContext) =
-    let triviaResponse = getOak request.Body
+    let oakResponse = getOak request.Body
 
     let responseData =
-        match triviaResponse with
+        match oakResponse with
         | GetOakResponse.Ok body -> HttpStatusCode.OK, HeaderValues.ApplicationText, body
         | GetOakResponse.BadRequest body -> HttpStatusCode.BadRequest, HeaderValues.ApplicationText, body
 

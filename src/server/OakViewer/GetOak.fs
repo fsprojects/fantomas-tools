@@ -26,15 +26,19 @@ let getOak json : GetOakResponse =
               IsFsi = isFsi } =
             pr
 
-        let source = SourceText.ofString content
-        let ast, _diags = parseAST source (List.ofArray defines) isFsi
+        let defines = Set.ofArray defines
+        let oaks = CodeFormatter.ParseOakAsync(isFsi, content) |> Async.RunSynchronously
 
         let oak =
-            ASTTransformer.mkOak (Some source) ast
-            |> Trivia.enrichTree FormatConfig.Default source ast
+            let oakOpt =
+                oaks
+                |> Array.tryFind (fun (_, currentDefines) -> Set.ofList currentDefines = defines)
+
+            match oakOpt with
+            | None -> Array.head oaks |> fst
+            | Some(oak, _) -> oak
 
         let responseText = Encoders.encodeNode oak id |> Thoth.Json.Net.Encode.toString 4
-
         GetOakResponse.Ok responseText
 
     | Error err -> GetOakResponse.BadRequest(string err)

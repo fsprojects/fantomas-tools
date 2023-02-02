@@ -55,6 +55,7 @@ let private reload model =
         | FantomasTab _ ->
             Cmd.ofMsg FantomasTools.Client.FantomasOnline.Model.Format
             |> Cmd.map FantomasMsg
+        | OakTab -> Cmd.ofMsg FantomasTools.Client.OakViewer.Model.GetOak |> Cmd.map OakMsg
         | _ -> Cmd.none
     else
         Cmd.none
