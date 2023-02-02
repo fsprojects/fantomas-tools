@@ -9,7 +9,7 @@ open FantomasTools.Client.Editor
 open FantomasTools.Client.FantomasOnline.Model
 open Reactstrap
 
-let private mapToOption dispatch (key, fantomasOption) =
+let private mapToOption dispatch (model: Model) (key, fantomasOption) =
     let editor =
         let label =
             a [
@@ -80,9 +80,12 @@ let private mapToOption dispatch (key, fantomasOption) =
                 Standard.label [] [ label ]
                 br []
                 ButtonGroup.buttonGroup [ ButtonGroup.Custom [ ClassName "btn-group-toggle rounded-0" ] ] [
-                    mkButton "cramped"
-                    mkButton "aligned"
-                    mkButton "experimental_stroustrup"
+                    yield mkButton "cramped"
+                    yield mkButton "aligned"
+                    if model.Mode = FantomasMode.Main then
+                        yield mkButton "experimental_stroustrup"
+                    if model.Mode = FantomasMode.Preview then
+                        yield mkButton "stroustrup"
                 ]
             ]
 
@@ -108,7 +111,7 @@ let options model dispatch =
                     let setting = n.ToLowerInvariant()
                     setting.Contains(settingsFilter))
 
-    optionList |> List.map (mapToOption dispatch) |> ofList
+    optionList |> List.map (mapToOption dispatch model) |> ofList
 
 type GithubIssue = {
     BeforeHeader: string
