@@ -1,9 +1,10 @@
-#r "nuget: Fun.Build, 0.1.9"
+#r "nuget: Fun.Build, 0.2.9"
 #r "nuget: CliWrap, 3.5.0"
 #r "nuget: Fake.IO.FileSystem, 5.23.0"
 
 open System
 open System.IO
+open System.Threading.Tasks
 open CliWrap
 open CliWrap.Buffered
 open Fun.Build
@@ -37,12 +38,6 @@ let git (arguments: string) workingDir =
             |> Async.AwaitTask
 
         return (result.ExitCode, result.StandardOutput)
-    }
-
-let cmd file (arguments: string) =
-    async {
-        let! result = Cli.Wrap(file).WithArguments(arguments).ExecuteAsync().Task |> Async.AwaitTask
-        return result.ExitCode
     }
 
 let setEnv name value =
@@ -125,7 +120,11 @@ pipeline "Build" {
         run "dotnet tool restore"
         run "dotnet restore"
     }
-    stage "check format" { run "dotnet fantomas src infrastructure build.fsx -r --check" }
+    stage "check format F#" { run "dotnet fantomas src infrastructure build.fsx -r --check" }
+    stage "check format JS" {
+        workingDir clientDir
+        run "yarn lint"
+    }
     stage "clean" {
         run (fun _ ->
             async {
@@ -168,29 +167,73 @@ pipeline "Build" {
     runIfOnlySpecified false
 }
 
+let changedFiles () : Async<string array> =
+    async {
+        let! exitCode, stdout = git "status --porcelain" pwd
+        if exitCode <> 0 then
+            return failwithf $"could not check the git status: %s{stdout}"
+        else
+            return
+                stdout.Split('\n')
+                |> Array.choose (fun line ->
+                    let line = line.Trim()
+                    if (line.StartsWith("AM") || line.StartsWith("M")) then
+                        Some(line.Replace("AM ", "").Replace("M ", ""))
+                    else
+                        None)
+    }
+
+let fsharpExtensions = set [| ".fs"; ".fsi"; ".fsx" |]
+let jsExtensions = set [| ".js"; ".jsx" |]
+let isFSharpFile path =
+    FileInfo(path).Extension |> fsharpExtensions.Contains
+let isJSFile path =
+    FileInfo(path).Extension |> jsExtensions.Contains
+
 pipeline "FormatChanged" {
     workingDir __SOURCE_DIRECTORY__
     stage "Format" {
         run (fun _ ->
             async {
-                let! exitCode, stdout = git "status --porcelain" pwd
-                if exitCode <> 0 then
-                    return exitCode
-                else
-                    let files =
-                        stdout.Split('\n')
-                        |> Array.choose (fun line ->
-                            let line = line.Trim()
-                            if
-                                (line.StartsWith("AM") || line.StartsWith("M"))
-                                && (line.EndsWith(".fs") || line.EndsWith(".fsx") || line.EndsWith(".fsi"))
-                            then
-                                Some(line.Replace("AM ", "").Replace("M ", ""))
-                            else
-                                None)
-                        |> String.concat " "
-                    return! cmd "dotnet" $"fantomas {files}"
-            })
+                let! files = changedFiles ()
+                let fantomasArgument = files |> Array.filter isFSharpFile |> String.concat " "
+
+                let! fantomasExit =
+                    if String.IsNullOrWhiteSpace fantomasArgument then
+                        async.Return 0
+                    else
+                        Cli
+                            .Wrap("dotnet")
+                            .WithArguments($"fantomas {fantomasArgument}")
+                            .ExecuteAsync()
+                            .Task.ContinueWith(fun (t: Task<CommandResult>) -> t.Result.ExitCode)
+                        |> Async.AwaitTask
+
+                let prettierArgument =
+                    files
+                    |> Array.choose (fun path ->
+                        if isJSFile path then
+                            Some(path.Replace("src/client/", ""))
+                        else
+                            None)
+                    |> String.concat " "
+
+                let! prettierExit =
+                    if String.IsNullOrWhiteSpace prettierArgument then
+                        async.Return 0
+                    else
+                        Cli
+                            .Wrap("yarn")
+                            .WithWorkingDirectory(clientDir)
+                            .WithArguments($"prettier --write {prettierArgument}")
+                            .ExecuteBufferedAsync()
+                            .Task.ContinueWith(fun (t: Task<BufferedCommandResult>) -> t.Result.ExitCode)
+                        |> Async.AwaitTask
+
+                // Exit code should in both cases by zero
+                return fantomasExit + prettierExit
+            }
+            |> Async.RunSynchronously)
     }
     runIfOnlySpecified true
 }
