@@ -62,7 +62,7 @@ let editor model dispatch =
         Col.Custom [ ClassName "border-right h-100 d-flex flex-column" ]
     ] [
         div [ Id "source"; ClassName "flex-grow-1" ] [
-            Editor false [
+            Editor [
                 MonacoEditorProp.OnChange(UpdateSourceCode >> dispatch)
                 MonacoEditorProp.DefaultValue model.SourceCode
                 MonacoEditorProp.Options(MonacoEditorProp.rulerOption model.FantomasModel.MaxLineLength)

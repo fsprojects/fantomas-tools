@@ -74,7 +74,9 @@ let update msg model =
         let cmd = Navigation.cmdForCurrentTab tab model
 
         nextModel, cmd
-    | UpdateSourceCode code -> { model with SourceCode = code }, Cmd.none
+    | UpdateSourceCode code ->
+        let cmd = Cmd.ofMsg (ASTMsg(ASTViewer.Model.Msg.SetSourceText code))
+        { model with SourceCode = code }, cmd
     | ToggleSettings ->
         let m =
             { model with

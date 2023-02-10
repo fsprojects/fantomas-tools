@@ -12,6 +12,7 @@ open System
 type IMonacoEditor =
     abstract setSelection: obj -> unit
     abstract revealRangeInCenter: obj * int -> unit
+    abstract onDidChangeCursorPosition: listener: (obj -> unit) -> unit
 
 [<RequireQualifiedAccess>]
 type MonacoEditorProp =
@@ -38,25 +39,32 @@ let private useEventListener (target: Element, ``type``: string, listener: Event
     React.useEffect (subscribe, [| box target; box ``type``; box listener |])
 
 [<ReactComponent>]
-let Editor (isReadOnly: bool) (props: MonacoEditorProp list) =
+let EditorAux (onCursorChanged: obj -> unit) (isReadOnly: bool) (props: MonacoEditorProp list) =
     let editorRef = React.useRef<IMonacoEditor> Unchecked.defaultof<IMonacoEditor>
 
     let selectRange (ev: Event) =
-        let ev = ev :?> CustomEvent
+        if not isReadOnly then
+            let ev = ev :?> CustomEvent
 
-        if (emitJsExpr (ev, editorRef.current) "$0 && $0.detail && $1") then
-            let range = ev.detail
-            let editor = editorRef.current
-            editor.setSelection range
-            editor.revealRangeInCenter (range, 0)
+            if (emitJsExpr (ev, editorRef.current) "$0 && $0.detail && $1") then
+                let range = ev.detail
+                let editor = editorRef.current
+                editor.setSelection range
+                editor.revealRangeInCenter (range, 0)
 
     useEventListener (window :?> Element, "select_range", selectRange)
-    let handleEditorDidMount = Action<_, _>(fun editor _ -> editorRef.current <- editor)
+
+    let handleEditorDidMount =
+        Action<_, _>(fun editor _ ->
+            editorRef.current <- editor
+            editor.onDidChangeCursorPosition onCursorChanged)
 
     let options =
         createObj
             [ "readOnly" ==> isReadOnly
               "domReadOnly" ==> isReadOnly
+              "selectionHighlight" ==> false
+              "occurrencesHighlight" ==> false
               "selectOnLineNumbers" ==> true
               "lineNumbers" ==> true
               "theme" ==> "vs-light"
@@ -70,6 +78,9 @@ let Editor (isReadOnly: bool) (props: MonacoEditorProp list) =
           MonacoEditorProp.OnMount handleEditorDidMount ]
 
     MonacoEditor(defaultProps @ props)
+
+let ReadOnlyEditor props = EditorAux ignore true props
+let Editor props = EditorAux ignore false props
 
 type EditorProp =
     | OnChange of (string -> unit)
