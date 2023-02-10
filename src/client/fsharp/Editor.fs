@@ -56,6 +56,7 @@ let Editor (isReadOnly: bool) (props: MonacoEditorProp list) =
     let options =
         createObj
             [ "readOnly" ==> isReadOnly
+              "domReadOnly" ==> isReadOnly
               "selectOnLineNumbers" ==> true
               "lineNumbers" ==> true
               "theme" ==> "vs-light"
