@@ -1,5 +1,6 @@
 module FantomasTools.Client.ASTViewer.View
 
+open Fable.Core.JsInterop
 open Fable.React
 open Fable.React.Props
 open FantomasTools.Client
@@ -7,11 +8,16 @@ open FantomasTools.Client.ASTViewer.Model
 open FantomasTools.Client.Editor
 open Reactstrap
 
-let private results model =
+let private cursorChanged dispatch (e: obj) =
+    let lineNumber: int = e?position?lineNumber
+    let column: int = e?position?column
+    dispatch (HighLight(lineNumber, column))
+
+let private results dispatch model =
     let result =
         match model.Parsed with
-        | Some(Ok parsed) -> Editor true [ MonacoEditorProp.DefaultValue parsed.String ]
-        | Some(Result.Error errors) -> Editor true [ MonacoEditorProp.DefaultValue errors ]
+        | Some(Ok parsed) -> EditorAux (cursorChanged dispatch) true [ MonacoEditorProp.DefaultValue parsed.String ]
+        | Some(Result.Error errors) -> ReadOnlyEditor [ MonacoEditorProp.DefaultValue errors ]
         | None -> str ""
 
     let astErrors =
@@ -55,11 +61,11 @@ let private results model =
 
     div [ Id "ast-content" ] [ div [ ClassName "ast-editor-container" ] [ result ]; astErrors ]
 
-let view model _dispatch =
+let view model dispatch =
     if model.IsLoading then
         Loader.loader
     else
-        results model
+        results dispatch model
 
 let commands dispatch =
     fragment [] [

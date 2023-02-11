@@ -8,7 +8,7 @@ type Msg =
     | Error of string
     | DefinesUpdated of string
     | SetFsiFile of bool
-    | HighLight of FantomasTools.Client.Editor.HighLightRange
+    | HighLight of line: int * column: int
 
 type EditorState =
     | Loading

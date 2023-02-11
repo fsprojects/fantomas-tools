@@ -105,7 +105,7 @@ let view model dispatch =
         match model.Error, model.IsGraphView with
         | None, false -> results model dispatch
         | None, true -> Oak.GraphView.view (model, dispatch)
-        | Some errors, _ -> Editor true [ MonacoEditorProp.DefaultValue errors ]
+        | Some errors, _ -> ReadOnlyEditor [ MonacoEditorProp.DefaultValue errors ]
 
 let commands dispatch =
     fragment [] [

@@ -4,7 +4,9 @@ open System
 open Elmish
 open Thoth.Json
 open Fable.Core
+open Fable.Core.JsInterop
 open ASTViewer
+open FantomasTools.Client.Editor
 open FantomasTools.Client.ASTViewer.Model
 open FantomasTools.Client
 open FantomasTools.Client.ASTViewer.Decoders
@@ -57,7 +59,6 @@ let init isActive : Model * Cmd<Msg> =
             initialModel
 
     let cmd = Cmd.OfPromise.either getVersion () VersionFound getMessageFromError
-
     model, cmd
 
 let private getDefines (model: Model) =
@@ -108,4 +109,46 @@ let update code isFsi (msg: Msg) (model: Model) : Model * Cmd<Msg> =
     | VersionFound version -> { model with Version = version }, Cmd.none
     | DefinesUpdated defines -> { model with Defines = defines }, Cmd.none
     | SetFsiFile _ -> model, Cmd.none // handle in upper update function
-    | HighLight hlr -> model, Cmd.ofSub (Editor.selectRange hlr)
+    | HighLight(line, column) ->
+        match model.Parsed with
+        | Some(Ok { Shared.Response.String = astText }) ->
+            let lines = astText.Split([| "\r\n"; "\n" |], StringSplitOptions.None)
+            // Try and get the line where the cursor clicked in the AST editor
+            match Array.tryItem (line - 1) lines with
+            | None -> model, Cmd.none
+            | Some sourceLine ->
+                let matches: string array option =
+                    emitJsExpr sourceLine @"$0.match(/\d+,\d+\-\-\d+,\d+/g)"
+
+                match matches with
+                | None -> model, Cmd.none
+                | Some matches ->
+                    // Find the range text that matches our cursor column.
+                    let highlightRange =
+                        matches
+                        |> Array.tryPick (fun m ->
+                            let startIndex = sourceLine.IndexOf(m)
+                            let endIndex = startIndex + m.Length
+
+                            if startIndex <= column && column <= endIndex then
+                                let parts = m.Split("--")
+                                let startPos = parts.[0]
+
+                                let endPos = parts.[1]
+
+                                { StartLine = int (startPos.Split(",").[0])
+                                  StartColumn = int (startPos.Split(",").[1])
+                                  EndLine = int (endPos.Split(",").[0])
+                                  EndColumn = int (endPos.Split(",").[1]) }
+                                : HighLightRange
+                                |> Some
+                            else
+                                None)
+
+                    let cmd =
+                        match highlightRange with
+                        | None -> Cmd.none
+                        | Some hlr -> Cmd.ofSub (selectRange hlr)
+
+                    model, cmd
+        | _ -> model, Cmd.none
