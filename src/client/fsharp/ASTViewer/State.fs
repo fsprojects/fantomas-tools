@@ -2,11 +2,11 @@ module FantomasTools.Client.ASTViewer.State
 
 open System
 open Elmish
-open FantomasTools.Client.Editor
 open Thoth.Json
 open Fable.Core
 open Fable.Core.JsInterop
 open ASTViewer
+open FantomasTools.Client.Editor
 open FantomasTools.Client.ASTViewer.Model
 open FantomasTools.Client
 open FantomasTools.Client.ASTViewer.Decoders
