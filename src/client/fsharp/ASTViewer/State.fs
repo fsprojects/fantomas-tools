@@ -1,6 +1,7 @@
 module FantomasTools.Client.ASTViewer.State
 
 open System
+open System.Text.RegularExpressions
 open Elmish
 open Thoth.Json
 open Fable.Core
@@ -117,38 +118,32 @@ let update code isFsi (msg: Msg) (model: Model) : Model * Cmd<Msg> =
             match Array.tryItem (line - 1) lines with
             | None -> model, Cmd.none
             | Some sourceLine ->
-                let matches: string array option =
-                    emitJsExpr sourceLine @"$0.match(/\d+,\d+\-\-\d+,\d+/g)"
+                let pattern = @"\(\d,\d--\d,\d\)"
 
-                match matches with
-                | None -> model, Cmd.none
-                | Some matches ->
-                    // Find the range text that matches our cursor column.
-                    let highlightRange =
-                        matches
-                        |> Array.tryPick (fun m ->
-                            let startIndex = sourceLine.IndexOf(m)
-                            let endIndex = startIndex + m.Length
+                let rangeDigits =
+                    Regex.Matches(sourceLine, pattern)
+                    |> Seq.cast<Match>
+                    |> Seq.tryPick (fun m ->
+                        let startIndex = m.Index
+                        let endIndex = m.Index + m.Value.Length
+                        // Verify the match contains the cursor column.
+                        if startIndex <= column && column <= endIndex then
+                            m.Value.Split([| ','; '-'; '('; ')' |], StringSplitOptions.RemoveEmptyEntries)
+                            |> Array.map int
+                            |> Array.toList
+                            |> Some
+                        else
+                            None)
 
-                            if startIndex <= column && column <= endIndex then
-                                let parts = m.Split("--")
-                                let startPos = parts.[0]
+                match rangeDigits with
+                | Some [ startLine; startColumn; endLine; endColumn ] ->
+                    let highlight =
+                        { StartLine = startLine
+                          StartColumn = startColumn
+                          EndLine = endLine
+                          EndColumn = endColumn }
 
-                                let endPos = parts.[1]
+                    model, Cmd.ofSub (selectRange highlight)
+                | _ -> model, Cmd.none
 
-                                { StartLine = int (startPos.Split(",").[0])
-                                  StartColumn = int (startPos.Split(",").[1])
-                                  EndLine = int (endPos.Split(",").[0])
-                                  EndColumn = int (endPos.Split(",").[1]) }
-                                : HighLightRange
-                                |> Some
-                            else
-                                None)
-
-                    let cmd =
-                        match highlightRange with
-                        | None -> Cmd.none
-                        | Some hlr -> Cmd.ofSub (selectRange hlr)
-
-                    model, cmd
         | _ -> model, Cmd.none
