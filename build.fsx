@@ -120,7 +120,7 @@ pipeline "Build" {
         run "dotnet tool restore"
         run "dotnet restore"
     }
-    stage "check format F#" { run "dotnet fantomas src infrastructure build.fsx -r --check" }
+    stage "check format F#" { run "dotnet fantomas src infrastructure build.fsx --check" }
     stage "check format JS" {
         workingDir clientDir
         run "yarn lint"
