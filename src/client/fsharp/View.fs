@@ -13,7 +13,7 @@ let navigation dispatch =
 
     Navbar.navbar [ Navbar.Light true; Navbar.Custom [ ClassName "bg-light" ] ] [
         NavbarBrand.navbarBrand [ NavbarBrand.Custom [ ClassName "py-0 my-0 h1" ] ] [
-            img [ Src "./fantomas_logo.png"; ClassName "mr-3" ]
+            a [ Href "/"; Target "_self" ] [ img [ Src "./fantomas_logo.png"; ClassName "mr-3" ] ]
             str title
         ]
         div [ ClassName "navbar-text py1" ] [
