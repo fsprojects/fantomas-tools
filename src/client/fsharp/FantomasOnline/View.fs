@@ -1,6 +1,8 @@
 module FantomasTools.Client.FantomasOnline.View
 
 open System.Text.RegularExpressions
+
+open Fable.Core.JsInterop
 open Fable.React
 open Fable.React.Props
 open FantomasOnline.Shared
@@ -338,6 +340,33 @@ let settings isFsi model dispatch =
                     DefaultValue model.SettingsFilter
                     Placeholder "Filter settings"
                     OnChange(fun (ev: Browser.Types.Event) -> ev.Value |> UpdateSettingsFilter |> dispatch)
+                ]
+                div [
+                    ClassName "form-group"
+                ] [
+                      label [ ClassName "d-block" ] [
+                            strong [ ClassName "h4 text-center d-block mb-2" ] [ str "Upload .editorconfig" ]
+                        ]
+                      input [
+                          Type "file"
+                          Multiple false
+                          Accept ".editorconfig"
+                          OnInput (fun ev ->
+                                let file = ev.target?files?(0)
+                                let reader = Browser.Dom.FileReader.Create()
+                                reader.onload <- fun evt ->
+                                    let fileContents: string = evt.target?result
+                                    let settings = Decoders.decodeOptionsFromEditorConfigFile model.UserOptions fileContents 
+                                    Fable.Core.JS.console.log $"%A{settings}"
+                                    settings
+                                    |> List.iter (fun setting -> dispatch (UpdateOption setting))
+
+                                reader.onerror <- fun evt ->
+                                    Fable.Core.JS.console.error $"%A{evt.target?result}"
+
+                                reader.readAsText(file)
+                              )
+                      ]
                 ]
             ]
 
