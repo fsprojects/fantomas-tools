@@ -25,12 +25,12 @@
       },
       "Fantomas.Core": {
         "type": "Direct",
-        "requested": "[5.1.5, )",
-        "resolved": "5.1.5",
-        "contentHash": "RHIcIGQSNs3r0ZvezqbyIJrHxpA0yLurcsYYewY4bj7Wxy+RJB96XgwY3zJ7wZwBEZOwv3DaTqAaACTJ+1ll6w==",
+        "requested": "[5.2.4, )",
+        "resolved": "5.2.4",
+        "contentHash": "Siwn74SoJCIJ8Vqu8IqXYp0rJ2XqZnzvFQJpgoKWCDCnhCTyBPtC5BUSFEGAqqqPO/TZCRx/TnAet+edXwC4HQ==",
         "dependencies": {
           "FSharp.Core": "6.0.1",
-          "Fantomas.FCS": "5.1.5"
+          "Fantomas.FCS": "5.2.4"
         }
       },
       "FSharp.Core": {
@@ -79,11 +79,12 @@
       },
       "Fantomas.FCS": {
         "type": "Transitive",
-        "resolved": "5.1.5",
-        "contentHash": "vm0H8PG4dUfaObzM4Cf+LmvmUH9Kj8+JvXfw6IhryGrsutP/zFPXK90to2nipqJaB8heCgQnW0VBfSni6mqfHg==",
+        "resolved": "5.2.4",
+        "contentHash": "jqGhrUVHry4lU53vmrG1qTqv83tsyM8uZgYsFEc6tBhl5pSyQnrZCoiCRO19r28I6jPy0m6koabJLUXpJYZy2A==",
         "dependencies": {
           "FSharp.Core": "6.0.1",
-          "System.Memory": "4.5.4",
+          "System.Diagnostics.DiagnosticSource": "7.0.0",
+          "System.Memory": "4.5.5",
           "System.Runtime": "4.3.1"
         }
       },
@@ -116,10 +117,18 @@
         "resolved": "4.5.0",
         "contentHash": "pL2ChpaRRWI/p4LXyy4RgeWlYF2sgfj/pnVMvBqwNFr5cXg7CXNnWZWxrOONLg8VGdFB8oB+EG2Qw4MLgTOe+A=="
       },
+      "System.Diagnostics.DiagnosticSource": {
+        "type": "Transitive",
+        "resolved": "7.0.0",
+        "contentHash": "9W0ewWDuAyDqS2PigdTxk6jDKonfgscY/hP8hm7VpxYhNHZHKvZTdRckberlFk3VnCmr3xBUyMBut12Q+T2aOw==",
+        "dependencies": {
+          "System.Runtime.CompilerServices.Unsafe": "6.0.0"
+        }
+      },
       "System.Memory": {
         "type": "Transitive",
-        "resolved": "4.5.4",
-        "contentHash": "1MbJTHS1lZ4bS4FmsJjnuGJOu88ZzTT2rLvrhW7Ygic+pC0NWA+3hgAen0HRdsocuQXCkUTdFn9yHJJhsijDXw=="
+        "resolved": "4.5.5",
+        "contentHash": "XIWiDvKPXaTveaB7HVganDlOCRoj03l+jrwNvcge/t8vhGYKvqV+dMv6G4SAX2NoNmN0wZfVPTAlFwZcZvVOUw=="
       },
       "System.Runtime": {
         "type": "Transitive",
@@ -132,8 +141,8 @@
       },
       "System.Runtime.CompilerServices.Unsafe": {
         "type": "Transitive",
-        "resolved": "4.5.1",
-        "contentHash": "Zh8t8oqolRaFa9vmOZfdQm/qKejdqz0J9kr7o2Fu0vPeoH3BL1EOXipKWwkWtLT1JPzjByrF19fGuFlNbmPpiw=="
+        "resolved": "6.0.0",
+        "contentHash": "/iUeP3tq1S0XdNNoMz5C9twLSrM/TH+qElHkXWaPvuNOt+99G75NrV0OS2EqHx5wMN7popYjpc8oTjC1y16DLg=="
       }
     }
   }

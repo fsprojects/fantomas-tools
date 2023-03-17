@@ -39,11 +39,10 @@ let toggleButton onTrue onFalse labelTrue labelFalse (labelValue: ReactElement) 
         ]
     ]
 
-type MultiButtonSettings = {
-    Label: string
-    OnClick: obj -> unit
-    IsActive: bool
-}
+type MultiButtonSettings =
+    { Label: string
+      OnClick: obj -> unit
+      IsActive: bool }
 
 let multiButton labelValue (options: MultiButtonSettings list) =
     let buttons =

@@ -82,7 +82,7 @@ let private mapToOption dispatch (model: Model) (key, fantomasOption) =
                 ButtonGroup.buttonGroup [ ButtonGroup.Custom [ ClassName "btn-group-toggle rounded-0" ] ] [
                     yield mkButton "cramped"
                     yield mkButton "aligned"
-                    if model.Mode = FantomasMode.Main then
+                    if model.Mode = FantomasMode.Main || model.Mode = FantomasMode.V5 then
                         yield mkButton "experimental_stroustrup"
                     if model.Mode = FantomasMode.Preview then
                         yield mkButton "stroustrup"
@@ -113,18 +113,17 @@ let options model dispatch =
 
     optionList |> List.map (mapToOption dispatch model) |> ofList
 
-type GithubIssue = {
-    BeforeHeader: string
-    BeforeContent: string
-    AfterHeader: string
-    AfterContent: string
-    Description: string
-    Title: string
-    DefaultOptions: FantomasOption list
-    UserOptions: Map<string, FantomasOption>
-    Version: string
-    IsFsi: bool
-}
+type GithubIssue =
+    { BeforeHeader: string
+      BeforeContent: string
+      AfterHeader: string
+      AfterContent: string
+      Description: string
+      Title: string
+      DefaultOptions: FantomasOption list
+      UserOptions: Map<string, FantomasOption>
+      Version: string
+      IsFsi: bool }
 
 let githubIssueUri (githubIssue: GithubIssue) =
     let location = Browser.Dom.window.location
@@ -242,18 +241,17 @@ let private createGitHubIssue code isFsi model =
         match model.Mode with
         | Main
         | Preview ->
-            let githubIssue = {
-                BeforeHeader = bh
-                BeforeContent = bc
-                AfterHeader = ah
-                AfterContent = ac
-                Description = description
-                Title = "<Insert meaningful title>"
-                DefaultOptions = model.DefaultOptions
-                UserOptions = model.UserOptions
-                Version = model.Version
-                IsFsi = isFsi
-            }
+            let githubIssue =
+                { BeforeHeader = bh
+                  BeforeContent = bc
+                  AfterHeader = ah
+                  AfterContent = ac
+                  Description = description
+                  Title = "<Insert meaningful title>"
+                  DefaultOptions = model.DefaultOptions
+                  UserOptions = model.UserOptions
+                  Version = model.Version
+                  IsFsi = isFsi }
 
             Button.button [
                 Button.Color Danger
@@ -298,18 +296,17 @@ let private viewErrors (model: Model) isFsi result isIdempotent errors =
         if isIdempotent then
             None
         else
-            let githubIssue = {
-                BeforeHeader = "Formatted code"
-                BeforeContent = result.FirstFormat
-                AfterHeader = "Reformatted code"
-                AfterContent = Option.defaultValue result.FirstFormat result.SecondFormat
-                Description = "Fantomas was not able to produce the same code after reformatting the result."
-                Title = "Idempotency problem when <add use-case>"
-                DefaultOptions = model.DefaultOptions
-                UserOptions = model.UserOptions
-                Version = model.Version
-                IsFsi = isFsi
-            }
+            let githubIssue =
+                { BeforeHeader = "Formatted code"
+                  BeforeContent = result.FirstFormat
+                  AfterHeader = "Reformatted code"
+                  AfterContent = Option.defaultValue result.FirstFormat result.SecondFormat
+                  Description = "Fantomas was not able to produce the same code after reformatting the result."
+                  Title = "Idempotency problem when <add use-case>"
+                  DefaultOptions = model.DefaultOptions
+                  UserOptions = model.UserOptions
+                  Version = model.Version
+                  IsFsi = isFsi }
 
             div [ ClassName "idempotent-error" ] [
                 h6 [] [ str "The result was not idempotent" ]
@@ -388,18 +385,14 @@ let settings isFsi model dispatch =
     | EditorState.LoadingOptions -> Spinner.spinner [ Spinner.Color Primary ] []
     | _ ->
         let fantomasMode =
-            [
-                FantomasMode.V4, "4.x"
-                FantomasMode.V5, "5.x"
-                FantomasMode.Main, "Main"
-                FantomasMode.Preview, "v6 preview"
-            ]
+            [ FantomasMode.V4, "4.x"
+              FantomasMode.V5, "5.x"
+              FantomasMode.Main, "Main"
+              FantomasMode.Preview, "v6 preview" ]
             |> List.map (fun (m, l) ->
-                {
-                    IsActive = model.Mode = m
-                    Label = l
-                    OnClick = (fun _ -> ChangeMode m |> dispatch)
-                }
+                { IsActive = model.Mode = m
+                  Label = l
+                  OnClick = (fun _ -> ChangeMode m |> dispatch) }
                 : SettingControls.MultiButtonSettings)
             |> SettingControls.multiButton "Mode"
 
