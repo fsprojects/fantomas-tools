@@ -8,14 +8,16 @@ open FantomasTools.Client.Model
 open FantomasTools.Client.Editor
 open Reactstrap
 
+let private baseUrl: string = emitJsExpr () "import.meta.env.BASE_URL"
+
 let navigation dispatch =
     let title = "Fantomas tools"
 
     Navbar.navbar [ Navbar.Light true; Navbar.Custom [ ClassName "bg-light" ] ] [
-        NavbarBrand.navbarBrand [ NavbarBrand.Custom [ ClassName "py-0 my-0 h1" ] ] [
-            a [ Href "/"; Target "_self" ] [ img [ Src "./fantomas_logo.png"; ClassName "mr-3" ] ]
-            str title
-        ]
+        NavbarBrand.navbarBrand [
+            NavbarBrand.Custom [ ClassName "py-0 my-0 h1"; Href baseUrl; Target "_self" ]
+            NavbarBrand.Tag(!! "a")
+        ] [ img [ Src "./fantomas_logo.png"; ClassName "mr-3" ]; str title ]
         div [ ClassName "navbar-text py1" ] [
             Button.button [
                 Button.Custom [
