@@ -15,12 +15,16 @@ let private mapFantomasOptionsToRecord options =
             | IntOption(_, _, v) -> box v
             | MultilineFormatterTypeOption(_, _, v) ->
                 MultilineFormatterType.OfConfigString(v)
-                |> Option.defaultValue (box CharacterWidth)
+                |> Option.defaultValue CharacterWidth
+                |> box
             | EndOfLineStyleOption(_, _, v) ->
                 EndOfLineStyle.OfConfigString(v)
                 |> Option.defaultValue EndOfLineStyle.CRLF
                 |> box
-            | MultilineBracketStyleOption _ -> failwithf "Version 5.1 does not accept fsharp_multiline_bracket_style")
+            | MultilineBracketStyleOption(_, _, v) ->
+                MultilineBracketStyle.OfConfigString(v)
+                |> Option.defaultValue MultilineBracketStyle.Cramped
+                |> box)
         |> Seq.toArray
 
     let formatConfigType = typeof<FormatConfig.FormatConfig>
@@ -76,6 +80,9 @@ let getOptions () : string =
             |> Some
         | :? EndOfLineStyle as eol ->
             FantomasOption.EndOfLineStyleOption(idx, k, (EndOfLineStyle.ToConfigString eol))
+            |> Some
+        | :? MultilineBracketStyle as mbs ->
+            FantomasOption.MultilineBracketStyleOption(idx, k, (MultilineBracketStyle.ToConfigString mbs))
             |> Some
         | _ -> None)
     |> Seq.toList

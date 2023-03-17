@@ -157,12 +157,14 @@ let tabs (model: Model) dispatch =
         | FantomasTab _ -> true
         | _ -> false
 
-    let navItems = [
-        navItem HomeTab "Home" (model.ActiveTab = HomeTab)
-        navItem ASTTab "AST" (model.ActiveTab = ASTTab)
-        navItem OakTab "Oak" (model.ActiveTab = OakTab)
-        navItem (FantomasTab FantomasTools.Client.FantomasOnline.Model.Main) "Fantomas" (isFantomasTab model.ActiveTab)
-    ]
+    let navItems =
+        [ navItem HomeTab "Home" (model.ActiveTab = HomeTab)
+          navItem ASTTab "AST" (model.ActiveTab = ASTTab)
+          navItem OakTab "Oak" (model.ActiveTab = OakTab)
+          navItem
+              (FantomasTab FantomasTools.Client.FantomasOnline.Model.Main)
+              "Fantomas"
+              (isFantomasTab model.ActiveTab) ]
 
     div [ ClassName "col-7 h-100" ] [
         settings model dispatch settingsForTab
