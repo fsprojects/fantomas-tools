@@ -75,6 +75,10 @@ let private updateUrl code isFsi (model: Model) _ =
 
     UrlTools.updateUrlWithData json
 
+// Enter 'localStorage.setItem("debugASTRangeHighlight", "true");' in your browser console to enable.
+let debugASTRangeHighlight: bool =
+    not (String.IsNullOrWhiteSpace(Browser.WebStorage.localStorage.getItem ("debugASTRangeHighlight")))
+
 // The update function computes the next state of the application based on the current state and the incoming events/messages
 // It can also run side-effects (encoded as commands) like calling the server via Http.
 // these commands in turn, can dispatch messages to which the update function will react.
@@ -118,12 +122,23 @@ let update code isFsi (msg: Msg) (model: Model) : Model * Cmd<Msg> =
             match Array.tryItem (line - 1) lines with
             | None -> model, Cmd.none
             | Some sourceLine ->
-                let pattern = @"\(\d,\d--\d,\d\)"
+                if debugASTRangeHighlight then
+                    JS.console.log (sourceLine.Trim())
+
+                let pattern = @"\(\d+,\d+--\d+,\d+\)"
 
                 let rangeDigits =
                     Regex.Matches(sourceLine, pattern)
                     |> Seq.cast<Match>
+                    |> fun matches ->
+                        if debugASTRangeHighlight then
+                            JS.console.log matches
+
+                        matches
                     |> Seq.tryPick (fun m ->
+                        if debugASTRangeHighlight then
+                            JS.console.log m.Value
+                        
                         let startIndex = m.Index
                         let endIndex = m.Index + m.Value.Length
                         // Verify the match contains the cursor column.
