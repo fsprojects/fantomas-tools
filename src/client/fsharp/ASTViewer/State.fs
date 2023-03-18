@@ -138,7 +138,7 @@ let update code isFsi (msg: Msg) (model: Model) : Model * Cmd<Msg> =
                     |> Seq.tryPick (fun m ->
                         if debugASTRangeHighlight then
                             JS.console.log m.Value
-                        
+
                         let startIndex = m.Index
                         let endIndex = m.Index + m.Value.Length
                         // Verify the match contains the cursor column.
