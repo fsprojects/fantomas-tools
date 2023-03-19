@@ -8,7 +8,6 @@ open Feliz
 open Feliz.Router
 open Feliz.UseElmish
 open Browser.Dom
-open Reactstrap
 open FantomasTools.Client
 
 [<ReactComponent>]
@@ -24,7 +23,7 @@ let App () =
     fragment [] [
         View.navigation dispatch
 
-        Row.row [ Row.Custom [ ClassName "no-gutters"; Id "main" ] ] [
+        div [ ClassName $"{Style.Row} {Style.G0}"; Id "main" ] [
             View.editor model dispatch
             React.router [ router.onUrlChanged onUrlChanged; router.children [ routes ] ]
         ]

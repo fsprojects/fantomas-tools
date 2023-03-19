@@ -2,7 +2,8 @@ module FantomasTools.Client.Loader
 
 open Fable.React
 open Fable.React.Props
-open Reactstrap
 
 let loader =
-    div [ ClassName "loader" ] [ div [ ClassName "inner" ] [ Spinner.spinner [ Spinner.Color Primary ] [] ] ]
+    div [ ClassName Style.Loader ] [
+        div [ ClassName Style.Inner ] [ div [ ClassName $"{Style.SpinnerBorder} {Style.TextPrimary}" ] [] ]
+    ]

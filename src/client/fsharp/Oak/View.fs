@@ -8,7 +8,6 @@ open Fable.React.Props
 open FantomasTools.Client
 open FantomasTools.Client.OakViewer.Model
 open FantomasTools.Client.OakViewer.Model.GraphView
-open Reactstrap
 
 [<RequireQualifiedAccess>]
 module Continuation =
@@ -108,12 +107,10 @@ let view model dispatch =
         | Some errors, _ -> ReadOnlyEditor [ MonacoEditorProp.DefaultValue errors ]
 
 let commands dispatch =
-    fragment [] [
-        Button.button [
-            Button.Color Primary
-            Button.Custom [ ClassName "rounded-0"; OnClick(fun _ -> dispatch GetOak) ]
-        ] [ i [ ClassName "fas fa-code mr-1" ] []; str "Get oak" ]
-    ]
+    button [
+        ClassName $"{Style.Btn} {Style.BtnPrimary}"
+        OnClick(fun _ -> dispatch GetOak)
+    ] [ i [ ClassName "fas fa-code mr-1" ] []; str "Get oak" ]
 
 let settings isFsi (model: Model) dispatch =
     fragment [] [

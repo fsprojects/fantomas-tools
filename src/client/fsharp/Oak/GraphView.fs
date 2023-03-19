@@ -3,12 +3,12 @@
 open System.Collections.Generic
 open Fable.React
 open Fable.React.Props
+open FantomasTools.Client
 open FantomasTools.Client.Editor
 open FantomasTools.Client.OakViewer.Graph
 open FantomasTools.Client.OakViewer.Model
 open FantomasTools.Client.OakViewer.Model.GraphView
 open FantomasTools.Client.Utils
-open Reactstrap
 
 type NodeType =
     | Standard
@@ -204,14 +204,13 @@ let view =
                     (fun nId -> dispatch (GraphViewSetRoot nId))
                     (fun nId -> dispatch (HighLight oakNodes[nId].CoordsUnion))
 
-            fragment
-                []
-                [ graph
-                  div
-                      [ Id "graph-view-commands" ]
-                      [ if model.GraphViewRootNodes <> [] then
-                            Button.button
-                                [ Button.Color Primary
-                                  Button.Custom [ ClassName "rounded-0"; OnClick(fun _ -> dispatch GraphViewGoBack) ] ]
-                                [ str $"<- back({model.GraphViewRootNodes.Length})" ] ] ]
+            fragment [] [
+                graph
+                div [ Id "graph-view-commands" ] [
+                    if model.GraphViewRootNodes <> [] then
+                        button [
+                            ClassName $"{Style.Btn} {Style.BtnPrimary}; OnClick(fun _ -> dispatch GraphViewGoBack)"
+                        ] [ str $"<- back({model.GraphViewRootNodes.Length})" ]
+                ]
+            ]
         | None -> div [] [])

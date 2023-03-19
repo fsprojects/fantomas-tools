@@ -6,7 +6,6 @@ open Fable.React.Props
 open FantomasTools.Client
 open FantomasTools.Client.ASTViewer.Model
 open FantomasTools.Client.Editor
-open Reactstrap
 
 let private cursorChanged dispatch (e: obj) =
     let lineNumber: int = e?position?lineNumber
@@ -27,9 +26,9 @@ let private results dispatch model =
             | Ok parsed when (not (Seq.isEmpty parsed.Errors)) ->
                 let badgeColor (e: ASTViewer.Shared.ASTError) =
                     if e.Severity = "warning" then
-                        Color.Warning
+                        Style.TextBgWarning
                     else
-                        Color.Danger
+                        Style.TextBgDanger
 
                 let errors =
                     parsed.Errors
@@ -45,11 +44,11 @@ let private results dispatch model =
                                         e.Range.EndCol
                                 )
                             ]
-                            Badge.badge [ Badge.Color(badgeColor e) ] [ str e.Severity ]
-                            Badge.badge [ Badge.Color Color.Dark; Badge.Custom [ Title "ErrorNumber" ] ] [
+                            span [ ClassName $"{Style.Badge} {badgeColor}" ] [ str e.Severity ]
+                            span [ ClassName $"{Style.Badge} {Style.TextBgDark}"; Title "ErrorNumber" ] [
                                 ofInt e.ErrorNumber
                             ]
-                            Badge.badge [ Badge.Color Color.Light; Badge.Custom [ Title "SubCategory" ] ] [
+                            span [ ClassName $"{Style.Badge} {Style.TextBgLight}"; Title "SubCategory" ] [
                                 str e.SubCategory
                             ]
                             p [] [ str e.Message ]
@@ -59,7 +58,7 @@ let private results dispatch model =
             | _ -> None)
         |> ofOption
 
-    div [ Id "ast-content" ] [ div [ ClassName "ast-editor-container" ] [ result ]; astErrors ]
+    div [ Id "ast-content" ] [ div [ ClassName Style.AstEditorContainer ] [ result ]; astErrors ]
 
 let view model dispatch =
     if model.IsLoading then
@@ -68,11 +67,10 @@ let view model dispatch =
         results dispatch model
 
 let commands dispatch =
-    fragment [] [
-        Button.button [ Button.Color Primary; Button.Custom [ OnClick(fun _ -> dispatch DoParse) ] ] [
-            str "Show Untyped AST"
-        ]
-    ]
+    button [
+        ClassName $"{Style.Btn} {Style.BtnPrimary}"
+        OnClick(fun _ -> dispatch DoParse)
+    ] [ str "Show Untyped AST" ]
 
 let settings isFsi model dispatch =
     fragment [] [
