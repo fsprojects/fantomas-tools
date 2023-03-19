@@ -9,7 +9,7 @@ open DartSassHost
 open JavaScriptEngineSwitcher.V8
 
 match Seq.tryLast fsi.CommandLineArgs with
-| Some filePath when Path.Exists filePath ->
+| Some filePath when File.Exists filePath ->
     let sassCompiler = new SassCompiler(V8JsEngineFactory())
     let result = sassCompiler.CompileFile(filePath)
     printfn $"%s{result.CompiledContent}"
