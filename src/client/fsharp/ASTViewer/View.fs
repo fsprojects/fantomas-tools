@@ -44,7 +44,7 @@ let private results dispatch model =
                                         e.Range.EndCol
                                 )
                             ]
-                            span [ ClassName $"{Style.Badge} {badgeColor}" ] [ str e.Severity ]
+                            span [ ClassName $"{Style.Badge} {badgeColor e}" ] [ str e.Severity ]
                             span [ ClassName $"{Style.Badge} {Style.TextBgDark}"; Title "ErrorNumber" ] [
                                 ofInt e.ErrorNumber
                             ]

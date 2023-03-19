@@ -138,7 +138,7 @@ let view =
     let colors =
         {| dark = "#222222"
            primary = "#338CBB"
-           secondary = "#2FBADC"
+           secondary = "#2d94b0"
            danger = "#C74910"
            warning = "#C7901B"
            success = "#88D1A6"
@@ -147,10 +147,10 @@ let view =
 
     let getColor =
         function
-        | Standard -> colors.secondary
+        | Standard -> colors.primary
         | Comment -> colors.success
         | Newline -> colors.grey
-        | Directive -> colors.primary
+        | Directive -> colors.secondary
 
     memoizeBy fst (fun (model, dispatch: Msg -> unit) ->
         let root =
@@ -209,7 +209,8 @@ let view =
                 div [ Id "graph-view-commands" ] [
                     if model.GraphViewRootNodes <> [] then
                         button [
-                            ClassName $"{Style.Btn} {Style.BtnPrimary}; OnClick(fun _ -> dispatch GraphViewGoBack)"
+                            ClassName $"{Style.Btn} {Style.BtnPrimary} {Style.TextWhite}"
+                            OnClick(fun _ -> dispatch GraphViewGoBack)
                         ] [ str $"<- back({model.GraphViewRootNodes.Length})" ]
                 ]
             ]

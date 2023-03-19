@@ -4,4 +4,4 @@ open Fable.React
 open Fable.React.Props
 
 let versionBar version =
-    div [ ClassName Style.VersionBar ] [ str version ]
+    div [ ClassName "version-bar" (* Style.VersionBar *) ] [ str version ]

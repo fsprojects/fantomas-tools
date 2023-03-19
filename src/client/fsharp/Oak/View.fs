@@ -108,9 +108,9 @@ let view model dispatch =
 
 let commands dispatch =
     button [
-        ClassName $"{Style.Btn} {Style.BtnPrimary}"
+        ClassName $"{Style.Btn} {Style.BtnPrimary} {Style.TextWhite}"
         OnClick(fun _ -> dispatch GetOak)
-    ] [ i [ ClassName "fas fa-code mr-1" ] []; str "Get oak" ]
+    ] [ i [ ClassName $"fas fa-code {Style.Me1}" ] []; str "Get oak" ]
 
 let settings isFsi (model: Model) dispatch =
     fragment [] [

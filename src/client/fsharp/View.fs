@@ -21,7 +21,7 @@ let navigation dispatch =
             ] [ img [ Src "./fantomas_logo.png"; ClassName $"{Style.Me3}" ]; str title ]
             div [ ClassName $"{Style.NavbarText} {Style.Py1}" ] [
                 a [
-                    ClassName $"{Style.Btn} {Style.BtnOutlineSuccess}"
+                    ClassName $"{Style.Btn} {Style.BtnOutlineSuccess} {Style.Me2}"
                     Href "https://github.com/sponsors/nojaf"
                     Target "_blank"
                     Id "sponsor-button"
@@ -30,7 +30,7 @@ let navigation dispatch =
                     str "Sponsor"
                 ]
                 a [
-                    ClassName $"{Style.Btn} {Style.BtnDark} {Style.TextWhite} {Style.Ms2}"
+                    ClassName $"{Style.Btn} {Style.BtnDark} {Style.TextWhite} {Style.Me2}"
                     Href "https://github.com/fsprojects/fantomas-tools"
                     Target "_blank"
                 ] [ i [ ClassName $"fab fa-github {Style.Me1} {Style.Mt1}" ] []; str "GitHub" ]
@@ -50,7 +50,7 @@ let navigation dispatch =
                     str "Fantomas.FCS Docs"
                 ]
                 a [
-                    ClassName $"{Style.Btn} {Style.Me2} {Style.Pointer}"
+                    ClassName $"{Style.Btn} {Style.BtnSecondary} {Style.TextWhite} {Style.Me2} {Style.Pointer}"
                     OnClick(fun _ -> dispatch ToggleSettings)
                 ] [ i [ ClassName "fas fa-sliders-h" ] [] ]
             ]
@@ -59,7 +59,7 @@ let navigation dispatch =
 
 let editor model dispatch =
     div [
-        ClassName $"{Style.Col} {Style.RowCols5} {Style.BorderEnd} {Style.H100} {Style.DFlex} {Style.FlexColumn}"
+        ClassName $"{Style.Col5} {Style.BorderEnd} {Style.H100} {Style.DFlex} {Style.FlexColumn}"
     ] [
         div [ Id "source"; ClassName Style.FlexGrow1 ] [
             Editor [
@@ -71,7 +71,7 @@ let editor model dispatch =
     ]
 
 let private homeTab =
-    div [ ClassName $"{Style.BgLight}" ] [
+    div [ ClassName $"{Style.BgLight} {Style.P5}" ] [
         div [ ClassName $"{Style.DFlex} {Style.AlignItemsCenter} {Style.Mb4}" ] [
             img [ Src "./logo.png" ]
             h1 [ ClassName $"{Style.Display3} {Style.Ms4}" ] [ str "Fantomas tool" ]
@@ -102,10 +102,14 @@ let private settings model dispatch inner =
                 dispatch ToggleSettings)
     ] [
         div [ ClassName Style.Inner ] [
-            h1 [ ClassName Style.TextCenter ] [
-                i [ ClassName "fas fa-times close"; OnClick(fun _ -> dispatch ToggleSettings) ] []
-                str "Settings"
+            div [ ClassName Style.TextEnd ] [
+                button [
+                    Type "Button"
+                    ClassName Style.BtnClose
+                    OnClick(fun _ -> dispatch ToggleSettings)
+                ] []
             ]
+            h1 [ ClassName Style.TextCenter ] [ str "Settings" ]
             inner
         ]
     ]

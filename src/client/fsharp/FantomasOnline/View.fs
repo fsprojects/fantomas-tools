@@ -62,9 +62,9 @@ let private mapToOption dispatch (model: Model) (key, fantomasOption) =
 
                 let activeBtnClass =
                     if v <> value then
-                        Style.BtnSecondary
+                        Style.BtnOutlineSecondary
                     else
-                        $"{Style.BtnOutlineSecondary} {Style.TextWhite}"
+                        $"{Style.BtnSecondary} {Style.TextWhite}"
 
                 button [
                     ClassName $"{Style.Btn} {activeBtnClass}"
@@ -72,8 +72,8 @@ let private mapToOption dispatch (model: Model) (key, fantomasOption) =
                     OnClick(fun _ -> UpdateOption(key, MultilineBracketStyleOption(o, key, value)) |> dispatch)
                 ] [ str label ]
 
-            div [] [
-                Standard.label [] [ label ]
+            div [ ClassName Style.Mb3 ] [
+                Standard.label [ ClassName Style.FormLabel ] [ label ]
                 br []
                 div [ ClassName $"{Style.BtnGroup}" ] [
                     yield mkButton "cramped"
@@ -353,7 +353,7 @@ let private userChangedSettings (model: Model) =
 let commands code isFsi model dispatch =
     let formatButton =
         button [
-            ClassName $"{Style.Btn} {Style.BtnPrimary}"
+            ClassName $"{Style.Btn} {Style.BtnPrimary} {Style.TextWhite}"
             OnClick(fun _ -> dispatch Msg.Format)
         ] [ str "Format" ]
 
@@ -412,6 +412,7 @@ let settings isFsi model dispatch =
                     ]
                     input [
                         Type "search"
+                        ClassName Style.FormControl
                         DefaultValue model.SettingsFilter
                         Placeholder "Filter settings"
                         Props.OnChange(fun (ev: Browser.Types.Event) -> ev.Value |> UpdateSettingsFilter |> dispatch)
