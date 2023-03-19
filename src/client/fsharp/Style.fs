@@ -7,4 +7,4 @@ module private Config =
     let sassFile = __SOURCE_DIRECTORY__ + "/../src/styles/style.sass"
 
 type Style =
-    CssClasses<Config.sassFile, Naming.PascalCase, commandFile= @"C:\Program Files\nodejs\npx.cmd", argumentPrefix="sass", logFile="TypedCssClasses.log">
+    CssClasses<Config.sassFile, Naming.PascalCase, commandFile="dotnet", argumentPrefix="fsi ../sass.fsx", logFile="TypedCssClasses.log">
