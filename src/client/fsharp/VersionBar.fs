@@ -2,6 +2,7 @@ module FantomasTools.Client.VersionBar
 
 open Fable.React
 open Fable.React.Props
+open FantomasTools.Client
 
 let versionBar version =
-    div [ ClassName "version-bar" (* Style.VersionBar *) ] [ str version ]
+    div [ ClassName Style.VersionBar ] [ str version ]

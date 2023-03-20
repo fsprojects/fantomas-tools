@@ -68,7 +68,7 @@ let view model dispatch =
 
 let commands dispatch =
     button [
-        ClassName $"{Style.Btn} {Style.BtnPrimary}"
+        ClassName $"{Style.Btn} {Style.BtnPrimary} {Style.TextWhite}"
         OnClick(fun _ -> dispatch DoParse)
     ] [ str "Show Untyped AST" ]
 
