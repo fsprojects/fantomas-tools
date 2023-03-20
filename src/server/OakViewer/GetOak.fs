@@ -1,13 +1,12 @@
 module OakViewer.GetOak
 
-open FSharp.Compiler.Text
 open Fantomas.Core
 open OakViewer.Server
 
 let getVersion () : string =
     let assembly = Fantomas.FCS.Parse.parseFile.GetType().Assembly
     let version = assembly.GetName().Version
-    sprintf "%i.%i.%i" version.Major version.Minor version.Revision
+    $"%i{version.Major}.%i{version.Minor}.%i{version.Revision}"
 
 let private parseAST source defines isFsi = Fantomas.FCS.Parse.parseFile isFsi source defines
 
@@ -27,18 +26,27 @@ let getOak json : GetOakResponse =
             pr
 
         let defines = Set.ofArray defines
-        let oaks = CodeFormatter.ParseOakAsync(isFsi, content) |> Async.RunSynchronously
 
-        let oak =
-            let oakOpt =
-                oaks
-                |> Array.tryFind (fun (_, currentDefines) -> Set.ofList currentDefines = defines)
+        let oakResult =
+            try
+                CodeFormatter.ParseOakAsync(isFsi, content) |> Async.RunSynchronously |> Ok
+            with ex ->
+                Error ex
 
-            match oakOpt with
-            | None -> Array.head oaks |> fst
-            | Some(oak, _) -> oak
+        match oakResult with
+        | Error ex -> GetOakResponse.BadRequest(ex.Message)
+        | Ok oaks ->
 
-        let responseText = Encoders.encodeNode oak id |> Thoth.Json.Net.Encode.toString 4
-        GetOakResponse.Ok responseText
+            let oak =
+                let oakOpt =
+                    oaks
+                    |> Array.tryFind (fun (_, currentDefines) -> Set.ofList currentDefines = defines)
+
+                match oakOpt with
+                | None -> Array.head oaks |> fst
+                | Some(oak, _) -> oak
+
+            let responseText = Encoders.encodeNode oak id |> Thoth.Json.Net.Encode.toString 4
+            GetOakResponse.Ok responseText
 
     | Error err -> GetOakResponse.BadRequest(string err)
