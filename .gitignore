@@ -360,3 +360,5 @@ src/client/src/bin/
 src/client-old/
 snowpack.crt
 snowpack.key
+
+TypedCssClasses.log

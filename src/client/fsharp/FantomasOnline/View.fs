@@ -7,7 +7,6 @@ open FantomasOnline.Shared
 open FantomasTools.Client
 open FantomasTools.Client.Editor
 open FantomasTools.Client.FantomasOnline.Model
-open Reactstrap
 
 let private mapToOption dispatch (model: Model) (key, fantomasOption) =
     let editor =
@@ -57,29 +56,26 @@ let private mapToOption dispatch (model: Model) (key, fantomasOption) =
                 (v = "crlf")
         | FantomasOption.MultilineBracketStyleOption(o, _, v) ->
             let mkButton (value: string) =
-                let className =
-                    if value = v then
-                        "rounded-0 text-white"
-                    else
-                        "rounded-0"
-
                 let label =
                     let capital = System.Char.ToUpper value.[0]
                     $"{capital}{value.[1..]}".Replace("_", " ")
 
-                Button.button [
-                    Button.Custom [
-                        ClassName className
-                        Key value
-                        OnClick(fun _ -> UpdateOption(key, MultilineBracketStyleOption(o, key, value)) |> dispatch)
-                    ]
-                    Button.Outline(v <> value)
+                let activeBtnClass =
+                    if v <> value then
+                        Style.BtnOutlineSecondary
+                    else
+                        $"{Style.BtnSecondary} {Style.TextWhite}"
+
+                button [
+                    ClassName $"{Style.Btn} {activeBtnClass}"
+                    Key value
+                    OnClick(fun _ -> UpdateOption(key, MultilineBracketStyleOption(o, key, value)) |> dispatch)
                 ] [ str label ]
 
-            FormGroup.formGroup [] [
-                Standard.label [] [ label ]
+            div [ ClassName Style.Mb3 ] [
+                Standard.label [ ClassName Style.FormLabel ] [ label ]
                 br []
-                ButtonGroup.buttonGroup [ ButtonGroup.Custom [ ClassName "btn-group-toggle rounded-0" ] ] [
+                div [ ClassName $"{Style.BtnGroup}" ] [
                     yield mkButton "cramped"
                     yield mkButton "aligned"
                     if model.Mode = FantomasMode.Main || model.Mode = FantomasMode.V5 then
@@ -89,7 +85,7 @@ let private mapToOption dispatch (model: Model) (key, fantomasOption) =
                 ]
             ]
 
-    div [ Key key; ClassName "fantomas-setting" ] [ editor ]
+    div [ Key key ] [ editor ]
 
 let options model dispatch =
     let optionList =
@@ -236,7 +232,7 @@ let private createGitHubIssue code isFsi model =
         | _ -> "Code", code, "", ""
 
     if System.String.IsNullOrWhiteSpace(code) then
-        span [ ClassName "text-muted mr-2" ] [ str "Looks wrong? Try using the main version!" ]
+        span [ ClassName $"{Style.TextMuted} {Style.Me2}" ] [ str "Looks wrong? Try using the main version!" ]
     else
         match model.Mode with
         | Main
@@ -253,12 +249,12 @@ let private createGitHubIssue code isFsi model =
                   Version = model.Version
                   IsFsi = isFsi }
 
-            Button.button [
-                Button.Color Danger
-                Button.Outline true
-                Button.Custom [ githubIssueUri githubIssue; Target "_blank"; ClassName "rounded-0" ]
+            button [
+                ClassName $"{Style.Btn} {Style.BtnOutlineDanger}"
+                githubIssueUri githubIssue
+                Target "_blank"
             ] [ str "Looks wrong? Create an issue!" ]
-        | _ -> span [ ClassName "text-muted mr-2" ] [ str "Looks wrong? Try using the main version!" ]
+        | _ -> span [ ClassName $"{Style.TextMuted} {Style.Me2}" ] [ str "Looks wrong? Try using the main version!" ]
 
 let private viewErrors (model: Model) isFsi result isIdempotent errors =
     let errors =
@@ -267,9 +263,9 @@ let private viewErrors (model: Model) isFsi result isIdempotent errors =
         | errors ->
             let badgeColor (e: ASTError) =
                 match e.Severity with
-                | ASTErrorSeverity.Error -> Danger
-                | ASTErrorSeverity.Warning -> Warning
-                | _ -> Info
+                | ASTErrorSeverity.Error -> Style.TextBgDanger
+                | ASTErrorSeverity.Warning -> Style.TextBgWarning
+                | _ -> Style.TextBgInfo
 
             errors
             |> List.mapi (fun i e ->
@@ -284,11 +280,9 @@ let private viewErrors (model: Model) isFsi result isIdempotent errors =
                                 e.Range.EndCol
                         )
                     ]
-                    Badge.badge [ Badge.Color(badgeColor e) ] [ str (e.Severity.ToString()) ]
-                    Badge.badge [ Badge.Color Color.Dark; Badge.Custom [ Title "ErrorNumber" ] ] [
-                        ofInt e.ErrorNumber
-                    ]
-                    Badge.badge [ Badge.Color Color.Light; Badge.Custom [ Title "SubCategory" ] ] [ str e.SubCategory ]
+                    span [ ClassName $"{Style.Badge} {badgeColor}" ] [ str (e.Severity.ToString()) ]
+                    span [ ClassName $"{Style.Badge} {Style.TextBgDark}"; Title "ErrorNumber" ] [ ofInt e.ErrorNumber ]
+                    span [ ClassName $"{Style.Badge} {Style.TextBgLight}"; Title "SubCategory" ] [ str e.SubCategory ]
                     p [] [ str e.Message ]
                 ])
 
@@ -308,15 +302,16 @@ let private viewErrors (model: Model) isFsi result isIdempotent errors =
                   Version = model.Version
                   IsFsi = isFsi }
 
-            div [ ClassName "idempotent-error" ] [
+            div [ ClassName Style.IdempotentError ] [
                 h6 [] [ str "The result was not idempotent" ]
                 str "Fantomas was able to format the code, but when formatting the result again, the code changed."
                 br []
                 str "The result after the first format is being displayed."
                 br []
-                Button.button [
-                    Button.Color Danger
-                    Button.Custom [ githubIssueUri githubIssue; Target "_blank"; ClassName "rounded-0" ]
+                button [
+                    ClassName $"{Style.Btn} {Style.BtnDanger}"
+                    githubIssueUri githubIssue
+                    Target "_blank"
                 ] [ str "Report idempotancy issue" ]
             ]
             |> Some
@@ -339,8 +334,8 @@ let view isFsi model =
             | Some _ -> result.FirstFormat, false, result.FirstValidation
             | None -> result.FirstFormat, true, result.FirstValidation
 
-        div [ ClassName "tab-result fantomas-result" ] [
-            div [ ClassName "fantomas-editor-container" ] [
+        div [ ClassName $"{Style.TabResult} {Style.FantomasResult}" ] [
+            div [ ClassName Style.FantomasEditorContainer ] [
                 ReadOnlyEditor [
                     MonacoEditorProp.DefaultValue formattedCode
                     MonacoEditorProp.Options(MonacoEditorProp.rulerOption model.MaxLineLength)
@@ -350,23 +345,23 @@ let view isFsi model =
         ]
 
     | EditorState.FormatError error ->
-        div [ ClassName "tab-result" ] [ ReadOnlyEditor [ MonacoEditorProp.DefaultValue error ] ]
+        div [ ClassName Style.TabResult ] [ ReadOnlyEditor [ MonacoEditorProp.DefaultValue error ] ]
 
 let private userChangedSettings (model: Model) =
     model.SettingsChangedByTheUser |> List.isEmpty |> not
 
 let commands code isFsi model dispatch =
     let formatButton =
-        Button.button [
-            Button.Color Primary
-            Button.Custom [ OnClick(fun _ -> dispatch Msg.Format) ]
+        button [
+            ClassName $"{Style.Btn} {Style.BtnPrimary} {Style.TextWhite}"
+            OnClick(fun _ -> dispatch Msg.Format)
         ] [ str "Format" ]
 
     let copySettingButton =
         if userChangedSettings model then
-            Button.button [
-                Button.Color Secondary
-                Button.Custom [ ClassName "text-white"; OnClick(fun _ -> dispatch CopySettings) ]
+            button [
+                ClassName $"{Style.Btn} {Style.BtnSecondary} {Style.TextWhite}"
+                OnClick(fun _ -> dispatch CopySettings)
             ] [ str "Copy settings" ]
             |> Some
         else
@@ -382,7 +377,7 @@ let commands code isFsi model dispatch =
 
 let settings isFsi model dispatch =
     match model.State with
-    | EditorState.LoadingOptions -> Spinner.spinner [ Spinner.Color Primary ] []
+    | EditorState.LoadingOptions -> span [ ClassName $"{Style.SpinnerBorder} {Style.TextPrimary}" ] []
     | _ ->
         let fantomasMode =
             [ FantomasMode.V4, "4.x"
@@ -408,14 +403,16 @@ let settings isFsi model dispatch =
         let options = options model dispatch
 
         let searchBox =
-            div [ ClassName "fantomas-setting my-3 border-bottom" ] [
-                div [ ClassName "form-group" ] [
-                    label [ ClassName "d-block" ] [
-                        strong [ ClassName "h4 text-center d-block mb-2" ] [ str "Filter settings" ]
+            div [ ClassName $"{Style.My3} {Style.BorderBottom}" ] [
+                div [] [
+                    label [ ClassName Style.DBlock ] [
+                        strong [ ClassName $"{Style.H4} {Style.TextCenter} {Style.DBlock} {Style.Mb2}" ] [
+                            str "Filter settings"
+                        ]
                     ]
                     input [
                         Type "search"
-                        ClassName "form-control"
+                        ClassName Style.FormControl
                         DefaultValue model.SettingsFilter
                         Placeholder "Filter settings"
                         Props.OnChange(fun (ev: Browser.Types.Event) -> ev.Value |> UpdateSettingsFilter |> dispatch)

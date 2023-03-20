@@ -2,38 +2,34 @@ module FantomasTools.Client.SettingControls
 
 open Fable.React
 open Fable.React.Props
-open Reactstrap
+open FantomasTools.Client
 
 let input key onChange (labelValue: ReactElement) placeholder value =
-    FormGroup.formGroup [] [
-        label [] [ labelValue ]
-        Input.input [
-            Input.Custom [
-                Placeholder placeholder
-                OnChange(fun ev -> ev.Value |> onChange)
-                DefaultValue value
-                Key key
-            ]
+    div [ ClassName Style.Mb3 ] [
+        label [ ClassName Style.FormLabel ] [ labelValue ]
+        input [
+            ClassName Style.FormControl
+            Placeholder placeholder
+            OnChange(fun ev -> ev.Value |> onChange)
+            DefaultValue value
+            Key key
         ]
     ]
 
 let private toggleButton_ onClick active label =
     let className =
         if active then
-            "rounded-0 text-white"
+            $"{Style.TextWhite} {Style.BtnSecondary}"
         else
-            "rounded-0"
+            Style.BtnOutlineSecondary
 
-    Button.button [
-        Button.Custom [ ClassName className; Key label; OnClick onClick ]
-        Button.Outline(not active)
-    ] [ str label ]
+    button [ ClassName $"{Style.Btn} {className}"; Key label; OnClick onClick ] [ str label ]
 
 let toggleButton onTrue onFalse labelTrue labelFalse (labelValue: ReactElement) value =
-    FormGroup.formGroup [] [
-        label [] [ labelValue ]
+    div [ ClassName Style.Mb3 ] [
+        label [ ClassName Style.FormLabel ] [ labelValue ]
         br []
-        ButtonGroup.buttonGroup [ ButtonGroup.Custom [ ClassName "btn-group-toggle rounded-0" ] ] [
+        div [ ClassName Style.BtnGroup ] [
             toggleButton_ onTrue value labelTrue
             toggleButton_ onFalse (not value) labelFalse
         ]
@@ -49,8 +45,8 @@ let multiButton labelValue (options: MultiButtonSettings list) =
         options
         |> List.map (fun { Label = l; OnClick = o; IsActive = i } -> toggleButton_ o i l)
 
-    FormGroup.formGroup [] [
-        label [] [ str labelValue ]
+    div [] [
+        label [ ClassName Style.FormLabel ] [ str labelValue ]
         br []
-        ButtonGroup.buttonGroup [ ButtonGroup.Custom [ ClassName "btn-group-toggle rounded-0" ] ] [ ofList buttons ]
+        div [ ClassName Style.BtnGroup ] [ ofList buttons ]
     ]

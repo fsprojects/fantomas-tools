@@ -11,14 +11,5 @@ fsharp_blank_lines_around_nested_multiline_expressions=false
 [src/server/**/Program.fs]
 fsharp_max_infix_operator_expression = 120
 
-[src/client/fsharp/App.fs]
-fsharp_experimental_elmish = true
-
-[src/client/fsharp/SettingControls.fs]
-fsharp_experimental_elmish = true
-
-[src/client/fsharp/View.fs]
-fsharp_experimental_elmish = true
-
-[src/client/fsharp/*/View.fs]
+[{src/client/fsharp/App.fs,src/client/fsharp/SettingControls.fs,src/client/fsharp/Loader.fs,src/client/fsharp/Oak/GraphView.fs,src/client/fsharp/View.fs,src/client/fsharp/*/View.fs}]
 fsharp_experimental_elmish = true

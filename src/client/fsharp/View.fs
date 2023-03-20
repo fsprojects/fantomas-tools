@@ -6,64 +6,62 @@ open Fable.React.Props
 open FantomasTools.Client
 open FantomasTools.Client.Model
 open FantomasTools.Client.Editor
-open Reactstrap
 
 let private baseUrl: string = emitJsExpr () "import.meta.env.BASE_URL"
 
 let navigation dispatch =
     let title = "Fantomas tools"
 
-    Navbar.navbar [ Navbar.Light true; Navbar.Custom [ ClassName "bg-light" ] ] [
-        NavbarBrand.navbarBrand [
-            NavbarBrand.Custom [ ClassName "py-0 my-0 h1"; Href baseUrl; Target "_self" ]
-            NavbarBrand.Tag(!! "a")
-        ] [ img [ Src "./fantomas_logo.png"; ClassName "mr-3" ]; str title ]
-        div [ ClassName "navbar-text py1" ] [
-            Button.button [
-                Button.Custom [
+    nav [ ClassName $"{Style.Navbar} {Style.BgLight}" ] [
+        div [ ClassName $"{Style.ContainerFluid}" ] [
+            a [
+                ClassName $"{Style.NavbarBrand} {Style.Py0} {Style.My1} {Style.H1}"
+                Href baseUrl
+                Target "_self"
+            ] [ img [ Src "./fantomas_logo.png"; ClassName $"{Style.Me3}" ]; str title ]
+            div [ ClassName $"{Style.NavbarText} {Style.Py1}" ] [
+                a [
+                    ClassName $"{Style.Btn} {Style.BtnOutlineSuccess} {Style.Me2}"
                     Href "https://github.com/sponsors/nojaf"
                     Target "_blank"
                     Id "sponsor-button"
+                ] [
+                    i [ ClassName $"far fa-heart {Style.Me1} {Style.Mt1} {Style.TextDanger}" ] []
+                    str "Sponsor"
                 ]
-                Button.Color Success
-                Button.Outline true
-            ] [ i [ ClassName "far fa-heart mr-1 mt-1 text-danger" ] []; str "Sponsor" ]
-            Button.button [
-                Button.Custom [
+                a [
+                    ClassName $"{Style.Btn} {Style.BtnDark} {Style.TextWhite} {Style.Me2}"
                     Href "https://github.com/fsprojects/fantomas-tools"
                     Target "_blank"
-                    ClassName "text-white ml-2"
-                ]
-                Button.Color Dark
-            ] [ i [ ClassName "fab fa-github mr-1 mt-1" ] []; str "GitHub" ]
-            Button.button [
-                Button.Custom [
+                ] [ i [ ClassName $"fab fa-github {Style.Me1} {Style.Mt1}" ] []; str "GitHub" ]
+                a [
+                    ClassName $"{Style.Btn} {Style.TextWhite} {Style.Me2}"
+                    Props.Style [ Background "red"; BorderColor "red" ]
                     Href "https://www.youtube.com/playlist?list=PLvw_J2kfZCX3Mf6tEbIPZXbzJOD1VGl4K"
                     Target "_blank"
-                    ClassName "text-white ml-2"
-                    Style [ Background "red"; BorderColor "red" ]
-                ]
-            ] [ i [ ClassName "fab fa-youtube mr-1 mt-1" ] []; str "YouTube" ]
-            Button.button [
-                Button.Custom [
+                ] [ i [ ClassName $"fab fa-youtube {Style.Me1} {Style.Mt1}" ] []; str "YouTube" ]
+                a [
+                    ClassName $"{Style.Btn} {Style.TextWhite} {Style.Me2}"
                     Href "https://fsprojects.github.io/fantomas/reference/fsharp-compiler-syntax.html"
                     Target "_blank"
-                    ClassName "text-white ml-2"
-                    Style [ Background "grey"; BorderColor "grey" ]
+                    Props.Style [ Background "grey"; BorderColor "grey" ]
+                ] [
+                    i [ ClassName $"fa fa-book {Style.Me1} {Style.Mt1}" ] []
+                    str "Fantomas.FCS Docs"
                 ]
-            ] [ i [ ClassName "fa fa-book mr-1 mt-1" ] []; str "Fantomas.FCS Docs" ]
-            Button.button [
-                Button.Custom [ ClassName "ml-2 pointer"; OnClick(fun _ -> dispatch ToggleSettings) ]
-            ] [ i [ ClassName "fas fa-sliders-h" ] [] ]
+                a [
+                    ClassName $"{Style.Btn} {Style.BtnSecondary} {Style.TextWhite} {Style.Me2} {Style.Pointer}"
+                    OnClick(fun _ -> dispatch ToggleSettings)
+                ] [ i [ ClassName "fas fa-sliders-h" ] [] ]
+            ]
         ]
     ]
 
 let editor model dispatch =
-    Col.col [
-        Col.Xs(Col.mkCol !^ 5)
-        Col.Custom [ ClassName "border-right h-100 d-flex flex-column" ]
+    div [
+        ClassName $"{Style.Col5} {Style.BorderEnd} {Style.H100} {Style.DFlex} {Style.FlexColumn}"
     ] [
-        div [ Id "source"; ClassName "flex-grow-1" ] [
+        div [ Id "source"; ClassName Style.FlexGrow1 ] [
             Editor [
                 MonacoEditorProp.OnChange(UpdateSourceCode >> dispatch)
                 MonacoEditorProp.DefaultValue model.SourceCode
@@ -71,14 +69,14 @@ let editor model dispatch =
             ]
         ]
     ]
-//
+
 let private homeTab =
-    Jumbotron.jumbotron [ Jumbotron.Custom [ ClassName "bg-light" ] ] [
-        div [ ClassName "d-flex align-items-center mb-4" ] [
+    div [ ClassName $"{Style.BgLight} {Style.P5}" ] [
+        div [ ClassName $"{Style.DFlex} {Style.AlignItemsCenter} {Style.Mb4}" ] [
             img [ Src "./logo.png" ]
-            h1 [ ClassName "display-3 ml-4" ] [ str "Fantomas tool" ]
+            h1 [ ClassName $"{Style.Display3} {Style.Ms4}" ] [ str "Fantomas tool" ]
         ]
-        p [ ClassName "lead" ] [ str "Welcome to the Fantomas Tools!" ]
+        p [ ClassName Style.Lead ] [ str "Welcome to the Fantomas Tools!" ]
         p [] [
             str "if you plan on using these tools extensively, consider cloning the "
             a [ Href "https://github.com/fsprojects/fantomas-tools"; Target "_blank" ] [ str "repository" ]
@@ -103,11 +101,15 @@ let private settings model dispatch inner =
             if ev.target?className = "settings open" then
                 dispatch ToggleSettings)
     ] [
-        div [ ClassName "inner" ] [
-            h1 [ ClassName "text-center" ] [
-                i [ ClassName "fas fa-times close"; OnClick(fun _ -> dispatch ToggleSettings) ] []
-                str "Settings"
+        div [ ClassName Style.Inner ] [
+            div [ ClassName Style.TextEnd ] [
+                button [
+                    Type "Button"
+                    ClassName Style.BtnClose
+                    OnClick(fun _ -> dispatch ToggleSettings)
+                ] []
             ]
+            h1 [ ClassName Style.TextCenter ] [ str "Settings" ]
             inner
         ]
     ]
@@ -150,8 +152,10 @@ let tabs (model: Model) dispatch =
 
             sprintf "%s%s" page query
 
-        NavItem.navItem [ NavItem.Custom [ Key label ] ] [
-            NavLink.navLink [ NavLink.Custom [ Href href ]; NavLink.Active isActive ] [ str label ]
+        let isActiveClass = if isActive then Style.Active else ""
+
+        div [ ClassName Style.NavItem; Key label ] [
+            a [ Href href; ClassName $"{Style.NavLink} {isActiveClass}" ] [ str label ]
         ]
 
     let isFantomasTab =
@@ -168,8 +172,8 @@ let tabs (model: Model) dispatch =
               "Fantomas"
               (isFantomasTab model.ActiveTab) ]
 
-    div [ ClassName "col-7 h-100" ] [
+    div [ ClassName $"{Style.Col7} {Style.H100}" ] [
         settings model dispatch settingsForTab
-        Nav.nav [ Nav.Tabs true; Nav.Custom [ ClassName "" ] ] [ ofList navItems ]
+        div [ ClassName $"{Style.Nav} {Style.NavTabs}" ] [ ofList navItems ]
         div [ Id "tab-content" ] [ activeTab; div [ Id "commands" ] [ commands ] ]
     ]
