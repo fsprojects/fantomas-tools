@@ -1,12 +1,12 @@
 {
   "version": 1,
   "dependencies": {
-    "net6.0": {
+    "net7.0": {
       "Fable.Browser.Url": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "HZKXJ1QHyJd/17fKISQXqq/NKgElSuy4oKVCcKxZs9D2+ODFu/0cFolYCFfVxmMt0G4t3SC8bLEZZKwgeNAnvg==",
+        "requested": "[1.3.2, )",
+        "resolved": "1.3.2",
+        "contentHash": "YCoP3jfRvH16JQpfYL1nf+AZQnMKzD59nBIbGBuNM4ysgqAkiUoD8d1tV9KSF0AkWwWqZYjPcUqc7wAwC0nb2A==",
         "dependencies": {
           "FSharp.Core": "4.7.2",
           "Fable.Core": "3.0.0"
@@ -54,20 +54,20 @@
       },
       "Feliz": {
         "type": "Direct",
-        "requested": "[2.5.0, )",
-        "resolved": "2.5.0",
-        "contentHash": "PkgFpmbMoKeWRo+U19jrZX814+GSewuqDLa9tl0ho78AP2RFVPpeS+rETrYS/uXNCPsTZc7SosQT5tr1TKSbiw==",
+        "requested": "[2.6.0, )",
+        "resolved": "2.6.0",
+        "contentHash": "xtBdL75Im3ffhPnCURe5rC7Ry03U0haoJG7oxB+mmlzGOOWgTyK+BUq6teD9t0me1/QPxzgz0IRxEMF8pJLsfw==",
         "dependencies": {
           "FSharp.Core": "4.7.2",
           "Fable.ReactDom.Types": "18.2.0",
-          "Feliz.CompilerPlugins": "2.1.0"
+          "Feliz.CompilerPlugins": "2.2.0"
         }
       },
       "Feliz.CompilerPlugins": {
         "type": "Direct",
-        "requested": "[2.1.0, )",
-        "resolved": "2.1.0",
-        "contentHash": "V/BcW6hBN5VGjL5sE3NXX8ROANcsXkdjj7ZOtD0eWZfLlXFNLiI7cLraFfhS+ZxKUS+sgH4MQecA6ddcAd98RQ==",
+        "requested": "[2.2.0, )",
+        "resolved": "2.2.0",
+        "contentHash": "ACkO++Hp4lUrEx/axeehIL5/3R8jMnak+CYpzd0/kLpejp9BETtrgjHK7oj6Lh3V9fB7WoAKsCxyPSrm4ADN2w==",
         "dependencies": {
           "FSharp.Core": "4.7.2",
           "Fable.AST": "4.2.1"
@@ -96,9 +96,9 @@
       },
       "FSharp.Core": {
         "type": "Direct",
-        "requested": "[6.0.6, )",
-        "resolved": "6.0.6",
-        "contentHash": "oSbTFqPtsp+EGkWAHwYIYYHyXLJRnbzVwcmM06kmXNLdWsp3P6XZViPSJJ2qUQS8feNK+nyPA0qtpNZXANGB7w=="
+        "requested": "[7.0.0, )",
+        "resolved": "7.0.0",
+        "contentHash": "8hzwUheAViWMAHWQTr6kR/19C4LhjZ4TlftKfNeZO9y7XnRUzLTK6FJS1C+0oObuUe0e4KndYxjWE+Zgea9YXQ=="
       },
       "Thoth.Json": {
         "type": "Direct",
