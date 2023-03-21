@@ -72,7 +72,9 @@ let update code isFsi (msg: Msg) model : Model * Cmd<Msg> =
         let parseRequest = modelToParseRequest code isFsi model
 
         let cmd =
-            Cmd.batch [ Cmd.ofSub (fetchOak parseRequest); Cmd.ofSub (updateUrl code isFsi model) ]
+            Cmd.batch
+                [ Cmd.ofEffect (fetchOak parseRequest)
+                  Cmd.ofEffect (updateUrl code isFsi model) ]
 
         { model with IsLoading = true }, cmd
     | Msg.OakReceived result ->
@@ -94,7 +96,7 @@ let update code isFsi (msg: Msg) model : Model * Cmd<Msg> =
             IsLoading = false },
         Cmd.none
     | SetFsiFile _ -> model, Cmd.none // handle in upper update function
-    | SetGraphView value -> let m = { model with IsGraphView = value } in m, Cmd.ofSub (updateUrl code isFsi m)
+    | SetGraphView value -> let m = { model with IsGraphView = value } in m, Cmd.ofEffect (updateUrl code isFsi m)
     | SetGraphViewLayout value ->
         { model with
             GraphViewOptions =
@@ -131,4 +133,4 @@ let update code isFsi (msg: Msg) model : Model * Cmd<Msg> =
                 else
                     List.tail model.GraphViewRootNodes },
         Cmd.none
-    | HighLight hlr -> model, Cmd.ofSub (Editor.selectRange hlr)
+    | HighLight hlr -> model, Cmd.ofEffect (Editor.selectRange hlr)

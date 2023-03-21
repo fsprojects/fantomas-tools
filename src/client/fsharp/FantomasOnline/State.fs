@@ -193,8 +193,8 @@ let update isActiveTab code isFsi msg model =
     | Format ->
         let cmd =
             Cmd.batch
-                [ Cmd.ofSub (getFormattedCode code isFsi model)
-                  Cmd.ofSub (updateUrl code isFsi model) ]
+                [ Cmd.ofEffect (getFormattedCode code isFsi model)
+                  Cmd.ofEffect (updateUrl code isFsi model) ]
 
         { model with
             State = LoadingFormatRequest },
@@ -213,6 +213,6 @@ let update isActiveTab code isFsi msg model =
 
     | SetFsiFile _ -> model, Cmd.none // handle in upper update function
 
-    | CopySettings -> model, Cmd.ofSub (copySettings model)
+    | CopySettings -> model, Cmd.ofEffect (copySettings model)
 
     | UpdateSettingsFilter v -> { model with SettingsFilter = v }, Cmd.none

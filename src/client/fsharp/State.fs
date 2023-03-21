@@ -110,7 +110,7 @@ let update msg model =
                 let newVersion = version mode
                 hashWithoutQuery.Replace(oldVersion, newVersion)
 
-            Cmd.ofSub (fun dispatch ->
+            Cmd.ofEffect (fun dispatch ->
                 UrlTools.updateUrlBy changeVersion
                 dispatch (SelectTab(ActiveTab.FantomasTab(mode))))
 

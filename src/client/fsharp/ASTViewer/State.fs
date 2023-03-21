@@ -106,8 +106,8 @@ let update code isFsi (msg: Msg) (model: Model) : Model * Cmd<Msg> =
 
         let cmd =
             Cmd.batch
-                [ Cmd.ofSub (fetchUntypedAST parseRequest)
-                  Cmd.ofSub (updateUrl code isFsi model) ]
+                [ Cmd.ofEffect (fetchUntypedAST parseRequest)
+                  Cmd.ofEffect (updateUrl code isFsi model) ]
 
         { model with IsLoading = true }, cmd
 
@@ -158,7 +158,7 @@ let update code isFsi (msg: Msg) (model: Model) : Model * Cmd<Msg> =
                           EndLine = endLine
                           EndColumn = endColumn }
 
-                    model, Cmd.ofSub (selectRange highlight)
+                    model, Cmd.ofEffect (selectRange highlight)
                 | _ -> model, Cmd.none
 
         | _ -> model, Cmd.none
