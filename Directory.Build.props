@@ -7,6 +7,8 @@
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
         <!-- https://www.gresearch.co.uk/blog/article/improve-nuget-restores-with-static-graph-evaluation/ -->
         <RestoreUseStaticGraphEvaluation>true</RestoreUseStaticGraphEvaluation>
+        <NoWarn>NU1603</NoWarn>
+        <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
         <!-- Override these values to point to your local fantomas repository -->
         <FantomasMainRepository>$(MSBuildThisFileDirectory).deps\fantomas</FantomasMainRepository>
         <FantomasPreviewRepository>$(MSBuildThisFileDirectory).deps\v6.0</FantomasPreviewRepository>
