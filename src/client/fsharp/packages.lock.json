@@ -73,16 +73,6 @@
           "Fable.AST": "4.2.1"
         }
       },
-      "Feliz.Listeners": {
-        "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "xsVduw2mAMurrmy5naSTpNigIs5gQS+XP1PsRGdqZS1qcv+wW0kfbieQ99btQeX4n+Ftqqf9VXVJ3H9NIgxeUw==",
-        "dependencies": {
-          "FSharp.Core": "6.0.5",
-          "Feliz": "2.4.0"
-        }
-      },
       "Feliz.Router": {
         "type": "Direct",
         "requested": "[4.0.0, )",

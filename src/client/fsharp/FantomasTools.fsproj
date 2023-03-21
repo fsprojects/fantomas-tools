@@ -53,7 +53,6 @@
     <PackageReference Include="Fable.ReactDom.Types" Version="18.2.0" />
     <PackageReference Include="Feliz" Version="2.5.0" />
     <PackageReference Include="Feliz.CompilerPlugins" Version="2.1.0" />
-    <PackageReference Include="Feliz.Listeners" Version="1.1.0" />
     <PackageReference Include="Feliz.Router" Version="4.0.0" />
     <PackageReference Include="Feliz.UseElmish" Version="2.4.0" />
     <PackageReference Include="Thoth.Json" Version="7.0.0" />
