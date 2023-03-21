@@ -96,9 +96,9 @@
       },
       "FSharp.Core": {
         "type": "Direct",
-        "requested": "[7.0.0, )",
-        "resolved": "7.0.0",
-        "contentHash": "8hzwUheAViWMAHWQTr6kR/19C4LhjZ4TlftKfNeZO9y7XnRUzLTK6FJS1C+0oObuUe0e4KndYxjWE+Zgea9YXQ=="
+        "requested": "[7.0.200, )",
+        "resolved": "7.0.200",
+        "contentHash": "NmgUnpNH6Zu9B0SPIhojyo38gnPdkdYFYQfbd6zosEH32kbGY/g/Klk7PfOWe1NAe/O1YOMmK9KhwQ2OWsWEbg=="
       },
       "Thoth.Json": {
         "type": "Direct",

@@ -45,7 +45,7 @@
 
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="FSharp.Core" Version="7.0.0" />
+    <PackageReference Include="FSharp.Core" Version="7.0.200" />
     <PackageReference Include="Fable.Browser.Url" Version="1.3.2" />
     <PackageReference Include="Fable.Core" Version="4.0.0" />
     <PackageReference Include="Fable.Fetch" Version="2.6.0" />
