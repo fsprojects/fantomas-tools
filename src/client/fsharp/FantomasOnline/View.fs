@@ -249,7 +249,7 @@ let private createGitHubIssue code isFsi model =
                   Version = model.Version
                   IsFsi = isFsi }
 
-            button [
+            a [
                 ClassName $"{Style.Btn} {Style.BtnOutlineDanger}"
                 githubIssueUri githubIssue
                 Target "_blank"
@@ -308,7 +308,7 @@ let private viewErrors (model: Model) isFsi result isIdempotent errors =
                 br []
                 str "The result after the first format is being displayed."
                 br []
-                button [
+                a [
                     ClassName $"{Style.Btn} {Style.BtnDanger}"
                     githubIssueUri githubIssue
                     Target "_blank"
