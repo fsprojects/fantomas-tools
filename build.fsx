@@ -60,20 +60,20 @@ pipeline "Fantomas-Git" {
                             __SOURCE_DIRECTORY__
                     return exitCode
             })
-        run (fun _ ->
-            async {
-                let branch = "v6.0"
+    // run (fun _ ->
+    //     async {
+    //         let branch = "v6.0"
 
-                if Directory.Exists(v6DepDir) then
-                    let! exitCode, _ = git "pull" v6DepDir
-                    return exitCode
-                else
-                    let! exitCode, _ =
-                        git
-                            $"clone -b {branch} --single-branch https://github.com/fsprojects/fantomas.git .deps/v6.0"
-                            __SOURCE_DIRECTORY__
-                    return exitCode
-            })
+    //         if Directory.Exists(v6DepDir) then
+    //             let! exitCode, _ = git "pull" v6DepDir
+    //             return exitCode
+    //         else
+    //             let! exitCode, _ =
+    //                 git
+    //                     $"clone -b {branch} --single-branch https://github.com/fsprojects/fantomas.git .deps/v6.0"
+    //                     __SOURCE_DIRECTORY__
+    //             return exitCode
+    //     })
     }
     stage "build" {
         paralle
@@ -82,11 +82,11 @@ pipeline "Fantomas-Git" {
             run "dotnet fsi build.fsx -p Init"
             run "dotnet build src/Fantomas.Core"
         }
-        stage "build fantomas preview" {
-            workingDir v6DepDir
-            run "dotnet fsi build.fsx -p Init"
-            run "dotnet build src/Fantomas.Core"
-        }
+    // stage "build fantomas preview" {
+    //     workingDir v6DepDir
+    //     run "dotnet fsi build.fsx -p Init"
+    //     run "dotnet build src/Fantomas.Core"
+    // }
     }
     runIfOnlySpecified true
 }

@@ -3,7 +3,6 @@ module FantomasOnlineMain.FormatCode
 open FSharp.Compiler.Diagnostics
 open FSharp.Compiler.Text
 open Fantomas.Core
-open Fantomas.Core.FormatConfig
 open FantomasOnline.Shared
 open FantomasOnline.Server.Shared.Http
 
@@ -27,12 +26,16 @@ let private mapFantomasOptionsToRecord options =
                 |> box)
         |> Seq.toArray
 
-    let formatConfigType = typeof<FormatConfig.FormatConfig>
-    Microsoft.FSharp.Reflection.FSharpValue.MakeRecord(formatConfigType, newValues) :?> FormatConfig.FormatConfig
+    let formatConfigType = typeof<FormatConfig>
+    Microsoft.FSharp.Reflection.FSharpValue.MakeRecord(formatConfigType, newValues) :?> FormatConfig
 
 let private format (fileName: string) code config =
     let isSignature = fileName.EndsWith(".fsi")
-    CodeFormatter.FormatDocumentAsync(isSignature, code, config)
+
+    async {
+        let! result = CodeFormatter.FormatDocumentAsync(isSignature, code, config)
+        return result.Code
+    }
 
 let private validate (fileName: string) code =
     let isSignature = fileName.EndsWith(".fsi")
@@ -77,7 +80,7 @@ let getVersion () =
         if lastCommitInfo.Trim() <> "-" then
             lastCommitInfo
         else
-            let assembly = typeof<FormatConfig.FormatConfig>.Assembly
+            let assembly = typeof<FormatConfig>.Assembly
 
             System.IO.FileInfo assembly.Location
             |> fun f -> f.LastWriteTime.ToShortDateString()
@@ -85,7 +88,7 @@ let getVersion () =
     $"main branch at %s{date}"
 
 let getOptions () : string =
-    Reflection.getRecordFields FormatConfig.FormatConfig.Default
+    Reflection.getRecordFields FormatConfig.Default
     |> Seq.indexed
     |> Seq.choose (fun (idx, (k: string, v: obj)) ->
         match v with

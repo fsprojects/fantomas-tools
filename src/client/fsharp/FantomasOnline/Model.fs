@@ -6,7 +6,7 @@ type FantomasMode =
     | V4
     | V5
     | Main // main branch
-    | Preview // v6 branch
+    | Preview // Also main branch, formerly v6.0 branch
 
 type Msg =
     | VersionReceived of string

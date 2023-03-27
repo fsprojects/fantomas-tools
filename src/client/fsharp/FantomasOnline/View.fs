@@ -78,9 +78,9 @@ let private mapToOption dispatch (model: Model) (key, fantomasOption) =
                 div [ ClassName $"{Style.BtnGroup}" ] [
                     yield mkButton "cramped"
                     yield mkButton "aligned"
-                    if model.Mode = FantomasMode.Main || model.Mode = FantomasMode.V5 then
+                    if model.Mode = FantomasMode.V5 then
                         yield mkButton "experimental_stroustrup"
-                    if model.Mode = FantomasMode.Preview then
+                    if model.Mode = FantomasMode.Main || model.Mode = FantomasMode.Preview then
                         yield mkButton "stroustrup"
                 ]
             ]
