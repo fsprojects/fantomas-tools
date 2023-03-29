@@ -7,7 +7,7 @@ Collection of tools used when developing for Fantomas
 To run this tool locally you need:
 
 * [Node.js 14.x](https://nodejs.org/en/download/) or higher
-* [.NET 6.x SDK](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
+* [.NET 7.x SDK](https://dotnet.microsoft.com/en-us/download/dotnet/7.0)
 
 ## Running locally
 
