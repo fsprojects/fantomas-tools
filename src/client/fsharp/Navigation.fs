@@ -29,6 +29,7 @@ let toHash =
     | ASTTab -> "#/ast"
     | FantomasTab FantomasOnline.Model.V4 -> "#/fantomas/v4"
     | FantomasTab FantomasOnline.Model.V5 -> "#/fantomas/v5"
+    | FantomasTab FantomasOnline.Model.V6 -> "#/fantomas/v6"
     | FantomasTab FantomasOnline.Model.Main -> "#/fantomas/main"
     | FantomasTab FantomasOnline.Model.Preview -> "#/fantomas/preview"
 

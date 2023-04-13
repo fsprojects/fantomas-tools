@@ -80,7 +80,11 @@ let private mapToOption dispatch (model: Model) (key, fantomasOption) =
                     yield mkButton "aligned"
                     if model.Mode = FantomasMode.V5 then
                         yield mkButton "experimental_stroustrup"
-                    if model.Mode = FantomasMode.Main || model.Mode = FantomasMode.Preview then
+                    if
+                        model.Mode = FantomasMode.V6
+                        || model.Mode = FantomasMode.Main
+                        || model.Mode = FantomasMode.Preview
+                    then
                         yield mkButton "stroustrup"
                 ]
             ]
@@ -382,6 +386,7 @@ let settings isFsi model dispatch =
         let fantomasMode =
             [ FantomasMode.V4, "4.x"
               FantomasMode.V5, "5.x"
+              FantomasMode.V6, "6.x"
               FantomasMode.Main, "Main"
               FantomasMode.Preview, "v6 preview" ]
             |> List.map (fun (m, l) ->
