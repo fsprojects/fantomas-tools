@@ -6,21 +6,6 @@ updates:
     interval: daily
     time: "11:00"
   open-pull-requests-limit: 10
-  ignore:
-  - dependency-name: "@web/test-runner"
-    versions:
-    - 0.12.18
-    - 0.12.20
-  - dependency-name: snowpack
-    versions:
-    - 3.1.2
-    - 3.3.5
-  - dependency-name: "@snowpack/plugin-react-refresh"
-    versions:
-    - 2.4.2
-  - dependency-name: "@snowpack/plugin-dotenv"
-    versions:
-    - 2.1.0
 - package-ecosystem: nuget
   directory: "/src/server/ASTViewer"
   schedule:
@@ -30,7 +15,7 @@ updates:
   allow:
     - dependency-name: "Fantomas.FCS"
 - package-ecosystem: nuget
-  directory: "/src/server/FantomasOnlineV5"
+  directory: "/src/server/FantomasOnlineV6"
   schedule:
     interval: daily
     time: "10:00"
