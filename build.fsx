@@ -19,6 +19,7 @@ let fantomasMainPort = 11084
 let fantomasPreviewPort = 12007
 let fantomasV4Port = 10707
 let fantomasV5Port = 11009
+let fantomasV6Port = 13042
 let pwd = __SOURCE_DIRECTORY__
 let fantomasDepDir = pwd </> ".deps" </> "fantomas"
 let v6DepDir = pwd </> ".deps" </> "v6.0"
@@ -107,6 +108,7 @@ let setViteToProduction () =
     setEnv "VITE_OAK_BACKEND" $"{mainStageUrl}/oak-viewer"
     setEnv "VITE_FANTOMAS_V4" $"{mainStageUrl}/fantomas/v4"
     setEnv "VITE_FANTOMAS_V5" $"{mainStageUrl}/fantomas/v5"
+    setEnv "VITE_FANTOMAS_V6" $"{mainStageUrl}/fantomas/v6"
     setEnv "VITE_FANTOMAS_MAIN" $"{mainStageUrl}/fantomas/main"
     setEnv "VITE_FANTOMAS_PREVIEW" $"{mainStageUrl}/fantomas/preview"
 
@@ -142,6 +144,7 @@ pipeline "Build" {
             paralle
             run (publishLambda "FantomasOnlineV4")
             run (publishLambda "FantomasOnlineV5")
+            run (publishLambda "FantomasOnlineV6")
             run (publishLambda "ASTViewer")
         }
         run (publishLambda "FantomasOnlineMain")
@@ -264,6 +267,7 @@ pipeline "Watch" {
                 setEnv "VITE_OAK_BACKEND" (localhostBackend oakPort "oak-viewer")
                 setEnv "VITE_FANTOMAS_V4" (localhostBackend fantomasV4Port "fantomas/v4")
                 setEnv "VITE_FANTOMAS_V5" (localhostBackend fantomasV5Port "fantomas/v5")
+                setEnv "VITE_FANTOMAS_V6" (localhostBackend fantomasV6Port "fantomas/v6")
                 setEnv "VITE_FANTOMAS_MAIN" (localhostBackend fantomasMainPort "fantomas/main")
                 setEnv "VITE_FANTOMAS_PREVIEW" (localhostBackend fantomasPreviewPort "fantomas/preview")
                 return 0
@@ -275,6 +279,7 @@ pipeline "Watch" {
         run (runLambda "OakViewer")
         run (runLambda "FantomasOnlineV4")
         run (runLambda "FantomasOnlineV5")
+        run (runLambda "FantomasOnlineV6")
         run (runLambda "FantomasOnlineMain")
         run (runLambda "FantomasOnlinePreview")
         stage "frontend" {

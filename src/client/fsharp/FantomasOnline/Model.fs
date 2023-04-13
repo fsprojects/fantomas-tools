@@ -5,6 +5,7 @@ open FantomasOnline.Shared
 type FantomasMode =
     | V4
     | V5
+    | V6
     | Main // main branch
     | Preview // Also main branch, formerly v6.0 branch
 
