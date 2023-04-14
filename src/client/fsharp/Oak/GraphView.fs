@@ -196,13 +196,14 @@ let view =
                 |> set
 
             let graph =
-                VisReact.graph
-                    model.GraphViewOptions
-                    "tab-content"
-                    nodes
-                    edges
-                    (fun nId -> dispatch (GraphViewSetRoot nId))
-                    (fun nId -> dispatch (HighLight oakNodes[nId].CoordsUnion))
+                Graph
+                    {| options = model.GraphViewOptions
+                       data = {| nodes = nodes; edges = edges |} |}
+            // "tab-content"
+            // nodes
+            // edges
+            // (fun nId -> dispatch (GraphViewSetRoot nId))
+            // (fun nId -> dispatch (HighLight oakNodes[nId].CoordsUnion))
 
             fragment [] [
                 graph
