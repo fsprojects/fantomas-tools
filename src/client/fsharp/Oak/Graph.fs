@@ -27,8 +27,9 @@ module VisNetwork =
     type options =
         {| layout: obj
            interaction: obj
-           width: int
-           height: int |}
+           nodes: obj
+           width: string
+           height: string |}
 
     [<Import("Network", "vis-network/peer")>]
     type Network(_container: Element, _data: obj, _options: obj) =
@@ -49,8 +50,8 @@ module VisNetwork =
 type GraphProps =
     {| options: VisNetwork.options
        data: VisNetwork.data
-       selectNode: {| nodes: int array |} -> unit
-       hoverNode: {| node: U2<int, string> |} -> unit |}
+       selectNode: obj -> unit
+       hoverNode: obj -> unit |}
 
 [<ReactComponent>]
 let Graph (props: GraphProps) =
