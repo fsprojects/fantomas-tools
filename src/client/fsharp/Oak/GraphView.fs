@@ -1,7 +1,6 @@
 ﻿module FantomasTools.Client.Oak.GraphView
 
 open System.Collections.Generic
-open Fable.Core
 open Fable.Core.JsInterop
 open Fable.React
 open Fable.React.Props
@@ -168,6 +167,16 @@ let view =
             let root = limitTreeByNodes model.GraphViewOptions.NodeLimit root
             let oakNodes = nodesFromRoot root
 
+            let scalingLabel =
+                let opt =
+                    {| enabled = true
+                       max = model.GraphViewOptions.ScaleMaxSize |}
+
+                match model.GraphViewOptions.Scale with
+                | NoScale -> {| opt with enabled = false |}
+                | SubTreeNodes
+                | AllNodes -> opt
+
             let nodes: VisNetwork.node array =
                 oakNodes
                 |> Map.toArray
@@ -187,18 +196,8 @@ let view =
                        level = graphOakNode.Level
                        color = getColor graphOakNode.Type
                        shape = if graphOakNode.Limited then "box" else "ellipse"
-                       value = scaleValue |})
-
-            // |> Map.map (fun _ n ->
-            //     { Label = NodeLabel(n.Node.Trim())
-            //       Level = n.Level
-            //       Color = NodeColor(getColor n.Type)
-            //       Shape = if n.Limited then Box else Ellipse
-            //       ScaleValue =
-            //         match model.GraphViewOptions.Scale with
-            //         | NoScale -> 1
-            //         | SubTreeNodes -> if not n.Limited then 1 else n.Size
-            //         | AllNodes -> n.Size })
+                       value = scaleValue
+                       scaling = scalingLabel |})
 
             let edges: VisNetwork.edge array =
                 oakNodes
@@ -228,35 +227,25 @@ let view =
                 | LeftRight -> {| hierarchical = {| hier with direction = "LR" |} |}
                 | Free -> {| hierarchical = {| hier with enabled = false |} |}
 
-            let scalingLabel =
-                let opt =
-                    {| enabled = true
-                       max = model.GraphViewOptions.ScaleMaxSize |}
-
-                match model.GraphViewOptions.Scale with
-                | NoScale -> {| opt with enabled = false |}
-                | SubTreeNodes
-                | AllNodes -> opt
-
             let parentElement = Browser.Dom.document.getElementById "tab-content"
 
             let options: VisNetwork.options =
                 {| layout = layout
                    interaction = {| hover = true |}
-                   nodes = {| scaling = {| label = scalingLabel |} |}
                    width = $"{parentElement.clientWidth}"
                    height = $"{parentElement.clientHeight}" |}
 
             let graph =
                 Graph
                     {| options = options
-                       data = {| nodes = nodes; edges = edges |}
-                       selectNode = (fun ev -> Fable.Core.JS.console.log ev)
-                       // dispatch (GraphViewSetRoot (NodeId nId)))
-                       hoverNode =
+                       data =
+                        {| nodes = VisNetwork.DataSet(!!nodes)
+                           edges = VisNetwork.DataSet(!!edges) |}
+                       selectNode =
                         (fun ev ->
-                            //dispatch (HighLight oakNodes[nId].CoordsUnion)) |}
-                            Fable.Core.JS.console.log ev) |}
+                            for nodeId in ev.nodes do
+                                dispatch (GraphViewSetRoot(NodeId nodeId)))
+                       hoverNode = (fun ev -> dispatch (HighLight oakNodes.[NodeId ev.node].CoordsUnion)) |}
 
             fragment [] [
                 graph
