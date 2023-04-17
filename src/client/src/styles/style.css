@@ -43,7 +43,7 @@ html, body, #app {
 }
 
 /* Buttons */
-.btn {
+.btn, button {
     appearance: none;
     background-color: #FAFBFC;
     border: 1px solid rgba(27, 31, 35, 0.15);
@@ -69,31 +69,31 @@ html, body, #app {
     word-wrap: break-word;
 }
 
-.btn:hover {
+.btn:hover, button:hover {
     background-color: #F3F4F6;
     text-decoration: none;
     transition-duration: 0.1s;
     transform: translateY(1px);
 }
 
-.btn:disabled {
+.btn:disabled, button:disabled {
     background-color: #FAFBFC;
     border-color: rgba(27, 31, 35, 0.15);
     color: #959DA5;
     cursor: default;
 }
 
-.btn:active {
+.btn:active, button:active {
     background-color: #EDEFF2;
     box-shadow: rgba(225, 228, 232, 0.2) 0 1px 0 inset;
     transition: none 0s;
 }
 
-.btn:focus {
+.btn:focus, button:focus {
     outline: 1px transparent;
 }
 
-.btn:before {
+.btn:before, button:before {
     display: none;
 }
 
@@ -101,12 +101,44 @@ html, body, #app {
     display: none;
 }
 
+/* Basic App Layout */
+#app {
+    display: flex;
+    flex-direction: column;
+}
+
+#app main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+#app main > div {
+    flex: 1;
+}
+
+#app main #source {
+    display: flex;
+}
+
+#app main #tools {
+    display: flex;
+    flex-direction: column;
+}
+
+@media screen and (min-width: 768px) {
+    #app main {
+        flex-direction: row;
+    }
+}
+
 /* Navbar */
 nav {
     background-color: var(--light);
     padding: var(--unit-2);
     display: flex;
-    box-shadow: 0 7px 7px -7px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 7px 7px -7px rgba(0, 0, 0, 0.25);
+    z-index: 1;
 }
 
 nav > a:hover {
@@ -200,6 +232,10 @@ nav > div {
     
     nav > div #menu-toggle:hover {
         background-color: var(--secondary-hover);
+    }
+
+    nav > div #menu-toggle i {
+        margin: 0;
     }
 }
 

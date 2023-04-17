@@ -13,10 +13,7 @@ let navigation dispatch =
     let title = "Fantomas tools"
 
     nav [] [
-        a [
-            Href baseUrl
-            Target "_self"
-        ] [ img [ Src "./fantomas_logo.png"; ClassName $"{Style.Me3}" ]; str title ]
+        a [ Href baseUrl; Target "_self" ] [ img [ Src "./fantomas_logo.png"; ClassName $"{Style.Me3}" ]; str title ]
         a [ Href "https://github.com/fsprojects/fantomas-tools"; Target "_blank" ] [
             i [ ClassName $"fab fa-github {Style.Me1} {Style.Mt1}" ] []
         ]
@@ -58,15 +55,11 @@ let navigation dispatch =
     ]
 
 let editor model dispatch =
-    div [
-        ClassName $"{Style.Col5} {Style.BorderEnd} {Style.H100} {Style.DFlex} {Style.FlexColumn}"
-    ] [
-        div [ Id "source"; ClassName Style.FlexGrow1 ] [
-            Editor [
-                MonacoEditorProp.OnChange(UpdateSourceCode >> dispatch)
-                MonacoEditorProp.DefaultValue model.SourceCode
-                MonacoEditorProp.Options(MonacoEditorProp.rulerOption model.FantomasModel.MaxLineLength)
-            ]
+    div [ Id "source" ] [
+        Editor [
+            MonacoEditorProp.OnChange(UpdateSourceCode >> dispatch)
+            MonacoEditorProp.DefaultValue model.SourceCode
+            MonacoEditorProp.Options(MonacoEditorProp.rulerOption model.FantomasModel.MaxLineLength)
         ]
     ]
 
@@ -172,7 +165,7 @@ let tabs (model: Model) dispatch =
               "Fantomas"
               (isFantomasTab model.ActiveTab) ]
 
-    div [ ClassName $"{Style.Col7} {Style.H100}" ] [
+    div [ Id "tools" ] [
         settings model dispatch settingsForTab
         div [ ClassName $"{Style.Nav} {Style.NavTabs}" ] [ ofList navItems ]
         div [ Id "tab-content" ] [ activeTab; div [ Id "commands" ] [ commands ] ]

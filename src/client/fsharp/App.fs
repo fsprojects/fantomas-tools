@@ -22,8 +22,7 @@ let App () =
 
     fragment [] [
         View.navigation dispatch
-
-        div [ ClassName $"{Style.Row} {Style.G0}"; Id "main" ] [
+        main [] [
             View.editor model dispatch
             React.router [ router.onUrlChanged onUrlChanged; router.children [ routes ] ]
         ]
