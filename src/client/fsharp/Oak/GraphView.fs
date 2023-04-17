@@ -22,7 +22,6 @@ type GraphOakNode =
       Node: string
       Type: NodeType
       Coords: HighLightRange
-      CoordsUnion: HighLightRange
       Children: GraphOakNode list
       Limited: bool
       Level: int
@@ -46,7 +45,6 @@ let private parseResults =
                 { Id = nodeIdCounter
                   Node = text
                   Coords = range
-                  CoordsUnion = range
                   Type = t
                   Children = []
                   Limited = false
@@ -79,17 +77,9 @@ let private parseResults =
 
         let node =
             let n = mkNode level n.Type n.Range Standard
-            let ranges = n.Coords :: (children |> List.map (fun x -> x.CoordsUnion))
-
-            let unionRange =
-                { StartLine = ranges |> Seq.map (fun n -> n.StartLine) |> Seq.min
-                  StartColumn = ranges |> Seq.map (fun n -> n.StartColumn) |> Seq.min
-                  EndLine = ranges |> Seq.map (fun n -> n.EndLine) |> Seq.max
-                  EndColumn = ranges |> Seq.map (fun n -> n.EndColumn) |> Seq.max }
 
             { n with
                 Children = children
-                CoordsUnion = unionRange
                 Size = n.Size + (children |> Seq.sumBy (fun x -> x.Size)) }
 
         node
@@ -245,7 +235,7 @@ let view =
                         (fun ev ->
                             for nodeId in ev.nodes do
                                 dispatch (GraphViewSetRoot(NodeId nodeId)))
-                       hoverNode = (fun ev -> dispatch (HighLight oakNodes.[NodeId ev.node].CoordsUnion)) |}
+                       hoverNode = (fun ev -> dispatch (HighLight oakNodes.[NodeId ev.node].Coords)) |}
 
             fragment [] [
                 graph
