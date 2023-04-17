@@ -233,10 +233,7 @@ let view =
                    interaction = {| hover = true |}
                    width = $"{parentElement.clientWidth}"
                    height = $"{parentElement.clientHeight}"
-                   nodes =
-                    {| scaling =
-                        {| label = scalingLabel
-                           min = minScaling |} |} |}
+                   nodes = {| scaling = {| label = scalingLabel |} |} |}
 
             let graph =
                 Graph
