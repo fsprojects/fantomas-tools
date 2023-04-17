@@ -149,6 +149,8 @@ let view =
         | Newline -> colors.dark
         | _ -> colors.white
 
+    let minScaling = 20
+
     memoizeBy fst (fun (model, dispatch: Msg -> unit) ->
         let root =
             fullGraph model
@@ -166,6 +168,7 @@ let view =
             let scalingLabel =
                 let opt =
                     {| enabled = true
+                       min = minScaling
                        max = model.GraphViewOptions.ScaleMaxSize |}
 
                 match model.GraphViewOptions.Scale with
@@ -193,7 +196,6 @@ let view =
                        color = getColor graphOakNode.Type
                        shape = if graphOakNode.Limited then "box" else "ellipse"
                        value = scaleValue
-                       scaling = scalingLabel
                        font = {| color = getFontColor graphOakNode.Type |} |})
 
             let edges: VisNetwork.edge array =
@@ -230,7 +232,11 @@ let view =
                 {| layout = layout
                    interaction = {| hover = true |}
                    width = $"{parentElement.clientWidth}"
-                   height = $"{parentElement.clientHeight}" |}
+                   height = $"{parentElement.clientHeight}"
+                   nodes =
+                    {| scaling =
+                        {| label = scalingLabel
+                           min = minScaling |} |} |}
 
             let graph =
                 Graph

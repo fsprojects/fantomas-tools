@@ -14,7 +14,6 @@ module VisNetwork =
            color: string
            shape: string
            value: int
-           scaling: obj
            font: obj |}
 
     type edge =
@@ -26,7 +25,8 @@ module VisNetwork =
         {| layout: obj
            interaction: obj
            width: string
-           height: string |}
+           height: string
+           nodes: obj |}
 
     [<Import("DataSet", "vis-data/peer")>]
     type DataSet(_data: U2<node, edge> array) =
@@ -44,6 +44,12 @@ module VisNetwork =
 
         [<Emit("$0.on('hoverNode', $1)")>]
         member this.OnHover _callback : unit = jsNative
+
+        [<Emit("$0.off('selectNode')")>]
+        member this.OffSelect() : unit = jsNative
+
+        [<Emit("$0.off('hoverNode')")>]
+        member this.OffHover() : unit = jsNative
 
         [<Emit("$0.setData($1)")>]
         member this.SetData(_data: data) = jsNative
@@ -78,15 +84,22 @@ let Graph (props: GraphProps) =
     React.useEffect (
         fun () ->
             JS.console.log ("Data changed", props.data, network)
-            network |> Option.iter (fun network -> network.SetData props.data)
-        , [| box props.data |]
+
+            network
+            |> Option.iter (fun network ->
+                network.OffSelect()
+                network.OffHover()
+                network.SetData props.data
+                network.OnSelect(props.selectNode)
+                network.OnHover(props.hoverNode))
+        , [| box network; box props.data |]
     )
 
     React.useEffect (
         fun () ->
             JS.console.log ("Options changed", props.options, network)
             network |> Option.iter (fun network -> network.SetOptions props.options)
-        , [| box props.options |]
+        , [| box network; box props.options |]
     )
 
     div [ Ref divRef ] [ str "graph, never render" ]
