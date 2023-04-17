@@ -12,47 +12,48 @@ let private baseUrl: string = emitJsExpr () "import.meta.env.BASE_URL"
 let navigation dispatch =
     let title = "Fantomas tools"
 
-    nav [ ClassName $"{Style.Navbar} {Style.BgLight}" ] [
-        div [ ClassName $"{Style.ContainerFluid}" ] [
+    nav [] [
+        a [
+            ClassName $"{Style.NavbarBrand} {Style.Py0} {Style.My1} {Style.H1}"
+            Href baseUrl
+            Target "_self"
+        ] [ img [ Src "./fantomas_logo.png"; ClassName $"{Style.Me3}" ]; str title ]
+        a [ Href "https://github.com/fsprojects/fantomas-tools"; Target "_blank" ] [
+            i [ ClassName $"fab fa-github {Style.Me1} {Style.Mt1}" ] []
+        ]
+        div [] [
             a [
-                ClassName $"{Style.NavbarBrand} {Style.Py0} {Style.My1} {Style.H1}"
-                Href baseUrl
-                Target "_self"
-            ] [ img [ Src "./fantomas_logo.png"; ClassName $"{Style.Me3}" ]; str title ]
-            div [ ClassName $"{Style.NavbarText} {Style.Py1}" ] [
-                a [
-                    ClassName $"{Style.Btn} {Style.BtnOutlineSuccess} {Style.Me2}"
-                    Href "https://github.com/sponsors/nojaf"
-                    Target "_blank"
-                    Id "sponsor-button"
-                ] [
-                    i [ ClassName $"far fa-heart {Style.Me1} {Style.Mt1} {Style.TextDanger}" ] []
-                    str "Sponsor"
-                ]
-                a [
-                    ClassName $"{Style.Btn} {Style.BtnDark} {Style.TextWhite} {Style.Me2}"
-                    Href "https://github.com/fsprojects/fantomas-tools"
-                    Target "_blank"
-                ] [ i [ ClassName $"fab fa-github {Style.Me1} {Style.Mt1}" ] []; str "GitHub" ]
-                a [
-                    ClassName $"{Style.Btn} {Style.TextWhite} {Style.Me2}"
-                    Props.Style [ Background "red"; BorderColor "red" ]
-                    Href "https://www.youtube.com/playlist?list=PLvw_J2kfZCX3Mf6tEbIPZXbzJOD1VGl4K"
-                    Target "_blank"
-                ] [ i [ ClassName $"fab fa-youtube {Style.Me1} {Style.Mt1}" ] []; str "YouTube" ]
-                a [
-                    ClassName $"{Style.Btn} {Style.TextWhite} {Style.Me2}"
-                    Href "https://fsprojects.github.io/fantomas/reference/fsharp-compiler-syntax.html"
-                    Target "_blank"
-                    Props.Style [ Background "grey"; BorderColor "grey" ]
-                ] [
-                    i [ ClassName $"fa fa-book {Style.Me1} {Style.Mt1}" ] []
-                    str "Fantomas.FCS Docs"
-                ]
-                a [
-                    ClassName $"{Style.Btn} {Style.BtnSecondary} {Style.TextWhite} {Style.Me2} {Style.Pointer}"
-                    OnClick(fun _ -> dispatch ToggleSettings)
-                ] [ i [ ClassName "fas fa-sliders-h" ] [] ]
+                Class "btn"
+                Href "https://github.com/sponsors/nojaf"
+                Target "_blank"
+                Id "sponsor-btn"
+            ] [
+                i [ ClassName $"far fa-heart {Style.Me1} {Style.Mt1} {Style.TextDanger}" ] []
+                str "Sponsor"
+            ]
+            a [
+                Class "btn"
+                Href "https://github.com/fsprojects/fantomas-tools"
+                Target "_blank"
+                Id "repository-btn"
+            ] [ i [ ClassName $"fab fa-github {Style.Me1} {Style.Mt1}" ] []; str "GitHub" ]
+            a [
+                Class "btn"
+                Id "youtube-btn"
+                Href "https://www.youtube.com/playlist?list=PLvw_J2kfZCX3Mf6tEbIPZXbzJOD1VGl4K"
+                Target "_blank"
+            ] [ i [ ClassName $"fab fa-youtube {Style.Me1} {Style.Mt1}" ] []; str "YouTube" ]
+            a [
+                Class "btn"
+                Id "docs-btn"
+                Href "https://fsprojects.github.io/fantomas/reference/fsharp-compiler-syntax.html"
+                Target "_blank"
+            ] [
+                i [ ClassName $"fa fa-book {Style.Me1} {Style.Mt1}" ] []
+                str "Fantomas.FCS Docs"
+            ]
+            a [ Class "btn"; Id "menu-toggle"; OnClick(fun _ -> dispatch ToggleSettings) ] [
+                i [ ClassName "fas fa-sliders-h" ] []
             ]
         ]
     ]

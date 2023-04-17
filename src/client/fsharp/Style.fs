@@ -4,7 +4,6 @@ open Zanaptak.TypedCssClasses
 
 module private Config =
     [<Literal>]
-    let sassFile = __SOURCE_DIRECTORY__ + "/../src/styles/style.sass"
+    let cssFile = __SOURCE_DIRECTORY__ + "/../src/styles/style.css"
 
-type Style =
-    CssClasses<Config.sassFile, Naming.PascalCase, commandFile="dotnet", argumentPrefix="fsi ../sass.fsx", logFile="TypedCssClasses.log">
+type Style = CssClasses<Config.cssFile, Naming.PascalCase, logFile="TypedCssClasses.log">

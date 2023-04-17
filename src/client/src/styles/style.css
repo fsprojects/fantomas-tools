@@ -1,0 +1,219 @@
+/* Variables */
+:root {
+    --primary: #338CBB;
+    --primary-hover: #65aed5;
+    --primary-border: #235f7f;
+    --secondary: #2FBADC;
+    --secondary-hover: #70d0e7;
+    --secondary-border: #1b88a3;
+    --danger: #C74910;
+    --danger-hover: #ef6f35;
+    --danger-border: #802f0a;
+    --warning: #C7901B;
+    --warning-hover: #e6b448;
+    --warning-border: #845f12;
+    --success: #88D1A6;
+    --success-hover: #bfe6cf;
+    --success-border: #51bc7d;
+    --dark: #222222;
+    --dark-hover: #484848;
+    --dark-border: #000000;
+    --grey: #808080;
+    --grey-hover: #a6a6a6;
+    --grey-border: #5a5a5a;
+    --light: #f8f9fa;
+    --light-hover: #ffffff;
+    --light-border: #cbd3da;
+    --white: #FFFFFF;
+    --white-hover: #ffffff;
+    --white-border: #d9d9d9;
+    --font: 'Poppins', sans-serif;
+    --heading-font: 'Reem Kufi', sans-serif;
+    --unit: 0.5rem;
+    --unit-2: calc(2 * var(--unit));
+    --unit-3: calc(3 * var(--unit));
+    --unit-4: calc(4 * var(--unit));
+}
+
+/* CSS Reset */
+html, body, #app {
+    margin: 0;
+    height: 100%;
+    font-family: var(--font);
+}
+
+/* Buttons */
+.btn {
+    appearance: none;
+    background-color: #FAFBFC;
+    border: 1px solid rgba(27, 31, 35, 0.15);
+    border-radius: 6px;
+    box-shadow: rgba(27, 31, 35, 0.04) 0 1px 0, rgba(255, 255, 255, 0.25) 0 1px 0 inset;
+    box-sizing: border-box;
+    color: #24292E;
+    cursor: pointer;
+    display: inline-block;
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    list-style: none;
+    padding: 6px 16px;
+    position: relative;
+    transition: background-color 0.2s cubic-bezier(0.3, 0, 0.5, 1);
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    vertical-align: middle;
+    white-space: nowrap;
+    word-wrap: break-word;
+}
+
+.btn:hover {
+    background-color: #F3F4F6;
+    text-decoration: none;
+    transition-duration: 0.1s;
+    transform: translateY(1px);
+}
+
+.btn:disabled {
+    background-color: #FAFBFC;
+    border-color: rgba(27, 31, 35, 0.15);
+    color: #959DA5;
+    cursor: default;
+}
+
+.btn:active {
+    background-color: #EDEFF2;
+    box-shadow: rgba(225, 228, 232, 0.2) 0 1px 0 inset;
+    transition: none 0s;
+}
+
+.btn:focus {
+    outline: 1px transparent;
+}
+
+.btn:before {
+    display: none;
+}
+
+.btn::-webkit-details-marker {
+    display: none;
+}
+
+/* Navbar */
+nav {
+    background-color: var(--light);
+    padding: var(--unit-2);
+    display: flex;
+    box-shadow: 0 7px 7px -7px rgba(0, 0, 0, 0.5);
+}
+
+nav > a:hover {
+    color: var(--dark-hover);
+}
+
+
+nav > a {
+    color: var(--dark);
+    text-decoration: none;
+    font-weight: 500;
+    font-family: var(--heading-font);
+    font-size: calc(2.5 * var(--unit));
+    line-height: 1.5;
+    display: flex;
+}
+
+nav > a:first-of-type {
+    flex: 1;
+}
+
+nav > a:last-of-type i {
+    height: 100%;
+    font-size: var(--unit-3);
+    line-height: 1.5;
+}
+
+nav > a img {
+    margin-right: var(--unit-2);
+}
+
+nav > div {
+    display: none;
+}
+
+/* Everything non-mobile */
+@media screen and (min-width: 768px) {
+    /* hide the last link that is only meant for mobile */
+    nav > a:last-of-type {
+        display: none;
+    }
+
+    nav > div {
+        display: flex;
+        align-items: center;
+    }
+
+    nav > div > a {
+        display: flex;
+        margin-right: var(--unit);
+        line-height: 1.5;
+        border: 1px solid red;
+        text-decoration: none;
+    }
+
+    nav > div > a i {
+        margin-right: calc(var(--unit) / 2);
+    }
+
+    nav > div #sponsor-btn i {
+        color: var(--danger);
+    }
+
+    nav > div #repository-btn {
+        background-color: var(--dark);
+        color: var(--white);
+    }
+
+    nav > div #repository-btn:hover {
+        background-color: var(--dark-hover);
+    }
+
+    nav > div #youtube-btn i {
+        color: #FF0000;
+    }
+    
+    nav > div #docs-btn {
+        background-color: var(--grey);
+        border-color: var(--grey-border);
+        color: var(--white);
+    }
+
+    nav > div #docs-btn:hover {
+        background-color: var(--grey-hover);
+    }
+    
+    nav > div #menu-toggle {
+        background-color: var(--secondary);
+        border-color: var(--secondary-border);
+        color: var(--white);
+    }
+    
+    nav > div #menu-toggle:hover {
+        background-color: var(--secondary-hover);
+    }
+}
+
+/* Temporary code to prevent the CSS type provider to fail */
+.version-bar, .loader, .spinner-border, .text-primary, .mb-3, .form-label, .form-control, .inner, .text-white, .btn-secondary,
+.btn-outline-secondary, .btn, .btn-group, .btn-primary, .me-1, .text-muted, .me-2,
+.btn-outline-danger, .text-bg-danger, .text-bg-warning, .text-bg-info, .badge, .text-bg-light,
+.text-bg-dark, .idempotent-error, .btn-danger, .tab-result, .fantomas-result, .fantomas-editor-container,
+.my-3, .border-bottom, .d-block, .h4, .text-center, .mb-2, .ast-editor-container, .navbar,
+.bg-light, .container-fluid, .navbar-brand, .py-0, .my-1, .h1, .me-3, .navbar-text, .py-1,
+.btn-outline-success, .mt-1, .pointer, .text-danger, .btn-dark, .col-5, .border-end, .h-100, .d-flex,
+.flex-grow-1, .p-5, .flex-column, .align-items-center, .justify-content-center,
+.mb-4, .display-3, .ms-4, .lead, .text-end, .btn-close, .active, .nav-item, .nav-link, .nav-tabs, .row, .g-0,
+.col-7, .nav {
+    unicode-bidi: initial;
+}
