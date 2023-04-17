@@ -14,7 +14,8 @@ module VisNetwork =
            color: string
            shape: string
            value: int
-           scaling: obj |}
+           scaling: obj
+           font: obj |}
 
     type edge =
         {| from: int

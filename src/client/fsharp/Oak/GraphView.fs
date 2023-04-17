@@ -134,7 +134,8 @@ let view =
            warning = "#C7901B"
            success = "#88D1A6"
            white = "#FFF"
-           grey = "#DDD" |}
+           grey = "#DDD"
+           purple300 = "#a98eda" |}
 
     let getColor =
         function
@@ -142,6 +143,11 @@ let view =
         | Comment -> colors.success
         | Newline -> colors.grey
         | Directive -> colors.secondary
+
+    let getFontColor =
+        function
+        | Newline -> colors.dark
+        | _ -> colors.white
 
     memoizeBy fst (fun (model, dispatch: Msg -> unit) ->
         let root =
@@ -187,7 +193,8 @@ let view =
                        color = getColor graphOakNode.Type
                        shape = if graphOakNode.Limited then "box" else "ellipse"
                        value = scaleValue
-                       scaling = scalingLabel |})
+                       scaling = scalingLabel
+                       font = {| color = getFontColor graphOakNode.Type |} |})
 
             let edges: VisNetwork.edge array =
                 oakNodes
