@@ -14,7 +14,6 @@ let navigation dispatch =
 
     nav [] [
         a [
-            ClassName $"{Style.NavbarBrand} {Style.Py0} {Style.My1} {Style.H1}"
             Href baseUrl
             Target "_self"
         ] [ img [ Src "./fantomas_logo.png"; ClassName $"{Style.Me3}" ]; str title ]

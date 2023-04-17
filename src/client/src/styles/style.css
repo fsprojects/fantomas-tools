@@ -113,7 +113,6 @@ nav > a:hover {
     color: var(--dark-hover);
 }
 
-
 nav > a {
     color: var(--dark);
     text-decoration: none;
@@ -126,6 +125,7 @@ nav > a {
 
 nav > a:first-of-type {
     flex: 1;
+    align-items: center;
 }
 
 nav > a:last-of-type i {
@@ -158,7 +158,6 @@ nav > div {
         display: flex;
         margin-right: var(--unit);
         line-height: 1.5;
-        border: 1px solid red;
         text-decoration: none;
     }
 
