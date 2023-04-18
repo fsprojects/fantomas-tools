@@ -14,9 +14,11 @@ let navigation dispatch =
 
     nav [] [
         a [ Href baseUrl; Target "_self" ] [ img [ Src "./fantomas_logo.png"; ClassName $"{Style.Me3}" ]; str title ]
-        a [ Href "https://github.com/fsprojects/fantomas-tools"; Target "_blank" ] [
-            i [ ClassName $"fab fa-github {Style.Me1} {Style.Mt1}" ] []
-        ]
+        a [
+            Class "btn"
+            Id "mobile-menu-toggle"
+            OnClick(fun _ -> dispatch ToggleSettings)
+        ] [ i [ ClassName "fas fa-sliders-h" ] [] ]
         div [] [
             a [
                 Class "btn"
@@ -46,7 +48,8 @@ let navigation dispatch =
                 Target "_blank"
             ] [
                 i [ ClassName $"fa fa-book {Style.Me1} {Style.Mt1}" ] []
-                str "Fantomas.FCS Docs"
+                span [ ClassName "short-text" ] [ str "Docs" ]
+                span [ ClassName "long-text" ] [ str "Fantomas.FCS Docs" ]
             ]
             a [ Class "btn"; Id "menu-toggle"; OnClick(fun _ -> dispatch ToggleSettings) ] [
                 i [ ClassName "fas fa-sliders-h" ] []
@@ -86,25 +89,21 @@ let private homeTab =
     ]
 
 let private settings model dispatch inner =
-    let className = sprintf "settings %s" (if model.SettingsOpen then "open" else "")
+    let className = if model.SettingsOpen then "open" else ""
 
     div [
+        Id "settings"
         ClassName className
         OnClick(fun ev ->
             if ev.target?className = "settings open" then
                 dispatch ToggleSettings)
     ] [
-        div [ ClassName Style.Inner ] [
-            div [ ClassName Style.TextEnd ] [
-                button [
-                    Type "Button"
-                    ClassName Style.BtnClose
-                    OnClick(fun _ -> dispatch ToggleSettings)
-                ] []
-            ]
-            h1 [ ClassName Style.TextCenter ] [ str "Settings" ]
-            inner
-        ]
+        i [
+            Id "close-menu-btn"
+            ClassName "fa-solid fa-xmark"
+            OnClick(fun _ -> dispatch ToggleSettings)
+        ] []
+        div [ ClassName Style.Inner ] [ h1 [] [ str "Settings" ]; inner ]
     ]
 
 let tabs (model: Model) dispatch =

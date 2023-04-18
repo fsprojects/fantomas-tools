@@ -69,7 +69,8 @@ let EditorAux (onCursorChanged: obj -> unit) (isReadOnly: bool) (props: MonacoEd
               "lineNumbers" ==> true
               "theme" ==> "vs-light"
               "renderWhitespace" ==> "all"
-              "minimap" ==> createObj [ "enabled" ==> false ] ]
+              "minimap" ==> createObj [ "enabled" ==> false ]
+              "automaticLayout" ==> true ]
 
     let defaultProps: MonacoEditorProp list =
         [ MonacoEditorProp.Height "100%"

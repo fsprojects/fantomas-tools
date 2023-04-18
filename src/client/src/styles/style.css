@@ -160,10 +160,19 @@ nav > a:first-of-type {
     align-items: center;
 }
 
-nav > a:last-of-type i {
-    height: 100%;
-    font-size: var(--unit-3);
-    line-height: 1.5;
+/* mobile menu button */
+#mobile-menu-toggle {
+    background-color: var(--secondary);
+    border-color: var(--secondary-border);
+    color: var(--white);
+}
+
+#mobile-menu-toggle :hover {
+    background-color: var(--secondary-hover);
+}
+
+#mobile-menu-toggle i {
+    margin: 0;
 }
 
 nav > a img {
@@ -174,7 +183,14 @@ nav > div {
     display: none;
 }
 
-/* Everything non-mobile */
+nav > div #docs-btn .short-text {
+    display: inline-block;
+}
+
+nav > div #docs-btn .long-text {
+    display: none;
+}
+
 @media screen and (min-width: 768px) {
     /* hide the last link that is only meant for mobile */
     nav > a:last-of-type {
@@ -213,7 +229,7 @@ nav > div {
     nav > div #youtube-btn i {
         color: #FF0000;
     }
-    
+
     nav > div #docs-btn {
         background-color: var(--grey);
         border-color: var(--grey-border);
@@ -223,19 +239,97 @@ nav > div {
     nav > div #docs-btn:hover {
         background-color: var(--grey-hover);
     }
-    
+
     nav > div #menu-toggle {
         background-color: var(--secondary);
         border-color: var(--secondary-border);
         color: var(--white);
     }
-    
+
     nav > div #menu-toggle:hover {
         background-color: var(--secondary-hover);
     }
 
     nav > div #menu-toggle i {
         margin: 0;
+    }
+}
+
+@media screen and (min-width: 960px) {
+    nav > div #docs-btn .short-text {
+        display: none;
+    }
+
+    nav > div #docs-btn .long-text {
+        display: inline-block;
+    }
+}
+
+/* Setting menu */
+#settings {
+    position: fixed;
+    transition: 400ms all;
+    top: 0;
+    right: 0;
+    width: 0;
+    visibility: hidden;
+    opacity: 0;
+    height: 100%;
+    z-index: 5;
+    background-color: var(--white);
+}
+
+#settings.open {
+    width: 100%;
+    visibility: visible;
+    opacity: 1;
+}
+
+#settings .inner {
+    margin: var(--unit) var(--unit-3);
+}
+
+#close-menu-btn {
+    font-size: var(--unit-4);
+    display: block;
+    cursor: pointer;
+    color: var(--dark);
+    position: absolute;
+    right: var(--unit-4);
+    top: var(--unit-2);
+    z-index: 10;
+    line-height: 1;
+    box-sizing: border-box;
+}
+
+#close-menu-btn:hover {
+    color: var(--dark-hover);
+}
+
+#settings h1 {
+    text-align: center;
+    font-weight: 500;
+    font-size: var(--unit-4);
+    margin-top: 0;
+}
+
+@media screen and (min-width: 768px) {
+    #settings {
+        transition: 300ms all;
+        width: 100%;
+        background-color: #22222280;
+    }
+
+    #settings .inner {
+        transition: 400ms all;
+        width: 450px;
+        height: 100%;
+        position: absolute;
+        right: 0;
+        top: 0;
+        background-color: var(--white);
+        margin: 0;
+        padding: var(--unit) var(--unit-3);
     }
 }
 
