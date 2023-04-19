@@ -341,7 +341,8 @@ nav > div #docs-btn .long-text {
     display: flex;
 }
 
-#tabs li {
+#tabs li a {
+    display: block;
     padding: var(--unit) var(--unit-3);
 }
 
@@ -360,7 +361,22 @@ nav > div #docs-btn .long-text {
 }
 
 #tabs li {
+    cursor: pointer;
     border-bottom: 1px solid var(--light-border);
+}
+
+#tabs li:hover {
+    border-left: 1px solid var(--white-border);
+    border-right: 1px solid var(--white-border);
+    background-color: var(--light);
+}
+
+#tabs li.active {
+    background-color: initial;
+}
+
+#tabs li.active a {
+    cursor: default;
 }
 
 #tabs li.active {

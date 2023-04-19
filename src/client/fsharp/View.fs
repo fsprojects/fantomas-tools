@@ -1,5 +1,6 @@
 module FantomasTools.Client.View
 
+open Browser.Types
 open Fable.Core.JsInterop
 open Fable.React
 open Fable.React.Props
@@ -146,7 +147,11 @@ let tabs (model: Model) dispatch =
 
         let isActiveClass = if isActive then Style.Active else ""
 
-        li [ ClassName isActiveClass ] [ a [ Href href ] [ str label ] ]
+        let onClick (ev: Event) =
+            if isActive then
+                ev.preventDefault ()
+
+        li [ ClassName isActiveClass ] [ a [ Href href; OnClick onClick ] [ str label ] ]
 
     let isFantomasTab =
         function
