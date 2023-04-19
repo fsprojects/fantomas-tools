@@ -359,28 +359,28 @@ nav > div #docs-btn .long-text {
     font-size: var(--unit-2);
 }
 
-#tabs li:has(a.active) {
+#tabs li {
+    border-bottom: 1px solid var(--light-border);
+}
+
+#tabs li.active {
     border: 1px solid var(--light-border);
     border-bottom: none;
 }
 
-#tabs li:not(.active) {
-    border-bottom: 1px solid var(--light-border);
-}
-
-#tabs li a.active {
+#tabs li.active a {
     color: var(--dark);
     font-family: var(--heading-font);
     font-weight: 500;
 }
 
-@media screen and (min-width: 768px) {
-    #tabs li:has(a.active) {
-        border-top: none;    
-    }
+#tabs li:first-of-type.active {
+    border-left: none;
+}
 
-    #tabs li:first-of-type:has(a.active) {
-        border-left: none;
+@media screen and (min-width: 768px) {
+    #tabs li.active {
+        border-top: none;
     }
 }
 

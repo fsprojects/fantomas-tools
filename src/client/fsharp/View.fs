@@ -146,7 +146,7 @@ let tabs (model: Model) dispatch =
 
         let isActiveClass = if isActive then Style.Active else ""
 
-        li [] [ a [ Href href; ClassName isActiveClass ] [ str label ] ]
+        li [ ClassName isActiveClass ] [ a [ Href href ] [ str label ] ]
 
     let isFantomasTab =
         function
