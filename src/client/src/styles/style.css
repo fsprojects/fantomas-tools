@@ -333,6 +333,57 @@ nav > div #docs-btn .long-text {
     }
 }
 
+/* Tabs in tools */
+#tabs {
+    list-style-type: none;
+    margin: 0 0 var(--unit);
+    padding: 0;
+    display: flex;
+}
+
+#tabs li {
+    padding: var(--unit) var(--unit-3);
+}
+
+#tabs li:first-of-type {
+    margin-left: 0;
+}
+
+#tabs li:last-of-type {
+    flex: 1
+}
+
+#tabs li a {
+    color: var(--primary);
+    text-decoration: none;
+    font-size: var(--unit-2);
+}
+
+#tabs li:has(a.active) {
+    border: 1px solid var(--light-border);
+    border-bottom: none;
+}
+
+#tabs li:not(.active) {
+    border-bottom: 1px solid var(--light-border);
+}
+
+#tabs li a.active {
+    color: var(--dark);
+    font-family: var(--heading-font);
+    font-weight: 500;
+}
+
+@media screen and (min-width: 768px) {
+    #tabs li:has(a.active) {
+        border-top: none;    
+    }
+
+    #tabs li:first-of-type:has(a.active) {
+        border-left: none;
+    }
+}
+
 /* Temporary code to prevent the CSS type provider to fail */
 .version-bar, .loader, .spinner-border, .text-primary, .mb-3, .form-label, .form-control, .inner, .text-white, .btn-secondary,
 .btn-outline-secondary, .btn, .btn-group, .btn-primary, .me-1, .text-muted, .me-2,

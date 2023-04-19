@@ -146,26 +146,27 @@ let tabs (model: Model) dispatch =
 
         let isActiveClass = if isActive then Style.Active else ""
 
-        div [ ClassName Style.NavItem; Key label ] [
-            a [ Href href; ClassName $"{Style.NavLink} {isActiveClass}" ] [ str label ]
-        ]
+        li [] [ a [ Href href; ClassName isActiveClass ] [ str label ] ]
 
     let isFantomasTab =
         function
         | FantomasTab _ -> true
         | _ -> false
 
-    let navItems =
-        [ navItem HomeTab "Home" (model.ActiveTab = HomeTab)
-          navItem ASTTab "AST" (model.ActiveTab = ASTTab)
-          navItem OakTab "Oak" (model.ActiveTab = OakTab)
-          navItem
-              (FantomasTab FantomasTools.Client.FantomasOnline.Model.Main)
-              "Fantomas"
-              (isFantomasTab model.ActiveTab) ]
+    let tabs =
+        ul [ Id "tabs" ] [
+            navItem HomeTab "Home" (model.ActiveTab = HomeTab)
+            navItem ASTTab "AST" (model.ActiveTab = ASTTab)
+            navItem OakTab "Oak" (model.ActiveTab = OakTab)
+            navItem
+                (FantomasTab FantomasTools.Client.FantomasOnline.Model.Main)
+                "Fantomas"
+                (isFantomasTab model.ActiveTab)
+            li [] []
+        ]
 
     div [ Id "tools" ] [
         settings model dispatch settingsForTab
-        div [ ClassName $"{Style.Nav} {Style.NavTabs}" ] [ ofList navItems ]
+        tabs
         div [ Id "tab-content" ] [ activeTab; div [ Id "commands" ] [ commands ] ]
     ]
