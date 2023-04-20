@@ -9,6 +9,8 @@
         <RestoreUseStaticGraphEvaluation>true</RestoreUseStaticGraphEvaluation>
         <NoWarn>NU1603</NoWarn>
         <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
+        <ServerGarbageCollection>true</ServerGarbageCollection>
+        <OtherFlags>$(OtherFlags) --test:GraphBasedChecking</OtherFlags>
         <!-- Override these values to point to your local fantomas repository -->
         <FantomasMainRepository>$(MSBuildThisFileDirectory).deps\fantomas</FantomasMainRepository>
 <!--        <FantomasPreviewRepository>$(MSBuildThisFileDirectory).deps\v6.0</FantomasPreviewRepository>-->

@@ -25,9 +25,9 @@
       },
       "Fantomas.FCS": {
         "type": "Direct",
-        "requested": "[6.0.0, )",
-        "resolved": "6.0.0",
-        "contentHash": "RIWChUF02Ab+mcTpYcy5gSIgw0nJ80/HqN8sC0Mkxay2t5I7lkdC5xvOiEPiz43YJldVvug1FzGC/iPoBiQfCg==",
+        "requested": "[6.0.1, )",
+        "resolved": "6.0.1",
+        "contentHash": "kYp60h9NwMP32dT4q1qeUh6mXUHL9U5Xy4r+mDger6RshRnFC3F/ze53AoYXCxQt5Y8hfCz9dlAcghbs54Vq5Q==",
         "dependencies": {
           "FSharp.Core": "6.0.1",
           "System.Diagnostics.DiagnosticSource": "7.0.0",
