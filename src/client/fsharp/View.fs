@@ -68,12 +68,10 @@ let editor model dispatch =
     ]
 
 let private homeTab =
-    div [ ClassName $"{Style.BgLight} {Style.P5}" ] [
-        div [ ClassName $"{Style.DFlex} {Style.AlignItemsCenter} {Style.Mb4}" ] [
-            img [ Src "./logo.png" ]
-            h1 [ ClassName $"{Style.Display3} {Style.Ms4}" ] [ str "Fantomas tool" ]
-        ]
-        p [ ClassName Style.Lead ] [ str "Welcome to the Fantomas Tools!" ]
+    div [ Id "home-tab"; ClassName Style.TabContent ] [
+        div [ ClassName Style.Shine ] [ img [ Src "./logo.png" ] ]
+        h1 [] [ str "Fantomas tools" ]
+        p [] [ str "Welcome to the Fantomas tools!" ]
         p [] [
             str "if you plan on using these tools extensively, consider cloning the "
             a [ Href "https://github.com/fsprojects/fantomas-tools"; Target "_blank" ] [ str "repository" ]
@@ -173,5 +171,7 @@ let tabs (model: Model) dispatch =
     div [ Id "tools" ] [
         settings model dispatch settingsForTab
         tabs
-        div [ Id "tab-content" ] [ activeTab; div [ Id "commands" ] [ commands ] ]
+        activeTab
+        if not (isNull commands) then
+            div [ Id "commands" ] [ commands ]
     ]

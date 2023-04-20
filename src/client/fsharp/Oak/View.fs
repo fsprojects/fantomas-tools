@@ -96,15 +96,17 @@ let rec mkResultDiv
     Continuation.sequence continuations finalContinuation
 
 let private results (model: Model) dispatch =
-    match model.Oak with
-    | None -> div [ Id "oakResult" ] []
-    | Some oak ->
-        let lines = mkResultDiv dispatch 0 "root" oak id
-        div [ Id "oakResult" ] [ ofArray lines ]
+    div [ Id "oakResult"; ClassName Style.TabContent ] [
+        match model.Oak with
+        | None -> ()
+        | Some oak ->
+            let lines = mkResultDiv dispatch 0 "root" oak id
+            ofArray lines
+    ]
 
 let view model dispatch =
     if model.IsLoading then
-        Loader.loader
+        Loader.tabLoading
     else
         match model.Error, model.IsGraphView with
         | None, false -> results model dispatch

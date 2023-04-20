@@ -58,11 +58,11 @@ let private results dispatch model =
             | _ -> None)
         |> ofOption
 
-    div [ Id "ast-content" ] [ div [ ClassName Style.AstEditorContainer ] [ result ]; astErrors ]
+    div [ Id "ast-tab"; ClassName Style.TabContent ] [ result; astErrors ]
 
 let view model dispatch =
     if model.IsLoading then
-        Loader.loader
+        Loader.tabLoading
     else
         results dispatch model
 

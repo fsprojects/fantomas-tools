@@ -29,6 +29,7 @@
     --white-border: #d9d9d9;
     --font: 'Poppins', sans-serif;
     --heading-font: 'Reem Kufi', sans-serif;
+    --logo-size: 192px;
     --unit: 0.5rem;
     --unit-2: calc(2 * var(--unit));
     --unit-3: calc(3 * var(--unit));
@@ -336,7 +337,7 @@ nav > div #docs-btn .long-text {
 /* Tabs in tools */
 #tabs {
     list-style-type: none;
-    margin: 0 0 var(--unit);
+    margin: 0 0 calc(var(--unit) / 8);
     padding: 0;
     display: flex;
 }
@@ -398,6 +399,76 @@ nav > div #docs-btn .long-text {
     #tabs li.active {
         border-top: none;
     }
+}
+
+.tab-content {
+    flex: 1;
+}
+
+#commands {
+    position: fixed;
+    bottom: var(--unit-2);
+    right: var(--unit-2);
+}
+
+/* Home page tab */
+#home-tab {
+    background-color: var(--light);
+    padding: var(--unit-3);
+}
+
+#home-tab h1 {
+    margin-top: var(--unit-3);
+}
+
+#home-tab p:first-of-type {
+    font-size: var(--unit-3);
+    font-weight: 300;
+}
+
+.shine {
+    position: relative;
+    top: 0%;
+    left: calc(var(--logo-size) / 2);
+    transform: translate(-50%, 0%);
+    width: var(--logo-size);
+    height: var(--logo-size);
+    overflow: hidden;
+    border-radius: 10%;
+}
+
+.shine:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: calc(-50px - var(--logo-size));
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: skewX(-30deg);
+    transition: 0.3s;
+}
+
+.shine:hover:before {
+    left: var(--logo-size);
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.shine img {
+    width: 100%;
+    height: 100%;
+}
+
+/* AST tab */
+#ast-tab {
+
+}
+
+/* Oak tab */
+
+/* Fantomas tab */
+#fantomas-editor-container {
+    height: 100%;
 }
 
 /* Temporary code to prevent the CSS type provider to fail */

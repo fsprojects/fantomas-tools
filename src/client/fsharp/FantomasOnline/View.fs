@@ -329,7 +329,7 @@ let private viewErrors (model: Model) isFsi result isIdempotent errors =
 let view isFsi model =
     match model.State with
     | EditorState.LoadingFormatRequest
-    | EditorState.LoadingOptions -> Loader.loader
+    | EditorState.LoadingOptions -> Loader.tabLoading
     | EditorState.OptionsLoaded -> null
     | EditorState.FormatResult result ->
         let formattedCode, isIdempotent, astErrors =
@@ -338,8 +338,8 @@ let view isFsi model =
             | Some _ -> result.FirstFormat, false, result.FirstValidation
             | None -> result.FirstFormat, true, result.FirstValidation
 
-        div [ ClassName $"{Style.TabResult} {Style.FantomasResult}" ] [
-            div [ ClassName Style.FantomasEditorContainer ] [
+        div [ ClassName Style.TabContent ] [
+            div [ Id Style.FantomasEditorContainer ] [
                 ReadOnlyEditor [
                     MonacoEditorProp.DefaultValue formattedCode
                     MonacoEditorProp.Options(MonacoEditorProp.rulerOption model.MaxLineLength)
@@ -349,7 +349,7 @@ let view isFsi model =
         ]
 
     | EditorState.FormatError error ->
-        div [ ClassName Style.TabResult ] [ ReadOnlyEditor [ MonacoEditorProp.DefaultValue error ] ]
+        div [ ClassName Style.TabContent ] [ ReadOnlyEditor [ MonacoEditorProp.DefaultValue error ] ]
 
 let private userChangedSettings (model: Model) =
     model.SettingsChangedByTheUser |> List.isEmpty |> not
