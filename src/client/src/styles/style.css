@@ -435,6 +435,7 @@ nav > div #docs-btn .long-text {
     height: var(--logo-size);
     overflow: hidden;
     border-radius: 10%;
+    cursor: none;
 }
 
 .shine:before {
