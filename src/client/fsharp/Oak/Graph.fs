@@ -1,86 +1,106 @@
 module FantomasTools.Client.OakViewer.Graph
 
+open Browser.Types
 open Fable.Core
+open Fable.Core.JsInterop
 open Fable.React
-open FantomasTools.Client.OakViewer.Model
-open FantomasTools.Client.OakViewer.Model.GraphView
+open Feliz
 
-module VisReact =
+module VisNetwork =
+    type node =
+        {| id: int
+           label: string
+           title: string
+           level: int
+           color: string
+           shape: string
+           value: int
+           font: obj |}
 
-    // vis-react component
-    let inline graph
-        (graphOptions: Options)
-        (parentElementId: string)
-        nodes
-        edges
-        selectNodeCallback
-        hoverNodeCallback
-        : ReactElement
-        =
-        let layout =
-            let hier =
-                {| enabled = true
-                   direction = "UD"
-                   levelSeparation = 75 |}
+    type edge =
+        {| from: int
+           ``to``: int
+           dashes: bool |}
 
-            match graphOptions.Layout with
-            | TopDown -> {| hierarchical = hier |}
-            | LeftRight -> {| hierarchical = {| hier with direction = "LR" |} |}
-            | Free -> {| hierarchical = {| hier with enabled = false |} |}
+    type options =
+        {| layout: obj
+           interaction: obj
+           width: string
+           height: string
+           nodes: obj |}
 
-        let scalingLabel =
-            let opt =
-                {| enabled = true
-                   max = graphOptions.ScaleMaxSize |}
+    [<Import("DataSet", "vis-data/peer")>]
+    type DataSet(_data: U2<node, edge> array) =
+        class
+        end
 
-            match graphOptions.Scale with
-            | NoScale -> {| opt with enabled = false |}
-            | SubTreeNodes
-            | AllNodes -> opt
+    type data = {| nodes: DataSet; edges: DataSet |}
 
-        let parentElement = Browser.Dom.document.getElementById parentElementId
+    [<Import("Network", "vis-network/peer")>]
+    type Network(_container: Element, _data: obj, _options: obj) =
+        inherit System.Object()
 
-        ofImport
-            "default"
-            "vis-react"
-            {| graph =
-                {| nodes =
-                    nodes
-                    |> Map.toArray
-                    |> Array.map
-                        (fun
-                            (NodeId i,
-                             { Label = NodeLabel l
-                               Level = level
-                               Color = NodeColor c
-                               Shape = s
-                               ScaleValue = v }) ->
-                            {| id = i
-                               label = l
-                               level = level
-                               color = c
-                               shape = (string s).ToLower()
-                               value = v |})
-                   edges =
-                    edges
-                    |> Set.toArray
-                    |> Array.map
-                        (fun
-                            { From = NodeId f
-                              To = NodeId t
-                              Dashed = d } -> {| from = f; ``to`` = t; dashes = d |}) |}
-               options =
-                {| layout = layout
-                   interaction = {| hover = true |}
-                   nodes = {| scaling = {| label = scalingLabel |} |}
-                   width = string parentElement.clientWidth
-                   height = string parentElement.clientHeight |}
-               events =
-                {| selectNode = fun (ev: {| nodes: int[] |}) -> selectNodeCallback (NodeId ev.nodes[0])
-                   hoverNode = fun (ev: {| node: int |}) -> hoverNodeCallback (NodeId ev.node) |}
-               style = {| |}
-               getNetwork = fun _ -> ()
-               getNodes = fun _ -> ()
-               getEdges = fun _ -> ()
-               vis = fun _ -> () |}
-            []
+        [<Emit("$0.on('selectNode', $1)")>]
+        member this.OnSelect _callback : unit = jsNative
+
+        [<Emit("$0.on('hoverNode', $1)")>]
+        member this.OnHover _callback : unit = jsNative
+
+        [<Emit("$0.off('selectNode')")>]
+        member this.OffSelect() : unit = jsNative
+
+        [<Emit("$0.off('hoverNode')")>]
+        member this.OffHover() : unit = jsNative
+
+        [<Emit("$0.setData($1)")>]
+        member this.SetData(_data: data) = jsNative
+
+        [<Emit("$0.setOptions($1)")>]
+        member this.SetOptions(_options: options) = jsNative
+
+type GraphProps =
+    {| options: VisNetwork.options
+       data: VisNetwork.data
+       selectNode: {| nodes: int array |} -> unit
+       hoverNode: {| node: int |} -> unit |}
+
+type RefProp =
+    | Ref of obj
+
+    interface IHTMLProp
+
+[<ReactComponent>]
+let Graph (props: GraphProps) =
+    let divRef = React.useRef null
+    let network, setNetwork = React.useState None
+
+    React.useEffectOnce (fun () ->
+        if not (isNullOrUndefined divRef.current) then
+            let network' = VisNetwork.Network(divRef.current, props.data, props.options)
+            network'.OnSelect(props.selectNode)
+            network'.OnHover(props.hoverNode)
+            setNetwork (Some network')
+            JS.console.log "Network created")
+
+    React.useEffect (
+        fun () ->
+            JS.console.log ("Data changed", props.data, network)
+
+            network
+            |> Option.iter (fun network ->
+                network.OffSelect()
+                network.OffHover()
+                network.SetData props.data
+                network.OnSelect(props.selectNode)
+                network.OnHover(props.hoverNode))
+        , [| box network; box props.data |]
+    )
+
+    React.useEffect (
+        fun () ->
+            JS.console.log ("Options changed", props.options, network)
+            network |> Option.iter (fun network -> network.SetOptions props.options)
+        , [| box network; box props.options |]
+    )
+
+    div [ Ref divRef ] [ str "graph, never render" ]

@@ -1,6 +1,7 @@
 ﻿module FantomasTools.Client.Oak.GraphView
 
 open System.Collections.Generic
+open Fable.Core.JsInterop
 open Fable.React
 open Fable.React.Props
 open FantomasTools.Client
@@ -17,15 +18,19 @@ type NodeType =
     | Directive
 
 type GraphOakNode =
-    { Id: int
-      Node: string
-      Type: NodeType
-      Coords: HighLightRange
-      CoordsUnion: HighLightRange
-      Children: GraphOakNode list
-      Limited: bool
-      Level: int
-      Size: int }
+    {
+        Id: int
+        /// The clr type of the node
+        Title: string
+        /// The text of the node, could be the type name or the text of the node
+        Node: string
+        Type: NodeType
+        Coords: HighLightRange
+        Children: GraphOakNode list
+        Limited: bool
+        Level: int
+        Size: int
+    }
 
 let nodesFromRoot root =
     let rec getChildren acc n =
@@ -40,12 +45,12 @@ let private parseResults =
     let mutable nodeIdCounter = 0
 
     let rec parseNode level (n: OakNode) =
-        let mkNode (level: int) (text: string) (range: HighLightRange) (t: NodeType) : GraphOakNode =
+        let mkNode (level: int) (title: string) (text: string) (range: HighLightRange) (t: NodeType) : GraphOakNode =
             let n =
                 { Id = nodeIdCounter
                   Node = text
+                  Title = title
                   Coords = range
-                  CoordsUnion = range
                   Type = t
                   Children = []
                   Limited = false
@@ -63,7 +68,8 @@ let private parseResults =
                 | s when s.ToLower().Contains "comment" -> Comment
                 | _ -> Standard
 
-            mkNode level (t.Content |> Option.defaultValue t.Type) t.Range typ
+            let title = sprintf "%c%s" (System.Char.ToUpper t.Type.[0]) (t.Type[1..])
+            mkNode level title (t.Content |> Option.defaultValue t.Type) t.Range typ
 
         let parseNodeOrTriviaNode level n =
             match n with
@@ -77,18 +83,12 @@ let private parseResults =
             |> List.map (parseNodeOrTriviaNode (level + 1))
 
         let node =
-            let n = mkNode level n.Type n.Range Standard
-            let ranges = n.Coords :: (children |> List.map (fun x -> x.CoordsUnion))
-
-            let unionRange =
-                { StartLine = ranges |> Seq.map (fun n -> n.StartLine) |> Seq.min
-                  StartColumn = ranges |> Seq.map (fun n -> n.StartColumn) |> Seq.min
-                  EndLine = ranges |> Seq.map (fun n -> n.EndLine) |> Seq.max
-                  EndColumn = ranges |> Seq.map (fun n -> n.EndColumn) |> Seq.max }
+            let n =
+                let text = Option.defaultValue n.Type n.Text
+                mkNode level n.Type text n.Range Standard
 
             { n with
                 Children = children
-                CoordsUnion = unionRange
                 Size = n.Size + (children |> Seq.sumBy (fun x -> x.Size)) }
 
         node
@@ -143,7 +143,8 @@ let view =
            warning = "#C7901B"
            success = "#88D1A6"
            white = "#FFF"
-           grey = "#DDD" |}
+           grey = "#DDD"
+           purple300 = "#a98eda" |}
 
     let getColor =
         function
@@ -151,6 +152,13 @@ let view =
         | Comment -> colors.success
         | Newline -> colors.grey
         | Directive -> colors.secondary
+
+    let getFontColor =
+        function
+        | Newline -> colors.dark
+        | _ -> colors.white
+
+    let minScaling = 10
 
     memoizeBy fst (fun (model, dispatch: Msg -> unit) ->
         let root =
@@ -166,43 +174,88 @@ let view =
             let root = limitTreeByNodes model.GraphViewOptions.NodeLimit root
             let oakNodes = nodesFromRoot root
 
-            let nodes =
-                oakNodes
-                |> Map.map (fun _ n ->
-                    { Label = NodeLabel(n.Node.Trim())
-                      Level = n.Level
-                      Color = NodeColor(getColor n.Type)
-                      Shape = if n.Limited then Box else Ellipse
-                      ScaleValue =
-                        match model.GraphViewOptions.Scale with
-                        | NoScale -> 1
-                        | SubTreeNodes -> if not n.Limited then 1 else n.Size
-                        | AllNodes -> n.Size })
+            let scalingLabel =
+                let opt =
+                    {| enabled = true
+                       min = minScaling
+                       max = model.GraphViewOptions.ScaleMaxSize |}
 
-            let edges =
+                match model.GraphViewOptions.Scale with
+                | NoScale -> {| opt with enabled = false |}
+                | SubTreeNodes
+                | AllNodes -> opt
+
+            let nodes: VisNetwork.node array =
+                oakNodes
+                |> Map.toArray
+                |> Array.map (fun (_, graphOakNode) ->
+                    let scaleValue =
+                        match model.GraphViewOptions.Scale with
+                        | NoScale -> minScaling
+                        | SubTreeNodes ->
+                            if not graphOakNode.Limited then
+                                minScaling
+                            else
+                                graphOakNode.Size
+                        | AllNodes -> minScaling + graphOakNode.Size - 1
+
+                    {| id = !!graphOakNode.Id
+                       label = graphOakNode.Node.Trim()
+                       title = graphOakNode.Title
+                       level = graphOakNode.Level
+                       color = getColor graphOakNode.Type
+                       shape = if graphOakNode.Limited then "box" else "ellipse"
+                       value = scaleValue
+                       font = {| color = getFontColor graphOakNode.Type |} |})
+
+            let edges: VisNetwork.edge array =
                 oakNodes
                 |> Map.values
                 |> Seq.collect (fun n ->
                     n.Children
                     |> Seq.map (fun m ->
                         if m.Type = Standard then
-                            { From = NodeId n.Id
-                              To = NodeId m.Id
-                              Dashed = false }
+                            {| from = !!n.Id
+                               ``to`` = !!m.Id
+                               dashes = false |}
+                            : VisNetwork.edge
                         else
-                            { From = NodeId m.Id
-                              To = NodeId n.Id
-                              Dashed = true }))
-                |> set
+                            {| from = !!m.Id
+                               ``to`` = !!n.Id
+                               dashes = true |}))
+                |> Seq.toArray
+
+            let layout =
+                let hier =
+                    {| enabled = true
+                       direction = "UD"
+                       levelSeparation = 75 |}
+
+                match model.GraphViewOptions.Layout with
+                | TopDown -> {| hierarchical = hier |}
+                | LeftRight -> {| hierarchical = {| hier with direction = "LR" |} |}
+                | Free -> {| hierarchical = {| hier with enabled = false |} |}
+
+            let parentElement = Browser.Dom.document.getElementById "tab-content"
+
+            let options: VisNetwork.options =
+                {| layout = layout
+                   interaction = {| hover = true |}
+                   width = $"{parentElement.clientWidth}"
+                   height = $"{parentElement.clientHeight}"
+                   nodes = {| scaling = {| label = scalingLabel |} |} |}
 
             let graph =
-                VisReact.graph
-                    model.GraphViewOptions
-                    "tab-content"
-                    nodes
-                    edges
-                    (fun nId -> dispatch (GraphViewSetRoot nId))
-                    (fun nId -> dispatch (HighLight oakNodes[nId].CoordsUnion))
+                Graph
+                    {| options = options
+                       data =
+                        {| nodes = VisNetwork.DataSet(!!nodes)
+                           edges = VisNetwork.DataSet(!!edges) |}
+                       selectNode =
+                        (fun ev ->
+                            for nodeId in ev.nodes do
+                                dispatch (GraphViewSetRoot(NodeId nodeId)))
+                       hoverNode = (fun ev -> dispatch (HighLight oakNodes.[NodeId ev.node].Coords)) |}
 
             fragment [] [
                 graph

@@ -32,10 +32,14 @@ let mkTriviaResultDiv dispatch level (key: string) (triviaNode: TriviaNode) : Re
         | "directive" -> "directive"
         | _ -> ""
 
+    let title =
+        sprintf "%c%s" (System.Char.ToUpper triviaNode.Type[0]) (triviaNode.Type[1..])
+
     let content =
         mkResultDivContent level triviaNode.Range (Option.defaultValue "Newline" triviaNode.Content)
 
     div [
+        Title title
         Key key
         OnClick(fun ev ->
             ev.stopPropagation ()
@@ -64,6 +68,7 @@ let rec mkResultDiv
             mkResultDivContent level node.Range (Option.defaultValue node.Type node.Text)
 
         div [
+            Title node.Type
             Key key
             OnClick(fun ev ->
                 ev.stopPropagation ()
@@ -170,5 +175,5 @@ let settings isFsi (model: Model) dispatch =
                       (int >> SetGraphViewScaleMax >> dispatch)
                       (str "Graph view scale max size limit")
                       "Max size of scaled node"
-                      model.GraphViewOptions.NodeLimit ]
+                      model.GraphViewOptions.ScaleMaxSize ]
     ]
