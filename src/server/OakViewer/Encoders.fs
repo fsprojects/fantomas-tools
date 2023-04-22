@@ -33,10 +33,10 @@ let rec encodeNode (node: Node) (continuation: JsonValue -> JsonValue) : JsonVal
     let text =
         match node with
         | :? SingleTextNode as stn ->
-            if stn.Text.Length > 13 then
-                sprintf "\"%s...\"" (stn.Text.Substring(0, 10))
+            if stn.Text.Length < 13 then
+                stn.Text
             else
-                $"\"{stn.Text}\""
+                sprintf "%s.." (stn.Text.Substring(0, 10))
             |> Some
         | _ -> None
 

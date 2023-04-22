@@ -18,14 +18,19 @@ type NodeType =
     | Directive
 
 type GraphOakNode =
-    { Id: int
-      Node: string
-      Type: NodeType
-      Coords: HighLightRange
-      Children: GraphOakNode list
-      Limited: bool
-      Level: int
-      Size: int }
+    {
+        Id: int
+        /// The clr type of the node
+        Title: string
+        /// The text of the node, could be the type name or the text of the node
+        Node: string
+        Type: NodeType
+        Coords: HighLightRange
+        Children: GraphOakNode list
+        Limited: bool
+        Level: int
+        Size: int
+    }
 
 let nodesFromRoot root =
     let rec getChildren acc n =
@@ -40,10 +45,11 @@ let private parseResults =
     let mutable nodeIdCounter = 0
 
     let rec parseNode level (n: OakNode) =
-        let mkNode (level: int) (text: string) (range: HighLightRange) (t: NodeType) : GraphOakNode =
+        let mkNode (level: int) (title: string) (text: string) (range: HighLightRange) (t: NodeType) : GraphOakNode =
             let n =
                 { Id = nodeIdCounter
                   Node = text
+                  Title = title
                   Coords = range
                   Type = t
                   Children = []
@@ -62,7 +68,8 @@ let private parseResults =
                 | s when s.ToLower().Contains "comment" -> Comment
                 | _ -> Standard
 
-            mkNode level (t.Content |> Option.defaultValue t.Type) t.Range typ
+            let title = sprintf "%c%s" (System.Char.ToUpper t.Type.[0]) (t.Type[1..])
+            mkNode level title (t.Content |> Option.defaultValue t.Type) t.Range typ
 
         let parseNodeOrTriviaNode level n =
             match n with
@@ -76,7 +83,9 @@ let private parseResults =
             |> List.map (parseNodeOrTriviaNode (level + 1))
 
         let node =
-            let n = mkNode level n.Type n.Range Standard
+            let n =
+                let text = Option.defaultValue n.Type n.Text
+                mkNode level n.Type text n.Range Standard
 
             { n with
                 Children = children
@@ -149,7 +158,7 @@ let view =
         | Newline -> colors.dark
         | _ -> colors.white
 
-    let minScaling = 20
+    let minScaling = 10
 
     memoizeBy fst (fun (model, dispatch: Msg -> unit) ->
         let root =
@@ -192,6 +201,7 @@ let view =
 
                     {| id = !!graphOakNode.Id
                        label = graphOakNode.Node.Trim()
+                       title = graphOakNode.Title
                        level = graphOakNode.Level
                        color = getColor graphOakNode.Type
                        shape = if graphOakNode.Limited then "box" else "ellipse"

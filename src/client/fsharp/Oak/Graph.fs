@@ -10,6 +10,7 @@ module VisNetwork =
     type node =
         {| id: int
            label: string
+           title: string
            level: int
            color: string
            shape: string
