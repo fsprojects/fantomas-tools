@@ -182,13 +182,13 @@ let view =
                 |> Array.map (fun (_, graphOakNode) ->
                     let scaleValue =
                         match model.GraphViewOptions.Scale with
-                        | NoScale -> 1
+                        | NoScale -> minScaling
                         | SubTreeNodes ->
                             if not graphOakNode.Limited then
-                                1
+                                minScaling
                             else
                                 graphOakNode.Size
-                        | AllNodes -> graphOakNode.Size
+                        | AllNodes -> minScaling + graphOakNode.Size - 1
 
                     {| id = !!graphOakNode.Id
                        label = graphOakNode.Node.Trim()

@@ -170,5 +170,5 @@ let settings isFsi (model: Model) dispatch =
                       (int >> SetGraphViewScaleMax >> dispatch)
                       (str "Graph view scale max size limit")
                       "Max size of scaled node"
-                      model.GraphViewOptions.NodeLimit ]
+                      model.GraphViewOptions.ScaleMaxSize ]
     ]
