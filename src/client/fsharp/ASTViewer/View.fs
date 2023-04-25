@@ -61,12 +61,6 @@ let private results dispatch model =
 
     div [ Id "ast-tab"; ClassName Style.TabContent ] [ result; astErrors ]
 
-let view model dispatch =
-    if model.IsLoading then
-        Loader.tabLoading
-    else
-        results dispatch model
-
 let commands dispatch =
     button [
         ClassName $"{Style.Btn} {Style.BtnPrimary} {Style.TextWhite}"

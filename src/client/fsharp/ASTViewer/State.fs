@@ -40,11 +40,7 @@ let private fetchTypedAst (payload: Shared.Request) dispatch =
     let url = $"%s{backend}/typed-ast"
     fetchNodeRequest url payload dispatch
 
-let private initialModel =
-    { Parsed = None
-      IsLoading = false
-      Version = ""
-      FSharpEditorState = Loading }
+let private initialModel = { Parsed = None; Version = "" }
 
 let private getMessageFromError (ex: exn) = Error ex.Message
 
@@ -74,6 +70,9 @@ let private updateUrl (bubble: BubbleModel) _ =
 let debugASTRangeHighlight: bool =
     not (String.IsNullOrWhiteSpace(Browser.WebStorage.localStorage.getItem "debugASTRangeHighlight"))
 
+let private loadCmd = Cmd.ofMsg (BubbleMessage.SetIsLoading true |> Msg.Bubble)
+let private unloadCmd = Cmd.ofMsg (BubbleMessage.SetIsLoading false |> Msg.Bubble)
+
 // The update function computes the next state of the application based on the current state and the incoming events/messages
 // It can also run side-effects (encoded as commands) like calling the server via Http.
 // these commands in turn, can dispatch messages to which the update function will react.
@@ -81,26 +80,25 @@ let update (bubble: BubbleModel) (msg: Msg) (model: Model) : Model * Cmd<Msg> =
     match msg with
     | Msg.Bubble _ -> model, Cmd.none // handle in upper update function
     | ASTParsed x ->
-        let nextModel =
-            { model with
-                IsLoading = false
-                Parsed = Some(Ok x) }
+        let nextModel = { model with Parsed = Some(Ok x) }
 
-        nextModel, Cmd.none
+        nextModel, unloadCmd
     | Error e ->
         let nextModel =
             { model with
-                IsLoading = false
                 Parsed = Some(Result.Error e) }
 
-        nextModel, Cmd.none
+        nextModel, unloadCmd
     | DoParse ->
         let parseRequest = modelToParseRequest bubble
 
         let cmd =
-            Cmd.batch [ Cmd.ofEffect (fetchUntypedAST parseRequest); Cmd.ofEffect (updateUrl bubble) ]
+            Cmd.batch
+                [ Cmd.ofEffect (fetchUntypedAST parseRequest)
+                  Cmd.ofEffect (updateUrl bubble)
+                  loadCmd ]
 
-        { model with IsLoading = true }, cmd
+        model, cmd
 
     | VersionFound version -> { model with Version = version }, Cmd.none
 // TODO: fix AST highlighting

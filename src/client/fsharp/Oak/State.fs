@@ -31,7 +31,6 @@ let private fetchFSCVersion () = sprintf "%s/version" backend |> Http.getText
 let private initialModel: Model =
     { Oak = None
       Error = None
-      IsLoading = true
       Version = "???"
       IsGraphView = false
       GraphViewOptions =
@@ -67,6 +66,9 @@ let private updateUrl (bubble: BubbleModel) (model: Model) _ =
     let json = Encode.toString 2 (encodeUrlModel bubble model)
     UrlTools.updateUrlWithData json
 
+let private loadCmd = Cmd.ofMsg (BubbleMessage.SetIsLoading true |> Msg.Bubble)
+let private unloadCmd = Cmd.ofMsg (BubbleMessage.SetIsLoading false |> Msg.Bubble)
+
 let update (bubble: BubbleModel) (msg: Msg) model : Model * Cmd<Msg> =
     match msg with
     | Msg.Bubble _ -> model, Cmd.none // handle in upper update function
@@ -74,26 +76,20 @@ let update (bubble: BubbleModel) (msg: Msg) model : Model * Cmd<Msg> =
         let parseRequest = modelToParseRequest bubble
 
         let cmd =
-            Cmd.batch [ Cmd.ofEffect (fetchOak parseRequest); Cmd.ofEffect (updateUrl bubble model) ]
+            Cmd.batch
+                [ Cmd.ofEffect (fetchOak parseRequest)
+                  Cmd.ofEffect (updateUrl bubble model)
+                  loadCmd ]
 
-        { model with IsLoading = true }, cmd
+        model, cmd
     | Msg.OakReceived result ->
         { model with
-            IsLoading = false
             Oak = Some result
             GraphViewRootNodes = []
             Error = None },
-        Cmd.none
-    | Msg.Error error ->
-        { initialModel with
-            Error = Some error
-            IsLoading = false },
-        Cmd.none
-    | FSCVersionReceived version ->
-        { model with
-            Version = version
-            IsLoading = false },
-        Cmd.none
+        unloadCmd
+    | Msg.Error error -> { initialModel with Error = Some error }, unloadCmd
+    | FSCVersionReceived version -> { model with Version = version }, Cmd.none
     | SetGraphView value -> let m = { model with IsGraphView = value } in m, Cmd.ofEffect (updateUrl bubble m)
     | SetGraphViewLayout value ->
         { model with

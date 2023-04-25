@@ -76,7 +76,6 @@ type Msg =
 type Model =
     { Oak: OakNode option
       Error: string option
-      IsLoading: bool
       Version: string
       IsGraphView: bool
       GraphViewOptions: GraphView.Options

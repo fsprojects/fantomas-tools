@@ -105,29 +105,9 @@ let private settings model dispatch inner =
         div [ ClassName Style.Inner ] [ h1 [] [ str "Settings" ]; inner ]
     ]
 
+let private emptyEditor = Editor [ MonacoEditorProp.Height "0" ]
+
 let tabs (model: Model) dispatch =
-    let activeTab, settingsForTab, commands =
-        match model.ActiveTab with
-        | HomeTab -> homeTab, null, null
-        | ASTTab ->
-            let astDispatch aMsg = dispatch (ASTMsg aMsg)
-
-            ASTViewer.View.view model.ASTModel astDispatch,
-            ASTViewer.View.settings model.Bubble model.ASTModel.Version astDispatch,
-            ASTViewer.View.commands astDispatch
-        | OakTab ->
-            let oakDispatch oMsg = dispatch (OakMsg oMsg)
-
-            OakViewer.View.view model.OakModel oakDispatch,
-            OakViewer.View.settings model.Bubble model.OakModel oakDispatch,
-            OakViewer.View.commands oakDispatch
-
-        | FantomasTab _ ->
-            let fantomasDispatch fMsg = dispatch (FantomasMsg fMsg)
-
-            FantomasOnline.View.view model.Bubble.IsFsi model.FantomasModel,
-            FantomasOnline.View.settings model.Bubble.IsFsi model.FantomasModel fantomasDispatch,
-            FantomasOnline.View.commands model.Bubble model.FantomasModel fantomasDispatch
 
     let navItem tab label isActive =
         let href =
@@ -168,10 +148,56 @@ let tabs (model: Model) dispatch =
             li [] []
         ]
 
+    let activeTab, settingsForTab, commands =
+        match model.ActiveTab with
+        | HomeTab -> homeTab, null, null
+        | ASTTab ->
+            let astDispatch aMsg = dispatch (ASTMsg aMsg)
+
+            null,
+            ASTViewer.View.settings model.Bubble model.ASTModel.Version astDispatch,
+            ASTViewer.View.commands astDispatch
+        | OakTab ->
+            let oakDispatch oMsg = dispatch (OakMsg oMsg)
+
+            OakViewer.View.view model.OakModel oakDispatch,
+            OakViewer.View.settings model.Bubble model.OakModel oakDispatch,
+            OakViewer.View.commands oakDispatch
+
+        | FantomasTab _ ->
+            let fantomasDispatch fMsg = dispatch (FantomasMsg fMsg)
+
+            FantomasOnline.View.view model.Bubble.IsFsi model.FantomasModel,
+            FantomasOnline.View.settings model.Bubble.IsFsi model.FantomasModel fantomasDispatch,
+            FantomasOnline.View.commands model.Bubble model.FantomasModel fantomasDispatch
+
+    // We always want to show the result editor, even if it's empty.
+    // This is to improve the performance with the react editor and not constantly load and unload it.
+    let resultEditor =
+        if model.Bubble.IsLoading then
+            emptyEditor
+        else
+
+        match model.ActiveTab with
+        | HomeTab
+        | OakTab -> emptyEditor
+        | ASTTab ->
+            match model.ASTModel.Parsed with
+            | None -> emptyEditor
+            | Some(Ok parsed) ->
+                EditorAux (fun ev -> Fable.Core.JS.console.log ev) true [ MonacoEditorProp.DefaultValue parsed.String ]
+            | Some(Result.Error errors) -> ReadOnlyEditor [ MonacoEditorProp.DefaultValue errors ]
+
+        | FantomasTab _ -> null
+
     div [ Id "tools" ] [
         settings model dispatch settingsForTab
         tabs
-        activeTab
+        if model.Bubble.IsLoading then
+            Loader.tabLoading
+        else
+            activeTab
+        resultEditor
         if not (isNull commands) then
             div [ Id "commands" ] [ commands ]
     ]

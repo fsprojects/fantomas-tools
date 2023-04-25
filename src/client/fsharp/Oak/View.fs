@@ -104,14 +104,11 @@ let private results (model: Model) dispatch =
             ofArray lines
     ]
 
-let view model dispatch =
-    if model.IsLoading then
-        Loader.tabLoading
-    else
-        match model.Error, model.IsGraphView with
-        | None, false -> results model dispatch
-        | None, true -> Oak.GraphView.view (model, dispatch)
-        | Some errors, _ -> ReadOnlyEditor [ MonacoEditorProp.DefaultValue errors ]
+let view (model: Model) dispatch =
+    match model.Error, model.IsGraphView with
+    | None, false -> results model dispatch
+    | None, true -> Oak.GraphView.view (model, dispatch)
+    | Some errors, _ -> ReadOnlyEditor [ MonacoEditorProp.DefaultValue errors ]
 
 let commands dispatch =
     button [

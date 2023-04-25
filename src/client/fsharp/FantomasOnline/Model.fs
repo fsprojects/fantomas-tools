@@ -48,5 +48,5 @@ type Model =
         |> List.map snd
 
     member this.MaxLineLength: int =
-        FantomasOnline.Shared.tryGetOptionValue this.UserOptions this.DefaultOptions "MaxLineLength" int
+        tryGetOptionValue this.UserOptions this.DefaultOptions "MaxLineLength" int
         |> Option.defaultValue 120

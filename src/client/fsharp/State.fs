@@ -36,7 +36,8 @@ let init _ =
               IsFsi = isFsiFile
               Defines = ""
               ResultCode = ""
-              Diagnostics = Array.empty }
+              Diagnostics = Array.empty
+              IsLoading = false }
           OakModel = oakModel
           ASTModel = astModel
           FantomasModel = fantomasModel }
@@ -102,6 +103,10 @@ let update msg model =
                     Diagnostics = diagnostics },
                 Cmd.none
             | HighLight hlr -> model.Bubble, Cmd.ofEffect (Editor.selectRange hlr)
+            | SetIsLoading isLoading ->
+                { model.Bubble with
+                    IsLoading = isLoading },
+                Cmd.none
 
         { model with Bubble = bubble }, cmd
 

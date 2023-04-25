@@ -173,6 +173,9 @@ let private copySettings (model: Model) _ =
         printfn "%A" err)
     |> Promise.iter (fun () -> showSuccess "Copied .editorconfig settings to clipboard!")
 
+let private loadCmd = Cmd.ofMsg (BubbleMessage.SetIsLoading true |> Msg.Bubble)
+let private unloadCmd = Cmd.ofMsg (BubbleMessage.SetIsLoading false |> Msg.Bubble)
+
 let update isActiveTab (bubble: BubbleModel) msg model =
     match msg with
     | Msg.Bubble _ -> model, Cmd.none // handle in upper update function
@@ -199,18 +202,19 @@ let update isActiveTab (bubble: BubbleModel) msg model =
         let cmd =
             Cmd.batch
                 [ Cmd.ofEffect (getFormattedCode bubble.SourceCode bubble.IsFsi model)
-                  Cmd.ofEffect (updateUrl bubble.SourceCode bubble.IsFsi model) ]
+                  Cmd.ofEffect (updateUrl bubble.SourceCode bubble.IsFsi model)
+                  loadCmd ]
 
         { model with
             State = LoadingFormatRequest },
         cmd
 
-    | FormatException error -> { model with State = FormatError error }, Cmd.none
+    | FormatException error -> { model with State = FormatError error }, unloadCmd
 
     | FormattedReceived result ->
         { model with
             State = FormatResult result },
-        Cmd.none
+        unloadCmd
     | UpdateOption(key, value) ->
         let userOptions = Map.add key value model.UserOptions
         { model with UserOptions = userOptions }, Cmd.none
