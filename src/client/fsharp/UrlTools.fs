@@ -27,7 +27,10 @@ let private setGetParam (encodedJson: string) : unit =
         let newUrl =
             $"{window.location.protocol}//{window.location.host}{window.location.pathname}{hash}?{``params``.ToString()}"
 
-        history.pushState ({| path = newUrl |}, "", newUrl)
+        let currentUrl = window.location.toString ()
+
+        if currentUrl <> newUrl then
+            history.pushState ({| path = newUrl |}, "", newUrl)
 
 let private encodeUrl (_x: string) : string =
     import "compressToEncodedURIComponent" "lz-string"
