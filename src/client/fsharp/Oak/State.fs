@@ -32,7 +32,6 @@ let private initialModel: Model =
     { Oak = None
       Error = None
       IsLoading = true
-      Defines = ""
       Version = "???"
       IsGraphView = false
       GraphViewOptions =
@@ -45,36 +44,37 @@ let private initialModel: Model =
 let private splitDefines (value: string) =
     value.Split([| ' '; ';' |], StringSplitOptions.RemoveEmptyEntries)
 
-let private modelToParseRequest sourceCode isFsi (model: Model) : OakViewer.ParseRequest =
-    { SourceCode = sourceCode
-      Defines = splitDefines model.Defines
-      IsFsi = isFsi }
+let private modelToParseRequest (bubble: BubbleModel) : OakViewer.ParseRequest =
+    { SourceCode = bubble.SourceCode
+      Defines = splitDefines bubble.Defines
+      IsFsi = bubble.IsFsi }
 
 let init isActive =
-    let model =
-        if isActive then
-            UrlTools.restoreModelFromUrl (decodeUrlModel initialModel) initialModel
-        else
-            initialModel
+    let isGraphView, definesCmd =
+        UrlTools.restoreModelFromUrl decodeUrlModel (false, Cmd.none)
 
     let cmd =
-        Cmd.OfPromise.either fetchFSCVersion () FSCVersionReceived (fun ex -> Error ex.Message)
+        Cmd.batch
+            [ if isActive then
+                  yield definesCmd
+              yield Cmd.OfPromise.either fetchFSCVersion () FSCVersionReceived (fun ex -> Error ex.Message) ]
 
-    model, cmd
+    { initialModel with
+        IsGraphView = isGraphView },
+    cmd
 
-let private updateUrl code isFsi (model: Model) _ =
-    let json = Encode.toString 2 (encodeUrlModel code isFsi model)
+let private updateUrl (bubble: BubbleModel) (model: Model) _ =
+    let json = Encode.toString 2 (encodeUrlModel bubble model)
     UrlTools.updateUrlWithData json
 
-let update code isFsi (msg: Msg) model : Model * Cmd<Msg> =
+let update (bubble: BubbleModel) (msg: Msg) model : Model * Cmd<Msg> =
     match msg with
+    | Msg.Bubble _ -> model, Cmd.none // handle in upper update function
     | Msg.GetOak ->
-        let parseRequest = modelToParseRequest code isFsi model
+        let parseRequest = modelToParseRequest bubble
 
         let cmd =
-            Cmd.batch
-                [ Cmd.ofEffect (fetchOak parseRequest)
-                  Cmd.ofEffect (updateUrl code isFsi model) ]
+            Cmd.batch [ Cmd.ofEffect (fetchOak parseRequest); Cmd.ofEffect (updateUrl bubble model) ]
 
         { model with IsLoading = true }, cmd
     | Msg.OakReceived result ->
@@ -89,14 +89,12 @@ let update code isFsi (msg: Msg) model : Model * Cmd<Msg> =
             Error = Some error
             IsLoading = false },
         Cmd.none
-    | DefinesUpdated d -> { model with Defines = d }, Cmd.none
     | FSCVersionReceived version ->
         { model with
             Version = version
             IsLoading = false },
         Cmd.none
-    | SetFsiFile _ -> model, Cmd.none // handle in upper update function
-    | SetGraphView value -> let m = { model with IsGraphView = value } in m, Cmd.ofEffect (updateUrl code isFsi m)
+    | SetGraphView value -> let m = { model with IsGraphView = value } in m, Cmd.ofEffect (updateUrl bubble m)
     | SetGraphViewLayout value ->
         { model with
             GraphViewOptions =
@@ -133,4 +131,3 @@ let update code isFsi (msg: Msg) model : Model * Cmd<Msg> =
                 else
                     List.tail model.GraphViewRootNodes },
         Cmd.none
-    | HighLight hlr -> model, Cmd.ofEffect (Editor.selectRange hlr)

@@ -9,6 +9,7 @@
     <IsLambda>true</IsLambda>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\..\shared\Types.fs" />
     <Compile Include="..\..\shared\ASTViewerShared.fs" />
     <Compile Include="..\HttpConstants.fs" />
     <Compile Include="..\AWSLambdaExtensions.fs" />

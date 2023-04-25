@@ -5,8 +5,8 @@ open FantomasTools.Client.Model
 open Elmish
 open Feliz.Router
 
-let cmdForCurrentTab tab model =
-    if not (System.String.IsNullOrWhiteSpace model.SourceCode) then
+let cmdForCurrentTab tab (model: Model) =
+    if not (System.String.IsNullOrWhiteSpace model.Bubble.SourceCode) then
         match tab with
         | HomeTab -> Cmd.none
         | ASTTab -> Cmd.ofMsg ASTViewer.Model.DoParse |> Cmd.map Msg.ASTMsg

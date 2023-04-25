@@ -1,14 +1,14 @@
 module FantomasTools.Client.ASTViewer.Encoders
 
 open ASTViewer.Shared
-open FantomasTools.Client.ASTViewer.Model
+open FantomasTools.Client
 open Thoth.Json
 
-let encodeUrlModel code isFsi model : JsonValue =
+let encodeUrlModel (bubble: BubbleModel) : JsonValue =
     Encode.object
-        [ "defines", Encode.string model.Defines
-          "isFsi", Encode.bool isFsi
-          "code", Encode.string code ]
+        [ "defines", Encode.string bubble.Defines
+          "isFsi", Encode.bool bubble.IsFsi
+          "code", Encode.string bubble.SourceCode ]
 
 let encodeInput (input: Request) =
     Encode.object

@@ -224,18 +224,19 @@ Fantomas %s
 
     uri |> Href
 
-let private createGitHubIssue code isFsi model =
+let private createGitHubIssue (bubble: BubbleModel) model =
     let description =
         """Please describe here the Fantomas problem you encountered.
                     Check out our [Contribution Guidelines](https://github.com/fsprojects/fantomas/blob/main/CONTRIBUTING.md#bug-reports)."""
 
     let bh, bc, ah, ac =
         match model.State with
-        | FormatError e -> "Code", code, "Error", e
-        | FormatResult result -> "Code", code, "Result", (Option.defaultValue result.FirstFormat result.SecondFormat)
-        | _ -> "Code", code, "", ""
+        | FormatError e -> "Code", bubble.SourceCode, "Error", e
+        | FormatResult result ->
+            "Code", bubble.SourceCode, "Result", (Option.defaultValue result.FirstFormat result.SecondFormat)
+        | _ -> "Code", bubble.SourceCode, "", ""
 
-    if System.String.IsNullOrWhiteSpace(code) then
+    if System.String.IsNullOrWhiteSpace(bubble.SourceCode) then
         span [ ClassName $"{Style.TextMuted} {Style.Me2}" ] [ str "Looks wrong? Try using the main version!" ]
     else
         match model.Mode with
@@ -251,7 +252,7 @@ let private createGitHubIssue code isFsi model =
                   DefaultOptions = model.DefaultOptions
                   UserOptions = model.UserOptions
                   Version = model.Version
-                  IsFsi = isFsi }
+                  IsFsi = bubble.IsFsi }
 
             a [
                 ClassName $"{Style.Btn} {Style.BtnOutlineDanger}"
@@ -265,11 +266,7 @@ let private viewErrors (model: Model) isFsi result isIdempotent errors =
         match errors with
         | [] -> []
         | errors ->
-            let badgeColor (e: ASTError) =
-                match e.Severity with
-                | ASTErrorSeverity.Error -> Style.TextBgDanger
-                | ASTErrorSeverity.Warning -> Style.TextBgWarning
-                | _ -> Style.TextBgInfo
+            let badgeColor (e: Diagnostic) = e.Severity
 
             errors
             |> List.mapi (fun i e ->
@@ -279,9 +276,9 @@ let private viewErrors (model: Model) isFsi result isIdempotent errors =
                             sprintf
                                 "(%i,%i) (%i, %i)"
                                 e.Range.StartLine
-                                e.Range.StartCol
+                                e.Range.StartColumn
                                 e.Range.EndLine
-                                e.Range.EndCol
+                                e.Range.EndColumn
                         )
                     ]
                     span [ ClassName $"{Style.Badge} {badgeColor}" ] [ str (e.Severity.ToString()) ]
@@ -354,7 +351,7 @@ let view isFsi model =
 let private userChangedSettings (model: Model) =
     model.SettingsChangedByTheUser |> List.isEmpty |> not
 
-let commands code isFsi model dispatch =
+let commands (bubble: BubbleModel) model dispatch =
     let formatButton =
         button [
             ClassName $"{Style.Btn} {Style.BtnPrimary} {Style.TextWhite}"
@@ -376,7 +373,7 @@ let commands code isFsi model dispatch =
     | EditorState.LoadingFormatRequest -> [ formatButton; ofOption copySettingButton ]
     | EditorState.OptionsLoaded
     | EditorState.FormatResult _
-    | EditorState.FormatError _ -> [ createGitHubIssue code isFsi model; formatButton; ofOption copySettingButton ]
+    | EditorState.FormatError _ -> [ createGitHubIssue bubble model; formatButton; ofOption copySettingButton ]
     |> fragment []
 
 let settings isFsi model dispatch =
@@ -398,8 +395,8 @@ let settings isFsi model dispatch =
 
         let fileExtension =
             SettingControls.toggleButton
-                (fun _ -> SetFsiFile true |> dispatch)
-                (fun _ -> SetFsiFile false |> dispatch)
+                (fun _ -> BubbleMessage.SetFsi true |> Bubble |> dispatch)
+                (fun _ -> BubbleMessage.SetFsi false |> Bubble |> dispatch)
                 "*.fsi"
                 "*.fs"
                 (str "File extension")

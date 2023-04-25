@@ -1,10 +1,10 @@
 module FantomasOnlinePreview.FormatCode
 
-open FSharp.Compiler.Diagnostics
 open FSharp.Compiler.Text
 open Fantomas.Core
 open FantomasOnline.Shared
 open FantomasOnline.Server.Shared.Http
+open FantomasTools.Client
 
 let private mapFantomasOptionsToRecord options =
     let newValues =
@@ -48,25 +48,21 @@ let private validate (fileName: string) code =
             match e.Range with
             | None ->
                 { StartLine = 0
-                  StartCol = 0
+                  StartColumn = 0
                   EndLine = 0
-                  EndCol = 0 }
+                  EndColumn = 0 }
             | Some r ->
                 { StartLine = r.StartLine
-                  StartCol = r.StartColumn
+                  StartColumn = r.StartColumn
                   EndLine = r.EndLine
-                  EndCol = r.EndColumn }
+                  EndColumn = r.EndColumn }
 
         { SubCategory = e.SubCategory
           Range = range
-          Severity =
-            match e.Severity with
-            | FSharpDiagnosticSeverity.Warning -> ASTErrorSeverity.Warning
-            | FSharpDiagnosticSeverity.Error -> ASTErrorSeverity.Error
-            | FSharpDiagnosticSeverity.Info -> ASTErrorSeverity.Info
-            | FSharpDiagnosticSeverity.Hidden -> ASTErrorSeverity.Hidden
+          Severity = $"{e.Severity}".ToLower()
           ErrorNumber = Option.defaultValue -1 e.ErrorNumber
-          Message = e.Message })
+          Message = e.Message }
+        : Diagnostic)
     |> fun errors -> async { return errors }
 
 let getVersion () =

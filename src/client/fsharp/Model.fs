@@ -10,9 +10,8 @@ type ActiveTab =
 
 type Model =
     { ActiveTab: ActiveTab
-      SourceCode: string
       SettingsOpen: bool
-      IsFsi: bool
+      Bubble: BubbleModel
       OakModel: OakViewer.Model.Model
       ASTModel: ASTViewer.Model.Model
       FantomasModel: FantomasOnline.Model.Model }

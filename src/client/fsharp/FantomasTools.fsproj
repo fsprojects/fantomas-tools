@@ -3,8 +3,10 @@
     <TargetFramework>net7.0</TargetFramework>
     <AssemblyName>FantomasTools.Client</AssemblyName>
     <RootNamespace>FantomasTools.Client</RootNamespace>
+    <DefineConstants>$(DefineConstants);FABLE_COMPILER</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="../../shared/Types.fs" />
     <Compile Include="../../shared/OakShared.fs" />
     <Compile Include="../../shared/ASTViewerShared.fs" />
     <Compile Include="../../shared/FantomasOnlineShared.fs" />
@@ -16,6 +18,7 @@
     <Compile Include="UrlTools.fs" />
     <Compile Include="Http.fs" />
     <Compile Include="Utils.fs" />
+    <Compile Include="BubbleMessage.fs" />
 
     <Compile Include="Oak\Model.fs" />
     <Compile Include="Oak\Encoders.fs" />

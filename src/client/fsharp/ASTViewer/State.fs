@@ -5,7 +5,6 @@ open System.Text.RegularExpressions
 open Elmish
 open Thoth.Json
 open Fable.Core
-open Fable.Core.JsInterop
 open ASTViewer
 open FantomasTools.Client.Editor
 open FantomasTools.Client.ASTViewer.Model
@@ -27,24 +26,22 @@ let private fetchNodeRequest url (payload: Shared.Request) dispatch =
         | 200 ->
             match decodeResult body with
             | Ok r -> ASTParsed r
-            | Result.Error err -> Error(sprintf "failed to decode response: %A" err)
+            | Result.Error err -> Error $"failed to decode response: %A{err}"
         | 400 -> Error body
         | 413 -> Error "the input was too large to process"
         | _ -> Error body
         |> dispatch)
 
 let private fetchUntypedAST (payload: Shared.Request) dispatch =
-    let url = sprintf "%s/untyped-ast" backend
+    let url = $"%s{backend}/untyped-ast"
     fetchNodeRequest url payload dispatch
 
 let private fetchTypedAst (payload: Shared.Request) dispatch =
-    let url = sprintf "%s/typed-ast" backend
+    let url = $"%s{backend}/typed-ast"
     fetchNodeRequest url payload dispatch
 
 let private initialModel =
-    { Source = ""
-      Defines = ""
-      Parsed = None
+    { Parsed = None
       IsLoading = false
       Version = ""
       FSharpEditorState = Loading }
@@ -53,40 +50,36 @@ let private getMessageFromError (ex: exn) = Error ex.Message
 
 // defines the initial state and initial command (= side-effect) of the application
 let init isActive : Model * Cmd<Msg> =
-    let model =
-        if isActive then
-            UrlTools.restoreModelFromUrl (decodeUrlModel initialModel) initialModel
-        else
-            initialModel
+    let cmd =
+        Cmd.batch
+            [ if isActive then
+                  yield! UrlTools.restoreModelFromUrl decodeUrlModel []
+              yield Cmd.OfPromise.either getVersion () VersionFound getMessageFromError ]
 
-    let cmd = Cmd.OfPromise.either getVersion () VersionFound getMessageFromError
-    model, cmd
+    initialModel, cmd
 
-let private getDefines (model: Model) =
-    model.Defines.Split([| ' '; ','; ';' |], StringSplitOptions.RemoveEmptyEntries)
+let private getDefines (bubble: BubbleModel) =
+    bubble.Defines.Split([| ' '; ','; ';' |], StringSplitOptions.RemoveEmptyEntries)
 
-let private modelToParseRequest sourceCode isFsi (model: Model) : Shared.Request =
-    { SourceCode = sourceCode
-      Defines = getDefines model
-      IsFsi = isFsi }
+let private modelToParseRequest (bubble: BubbleModel) : Shared.Request =
+    { SourceCode = bubble.SourceCode
+      Defines = getDefines bubble
+      IsFsi = bubble.IsFsi }
 
-let private updateUrl code isFsi (model: Model) _ =
-    let json = Encode.toString 2 (encodeUrlModel code isFsi model)
-
+let private updateUrl (bubble: BubbleModel) _ =
+    let json = Encode.toString 2 (encodeUrlModel bubble)
     UrlTools.updateUrlWithData json
 
 // Enter 'localStorage.setItem("debugASTRangeHighlight", "true");' in your browser console to enable.
 let debugASTRangeHighlight: bool =
-    not (String.IsNullOrWhiteSpace(Browser.WebStorage.localStorage.getItem ("debugASTRangeHighlight")))
+    not (String.IsNullOrWhiteSpace(Browser.WebStorage.localStorage.getItem "debugASTRangeHighlight"))
 
 // The update function computes the next state of the application based on the current state and the incoming events/messages
 // It can also run side-effects (encoded as commands) like calling the server via Http.
 // these commands in turn, can dispatch messages to which the update function will react.
-let update code isFsi (msg: Msg) (model: Model) : Model * Cmd<Msg> =
+let update (bubble: BubbleModel) (msg: Msg) (model: Model) : Model * Cmd<Msg> =
     match msg with
-    | SetSourceText x ->
-        let nextModel = { model with Source = x }
-        nextModel, Cmd.none
+    | Msg.Bubble _ -> model, Cmd.none // handle in upper update function
     | ASTParsed x ->
         let nextModel =
             { model with
@@ -102,63 +95,59 @@ let update code isFsi (msg: Msg) (model: Model) : Model * Cmd<Msg> =
 
         nextModel, Cmd.none
     | DoParse ->
-        let parseRequest = modelToParseRequest code isFsi model
+        let parseRequest = modelToParseRequest bubble
 
         let cmd =
-            Cmd.batch
-                [ Cmd.ofEffect (fetchUntypedAST parseRequest)
-                  Cmd.ofEffect (updateUrl code isFsi model) ]
+            Cmd.batch [ Cmd.ofEffect (fetchUntypedAST parseRequest); Cmd.ofEffect (updateUrl bubble) ]
 
         { model with IsLoading = true }, cmd
 
     | VersionFound version -> { model with Version = version }, Cmd.none
-    | DefinesUpdated defines -> { model with Defines = defines }, Cmd.none
-    | SetFsiFile _ -> model, Cmd.none // handle in upper update function
-    | HighLight(line, column) ->
-        match model.Parsed with
-        | Some(Ok { Shared.Response.String = astText }) ->
-            let lines = astText.Split([| "\r\n"; "\n" |], StringSplitOptions.None)
-            // Try and get the line where the cursor clicked in the AST editor
-            match Array.tryItem (line - 1) lines with
-            | None -> model, Cmd.none
-            | Some sourceLine ->
-                if debugASTRangeHighlight then
-                    JS.console.log (sourceLine.Trim())
-
-                let pattern = @"\(\d+,\d+--\d+,\d+\)"
-
-                let rangeDigits =
-                    Regex.Matches(sourceLine, pattern)
-                    |> Seq.cast<Match>
-                    |> fun matches ->
-                        if debugASTRangeHighlight then
-                            JS.console.log matches
-
-                        matches
-                    |> Seq.tryPick (fun m ->
-                        if debugASTRangeHighlight then
-                            JS.console.log m.Value
-
-                        let startIndex = m.Index
-                        let endIndex = m.Index + m.Value.Length
-                        // Verify the match contains the cursor column.
-                        if startIndex <= column && column <= endIndex then
-                            m.Value.Split([| ','; '-'; '('; ')' |], StringSplitOptions.RemoveEmptyEntries)
-                            |> Array.map int
-                            |> Array.toList
-                            |> Some
-                        else
-                            None)
-
-                match rangeDigits with
-                | Some [ startLine; startColumn; endLine; endColumn ] ->
-                    let highlight =
-                        { StartLine = startLine
-                          StartColumn = startColumn
-                          EndLine = endLine
-                          EndColumn = endColumn }
-
-                    model, Cmd.ofEffect (selectRange highlight)
-                | _ -> model, Cmd.none
-
-        | _ -> model, Cmd.none
+// TODO: fix AST highlighting
+// | HighLight(line, column) ->
+//     match model.Parsed with
+//     | Some(Ok { Shared.Response.String = astText }) ->
+//         let lines = astText.Split([| "\r\n"; "\n" |], StringSplitOptions.None)
+//         // Try and get the line where the cursor clicked in the AST editor
+//         match Array.tryItem (line - 1) lines with
+//         | None -> model, Cmd.none
+//         | Some sourceLine ->
+//             if debugASTRangeHighlight then
+//                 JS.console.log (sourceLine.Trim())
+//
+//             let pattern = @"\(\d+,\d+--\d+,\d+\)"
+//
+//             let rangeDigits =
+//                 Regex.Matches(sourceLine, pattern)
+//                 |> Seq.cast<Match>
+//                 |> fun matches ->
+//                     if debugASTRangeHighlight then
+//                         JS.console.log matches
+//
+//                     matches
+//                 |> Seq.tryPick (fun m ->
+//                     if debugASTRangeHighlight then
+//                         JS.console.log m.Value
+//
+//                     let startIndex = m.Index
+//                     let endIndex = m.Index + m.Value.Length
+//                     // Verify the match contains the cursor column.
+//                     if startIndex <= column && column <= endIndex then
+//                         m.Value.Split([| ','; '-'; '('; ')' |], StringSplitOptions.RemoveEmptyEntries)
+//                         |> Array.map int
+//                         |> Array.toList
+//                         |> Some
+//                     else
+//                         None)
+//
+//             match rangeDigits with
+//             | Some [ startLine; startColumn; endLine; endColumn ] ->
+//                 let highlight =
+//                     { StartLine = startLine
+//                       StartColumn = startColumn
+//                       EndLine = endLine
+//                       EndColumn = endColumn }
+//                     : HighLightRange
+//
+//                 model, Cmd.ofEffect (selectRange highlight)
+//             | _ -> model, Cmd.none

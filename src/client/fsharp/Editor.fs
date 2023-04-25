@@ -1,12 +1,13 @@
 module FantomasTools.Client.Editor
 
+open System
 open Fable.Core.JsInterop
 open Fable.Core
 open Fable.React
 open Browser.Types
 open Browser
 open Feliz
-open System
+open FantomasTools.Client
 
 [<AllowNullLiteral>]
 type IMonacoEditor =
@@ -90,13 +91,7 @@ type EditorProp =
     | IsReadOnly of bool
     | GetEditor of (obj -> unit)
 
-type HighLightRange =
-    { StartLine: int
-      StartColumn: int
-      EndLine: int
-      EndColumn: int }
-
-let selectRange (range: HighLightRange) _ =
+let selectRange (range: Range) _ =
     let data =
         jsOptions<CustomEventInit> (fun o ->
             o.detail <-

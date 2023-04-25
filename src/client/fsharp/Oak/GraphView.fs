@@ -5,7 +5,6 @@ open Fable.Core.JsInterop
 open Fable.React
 open Fable.React.Props
 open FantomasTools.Client
-open FantomasTools.Client.Editor
 open FantomasTools.Client.OakViewer.Graph
 open FantomasTools.Client.OakViewer.Model
 open FantomasTools.Client.OakViewer.Model.GraphView
@@ -25,7 +24,7 @@ type GraphOakNode =
         /// The text of the node, could be the type name or the text of the node
         Node: string
         Type: NodeType
-        Coords: HighLightRange
+        Range: Range
         Children: GraphOakNode list
         Limited: bool
         Level: int
@@ -45,12 +44,12 @@ let private parseResults =
     let mutable nodeIdCounter = 0
 
     let rec parseNode level (n: OakNode) =
-        let mkNode (level: int) (title: string) (text: string) (range: HighLightRange) (t: NodeType) : GraphOakNode =
+        let mkNode (level: int) (title: string) (text: string) (range: Range) (t: NodeType) : GraphOakNode =
             let n =
                 { Id = nodeIdCounter
                   Node = text
                   Title = title
-                  Coords = range
+                  Range = range
                   Type = t
                   Children = []
                   Limited = false
@@ -255,7 +254,8 @@ let view =
                         (fun ev ->
                             for nodeId in ev.nodes do
                                 dispatch (GraphViewSetRoot(NodeId nodeId)))
-                       hoverNode = (fun ev -> dispatch (HighLight oakNodes.[NodeId ev.node].Coords)) |}
+                       hoverNode =
+                        (fun ev -> BubbleMessage.HighLight oakNodes.[NodeId ev.node].Range |> Bubble |> dispatch) |}
 
             fragment [] [
                 graph

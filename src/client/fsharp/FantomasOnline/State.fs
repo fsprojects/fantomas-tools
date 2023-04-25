@@ -173,21 +173,22 @@ let private copySettings (model: Model) _ =
         printfn "%A" err)
     |> Promise.iter (fun () -> showSuccess "Copied .editorconfig settings to clipboard!")
 
-let update isActiveTab code isFsi msg model =
+let update isActiveTab (bubble: BubbleModel) msg model =
     match msg with
+    | Msg.Bubble _ -> model, Cmd.none // handle in upper update function
     | VersionReceived version -> { model with Version = version }, Cmd.none
     | OptionsReceived options ->
         let userOptions, isFsi =
             if isActiveTab then
                 restoreUserOptionsFromUrl options
             else
-                optionsListToMap options, isFsi
+                optionsListToMap options, bubble.IsFsi
 
         let cmd =
-            if not (System.String.IsNullOrWhiteSpace code) && isActiveTab then
-                Cmd.batch [ Cmd.ofMsg Format; Cmd.ofMsg (SetFsiFile isFsi) ]
+            if not (System.String.IsNullOrWhiteSpace bubble.SourceCode) && isActiveTab then
+                Cmd.batch [ Cmd.ofMsg Format; Cmd.ofMsg (Bubble(BubbleMessage.SetFsi isFsi)) ]
             else
-                Cmd.ofMsg (SetFsiFile isFsi)
+                Cmd.ofMsg (Bubble(BubbleMessage.SetFsi isFsi))
 
         { model with
             DefaultOptions = options
@@ -197,8 +198,8 @@ let update isActiveTab code isFsi msg model =
     | Format ->
         let cmd =
             Cmd.batch
-                [ Cmd.ofEffect (getFormattedCode code isFsi model)
-                  Cmd.ofEffect (updateUrl code isFsi model) ]
+                [ Cmd.ofEffect (getFormattedCode bubble.SourceCode bubble.IsFsi model)
+                  Cmd.ofEffect (updateUrl bubble.SourceCode bubble.IsFsi model) ]
 
         { model with
             State = LoadingFormatRequest },
@@ -214,8 +215,6 @@ let update isActiveTab code isFsi msg model =
         let userOptions = Map.add key value model.UserOptions
         { model with UserOptions = userOptions }, Cmd.none
     | ChangeMode _ -> model, Cmd.none // handle in upper update function
-
-    | SetFsiFile _ -> model, Cmd.none // handle in upper update function
 
     | CopySettings -> model, Cmd.ofEffect (copySettings model)
 

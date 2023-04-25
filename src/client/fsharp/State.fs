@@ -30,9 +30,13 @@ let init _ =
 
     let model =
         { ActiveTab = currentTab
-          SourceCode = sourceCode
           SettingsOpen = false
-          IsFsi = isFsiFile
+          Bubble =
+            { SourceCode = sourceCode
+              IsFsi = isFsiFile
+              Defines = ""
+              ResultCode = ""
+              Diagnostics = Array.empty }
           OakModel = oakModel
           ASTModel = astModel
           FantomasModel = fantomasModel }
@@ -75,27 +79,42 @@ let update msg model =
 
         nextModel, cmd
     | UpdateSourceCode code ->
-        let cmd = Cmd.ofMsg (ASTMsg(ASTViewer.Model.Msg.SetSourceText code))
-        { model with SourceCode = code }, cmd
+        let bubble = { model.Bubble with SourceCode = code }
+        { model with Bubble = bubble }, Cmd.none
     | ToggleSettings ->
         let m =
             { model with
                 SettingsOpen = not model.SettingsOpen }
 
         m, reload m
-    | OakMsg(OakViewer.Model.Msg.SetFsiFile isFsiFile) -> { model with IsFsi = isFsiFile }, Cmd.none
+
+    | ASTMsg(ASTViewer.Model.Msg.Bubble bubbleMsg)
+    | OakMsg(OakViewer.Model.Msg.Bubble bubbleMsg)
+    | FantomasMsg(FantomasOnline.Model.Msg.Bubble bubbleMsg) ->
+        let bubble, cmd =
+            match bubbleMsg with
+            | SetSourceCode code -> { model.Bubble with SourceCode = code }, Cmd.none
+            | SetFsi isFsiFile -> { model.Bubble with IsFsi = isFsiFile }, Cmd.none
+            | SetDefines defines -> { model.Bubble with Defines = defines }, Cmd.none
+            | SetResultCode code -> { model.Bubble with ResultCode = code }, Cmd.none
+            | SetDiagnostics diagnostics ->
+                { model.Bubble with
+                    Diagnostics = diagnostics },
+                Cmd.none
+            | HighLight hlr -> model.Bubble, Cmd.ofEffect (Editor.selectRange hlr)
+
+        { model with Bubble = bubble }, cmd
+
     | OakMsg oMsg ->
-        let oModel, oCmd =
-            OakViewer.State.update model.SourceCode model.IsFsi oMsg model.OakModel
+        let oModel, oCmd = OakViewer.State.update model.Bubble oMsg model.OakModel
 
         { model with OakModel = oModel }, Cmd.map OakMsg oCmd
-    | ASTMsg(ASTViewer.Model.Msg.SetFsiFile isFsiFile) -> { model with IsFsi = isFsiFile }, Cmd.none
+
     | ASTMsg aMsg ->
-        let aModel, aCmd =
-            ASTViewer.State.update model.SourceCode model.IsFsi aMsg model.ASTModel
+        let aModel, aCmd = ASTViewer.State.update model.Bubble aMsg model.ASTModel
 
         { model with ASTModel = aModel }, Cmd.map ASTMsg aCmd
-    | FantomasMsg(FantomasOnline.Model.Msg.SetFsiFile isFsiFile) -> { model with IsFsi = isFsiFile }, Cmd.none
+
     | FantomasMsg(FantomasOnline.Model.ChangeMode mode) ->
         let cmd =
             let changeVersion (hashWithoutQuery: string) =
@@ -123,6 +142,6 @@ let update msg model =
             | _ -> false
 
         let fModel, fCmd =
-            FantomasOnline.State.update isActiveTab model.SourceCode model.IsFsi fMsg model.FantomasModel
+            FantomasOnline.State.update isActiveTab model.Bubble fMsg model.FantomasModel
 
         { model with FantomasModel = fModel }, Cmd.map FantomasMsg fCmd

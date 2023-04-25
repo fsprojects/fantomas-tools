@@ -1,6 +1,7 @@
 module FantomasTools.Client.FantomasOnline.Model
 
 open FantomasOnline.Shared
+open FantomasTools.Client
 
 type FantomasMode =
     | V4
@@ -10,6 +11,7 @@ type FantomasMode =
     | Preview // Also main branch, formerly v6.0 branch
 
 type Msg =
+    | Bubble of BubbleMessage
     | VersionReceived of string
     | OptionsReceived of FantomasOption list
     | FormatException of string
@@ -17,7 +19,6 @@ type Msg =
     | FormattedReceived of FormatResponse
     | UpdateOption of (string * FantomasOption)
     | ChangeMode of FantomasMode
-    | SetFsiFile of bool
     | CopySettings
     | UpdateSettingsFilter of string
 

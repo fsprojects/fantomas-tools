@@ -1,17 +1,17 @@
 ﻿module FantomasTools.Client.OakViewer.Model
 
 open Fable.Core
-open FantomasTools.Client.Editor
+open FantomasTools.Client
 
 type TriviaNode =
     { Type: string
-      Range: HighLightRange
+      Range: Range
       Content: string option }
 
 type OakNode =
     { Type: string
       Text: string option
-      Range: HighLightRange
+      Range: Range
       ContentBefore: TriviaNode array
       Children: OakNode array
       ContentAfter: TriviaNode array }
@@ -60,11 +60,10 @@ module GraphView =
           ScaleMaxSize: int }
 
 type Msg =
+    | Bubble of BubbleMessage
     | GetOak
     | OakReceived of OakNode
-    | DefinesUpdated of string
     | FSCVersionReceived of string
-    | SetFsiFile of bool
     | SetGraphView of bool
     | SetGraphViewNodeLimit of int
     | SetGraphViewLayout of GraphView.Layout
@@ -73,13 +72,11 @@ type Msg =
     | GraphViewSetRoot of GraphView.NodeId
     | GraphViewGoBack
     | Error of string
-    | HighLight of FantomasTools.Client.Editor.HighLightRange
 
 type Model =
     { Oak: OakNode option
       Error: string option
       IsLoading: bool
-      Defines: string
       Version: string
       IsGraphView: bool
       GraphViewOptions: GraphView.Options

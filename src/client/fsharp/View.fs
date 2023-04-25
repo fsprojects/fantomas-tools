@@ -58,11 +58,11 @@ let navigation dispatch =
         ]
     ]
 
-let editor model dispatch =
+let editor (model: Model) dispatch =
     div [ Id "source" ] [
         Editor [
             MonacoEditorProp.OnChange(UpdateSourceCode >> dispatch)
-            MonacoEditorProp.DefaultValue model.SourceCode
+            MonacoEditorProp.DefaultValue model.Bubble.SourceCode
             MonacoEditorProp.Options(MonacoEditorProp.rulerOption model.FantomasModel.MaxLineLength)
         ]
     ]
@@ -113,21 +113,21 @@ let tabs (model: Model) dispatch =
             let astDispatch aMsg = dispatch (ASTMsg aMsg)
 
             ASTViewer.View.view model.ASTModel astDispatch,
-            ASTViewer.View.settings model.IsFsi model.ASTModel astDispatch,
+            ASTViewer.View.settings model.Bubble model.ASTModel.Version astDispatch,
             ASTViewer.View.commands astDispatch
         | OakTab ->
             let oakDispatch oMsg = dispatch (OakMsg oMsg)
 
             OakViewer.View.view model.OakModel oakDispatch,
-            OakViewer.View.settings model.IsFsi model.OakModel oakDispatch,
+            OakViewer.View.settings model.Bubble model.OakModel oakDispatch,
             OakViewer.View.commands oakDispatch
 
         | FantomasTab _ ->
             let fantomasDispatch fMsg = dispatch (FantomasMsg fMsg)
 
-            FantomasOnline.View.view model.IsFsi model.FantomasModel,
-            FantomasOnline.View.settings model.IsFsi model.FantomasModel fantomasDispatch,
-            FantomasOnline.View.commands model.SourceCode model.IsFsi model.FantomasModel fantomasDispatch
+            FantomasOnline.View.view model.Bubble.IsFsi model.FantomasModel,
+            FantomasOnline.View.settings model.Bubble.IsFsi model.FantomasModel fantomasDispatch,
+            FantomasOnline.View.commands model.Bubble model.FantomasModel fantomasDispatch
 
     let navItem tab label isActive =
         let href =

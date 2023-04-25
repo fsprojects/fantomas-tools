@@ -22,7 +22,7 @@ let mkResultDivContent level range text =
 
     sprintf "%s%s %s" (String.replicate level "  ") text range
 
-let mkTriviaResultDiv dispatch level (key: string) (triviaNode: TriviaNode) : ReactElement =
+let mkTriviaResultDiv (dispatch: Msg -> unit) level (key: string) (triviaNode: TriviaNode) : ReactElement =
     let className =
         match triviaNode.Type with
         | "commentOnSingleLine"
@@ -46,11 +46,11 @@ let mkTriviaResultDiv dispatch level (key: string) (triviaNode: TriviaNode) : Re
             let div = (ev.target :?> Element)
             div.classList.add "highlight"
             JS.setTimeout (fun () -> div.classList.remove "highlight") 400 |> ignore
-            dispatch (HighLight triviaNode.Range))
+            dispatch (Bubble(BubbleMessage.HighLight triviaNode.Range)))
     ] [ pre [ ClassName className ] [ str content ] ]
 
 let rec mkResultDiv
-    dispatch
+    (dispatch: Msg -> unit)
     (level: int)
     (key: string)
     (node: OakNode)
@@ -76,7 +76,7 @@ let rec mkResultDiv
                 div.classList.add "highlight"
                 JS.setTimeout (fun () -> div.classList.remove "highlight") 400 |> ignore
 
-                dispatch (HighLight node.Range))
+                dispatch (Bubble(BubbleMessage.HighLight node.Range)))
         ] [ pre [] [ str content ] ]
 
     let contentBefore =
@@ -119,22 +119,22 @@ let commands dispatch =
         OnClick(fun _ -> dispatch GetOak)
     ] [ i [ ClassName $"fas fa-code {Style.Me1}" ] []; str "Get oak" ]
 
-let settings isFsi (model: Model) dispatch =
+let settings (bubble: BubbleModel) (model: Model) dispatch =
     fragment [] [
         VersionBar.versionBar (sprintf "FSC - %s" model.Version)
         SettingControls.input
             "trivia-defines"
-            (DefinesUpdated >> dispatch)
+            (BubbleMessage.SetDefines >> Bubble >> dispatch)
             (str "Defines")
             "Enter your defines separated with a space"
-            model.Defines
+            bubble.Defines
         SettingControls.toggleButton
-            (fun _ -> dispatch (SetFsiFile true))
-            (fun _ -> dispatch (SetFsiFile false))
+            (fun _ -> dispatch (Bubble(BubbleMessage.SetFsi true)))
+            (fun _ -> dispatch (Bubble(BubbleMessage.SetFsi false)))
             "*.fsi"
             "*.fs"
             (str "File extension")
-            isFsi
+            bubble.IsFsi
         SettingControls.toggleButton
             (fun _ -> dispatch (SetGraphView true))
             (fun _ -> dispatch (SetGraphView false))

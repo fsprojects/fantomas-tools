@@ -1,11 +1,11 @@
 module FantomasOnlineV4.FormatCode
 
 open FSharp.Compiler.CodeAnalysis
-open FSharp.Compiler.Diagnostics
 open Fantomas
 open Fantomas.FormatConfig
 open FantomasOnline.Shared
 open FantomasOnline.Server.Shared.Http
+open FantomasTools.Client
 
 let private checker = CodeFormatterImpl.sharedChecker.Force()
 
@@ -49,17 +49,13 @@ let private validate fileName code =
                 { SubCategory = e.Subcategory
                   Range =
                     { StartLine = e.Range.StartLine
-                      StartCol = e.Range.StartColumn
+                      StartColumn = e.Range.StartColumn
                       EndLine = e.Range.EndLine
-                      EndCol = e.Range.EndColumn }
-                  Severity =
-                    match e.Severity with
-                    | FSharpDiagnosticSeverity.Warning -> ASTErrorSeverity.Warning
-                    | FSharpDiagnosticSeverity.Error -> ASTErrorSeverity.Error
-                    | FSharpDiagnosticSeverity.Hidden -> ASTErrorSeverity.Hidden
-                    | FSharpDiagnosticSeverity.Info -> ASTErrorSeverity.Info
+                      EndColumn = e.Range.EndColumn }
+                  Severity = $"{e.Severity}".ToLower()
                   ErrorNumber = e.ErrorNumber
-                  Message = e.Message })
+                  Message = e.Message }
+                : Diagnostic)
             |> Array.toList
     }
 
@@ -67,7 +63,7 @@ let getVersion () =
     let assembly = typeof<FormatConfig.FormatConfig>.Assembly
 
     let version = assembly.GetName().Version
-    sprintf "%i.%i.%i" version.Major version.Minor version.Build
+    $"%i{version.Major}.%i{version.Minor}.%i{version.Build}"
 
 let getOptions () : string =
     Reflection.getRecordFields FormatConfig.FormatConfig.Default
