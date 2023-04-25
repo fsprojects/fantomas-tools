@@ -42,14 +42,11 @@ let init _ =
           ASTModel = astModel
           FantomasModel = fantomasModel }
 
-    let initialCmd = Navigation.cmdForCurrentTab currentTab model
-    //
     let cmd =
         Cmd.batch
             [ Cmd.map ASTMsg astCmd
               Cmd.map OakMsg oakCmd
-              Cmd.map FantomasMsg fantomasCmd
-              initialCmd ]
+              Cmd.map FantomasMsg fantomasCmd ]
 
     model, cmd
 
