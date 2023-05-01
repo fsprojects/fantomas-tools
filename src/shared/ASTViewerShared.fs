@@ -4,7 +4,7 @@ open FantomasTools.Client
 
 type Response =
     { String: string
-      Errors: Diagnostic array }
+      Diagnostics: Diagnostic array }
 
 type Request =
     { SourceCode: string

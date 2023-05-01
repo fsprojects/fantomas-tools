@@ -6,6 +6,7 @@ open Fable.React
 open Fable.React.Props
 open FantomasTools.Client
 open FantomasTools.Client.ASTViewer.Model
+open FantomasTools.Client.FantomasOnline.Model
 open FantomasTools.Client.Model
 open FantomasTools.Client.Editor
 
@@ -70,7 +71,7 @@ let editor (model: Model) dispatch =
     ]
 
 let private homeTab =
-    div [ Id "home-tab"; ClassName Style.TabContent ] [
+    div [ Id "home-tab" ] [
         div [ ClassName Style.Shine ] [ img [ Src "./logo.png" ] ]
         h1 [] [ str "Fantomas tools" ]
         p [] [ str "Welcome to the Fantomas tools!" ]
@@ -143,9 +144,29 @@ let tabs model =
         navItem HomeTab "Home" (model.ActiveTab = HomeTab)
         navItem ASTTab "AST" (model.ActiveTab = ASTTab)
         navItem OakTab "Oak" (model.ActiveTab = OakTab)
-        navItem (FantomasTab FantomasTools.Client.FantomasOnline.Model.Main) "Fantomas" (isFantomasTab model.ActiveTab)
+        navItem (FantomasTab Main) "Fantomas" (isFantomasTab model.ActiveTab)
         li [] []
     ]
+
+let diagnostics (bubble: BubbleModel) =
+    if Array.isEmpty bubble.Diagnostics then
+        null
+    else
+        let diagnostics =
+            bubble.Diagnostics
+            |> Array.mapi (fun idx diag ->
+                li [ Key !!idx ] [
+                    strong [] [
+                        str
+                            $"(%i{diag.Range.StartLine},%i{diag.Range.StartColumn}) (%i{diag.Range.EndLine}, %i{diag.Range.EndColumn})"
+                    ]
+                    span [ ClassName $"{Style.Badge} {diag.Severity}" ] [ str diag.Severity ]
+                    span [ ClassName $"{Style.Badge} error-number"; Title "ErrorNumber" ] [ ofInt diag.ErrorNumber ]
+                    span [ ClassName $"{Style.Badge} subcategory"; Title "SubCategory" ] [ str diag.SubCategory ]
+                    p [] [ str diag.Message ]
+                ])
+
+        ul [ Id "diagnostics" ] [ ofArray diagnostics ]
 
 let rightPane (model: Model) dispatch =
     let resultEditor, activeTab, settingsForTab, commands =
@@ -167,6 +188,7 @@ let rightPane (model: Model) dispatch =
                             (ASTViewer.Model.Msg.Bubble >> Msg.ASTMsg >> dispatch)
                             model.ASTModel)
                         true
+                        model.Bubble.Diagnostics.Length
                         [ MonacoEditorProp.Value parsed.String ]
                 | AstViewerTabState.Error errors -> ReadOnlyEditor [ MonacoEditorProp.Value errors ]
 
@@ -197,7 +219,21 @@ let rightPane (model: Model) dispatch =
             FantomasOnline.View.settings model.Bubble.IsFsi model.FantomasModel fantomasDispatch,
             FantomasOnline.View.commands model.Bubble model.FantomasModel fantomasDispatch
 
-    div [ Id "tools" ] [
+    let showEditor =
+        match model.ActiveTab with
+        | ASTTab ->
+            match model.ASTModel.State with
+            | AstViewerTabState.Initial _ -> false
+            | _ -> true
+        | FantomasTab _ ->
+            match model.FantomasModel.State with
+            | FormatResult _
+            | FormatError _ -> true
+            | _ -> false
+        | _ -> false
+
+    // TODO: view diagnostics
+    div [ Id "tools"; ClassName(if showEditor then "show-editor" else "") ] [
         pre [ Props.Style [ Display DisplayOptions.None ] ] [ str (Fable.Core.JS.JSON.stringify model) ]
         settings model dispatch settingsForTab
         tabs model
@@ -209,4 +245,6 @@ let rightPane (model: Model) dispatch =
         resultEditor
         if not (isNull commands) then
             div [ Id "commands" ] [ commands ]
+        if model.ActiveTab <> HomeTab then
+            diagnostics model.Bubble
     ]

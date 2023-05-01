@@ -27,6 +27,7 @@
     --white: #FFFFFF;
     --white-hover: #ffffff;
     --white-border: #d9d9d9;
+    --black: #000;
     --font: 'Poppins', sans-serif;
     --heading-font: 'Reem Kufi', sans-serif;
     --logo-size: 192px;
@@ -125,6 +126,7 @@ html, body, #app {
 #app main #tools {
     display: flex;
     flex-direction: column;
+    overflow-x: hidden;
 }
 
 @media screen and (min-width: 768px) {
@@ -401,8 +403,8 @@ nav > div #docs-btn .long-text {
     }
 }
 
-.tab-content {
-    flex: 1;
+#tools.show-editor section, #tools .tab-content {
+    flex-grow: 1;
 }
 
 #commands {
@@ -411,10 +413,67 @@ nav > div #docs-btn .long-text {
     right: var(--unit-2);
 }
 
+/* Diagnostic errors */
+#diagnostics {
+    border-top: 1px solid var(--primary-border);
+    margin: 0;
+    padding: var(--unit-2);
+    list-style-type: none;
+    display: block;
+    box-sizing: border-box;
+    max-height: 200px;
+    height: 100%;
+    overflow-y: auto;
+    background-color: rgba(199, 73, 16, 0.05);
+}
+
+#diagnostics li {
+    display: block;
+    font-size: .8rem;
+    font-weight: 400;
+    color: var(--dark);
+}
+
+#diagnostics li p {
+    margin: 0 0 var(--unit) 0;
+}
+
+#diagnostics .badge {
+    display: inline-block;
+    padding: 3px 6px;
+    margin-right: calc(var(--unit) / 2);
+    color: var(--black);
+    font-weight: 700;
+    font-size: .6rem;
+    line-height: 1;
+}
+
+#diagnostics .badge:first-of-type {
+    margin-left: calc(var(--unit) / 2);
+}
+
+#diagnostics .badge.error {
+    background-color: var(--danger);
+}
+
+#diagnostics .badge.warning {
+    background-color: var(--warning);
+}
+
+#diagnostics .badge.error-number {
+    background-color: var(--dark);
+    color: var(--white);
+}
+
+#diagnostics .badge.subcategory {
+    background-color: var(--white);
+}
+
 /* Home page tab */
 #home-tab {
     background-color: var(--light);
     padding: var(--unit-3);
+    flex: 1;
 }
 
 #home-tab h1 {

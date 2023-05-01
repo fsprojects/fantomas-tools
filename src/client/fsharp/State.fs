@@ -65,7 +65,15 @@ let private reload model =
         Cmd.none
 
 let update msg model =
-    sprintf "%A" msg |> fun msg -> Fable.Core.JS.console.log msg
+    sprintf "%A" msg
+    |> fun msg ->
+        let msg =
+            if msg.Length > 300 then
+                msg.Substring(0, 297) + "..."
+            else
+                msg
+
+        Fable.Core.JS.console.log msg
 
     match msg with
     | SelectTab tab ->

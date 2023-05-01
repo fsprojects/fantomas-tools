@@ -9,15 +9,22 @@ open Browser
 open Feliz
 open FantomasTools.Client
 
+// TODO: make two components: one for editing and one for result view
+
 [<AllowNullLiteral>]
 type MonacoIDisposable =
     abstract dispose: unit -> unit
+
+type IDimension =
+    abstract width: int
+    abstract height: int
 
 [<AllowNullLiteral>]
 type IMonacoEditor =
     abstract setSelection: obj -> unit
     abstract revealRangeInCenter: obj * int -> unit
     abstract onDidChangeCursorPosition: listener: (obj -> unit) -> MonacoIDisposable
+    abstract layout: IDimension -> unit
 
 [<RequireQualifiedAccess>]
 type MonacoEditorProp =
@@ -46,7 +53,7 @@ let private useEventListener (target: Element, ``type``: string, listener: Event
 let useEffect (_action: unit -> unit, _dependencies: obj array) : unit = import "useEffect" "react"
 
 [<ReactComponent>]
-let EditorAux (onCursorChanged: obj -> unit) (isReadOnly: bool) (props: MonacoEditorProp list) =
+let EditorAux (onCursorChanged: obj -> unit) (isReadOnly: bool) (diagnosticCount: int) (props: MonacoEditorProp list) =
     let editorRef = React.useRef<IMonacoEditor> Unchecked.defaultof<IMonacoEditor>
 
     let isEditorMounted, setIsEditorMounted = React.useState false
@@ -82,6 +89,16 @@ let EditorAux (onCursorChanged: obj -> unit) (isReadOnly: bool) (props: MonacoEd
         , [| isEditorMounted |]
     )
 
+    useEffect (
+        fun () ->
+            if not (isNullOrUndefined editorRef.current) then
+                let rect: IDimension =
+                    createObj [ "width", "100%"; "height", "100%" ] :?> IDimension
+
+                editorRef.current.layout rect
+        , [| diagnosticCount |]
+    )
+
     let options =
         createObj
             [ "readOnly" ==> isReadOnly
@@ -103,8 +120,8 @@ let EditorAux (onCursorChanged: obj -> unit) (isReadOnly: bool) (props: MonacoEd
 
     MonacoEditor(defaultProps @ props)
 
-let ReadOnlyEditor props = EditorAux ignore true props
-let Editor props = EditorAux ignore false props
+let ReadOnlyEditor props = EditorAux ignore true 0 props
+let Editor props = EditorAux ignore false 0 props
 
 type EditorProp =
     | OnChange of (string -> unit)

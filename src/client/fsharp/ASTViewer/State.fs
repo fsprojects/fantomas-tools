@@ -1,12 +1,10 @@
 module FantomasTools.Client.ASTViewer.State
 
 open System
-open System.Text.RegularExpressions
 open Elmish
 open Thoth.Json
 open Fable.Core
 open ASTViewer
-open FantomasTools.Client.Editor
 open FantomasTools.Client.ASTViewer.Model
 open FantomasTools.Client
 open FantomasTools.Client.ASTViewer.Decoders
@@ -82,10 +80,13 @@ let update (bubble: BubbleModel) (msg: Msg) (model: Model) : Model * Cmd<Msg> =
             { model with
                 State = AstViewerTabState.Result astResult }
 
-        let bubbleCmd =
+        let resultCmd =
             Cmd.ofMsg (BubbleMessage.SetResultCode astResult.String |> Msg.Bubble)
 
-        nextModel, Cmd.batch [ unloadCmd; bubbleCmd ]
+        let diagnosticsCmd =
+            Cmd.ofMsg (BubbleMessage.SetDiagnostics astResult.Diagnostics |> Msg.Bubble)
+
+        nextModel, Cmd.batch [ unloadCmd; resultCmd; diagnosticsCmd ]
     | Error e ->
         let nextModel =
             { model with
@@ -104,51 +105,3 @@ let update (bubble: BubbleModel) (msg: Msg) (model: Model) : Model * Cmd<Msg> =
         model, cmd
 
     | VersionFound version -> { model with Version = version }, Cmd.none
-// TODO: fix AST highlighting
-// | HighLight(line, column) ->
-//     match model.Parsed with
-//     | Some(Ok { Shared.Response.String = astText }) ->
-//         let lines = astText.Split([| "\r\n"; "\n" |], StringSplitOptions.None)
-//         // Try and get the line where the cursor clicked in the AST editor
-//         match Array.tryItem (line - 1) lines with
-//         | None -> model, Cmd.none
-//         | Some sourceLine ->
-//             if debugASTRangeHighlight then
-//                 JS.console.log (sourceLine.Trim())
-//
-//             let pattern = @"\(\d+,\d+--\d+,\d+\)"
-//
-//             let rangeDigits =
-//                 Regex.Matches(sourceLine, pattern)
-//                 |> Seq.cast<Match>
-//                 |> fun matches ->
-//                     if debugASTRangeHighlight then
-//                         JS.console.log matches
-//
-//                     matches
-//                 |> Seq.tryPick (fun m ->
-//                     if debugASTRangeHighlight then
-//                         JS.console.log m.Value
-//
-//                     let startIndex = m.Index
-//                     let endIndex = m.Index + m.Value.Length
-//                     // Verify the match contains the cursor column.
-//                     if startIndex <= column && column <= endIndex then
-//                         m.Value.Split([| ','; '-'; '('; ')' |], StringSplitOptions.RemoveEmptyEntries)
-//                         |> Array.map int
-//                         |> Array.toList
-//                         |> Some
-//                     else
-//                         None)
-//
-//             match rangeDigits with
-//             | Some [ startLine; startColumn; endLine; endColumn ] ->
-//                 let highlight =
-//                     { StartLine = startLine
-//                       StartColumn = startColumn
-//                       EndLine = endLine
-//                       EndColumn = endColumn }
-//                     : HighLightRange
-//
-//                 model, Cmd.ofEffect (selectRange highlight)
-//             | _ -> model, Cmd.none
