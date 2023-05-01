@@ -15,13 +15,14 @@ let App () =
     let model, dispatch = React.useElmish (State.init, State.update, [||])
 
     let onUrlChanged url =
+        printfn "onUrlChanged"
         let activeTab = Navigation.parseUrl url
         dispatch (Model.Msg.SelectTab activeTab)
 
-    let routes = View.tabs model dispatch
+    let routes = View.rightPane model dispatch
 
     fragment [] [
-        View.navigation dispatch
+        View.navigation model dispatch
         main [] [
             View.editor model dispatch
             React.router [ router.onUrlChanged onUrlChanged; router.children [ routes ] ]

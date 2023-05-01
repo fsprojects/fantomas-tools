@@ -40,7 +40,9 @@ let private fetchTypedAst (payload: Shared.Request) dispatch =
     let url = $"%s{backend}/typed-ast"
     fetchNodeRequest url payload dispatch
 
-let private initialModel = { Parsed = None; Version = "" }
+let private initialModel =
+    { State = AstViewerTabState.Initial
+      Version = "" }
 
 let private getMessageFromError (ex: exn) = Error ex.Message
 
@@ -66,10 +68,6 @@ let private updateUrl (bubble: BubbleModel) _ =
     let json = Encode.toString 2 (encodeUrlModel bubble)
     UrlTools.updateUrlWithData json
 
-// Enter 'localStorage.setItem("debugASTRangeHighlight", "true");' in your browser console to enable.
-let debugASTRangeHighlight: bool =
-    not (String.IsNullOrWhiteSpace(Browser.WebStorage.localStorage.getItem "debugASTRangeHighlight"))
-
 let private loadCmd = Cmd.ofMsg (BubbleMessage.SetIsLoading true |> Msg.Bubble)
 let private unloadCmd = Cmd.ofMsg (BubbleMessage.SetIsLoading false |> Msg.Bubble)
 
@@ -79,14 +77,19 @@ let private unloadCmd = Cmd.ofMsg (BubbleMessage.SetIsLoading false |> Msg.Bubbl
 let update (bubble: BubbleModel) (msg: Msg) (model: Model) : Model * Cmd<Msg> =
     match msg with
     | Msg.Bubble _ -> model, Cmd.none // handle in upper update function
-    | ASTParsed x ->
-        let nextModel = { model with Parsed = Some(Ok x) }
+    | ASTParsed astResult ->
+        let nextModel =
+            { model with
+                State = AstViewerTabState.Result astResult }
 
-        nextModel, unloadCmd
+        let bubbleCmd =
+            Cmd.ofMsg (BubbleMessage.SetResultCode astResult.String |> Msg.Bubble)
+
+        nextModel, Cmd.batch [ unloadCmd; bubbleCmd ]
     | Error e ->
         let nextModel =
             { model with
-                Parsed = Some(Result.Error e) }
+                State = AstViewerTabState.Error e }
 
         nextModel, unloadCmd
     | DoParse ->

@@ -9,6 +9,12 @@ type Msg =
     | ASTParsed of ASTViewer.Shared.Response
     | Error of string
 
+[<RequireQualifiedAccess>]
+type AstViewerTabState =
+    | Initial
+    | Result of ASTViewer.Shared.Response
+    | Error of string
+
 type Model =
-    { Parsed: Result<ASTViewer.Shared.Response, string> option
+    { State: AstViewerTabState
       Version: string }

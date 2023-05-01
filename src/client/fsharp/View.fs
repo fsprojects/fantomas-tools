@@ -5,12 +5,13 @@ open Fable.Core.JsInterop
 open Fable.React
 open Fable.React.Props
 open FantomasTools.Client
+open FantomasTools.Client.ASTViewer.Model
 open FantomasTools.Client.Model
 open FantomasTools.Client.Editor
 
 let private baseUrl: string = emitJsExpr () "import.meta.env.BASE_URL"
 
-let navigation dispatch =
+let navigation model dispatch =
     let title = "Fantomas tools"
 
     nav [] [
@@ -21,6 +22,7 @@ let navigation dispatch =
             OnClick(fun _ -> dispatch ToggleSettings)
         ] [ i [ ClassName "fas fa-sliders-h" ] [] ]
         div [] [
+            button [ OnClick(fun _ -> Fable.Core.JS.console.log model) ] [ str "Print state" ]
             a [
                 Class "btn"
                 Href "https://github.com/sponsors/nojaf"
@@ -62,7 +64,7 @@ let editor (model: Model) dispatch =
     div [ Id "source" ] [
         Editor [
             MonacoEditorProp.OnChange(UpdateSourceCode >> dispatch)
-            MonacoEditorProp.DefaultValue model.Bubble.SourceCode
+            MonacoEditorProp.Value model.Bubble.SourceCode
             MonacoEditorProp.Options(MonacoEditorProp.rulerOption model.FantomasModel.MaxLineLength)
         ]
     ]
@@ -105,10 +107,11 @@ let private settings model dispatch inner =
         div [ ClassName Style.Inner ] [ h1 [] [ str "Settings" ]; inner ]
     ]
 
+/// We always want to show the result editor, even if it's empty.
+/// This is to improve the performance with the react editor and not constantly load and unload it.
 let private emptyEditor = Editor [ MonacoEditorProp.Height "0" ]
 
-let tabs (model: Model) dispatch =
-
+let tabs model =
     let navItem tab label isActive =
         let href =
             let page = Navigation.toHash tab
@@ -136,30 +139,45 @@ let tabs (model: Model) dispatch =
         | FantomasTab _ -> true
         | _ -> false
 
-    let tabs =
-        ul [ Id "tabs" ] [
-            navItem HomeTab "Home" (model.ActiveTab = HomeTab)
-            navItem ASTTab "AST" (model.ActiveTab = ASTTab)
-            navItem OakTab "Oak" (model.ActiveTab = OakTab)
-            navItem
-                (FantomasTab FantomasTools.Client.FantomasOnline.Model.Main)
-                "Fantomas"
-                (isFantomasTab model.ActiveTab)
-            li [] []
-        ]
+    ul [ Id "tabs" ] [
+        navItem HomeTab "Home" (model.ActiveTab = HomeTab)
+        navItem ASTTab "AST" (model.ActiveTab = ASTTab)
+        navItem OakTab "Oak" (model.ActiveTab = OakTab)
+        navItem (FantomasTab FantomasTools.Client.FantomasOnline.Model.Main) "Fantomas" (isFantomasTab model.ActiveTab)
+        li [] []
+    ]
 
-    let activeTab, settingsForTab, commands =
+let rightPane (model: Model) dispatch =
+    let resultEditor, activeTab, settingsForTab, commands =
         match model.ActiveTab with
-        | HomeTab -> homeTab, null, null
+        | HomeTab -> emptyEditor, homeTab, null, null
         | ASTTab ->
             let astDispatch aMsg = dispatch (ASTMsg aMsg)
 
+            let resultEditor =
+                if model.Bubble.IsLoading then
+                    emptyEditor
+                else
+
+                match model.ASTModel.State with
+                | AstViewerTabState.Initial -> emptyEditor
+                | AstViewerTabState.Result parsed ->
+                    EditorAux
+                        (ASTViewer.View.cursorChanged
+                            (ASTViewer.Model.Msg.Bubble >> Msg.ASTMsg >> dispatch)
+                            model.ASTModel)
+                        true
+                        [ MonacoEditorProp.Value parsed.String ]
+                | AstViewerTabState.Error errors -> ReadOnlyEditor [ MonacoEditorProp.Value errors ]
+
+            resultEditor,
             null,
             ASTViewer.View.settings model.Bubble model.ASTModel.Version astDispatch,
             ASTViewer.View.commands astDispatch
         | OakTab ->
             let oakDispatch oMsg = dispatch (OakMsg oMsg)
 
+            emptyEditor,
             OakViewer.View.view model.OakModel oakDispatch,
             OakViewer.View.settings model.Bubble model.OakModel oakDispatch,
             OakViewer.View.commands oakDispatch
@@ -167,34 +185,25 @@ let tabs (model: Model) dispatch =
         | FantomasTab _ ->
             let fantomasDispatch fMsg = dispatch (FantomasMsg fMsg)
 
+            let resultEditor =
+                if model.Bubble.IsLoading then
+                    emptyEditor
+                else
+
+                Editor []
+
+            resultEditor,
             FantomasOnline.View.view model.Bubble.IsFsi model.FantomasModel,
             FantomasOnline.View.settings model.Bubble.IsFsi model.FantomasModel fantomasDispatch,
             FantomasOnline.View.commands model.Bubble model.FantomasModel fantomasDispatch
 
-    // We always want to show the result editor, even if it's empty.
-    // This is to improve the performance with the react editor and not constantly load and unload it.
-    let resultEditor =
-        if model.Bubble.IsLoading then
-            emptyEditor
-        else
-
-        match model.ActiveTab with
-        | HomeTab
-        | OakTab -> emptyEditor
-        | ASTTab ->
-            match model.ASTModel.Parsed with
-            | None -> emptyEditor
-            | Some(Ok parsed) ->
-                EditorAux (fun ev -> Fable.Core.JS.console.log ev) true [ MonacoEditorProp.DefaultValue parsed.String ]
-            | Some(Result.Error errors) -> ReadOnlyEditor [ MonacoEditorProp.DefaultValue errors ]
-
-        | FantomasTab _ -> null
-
     div [ Id "tools" ] [
+        pre [ Props.Style [ Display DisplayOptions.None ] ] [ str (Fable.Core.JS.JSON.stringify model) ]
         settings model dispatch settingsForTab
-        tabs
+        tabs model
         if model.Bubble.IsLoading then
-            Loader.tabLoading
+            str "loading"
+        // Loader.tabLoading
         else
             activeTab
         resultEditor

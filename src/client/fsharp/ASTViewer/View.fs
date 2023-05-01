@@ -1,65 +1,76 @@
 module FantomasTools.Client.ASTViewer.View
 
+open System
+open System.Text.RegularExpressions
+open Fable.Core
 open Fable.Core.JsInterop
 open Fable.React
 open Fable.React.Props
 open FantomasTools.Client
 open FantomasTools.Client.ASTViewer.Model
-open FantomasTools.Client.Editor
 
-// TODO: update AST Viewer highlight
-// let private cursorChanged dispatch (e: obj) =
-//     let lineNumber: int = e?position?lineNumber
-//     let column: int = e?position?column
-//     dispatch (HighLight(lineNumber, column))
+// Enter 'localStorage.setItem("debugASTRangeHighlight", "true");' in your browser console to enable.
+let debugASTRangeHighlight: bool =
+    not (String.IsNullOrWhiteSpace(Browser.WebStorage.localStorage.getItem "debugASTRangeHighlight"))
 
-let private results dispatch model =
-    let result = str "todo, extracting editor"
-    // match model.Parsed with
-    // | Some(Ok parsed) -> EditorAux (cursorChanged dispatch) true [ MonacoEditorProp.DefaultValue parsed.String ]
-    // | Some(Result.Error errors) -> ReadOnlyEditor [ MonacoEditorProp.DefaultValue errors ]
-    // | None -> str ""
+let zeroRange =
+    { StartLine = 0
+      StartColumn = 0
+      EndLine = 0
+      EndColumn = 0 }
 
-    let astErrors = str "todo extracting diagnostics"
-    // model.Parsed
-    // |> Option.bind (fun parsed ->
-    //     match parsed with
-    //     | Ok parsed when (not (Seq.isEmpty parsed.Errors)) ->
-    //         let badgeColor (e: ASTViewer.Shared.ASTError) =
-    //             if e.Severity = "warning" then
-    //                 Style.TextBgWarning
-    //             else
-    //                 Style.TextBgDanger
-    //
-    //         let errors =
-    //             parsed.Errors
-    //             |> Array.mapi (fun i e ->
-    //                 li [ Key(sprintf "ast-error-%i" i) ] [
-    //                     strong [] [
-    //                         str (
-    //                             sprintf
-    //                                 "(%i,%i) (%i, %i)"
-    //                                 e.Range.StartLine
-    //                                 e.Range.StartCol
-    //                                 e.Range.EndLine
-    //                                 e.Range.EndCol
-    //                         )
-    //                     ]
-    //                     span [ ClassName $"{Style.Badge} {badgeColor e}" ] [ str e.Severity ]
-    //                     span [ ClassName $"{Style.Badge} {Style.TextBgDark}"; Title "ErrorNumber" ] [
-    //                         ofInt e.ErrorNumber
-    //                     ]
-    //                     span [ ClassName $"{Style.Badge} {Style.TextBgLight}"; Title "SubCategory" ] [
-    //                         str e.SubCategory
-    //                     ]
-    //                     p [] [ str e.Message ]
-    //                 ])
-    //
-    //         ul [ Id "ast-errors"; ClassName "" ] [ ofArray errors ] |> Some
-    //     | _ -> None)
-    // |> ofOption
+let cursorChanged (bubbleMsg: BubbleMessage -> unit) (model: Model) (e: obj) : unit =
+    let lineNumber: int = e?position?lineNumber
+    let column: int = e?position?column
 
-    div [ Id "ast-tab"; ClassName Style.TabContent ] [ result; astErrors ]
+    match model.State with
+    | AstViewerTabState.Result { String = astText } ->
+        let lines = astText.Split([| "\r\n"; "\n" |], StringSplitOptions.None)
+        // Try and get the line where the cursor clicked in the AST editor
+        match Array.tryItem (lineNumber - 1) lines with
+        | None -> ()
+        | Some sourceLine ->
+
+        if debugASTRangeHighlight then
+            JS.console.log (sourceLine.Trim())
+
+        let pattern = @"\(\d+,\d+--\d+,\d+\)"
+
+        let rangeDigits =
+            Regex.Matches(sourceLine, pattern)
+            |> Seq.cast<Match>
+            |> fun matches ->
+                if debugASTRangeHighlight then
+                    JS.console.log matches
+
+                matches
+            |> Seq.tryPick (fun m ->
+                if debugASTRangeHighlight then
+                    JS.console.log m.Value
+
+                let startIndex = m.Index
+                let endIndex = m.Index + m.Value.Length
+                // Verify the match contains the cursor column.
+                if startIndex <= column && column <= endIndex then
+                    m.Value.Split([| ','; '-'; '('; ')' |], StringSplitOptions.RemoveEmptyEntries)
+                    |> Array.map int
+                    |> Array.toList
+                    |> Some
+                else
+                    None)
+
+        match rangeDigits with
+        | Some [ startLine; startColumn; endLine; endColumn ] ->
+            let range =
+                { StartLine = startLine
+                  StartColumn = startColumn
+                  EndLine = endLine
+                  EndColumn = endColumn }
+
+            bubbleMsg (BubbleMessage.HighLight range)
+        | _ -> bubbleMsg (BubbleMessage.HighLight zeroRange)
+
+    | _ -> ()
 
 let commands dispatch =
     button [

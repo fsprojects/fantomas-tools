@@ -108,7 +108,7 @@ let view (model: Model) dispatch =
     match model.Error, model.IsGraphView with
     | None, false -> results model dispatch
     | None, true -> Oak.GraphView.view (model, dispatch)
-    | Some errors, _ -> ReadOnlyEditor [ MonacoEditorProp.DefaultValue errors ]
+    | Some errors, _ -> ReadOnlyEditor [ MonacoEditorProp.Value errors ]
 
 let commands dispatch =
     button [

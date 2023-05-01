@@ -6,6 +6,8 @@ open FantomasTools.Client.Model
 open Thoth.Json
 open Feliz.Router
 
+// TODO: decode and encode the bubble model as much as possible
+
 let private getCodeFromUrl () =
     UrlTools.restoreModelFromUrl (Decode.object (fun get -> get.Required.Field "code" Decode.string)) ""
 
@@ -63,6 +65,8 @@ let private reload model =
         Cmd.none
 
 let update msg model =
+    sprintf "%A" msg |> fun msg -> Fable.Core.JS.console.log msg
+
     match msg with
     | SelectTab tab ->
         let nextModel =

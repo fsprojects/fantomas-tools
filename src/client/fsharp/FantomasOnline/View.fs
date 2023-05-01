@@ -338,7 +338,7 @@ let view isFsi model =
         div [ ClassName Style.TabContent ] [
             div [ Id Style.FantomasEditorContainer ] [
                 ReadOnlyEditor [
-                    MonacoEditorProp.DefaultValue formattedCode
+                    MonacoEditorProp.Value formattedCode
                     MonacoEditorProp.Options(MonacoEditorProp.rulerOption model.MaxLineLength)
                 ]
             ]
@@ -346,7 +346,7 @@ let view isFsi model =
         ]
 
     | EditorState.FormatError error ->
-        div [ ClassName Style.TabContent ] [ ReadOnlyEditor [ MonacoEditorProp.DefaultValue error ] ]
+        div [ ClassName Style.TabContent ] [ ReadOnlyEditor [ MonacoEditorProp.Value error ] ]
 
 let private userChangedSettings (model: Model) =
     model.SettingsChangedByTheUser |> List.isEmpty |> not

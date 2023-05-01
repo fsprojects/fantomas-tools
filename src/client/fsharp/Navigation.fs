@@ -9,7 +9,9 @@ let cmdForCurrentTab tab (model: Model) =
     if not (System.String.IsNullOrWhiteSpace model.Bubble.SourceCode) then
         match tab with
         | HomeTab -> Cmd.none
-        | ASTTab -> Cmd.ofMsg ASTViewer.Model.DoParse |> Cmd.map Msg.ASTMsg
+        | ASTTab ->
+            Fable.Core.JS.console.log "ast tab Navigation.fs"
+            Cmd.ofMsg ASTViewer.Model.DoParse |> Cmd.map Msg.ASTMsg
         | OakTab -> Cmd.ofMsg OakViewer.Model.GetOak |> Cmd.map Msg.OakMsg
         | FantomasTab mode when (mode <> model.FantomasModel.Mode) ->
             Cmd.batch

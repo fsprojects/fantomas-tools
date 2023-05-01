@@ -10,16 +10,20 @@ open Feliz
 open FantomasTools.Client
 
 [<AllowNullLiteral>]
+type MonacoIDisposable =
+    abstract dispose: unit -> unit
+
+[<AllowNullLiteral>]
 type IMonacoEditor =
     abstract setSelection: obj -> unit
     abstract revealRangeInCenter: obj * int -> unit
-    abstract onDidChangeCursorPosition: listener: (obj -> unit) -> unit
+    abstract onDidChangeCursorPosition: listener: (obj -> unit) -> MonacoIDisposable
 
 [<RequireQualifiedAccess>]
 type MonacoEditorProp =
     | Height of string
     | DefaultLanguage of string
-    | DefaultValue of string
+    | Value of string
     | OnChange of (string -> unit)
     | OnMount of Action<IMonacoEditor, obj>
     | Options of obj
@@ -39,9 +43,16 @@ let private useEventListener (target: Element, ``type``: string, listener: Event
 
     React.useEffect (subscribe, [| box target; box ``type``; box listener |])
 
+let useEffect (_action: unit -> unit, _dependencies: obj array) : unit = import "useEffect" "react"
+
 [<ReactComponent>]
 let EditorAux (onCursorChanged: obj -> unit) (isReadOnly: bool) (props: MonacoEditorProp list) =
     let editorRef = React.useRef<IMonacoEditor> Unchecked.defaultof<IMonacoEditor>
+
+    let isEditorMounted, setIsEditorMounted = React.useState false
+
+    let changeCursorPosition, setChangeCursorPosition =
+        React.useState<MonacoIDisposable> null
 
     let selectRange (ev: Event) =
         if not isReadOnly then
@@ -58,7 +69,18 @@ let EditorAux (onCursorChanged: obj -> unit) (isReadOnly: bool) (props: MonacoEd
     let handleEditorDidMount =
         Action<_, _>(fun editor _ ->
             editorRef.current <- editor
-            editor.onDidChangeCursorPosition onCursorChanged)
+            setIsEditorMounted true)
+
+    useEffect (
+        fun () ->
+            if not (isNullOrUndefined changeCursorPosition) then
+                changeCursorPosition.dispose ()
+
+            if not (isNullOrUndefined editorRef.current) then
+                editorRef.current.onDidChangeCursorPosition onCursorChanged
+                |> setChangeCursorPosition
+        , [| isEditorMounted |]
+    )
 
     let options =
         createObj
