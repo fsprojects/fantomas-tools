@@ -13,7 +13,7 @@
         <OtherFlags>$(OtherFlags) --test:GraphBasedChecking</OtherFlags>
         <!-- Override these values to point to your local fantomas repository -->
         <FantomasMainRepository>$(MSBuildThisFileDirectory).deps\fantomas</FantomasMainRepository>
-<!--        <FantomasPreviewRepository>$(MSBuildThisFileDirectory).deps\v6.0</FantomasPreviewRepository>-->
+        <FantomasPreviewRepository>$(MSBuildThisFileDirectory).deps\v6.1</FantomasPreviewRepository>
     </PropertyGroup>
 
     <ItemGroup Condition="'$(IsLambda)' == 'true'">

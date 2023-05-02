@@ -85,7 +85,7 @@ let getVersion () =
             System.IO.FileInfo assembly.Location
             |> fun f -> f.LastWriteTime.ToShortDateString()
 
-    $"main branch at %s{date}"
+    $"v6.1 branch at %s{date}"
 
 let getOptions () : string =
     Reflection.getRecordFields FormatConfig.Default

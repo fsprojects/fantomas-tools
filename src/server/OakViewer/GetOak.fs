@@ -25,27 +25,22 @@ let getOak json : GetOakResponse =
               IsFsi = isFsi } =
             pr
 
-        let defines = Set.ofArray defines
-
         let oakResult =
             try
-                CodeFormatter.ParseOakAsync(isFsi, content) |> Async.RunSynchronously |> Ok
+                // TODO: at some point return the diagnostics as well to the client.
+                let ast, _diagnostics =
+                    Fantomas.FCS.Parse.parseFile
+                        isFsi
+                        (FSharp.Compiler.Text.SourceText.ofString content)
+                        (List.ofArray defines)
+
+                CodeFormatter.TransformAST(ast, content) |> Ok
             with ex ->
                 Error ex
 
         match oakResult with
         | Error ex -> GetOakResponse.BadRequest(ex.Message)
-        | Ok oaks ->
-
-            let oak =
-                let oakOpt =
-                    oaks
-                    |> Array.tryFind (fun (_, currentDefines) -> Set.ofList currentDefines = defines)
-
-                match oakOpt with
-                | None -> Array.head oaks |> fst
-                | Some(oak, _) -> oak
-
+        | Ok oak ->
             let responseText = Encoders.encodeNode oak id |> Thoth.Json.Net.Encode.toString 4
             GetOakResponse.Ok responseText
 
