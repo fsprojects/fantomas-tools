@@ -123,13 +123,6 @@ let EditorAux (onCursorChanged: obj -> unit) (isReadOnly: bool) (diagnosticCount
 let ReadOnlyEditor props = EditorAux ignore true 0 props
 let Editor props = EditorAux ignore false 0 props
 
-type EditorProp =
-    | OnChange of (string -> unit)
-    | Value of string
-    | Language of string
-    | IsReadOnly of bool
-    | GetEditor of (obj -> unit)
-
 let selectRange (range: Range) _ =
     let data =
         jsOptions<CustomEventInit> (fun o ->
