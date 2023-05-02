@@ -39,7 +39,12 @@ let init _ =
               Defines = ""
               ResultCode = ""
               Diagnostics = Array.empty
-              IsLoading = false }
+              IsLoading = false
+              HighLight =
+                { StartLine = 0
+                  StartColumn = 0
+                  EndLine = 0
+                  EndColumn = 0 } }
           OakModel = oakModel
           ASTModel = astModel
           FantomasModel = fantomasModel }
@@ -111,7 +116,7 @@ let update msg model =
                 { model.Bubble with
                     Diagnostics = diagnostics },
                 Cmd.none
-            | HighLight hlr -> model.Bubble, Cmd.ofEffect (Editor.selectRange hlr)
+            | HighLight hlr -> { model.Bubble with HighLight = hlr }, Cmd.none
             | SetIsLoading isLoading ->
                 { model.Bubble with
                     IsLoading = isLoading },

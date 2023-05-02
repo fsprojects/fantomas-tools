@@ -63,11 +63,11 @@ let navigation model dispatch =
 
 let editor (model: Model) dispatch =
     div [ Id "source" ] [
-        Editor [
-            MonacoEditorProp.OnChange(UpdateSourceCode >> dispatch)
-            MonacoEditorProp.Value model.Bubble.SourceCode
-            MonacoEditorProp.Options(MonacoEditorProp.rulerOption model.FantomasModel.MaxLineLength)
-        ]
+        InputEditor
+            (UpdateSourceCode >> dispatch)
+            model.Bubble.SourceCode
+            model.FantomasModel.MaxLineLength
+            model.Bubble.HighLight
     ]
 
 let private homeTab =
@@ -108,10 +108,6 @@ let private settings model dispatch inner =
         div [ ClassName Style.Inner ] [ h1 [] [ str "Settings" ]; inner ]
     ]
 
-/// We always want to show the result editor, even if it's empty.
-/// This is to improve the performance with the react editor and not constantly load and unload it.
-let private emptyEditor = Editor [ MonacoEditorProp.Height "0" ]
-
 let tabs model =
     let navItem tab label isActive =
         let href =
@@ -121,11 +117,11 @@ let tabs model =
                 let hash = Browser.Dom.window.location.hash
 
                 if hash.Contains("?") then
-                    sprintf "?%s" (hash.Split('?').[1])
+                    $"?%s{hash.Split('?').[1]}"
                 else
                     ""
 
-            sprintf "%s%s" page query
+            $"%s{page}%s{query}"
 
         let isActiveClass = if isActive then Style.Active else ""
 
@@ -171,17 +167,17 @@ let diagnostics (bubble: BubbleModel) =
 let rightPane (model: Model) dispatch =
     let resultEditor, activeTab, settingsForTab, commands =
         match model.ActiveTab with
-        | HomeTab -> emptyEditor, homeTab, null, null
+        | HomeTab -> HiddenEditor(), homeTab, null, null
         | ASTTab ->
             let astDispatch aMsg = dispatch (ASTMsg aMsg)
 
             let resultEditor =
                 if model.Bubble.IsLoading then
-                    emptyEditor
+                    HiddenEditor()
                 else
 
                 match model.ASTModel.State with
-                | AstViewerTabState.Initial -> emptyEditor
+                | AstViewerTabState.Initial -> HiddenEditor()
                 | AstViewerTabState.Result parsed ->
                     EditorAux
                         (ASTViewer.View.cursorChanged
@@ -199,7 +195,7 @@ let rightPane (model: Model) dispatch =
         | OakTab ->
             let oakDispatch oMsg = dispatch (OakMsg oMsg)
 
-            emptyEditor,
+            HiddenEditor(),
             OakViewer.View.view model.OakModel oakDispatch,
             OakViewer.View.settings model.Bubble model.OakModel oakDispatch,
             OakViewer.View.commands oakDispatch
@@ -209,7 +205,7 @@ let rightPane (model: Model) dispatch =
 
             let resultEditor =
                 if model.Bubble.IsLoading then
-                    emptyEditor
+                    HiddenEditor()
                 else
 
                 Editor []

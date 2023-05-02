@@ -22,4 +22,5 @@ type BubbleModel =
         Diagnostics: Diagnostic array
         // Is any http request in progress that will load data for the main right panel?
         IsLoading: bool
+        HighLight: Range
     }

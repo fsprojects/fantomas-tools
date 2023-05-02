@@ -33,4 +33,4 @@ let createRoot: Element -> {| render: ReactElement -> unit |} =
     import "createRoot" "react-dom/client"
 
 let root = createRoot (document.getElementById "app")
-root.render (App())
+root.render (React.strictMode [ App() ])

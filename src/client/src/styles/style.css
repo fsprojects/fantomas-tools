@@ -407,6 +407,10 @@ nav > div #docs-btn .long-text {
     flex-grow: 1;
 }
 
+#tools .hidden-editor {
+    display: none;
+}
+
 #commands {
     position: fixed;
     bottom: var(--unit-2);
