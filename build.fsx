@@ -22,7 +22,8 @@ let fantomasV5Port = 11009
 let fantomasV6Port = 13042
 let pwd = __SOURCE_DIRECTORY__
 let fantomasDepDir = pwd </> ".deps" </> "fantomas"
-let v6DepDir = pwd </> ".deps" </> "v6.0"
+let previewBranch = "v6.1"
+let previewDepDir = pwd </> ".deps" </> previewBranch
 let clientDir = pwd </> "src" </> "client"
 let serverDir = __SOURCE_DIRECTORY__ </> "src" </> "server"
 let artifactDir = __SOURCE_DIRECTORY__ </> "artifacts"
@@ -61,20 +62,18 @@ pipeline "Fantomas-Git" {
                             __SOURCE_DIRECTORY__
                     return exitCode
             })
-    // run (fun _ ->
-    //     async {
-    //         let branch = "v6.0"
-
-    //         if Directory.Exists(v6DepDir) then
-    //             let! exitCode, _ = git "pull" v6DepDir
-    //             return exitCode
-    //         else
-    //             let! exitCode, _ =
-    //                 git
-    //                     $"clone -b {branch} --single-branch https://github.com/fsprojects/fantomas.git .deps/v6.0"
-    //                     __SOURCE_DIRECTORY__
-    //             return exitCode
-    //     })
+        run (fun _ ->
+            async {
+                if Directory.Exists(previewDepDir) then
+                    let! exitCode, _ = git "pull" previewDepDir
+                    return exitCode
+                else
+                    let! exitCode, _ =
+                        git
+                            $"clone -b {previewBranch} --single-branch https://github.com/fsprojects/fantomas.git .deps/{previewBranch}"
+                            __SOURCE_DIRECTORY__
+                    return exitCode
+            })
     }
     stage "build" {
         paralle
@@ -83,11 +82,11 @@ pipeline "Fantomas-Git" {
             run "dotnet fsi build.fsx -p Init"
             run "dotnet build src/Fantomas.Core"
         }
-    // stage "build fantomas preview" {
-    //     workingDir v6DepDir
-    //     run "dotnet fsi build.fsx -p Init"
-    //     run "dotnet build src/Fantomas.Core"
-    // }
+        stage "build fantomas preview" {
+            workingDir previewDepDir
+            run "dotnet fsi build.fsx -p Init"
+            run "dotnet build src/Fantomas.Core"
+        }
     }
     runIfOnlySpecified true
 }
