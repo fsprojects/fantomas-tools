@@ -254,7 +254,7 @@ let createGitHubIssue (bubble: BubbleModel) model =
                   IsFsi = bubble.IsFsi }
 
             a [
-                ClassName $"{Style.Btn} {Style.BtnOutlineDanger}"
+                ClassName $"{Style.Btn} {Style.Danger}"
                 githubIssueUri githubIssue
                 Target "_blank"
             ] [ str "Looks wrong? Create an issue!" ]
@@ -355,17 +355,11 @@ let userChangedSettings (model: Model) =
 
 let commands (bubble: BubbleModel) model dispatch =
     let formatButton =
-        button [
-            ClassName $"{Style.Btn} {Style.BtnPrimary} {Style.TextWhite}"
-            OnClick(fun _ -> dispatch Msg.Format)
-        ] [ str "Format" ]
+        button [ ClassName Style.Primary; OnClick(fun _ -> dispatch Msg.Format) ] [ str "Format" ]
 
     let copySettingButton =
         if userChangedSettings model then
-            button [
-                ClassName $"{Style.Btn} {Style.BtnSecondary} {Style.TextWhite}"
-                OnClick(fun _ -> dispatch CopySettings)
-            ] [ str "Copy settings" ]
+            button [ ClassName Style.Secondary; OnClick(fun _ -> dispatch CopySettings) ] [ str "Copy settings" ]
             |> Some
         else
             None

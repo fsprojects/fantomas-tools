@@ -73,10 +73,7 @@ let cursorChanged (bubbleMsg: BubbleMessage -> unit) (model: Model) (e: obj) : u
     | _ -> ()
 
 let commands dispatch =
-    button [
-        ClassName $"{Style.Btn} {Style.BtnPrimary} {Style.TextWhite}"
-        OnClick(fun _ -> dispatch DoParse)
-    ] [ str "Show Untyped AST" ]
+    button [ ClassName Style.Primary; OnClick(fun _ -> dispatch DoParse) ] [ str "Show Untyped AST" ]
 
 let settings (bubble: BubbleModel) version dispatch =
     fragment [] [

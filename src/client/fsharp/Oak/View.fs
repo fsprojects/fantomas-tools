@@ -112,10 +112,10 @@ let view (model: Model) dispatch =
     | OakViewerTabState.Loading -> Loader.tabLoading
 
 let commands dispatch =
-    button [
-        ClassName $"{Style.Btn} {Style.BtnPrimary} {Style.TextWhite}"
-        OnClick(fun _ -> dispatch GetOak)
-    ] [ i [ ClassName $"fas fa-code {Style.Me1}" ] []; str "Get oak" ]
+    button [ ClassName Style.Primary; OnClick(fun _ -> dispatch GetOak) ] [
+        i [ ClassName $"fas fa-code" ] []
+        str "Get oak"
+    ]
 
 let settings (bubble: BubbleModel) (model: Model) dispatch =
     fragment [] [

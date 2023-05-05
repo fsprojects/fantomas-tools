@@ -46,6 +46,7 @@ html, body, #app {
 
 /* Buttons */
 .btn, button {
+    text-decoration: none;
     appearance: none;
     background-color: #FAFBFC;
     border: 1px solid rgba(27, 31, 35, 0.15);
@@ -101,6 +102,40 @@ html, body, #app {
 
 .btn::-webkit-details-marker {
     display: none;
+}
+
+.btn i, button i {
+    margin-right: var(--unit);
+}
+
+.btn.primary, button.primary {
+    background-color: var(--primary);
+    border-color: var(--primary-border);
+    color: var(--white);
+}
+
+.btn.primary:hover, button.primary:hover  {
+    background-color: var(--primary-hover);
+}
+
+.btn.secondary, button.secondary {
+    background-color: var(--secondary);
+    border-color: var(--secondary-border);
+    color: var(--white);
+}
+
+.btn.secondary:hover, button.secondary:hover  {
+    background-color: var(--secondary-hover);
+}
+
+.btn.danger, button.danger {
+    background-color: var(--danger);
+    border-color: var(--danger-border);
+    color: var(--white);
+}
+
+.btn.danger:hover, button.danger:hover  {
+    background-color: var(--danger-hover);
 }
 
 /* Basic App Layout */
@@ -414,7 +449,12 @@ nav > div #docs-btn .long-text {
 #commands {
     position: fixed;
     bottom: var(--unit-2);
-    right: var(--unit-2);
+    right: var(--unit-3);
+}
+
+#commands > button, #commands > a {
+    display: inline-block;
+    margin: 0 calc(var(--unit) / 2);
 }
 
 /* Loader */
