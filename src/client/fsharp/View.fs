@@ -90,13 +90,13 @@ let private homeTab =
     ]
 
 let private settings model dispatch inner =
-    let className = if model.SettingsOpen then "open" else ""
-
     div [
         Id "settings"
-        ClassName className
+        ClassName(if model.SettingsOpen then "open" else "")
         OnClick(fun ev ->
-            if ev.target?className = "settings open" then
+            let target = ev.target :?> HTMLElement
+
+            if target.classList.contains "open" then
                 dispatch ToggleSettings)
     ] [
         i [
