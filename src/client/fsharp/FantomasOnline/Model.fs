@@ -22,7 +22,8 @@ type Msg =
     | CopySettings
     | UpdateSettingsFilter of string
 
-type EditorState =
+[<RequireQualifiedAccess>]
+type FantomasTabState =
     | LoadingOptions
     | OptionsLoaded
     | LoadingFormatRequest
@@ -34,7 +35,7 @@ type Model =
       DefaultOptions: FantomasOption list
       UserOptions: Map<string, FantomasOption>
       Mode: FantomasMode
-      State: EditorState
+      State: FantomasTabState
       SettingsFilter: string }
 
     member this.SettingsChangedByTheUser =

@@ -29,8 +29,7 @@ let private fetchOak (payload: OakViewer.ParseRequest) dispatch =
 let private fetchFSCVersion () = sprintf "%s/version" backend |> Http.getText
 
 let private initialModel: Model =
-    { Oak = None
-      Error = None
+    { State = OakViewerTabState.Loading
       Version = "???"
       IsGraphView = false
       GraphViewOptions =
@@ -66,9 +65,6 @@ let private updateUrl (bubble: BubbleModel) (model: Model) _ =
     let json = Encode.toString 2 (encodeUrlModel bubble model)
     UrlTools.updateUrlWithData json
 
-let private loadCmd = Cmd.ofMsg (BubbleMessage.SetIsLoading true |> Msg.Bubble)
-let private unloadCmd = Cmd.ofMsg (BubbleMessage.SetIsLoading false |> Msg.Bubble)
-
 let update (bubble: BubbleModel) (msg: Msg) model : Model * Cmd<Msg> =
     match msg with
     | Msg.Bubble _ -> model, Cmd.none // handle in upper update function
@@ -76,19 +72,20 @@ let update (bubble: BubbleModel) (msg: Msg) model : Model * Cmd<Msg> =
         let parseRequest = modelToParseRequest bubble
 
         let cmd =
-            Cmd.batch
-                [ Cmd.ofEffect (fetchOak parseRequest)
-                  Cmd.ofEffect (updateUrl bubble model)
-                  loadCmd ]
+            Cmd.batch [ Cmd.ofEffect (fetchOak parseRequest); Cmd.ofEffect (updateUrl bubble model) ]
 
-        model, cmd
+        { model with
+            State = OakViewerTabState.Loading },
+        cmd
     | Msg.OakReceived result ->
         { model with
-            Oak = Some result
-            GraphViewRootNodes = []
-            Error = None },
-        unloadCmd
-    | Msg.Error error -> { initialModel with Error = Some error }, unloadCmd
+            State = OakViewerTabState.Result result
+            GraphViewRootNodes = [] },
+        Cmd.none
+    | Msg.Error error ->
+        { initialModel with
+            State = OakViewerTabState.Error error },
+        Cmd.none
     | FSCVersionReceived version -> { model with Version = version }, Cmd.none
     | SetGraphView value -> let m = { model with IsGraphView = value } in m, Cmd.ofEffect (updateUrl bubble m)
     | SetGraphViewLayout value ->

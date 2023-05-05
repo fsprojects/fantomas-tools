@@ -12,7 +12,7 @@ open FantomasTools.Client.Editor
 
 let private baseUrl: string = emitJsExpr () "import.meta.env.BASE_URL"
 
-let navigation model dispatch =
+let navigation dispatch =
     let title = "Fantomas tools"
 
     nav [] [
@@ -23,7 +23,6 @@ let navigation model dispatch =
             OnClick(fun _ -> dispatch ToggleSettings)
         ] [ i [ ClassName "fas fa-sliders-h" ] [] ]
         div [] [
-            button [ OnClick(fun _ -> Fable.Core.JS.console.log model) ] [ str "Print state" ]
             a [
                 Class "btn"
                 Href "https://github.com/sponsors/nojaf"
@@ -164,6 +163,8 @@ let diagnostics (bubble: BubbleModel) =
 
         ul [ Id "diagnostics" ] [ ofArray diagnostics ]
 
+let tempLoading = str "temp loading"
+
 let rightPane (model: Model) dispatch =
     let resultEditor, activeTab, settingsForTab, commands =
         match model.ActiveTab with
@@ -172,24 +173,20 @@ let rightPane (model: Model) dispatch =
             let astDispatch aMsg = dispatch (ASTMsg aMsg)
 
             let resultEditor =
-                if model.Bubble.IsLoading then
-                    HiddenEditor()
-                else
-
                 match model.ASTModel.State with
-                | AstViewerTabState.Initial -> HiddenEditor()
-                | AstViewerTabState.Result parsed ->
+                | AstViewerTabState.Loading -> HiddenEditor()
+                | AstViewerTabState.Error error -> ReadOnlyEditor [ MonacoEditorProp.Value error ]
+                | AstViewerTabState.Result response ->
                     EditorAux
                         (ASTViewer.View.cursorChanged
                             (ASTViewer.Model.Msg.Bubble >> Msg.ASTMsg >> dispatch)
                             model.ASTModel)
                         true
                         model.Bubble.Diagnostics.Length
-                        [ MonacoEditorProp.Value parsed.String ]
-                | AstViewerTabState.Error errors -> ReadOnlyEditor [ MonacoEditorProp.Value errors ]
+                        [ MonacoEditorProp.Value response.String ]
 
             resultEditor,
-            null,
+            ASTViewer.View.view model.ASTModel,
             ASTViewer.View.settings model.Bubble model.ASTModel.Version astDispatch,
             ASTViewer.View.commands astDispatch
         | OakTab ->
@@ -204,14 +201,15 @@ let rightPane (model: Model) dispatch =
             let fantomasDispatch fMsg = dispatch (FantomasMsg fMsg)
 
             let resultEditor =
-                if model.Bubble.IsLoading then
-                    HiddenEditor()
-                else
-
-                Editor []
+                match model.FantomasModel.State with
+                | FantomasTabState.LoadingOptions
+                | FantomasTabState.LoadingFormatRequest -> HiddenEditor()
+                | FantomasTabState.OptionsLoaded -> Editor []
+                | FantomasTabState.FormatResult _ -> Editor []
+                | FantomasTabState.FormatError _ -> Editor []
 
             resultEditor,
-            FantomasOnline.View.view model.Bubble.IsFsi model.FantomasModel,
+            FantomasOnline.View.view model.FantomasModel fantomasDispatch,
             FantomasOnline.View.settings model.Bubble.IsFsi model.FantomasModel fantomasDispatch,
             FantomasOnline.View.commands model.Bubble model.FantomasModel fantomasDispatch
 
@@ -219,12 +217,13 @@ let rightPane (model: Model) dispatch =
         match model.ActiveTab with
         | ASTTab ->
             match model.ASTModel.State with
-            | AstViewerTabState.Initial _ -> false
+            | AstViewerTabState.Loading _ -> false
             | _ -> true
         | FantomasTab _ ->
             match model.FantomasModel.State with
-            | FormatResult _
-            | FormatError _ -> true
+            | FantomasTabState.OptionsLoaded
+            | FantomasTabState.FormatError _
+            | FantomasTabState.FormatResult _ -> true
             | _ -> false
         | _ -> false
 
@@ -233,12 +232,8 @@ let rightPane (model: Model) dispatch =
         pre [ Props.Style [ Display DisplayOptions.None ] ] [ str (Fable.Core.JS.JSON.stringify model) ]
         settings model dispatch settingsForTab
         tabs model
-        if model.Bubble.IsLoading then
-            str "loading"
-        // Loader.tabLoading
-        else
-            activeTab
         resultEditor
+        activeTab
         if not (isNull commands) then
             div [ Id "commands" ] [ commands ]
         if model.ActiveTab <> HomeTab then

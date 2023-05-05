@@ -92,15 +92,14 @@ let private parseResults =
 
         node
 
-    memoize (fun (model: Model) ->
-        Option.map
-            (fun oak ->
-                nodeIdCounter <- 0
-                parseNode 0 oak)
-            model.Oak)
+    memoize (fun (oak: OakNode) ->
+        nodeIdCounter <- 0
+        parseNode 0 oak)
 
 let fullGraph =
-    memoize (fun model -> parseResults model |> Option.map (fun r -> r, nodesFromRoot r))
+    memoize (fun oak ->
+        let result = parseResults oak
+        result, nodesFromRoot result)
 
 let limitTree =
     memoize2 (fun allowedSet n ->
@@ -159,112 +158,109 @@ let view =
 
     let minScaling = 10
 
-    memoizeBy fst (fun (model, dispatch: Msg -> unit) ->
+    memoizeBy (fun (oak, _, _) -> oak) (fun (oak: OakNode, model: Model, dispatch: Msg -> unit) ->
         let root =
-            fullGraph model
-            |> Option.map (fun (root, nodeMap) ->
-                model.GraphViewRootNodes
-                |> List.tryHead
-                |> Option.bind (fun nId -> Map.tryFind nId nodeMap)
-                |> Option.defaultValue root)
+            let root, nodeMap = fullGraph oak
 
-        match root with
-        | Some root ->
-            let root = limitTreeByNodes model.GraphViewOptions.NodeLimit root
-            let oakNodes = nodesFromRoot root
+            model.GraphViewRootNodes
+            |> List.tryHead
+            |> Option.bind (fun nId -> Map.tryFind nId nodeMap)
+            |> Option.defaultValue root
 
-            let scalingLabel =
-                let opt =
-                    {| enabled = true
-                       min = minScaling
-                       max = model.GraphViewOptions.ScaleMaxSize |}
+        let root = limitTreeByNodes model.GraphViewOptions.NodeLimit root
+        let oakNodes = nodesFromRoot root
 
-                match model.GraphViewOptions.Scale with
-                | NoScale -> {| opt with enabled = false |}
-                | SubTreeNodes
-                | AllNodes -> opt
+        let scalingLabel =
+            let opt =
+                {| enabled = true
+                   min = minScaling
+                   max = model.GraphViewOptions.ScaleMaxSize |}
 
-            let nodes: VisNetwork.node array =
-                oakNodes
-                |> Map.toArray
-                |> Array.map (fun (_, graphOakNode) ->
-                    let scaleValue =
-                        match model.GraphViewOptions.Scale with
-                        | NoScale -> minScaling
-                        | SubTreeNodes ->
-                            if not graphOakNode.Limited then
-                                minScaling
-                            else
-                                graphOakNode.Size
-                        | AllNodes -> minScaling + graphOakNode.Size - 1
+            match model.GraphViewOptions.Scale with
+            | NoScale -> {| opt with enabled = false |}
+            | SubTreeNodes
+            | AllNodes -> opt
 
-                    {| id = !!graphOakNode.Id
-                       label = graphOakNode.Node.Trim()
-                       title = graphOakNode.Title
-                       level = graphOakNode.Level
-                       color = getColor graphOakNode.Type
-                       shape = if graphOakNode.Limited then "box" else "ellipse"
-                       value = scaleValue
-                       font = {| color = getFontColor graphOakNode.Type |} |})
-
-            let edges: VisNetwork.edge array =
-                oakNodes
-                |> Map.values
-                |> Seq.collect (fun n ->
-                    n.Children
-                    |> Seq.map (fun m ->
-                        if m.Type = Standard then
-                            {| from = !!n.Id
-                               ``to`` = !!m.Id
-                               dashes = false |}
-                            : VisNetwork.edge
+        let nodes: VisNetwork.node array =
+            oakNodes
+            |> Map.toArray
+            |> Array.map (fun (_, graphOakNode) ->
+                let scaleValue =
+                    match model.GraphViewOptions.Scale with
+                    | NoScale -> minScaling
+                    | SubTreeNodes ->
+                        if not graphOakNode.Limited then
+                            minScaling
                         else
-                            {| from = !!m.Id
-                               ``to`` = !!n.Id
-                               dashes = true |}))
-                |> Seq.toArray
+                            graphOakNode.Size
+                    | AllNodes -> minScaling + graphOakNode.Size - 1
 
-            let layout =
-                let hier =
-                    {| enabled = true
-                       direction = "UD"
-                       levelSeparation = 75 |}
+                {| id = !!graphOakNode.Id
+                   label = graphOakNode.Node.Trim()
+                   title = graphOakNode.Title
+                   level = graphOakNode.Level
+                   color = getColor graphOakNode.Type
+                   shape = if graphOakNode.Limited then "box" else "ellipse"
+                   value = scaleValue
+                   font = {| color = getFontColor graphOakNode.Type |} |})
 
-                match model.GraphViewOptions.Layout with
-                | TopDown -> {| hierarchical = hier |}
-                | LeftRight -> {| hierarchical = {| hier with direction = "LR" |} |}
-                | Free -> {| hierarchical = {| hier with enabled = false |} |}
+        let edges: VisNetwork.edge array =
+            oakNodes
+            |> Map.values
+            |> Seq.collect (fun n ->
+                n.Children
+                |> Seq.map (fun m ->
+                    if m.Type = Standard then
+                        {| from = !!n.Id
+                           ``to`` = !!m.Id
+                           dashes = false |}
+                        : VisNetwork.edge
+                    else
+                        {| from = !!m.Id
+                           ``to`` = !!n.Id
+                           dashes = true |}))
+            |> Seq.toArray
 
-            let parentElement = Browser.Dom.document.getElementById "tab-content"
+        let layout =
+            let hier =
+                {| enabled = true
+                   direction = "UD"
+                   levelSeparation = 75 |}
 
-            let options: VisNetwork.options =
-                {| layout = layout
-                   interaction = {| hover = true |}
-                   width = $"{parentElement.clientWidth}"
-                   height = $"{parentElement.clientHeight}"
-                   nodes = {| scaling = {| label = scalingLabel |} |} |}
+            match model.GraphViewOptions.Layout with
+            | TopDown -> {| hierarchical = hier |}
+            | LeftRight -> {| hierarchical = {| hier with direction = "LR" |} |}
+            | Free -> {| hierarchical = {| hier with enabled = false |} |}
 
-            let graph =
-                Graph
-                    {| options = options
-                       data =
-                        {| nodes = VisNetwork.DataSet(!!nodes)
-                           edges = VisNetwork.DataSet(!!edges) |}
-                       selectNode =
-                        (fun ev ->
-                            for nodeId in ev.nodes do
-                                dispatch (GraphViewSetRoot(NodeId nodeId)))
-                       hoverNode =
-                        (fun ev -> BubbleMessage.HighLight oakNodes.[NodeId ev.node].Range |> Bubble |> dispatch) |}
+        let parentElement = Browser.Dom.document.getElementById "tab-content"
 
-            fragment [] [
-                graph
-                div [ Id "graph-view-commands" ] [
-                    if model.GraphViewRootNodes <> [] then
-                        button [
-                            ClassName $"{Style.Btn} {Style.BtnPrimary} {Style.TextWhite}"
-                            OnClick(fun _ -> dispatch GraphViewGoBack)
-                        ] [ str $"<- back({model.GraphViewRootNodes.Length})" ]
-                ]
+        let options: VisNetwork.options =
+            {| layout = layout
+               interaction = {| hover = true |}
+               width = $"{parentElement.clientWidth}"
+               height = $"{parentElement.clientHeight}"
+               nodes = {| scaling = {| label = scalingLabel |} |} |}
+
+        let graph =
+            Graph
+                {| options = options
+                   data =
+                    {| nodes = VisNetwork.DataSet(!!nodes)
+                       edges = VisNetwork.DataSet(!!edges) |}
+                   selectNode =
+                    (fun ev ->
+                        for nodeId in ev.nodes do
+                            dispatch (GraphViewSetRoot(NodeId nodeId)))
+                   hoverNode =
+                    (fun ev -> BubbleMessage.HighLight oakNodes.[NodeId ev.node].Range |> Bubble |> dispatch) |}
+
+        fragment [] [
+            graph
+            div [ Id "graph-view-commands" ] [
+                if model.GraphViewRootNodes <> [] then
+                    button [
+                        ClassName $"{Style.Btn} {Style.BtnPrimary} {Style.TextWhite}"
+                        OnClick(fun _ -> dispatch GraphViewGoBack)
+                    ] [ str $"<- back({model.GraphViewRootNodes.Length})" ]
             ]
-        | None -> div [] [])
+        ])

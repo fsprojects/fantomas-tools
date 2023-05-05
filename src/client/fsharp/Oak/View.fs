@@ -95,20 +95,21 @@ let rec mkResultDiv
 
     Continuation.sequence continuations finalContinuation
 
-let private results (model: Model) dispatch =
+let results (oak: OakNode) dispatch =
     div [ Id "oakResult"; ClassName Style.TabContent ] [
-        match model.Oak with
-        | None -> ()
-        | Some oak ->
-            let lines = mkResultDiv dispatch 0 "root" oak id
-            ofArray lines
+        let lines = mkResultDiv dispatch 0 "root" oak id
+        ofArray lines
     ]
 
 let view (model: Model) dispatch =
-    match model.Error, model.IsGraphView with
-    | None, false -> results model dispatch
-    | None, true -> Oak.GraphView.view (model, dispatch)
-    | Some errors, _ -> ReadOnlyEditor [ MonacoEditorProp.Value errors ]
+    match model.State with
+    | OakViewerTabState.Result oakNode ->
+        if model.IsGraphView then
+            Oak.GraphView.view (oakNode, model, dispatch)
+        else
+            results oakNode dispatch
+    | OakViewerTabState.Error errors -> ReadOnlyEditor [ MonacoEditorProp.Value errors ]
+    | OakViewerTabState.Loading -> Loader.tabLoading
 
 let commands dispatch =
     button [

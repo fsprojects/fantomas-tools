@@ -39,7 +39,6 @@ let init _ =
               Defines = ""
               ResultCode = ""
               Diagnostics = Array.empty
-              IsLoading = false
               HighLight =
                 { StartLine = 0
                   StartColumn = 0
@@ -117,10 +116,6 @@ let update msg model =
                     Diagnostics = diagnostics },
                 Cmd.none
             | HighLight hlr -> { model.Bubble with HighLight = hlr }, Cmd.none
-            | SetIsLoading isLoading ->
-                { model.Bubble with
-                    IsLoading = isLoading },
-                Cmd.none
 
         { model with Bubble = bubble }, cmd
 

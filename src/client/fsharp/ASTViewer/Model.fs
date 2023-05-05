@@ -11,7 +11,7 @@ type Msg =
 
 [<RequireQualifiedAccess>]
 type AstViewerTabState =
-    | Initial
+    | Loading
     | Result of ASTViewer.Shared.Response
     | Error of string
 

@@ -73,9 +73,14 @@ type Msg =
     | GraphViewGoBack
     | Error of string
 
+[<RequireQualifiedAccess>]
+type OakViewerTabState =
+    | Loading
+    | Result of OakNode
+    | Error of string
+
 type Model =
-    { Oak: OakNode option
-      Error: string option
+    { State: OakViewerTabState
       Version: string
       IsGraphView: bool
       GraphViewOptions: GraphView.Options

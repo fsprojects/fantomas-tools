@@ -90,7 +90,7 @@ let init (mode: FantomasMode) =
       DefaultOptions = []
       UserOptions = Map.empty
       Mode = mode
-      State = LoadingOptions
+      State = FantomasTabState.LoadingOptions
       SettingsFilter = "" },
     cmd
 
@@ -173,9 +173,6 @@ let private copySettings (model: Model) _ =
         printfn "%A" err)
     |> Promise.iter (fun () -> showSuccess "Copied .editorconfig settings to clipboard!")
 
-let private loadCmd = Cmd.ofMsg (BubbleMessage.SetIsLoading true |> Msg.Bubble)
-let private unloadCmd = Cmd.ofMsg (BubbleMessage.SetIsLoading false |> Msg.Bubble)
-
 let update isActiveTab (bubble: BubbleModel) msg model =
     match msg with
     | Msg.Bubble _ -> model, Cmd.none // handle in upper update function
@@ -196,25 +193,27 @@ let update isActiveTab (bubble: BubbleModel) msg model =
         { model with
             DefaultOptions = options
             UserOptions = userOptions
-            State = OptionsLoaded },
+            State = FantomasTabState.OptionsLoaded },
         cmd
     | Format ->
         let cmd =
             Cmd.batch
                 [ Cmd.ofEffect (getFormattedCode bubble.SourceCode bubble.IsFsi model)
-                  Cmd.ofEffect (updateUrl bubble.SourceCode bubble.IsFsi model)
-                  loadCmd ]
+                  Cmd.ofEffect (updateUrl bubble.SourceCode bubble.IsFsi model) ]
 
         { model with
-            State = LoadingFormatRequest },
+            State = FantomasTabState.LoadingFormatRequest },
         cmd
 
-    | FormatException error -> { model with State = FormatError error }, unloadCmd
+    | FormatException error ->
+        { model with
+            State = FantomasTabState.FormatError error },
+        Cmd.none
 
     | FormattedReceived result ->
         { model with
-            State = FormatResult result },
-        unloadCmd
+            State = FantomasTabState.FormatResult result },
+        Cmd.none
     | UpdateOption(key, value) ->
         let userOptions = Map.add key value model.UserOptions
         { model with UserOptions = userOptions }, Cmd.none

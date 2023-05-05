@@ -3,7 +3,6 @@ module FantomasTools.Client.App
 open Fable.Core.JsInterop
 open Browser.Types
 open Fable.React
-open Fable.React.Props
 open Feliz
 open Feliz.Router
 open Feliz.UseElmish
@@ -22,7 +21,7 @@ let App () =
     let routes = View.rightPane model dispatch
 
     fragment [] [
-        View.navigation model dispatch
+        View.navigation dispatch
         main [] [
             View.editor model dispatch
             React.router [ router.onUrlChanged onUrlChanged; router.children [ routes ] ]

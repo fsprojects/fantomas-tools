@@ -5,10 +5,9 @@ open Fable.React
 open Fable.React.Props
 open FantomasOnline.Shared
 open FantomasTools.Client
-open FantomasTools.Client.Editor
 open FantomasTools.Client.FantomasOnline.Model
 
-let private mapToOption dispatch (model: Model) (key, fantomasOption) =
+let mapToOption dispatch (model: Model) (key, fantomasOption) =
     let editor =
         let label =
             a [
@@ -224,15 +223,15 @@ Fantomas %s
 
     uri |> Href
 
-let private createGitHubIssue (bubble: BubbleModel) model =
+let createGitHubIssue (bubble: BubbleModel) model =
     let description =
         """Please describe here the Fantomas problem you encountered.
                     Check out our [Contribution Guidelines](https://github.com/fsprojects/fantomas/blob/main/CONTRIBUTING.md#bug-reports)."""
 
     let bh, bc, ah, ac =
         match model.State with
-        | FormatError e -> "Code", bubble.SourceCode, "Error", e
-        | FormatResult result ->
+        | FantomasTabState.FormatError e -> "Code", bubble.SourceCode, "Error", e
+        | FantomasTabState.FormatResult result ->
             "Code", bubble.SourceCode, "Result", (Option.defaultValue result.FirstFormat result.SecondFormat)
         | _ -> "Code", bubble.SourceCode, "", ""
 
@@ -261,7 +260,7 @@ let private createGitHubIssue (bubble: BubbleModel) model =
             ] [ str "Looks wrong? Create an issue!" ]
         | _ -> span [ ClassName $"{Style.TextMuted} {Style.Me2}" ] [ str "Looks wrong? Try using the main version!" ]
 
-let private viewErrors (model: Model) isFsi result isIdempotent errors =
+let viewErrors (model: Model) isFsi result isIdempotent errors =
     let errors =
         match errors with
         | [] -> []
@@ -323,32 +322,35 @@ let private viewErrors (model: Model) isFsi result isIdempotent errors =
     else
         None
 
-let view isFsi model =
-    match model.State with
-    | EditorState.LoadingFormatRequest
-    | EditorState.LoadingOptions -> Loader.tabLoading
-    | EditorState.OptionsLoaded -> null
-    | EditorState.FormatResult result ->
-        let formattedCode, isIdempotent, astErrors =
-            match result.SecondFormat with
-            | Some sf when sf = result.FirstFormat -> sf, true, result.SecondValidation
-            | Some _ -> result.FirstFormat, false, result.FirstValidation
-            | None -> result.FirstFormat, true, result.FirstValidation
+// TODO: idempotency case
+// Sample link: https://fsprojects.github.io/fantomas-tools/#/fantomas/main?data=N4KABGBEDGD2AmBTSAuKBbBBXANosAKogM4AuAOgE7kB2VtepY0liAhqYgVgA55gAKNmjKUAljQDmASkEAjEaXFTZAXjBsANGDn061GozAA3Njiz5VeiBHQdoACzDlIoiZJdgA7mNIPrNgA%2BzpCm5oieALQAfCEAjC7aLgBMLgEQwQD6YDHxcfkFhUXFJaVl5RX5iSHJtXX1DY1NTWkGNmCBgbEs7JzcfMia4FDEiKSk7sSoYADawxCg7RCQACSkAJ48yGiQEqSQQ0tQK2EW03NHEAAMh5eQAJI0SDSkAMpiAF6D80sALD8QAC6PwAvrcFgDjhsttNdi8DpDVqdtrNIRA4uClpAALJsAAeABkJIgCYgpH4EZcwHFkldIcD2mCfossWtNijIGT4AB5ABmRJoiFeGzwlNZyPOaLAyUx7UgAFEnnyBd8qZAcLzIPTQZiWXK2TCdnJYLAcGL9RK0BdLgBmWU2B40UaUUgAMQkZgAcogvDhiealkoLNrGbrEQaOcbTQHliczGcrVLfvblq8eGxoIgAEKIXmwVgABTYlDY6DGiEoMZsQcQIZsTPaeodEdhUbN9qR8ZR1qOAFYU1A0xns7n8yTYF4K9A2KNHsZYNOJrAaFWIDW6xAGzYm7HoZGTe3w5bUVSAGwDyBDzM5vOsACqPC2lGns5o88XYmXq7AvLMow3YBbhCRyrHurYHlWnbhJKVIAOwXleI63ogADCOAzsQKHLqIWDQKQ%2Bbfr%2BOD-kcDL1mGIEtkaEEdnG0GJlSAAcCHpteo6sNiiDoHIFaEX%2BtakTqzLhmB1HRrRx49ksACcLHDjeY5YTgX4DkRJFLGRm4UayolQG2kF0QmJ6XHENxSperGIAAgrynCUFh6B2N%2B66CaGwmUbpkD6RJXYwSZGLmYhCmsK8XFiHAykrqp-EAUBYA7lC7LgeJR6%2BQxJkyoFlk2XZoXoOFpoqVKLkaUJjYiUlYmHpRklSnEdpZcOVmULAWBPAAIogfr5XZzmUMGrnke5OmVVAewGbVVJxMm5m4ni9y8gQDhkq8Dj5qQADqYjwBSA50oNWnDfqnnjT59HGUccT9rN%2BILUtZLysRQprS6W07Q436nvtpVueVHmjXC%2BxnUZUntHE543fNNC8mIeLck%2BHD5vKeI8KwxDEJ%2BUVSox33tJpgHacdAOnal52gzYcTwZDABKiBwJQ8BvbtSa4zY%2BNxQloHE-CwPdnVzE03T%2BbwJ6WDcRWfL3Jw6BTAOcSxYTzaeeguATH6gquvmdjjBWBBJbzfmXbJ5m0-T8DYqrYjq4gmuUNrvUXo4xYZnZmQ%2BO9WoHQTR1K9zQOkyDUq0hec3NSW6zcpQRJkEzH0DjjCs%2B7ufsTWlF1LMkAVqqHlDh5H0ekKL4uUJL0uy3Vid-SNhoYJb1u2-buv6wHfNUrUF5h2wEdR2IZAWzgavEg3HAO%2BZTslnhFZu9tFKV9uFU14Dqdk0HDXZ-iABqXZZhI8DuLH34J17HMLxyJM1Wn5MQMkM3r3irptXhmM708%2B8z3HLNz8B1dnzzLeGxna6d92qwFIAAcTGMjVGJAMbLgPvHVmQIyrz3%2Bovby-90pHGSBDNU3pfTEhzKQScZI9ZbE6jDGgvhMZWSeJxYu5cqQlTxsg7%2BRM0E0QwendoyQqZqisn6SQNAH40Cfsud4giOBYFYAQWAjxnikA4JjPiT0v7xVPslaq4pL5BwFnwgeFYaCKOMOOKQdCeKUHIRIKh2FlHqWYb9FBP8NHL0Dm3Y22dLYqgJKWOQ8A2BoVgBjKQeDra2IEj9IaVc2H7hShfFeVIbRmTVFAisYgywvDMAAaUQIgHgciySkEeFmEsIiP5UjUuE%2BxkTHHROcQbTBSwbRZzuFmdCNAADWKpiDNVak8b0ZBEDmzrsSKBaNYFOj6gNCJh0om%2B3YbErR8TbSZTVFmYswVEDtV7iwNJHpODwDvJQ5cnVoDoRLEuLG5SYrH0VsnReKsB5WwIRPdpYxhTrFFPUrhNgbRrzuP3QegpikZleW8EUqo7gsFLFseAntpne1mXc3%2B-s4muNtLfO42TclzSLuYvkrS2AdK6d%2BUyiCwDs1uYleZmiLTaISUAu4ISCHsUQACp5goHI8CwAoi5oyYFKIHEwtmLC1GoJiTS5sk1bQ4LuCk8Q6SFE4EevlYgZTLgVNisMQEtxdjEFdBjaYGqQRAA
 
-        div [ ClassName Style.TabContent ] [
-            div [ Id Style.FantomasEditorContainer ] [
-                ReadOnlyEditor [
-                    MonacoEditorProp.Value formattedCode
-                    MonacoEditorProp.Options(MonacoEditorProp.rulerOption model.MaxLineLength)
-                ]
-            ]
-            ofOption (viewErrors model isFsi result isIdempotent astErrors)
-        ]
+// let view isFsi model =
+//     match model.State with
+//     | EditorState.LoadingFormatRequest
+//     | EditorState.LoadingOptions -> Loader.tabLoading
+//     | EditorState.OptionsLoaded -> null
+//     | EditorState.FormatResult result ->
+//         let formattedCode, isIdempotent, astErrors =
+//             match result.SecondFormat with
+//             | Some sf when sf = result.FirstFormat -> sf, true, result.SecondValidation
+//             | Some _ -> result.FirstFormat, false, result.FirstValidation
+//             | None -> result.FirstFormat, true, result.FirstValidation
+//
+//         div [ ClassName Style.TabContent ] [
+//             div [ Id Style.FantomasEditorContainer ] [
+//                 ReadOnlyEditor [
+//                     MonacoEditorProp.Value formattedCode
+//                     MonacoEditorProp.Options(MonacoEditorProp.rulerOption model.MaxLineLength)
+//                 ]
+//             ]
+//             ofOption (viewErrors model isFsi result isIdempotent astErrors)
+//         ]
+//
+//     | EditorState.FormatError error ->
+//         div [ ClassName Style.TabContent ] [ ReadOnlyEditor [ MonacoEditorProp.Value error ] ]
 
-    | EditorState.FormatError error ->
-        div [ ClassName Style.TabContent ] [ ReadOnlyEditor [ MonacoEditorProp.Value error ] ]
-
-let private userChangedSettings (model: Model) =
+let userChangedSettings (model: Model) =
     model.SettingsChangedByTheUser |> List.isEmpty |> not
 
 let commands (bubble: BubbleModel) model dispatch =
@@ -369,16 +371,16 @@ let commands (bubble: BubbleModel) model dispatch =
             None
 
     match model.State with
-    | EditorState.LoadingOptions -> []
-    | EditorState.LoadingFormatRequest -> [ formatButton; ofOption copySettingButton ]
-    | EditorState.OptionsLoaded
-    | EditorState.FormatResult _
-    | EditorState.FormatError _ -> [ createGitHubIssue bubble model; formatButton; ofOption copySettingButton ]
+    | FantomasTabState.LoadingOptions -> []
+    | FantomasTabState.LoadingFormatRequest -> [ formatButton; ofOption copySettingButton ]
+    | FantomasTabState.OptionsLoaded
+    | FantomasTabState.FormatResult _
+    | FantomasTabState.FormatError _ -> [ createGitHubIssue bubble model; formatButton; ofOption copySettingButton ]
     |> fragment []
 
 let settings isFsi model dispatch =
     match model.State with
-    | EditorState.LoadingOptions -> span [ ClassName $"{Style.SpinnerBorder} {Style.TextPrimary}" ] []
+    | FantomasTabState.LoadingOptions -> span [ ClassName $"{Style.SpinnerBorder} {Style.TextPrimary}" ] []
     | _ ->
         let fantomasMode =
             [ FantomasMode.V4, "4.x"
@@ -417,7 +419,7 @@ let settings isFsi model dispatch =
                         ClassName Style.FormControl
                         DefaultValue model.SettingsFilter
                         Placeholder "Filter settings"
-                        Props.OnChange(fun (ev: Browser.Types.Event) -> ev.Value |> UpdateSettingsFilter |> dispatch)
+                        OnChange(fun (ev: Browser.Types.Event) -> ev.Value |> UpdateSettingsFilter |> dispatch)
                     ]
                 ]
             ]
@@ -430,3 +432,9 @@ let settings isFsi model dispatch =
             searchBox
             options
         ]
+
+let view (model: Model) (dispatch: Msg -> unit) =
+    match model.State with
+    | FantomasTabState.LoadingOptions
+    | FantomasTabState.LoadingFormatRequest -> Loader.tabLoading
+    | _ -> null

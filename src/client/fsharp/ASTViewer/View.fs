@@ -95,3 +95,8 @@ let settings (bubble: BubbleModel) version dispatch =
             (str "File extension")
             bubble.IsFsi
     ]
+
+let view (model: Model) =
+    match model.State with
+    | AstViewerTabState.Loading -> Loader.tabLoading
+    | _ -> null
