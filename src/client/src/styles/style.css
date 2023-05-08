@@ -604,6 +604,53 @@ nav > div #docs-btn .long-text {
 }
 
 /* Oak tab */
+#oak-tab {
+    padding: 1px;
+}
+
+#oak-tab > div {
+    cursor: pointer;
+    padding: 0;
+    line-height: var(--unit-2);
+    font-size: calc(var(--unit-2) - 2px);
+    transition: all 0.4s;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    font-family: Consolas, monospace;
+}
+
+#oak-tab > div:hover {
+    outline: 1px solid var(--black);
+}
+
+#oak-tab > div.highlight {
+    background-color: var(--secondary);
+    color: var(--white);
+}
+
+#oak-tab > div > div {
+    padding: 2px 0;
+}
+
+#oak-tab > div > div > i {
+    margin: 0 3px;
+    display: inline-block;
+}
+
+#oak-tab > div .comment {
+    color: var(--white);
+    background: var(--success);
+}
+
+#oak-tab > div .newline {
+    color: var(--white);
+    background: var(--grey);
+}
+
+#oak-tab > div .directive {
+    color: var(--white);
+    background: var(--primary);
+}
 
 /* Fantomas tab */
 #fantomas-editor-container {

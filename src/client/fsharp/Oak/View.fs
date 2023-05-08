@@ -16,13 +16,13 @@ module Continuation =
         | [] -> [] |> finalContinuation
         | recurse :: recurses -> recurse (fun ret -> sequence recurses (fun rets -> ret :: rets |> finalContinuation))
 
-let mkResultDivContent level range text =
+let mkResultDivContent range text =
     let range =
         $"({range.StartLine},{range.StartColumn}-{range.EndLine},{range.EndColumn})"
 
-    sprintf "%s%s %s" (String.replicate level "  ") text range
+    sprintf "%s %s" text range
 
-let mkTriviaResultDiv (dispatch: Msg -> unit) level (key: string) (triviaNode: TriviaNode) : ReactElement =
+let mkTriviaResultDiv (dispatch: Msg -> unit) (isBefore: bool) (key: string) (triviaNode: TriviaNode) : ReactElement =
     let className =
         match triviaNode.Type with
         | "commentOnSingleLine"
@@ -35,19 +35,26 @@ let mkTriviaResultDiv (dispatch: Msg -> unit) level (key: string) (triviaNode: T
     let title =
         sprintf "%c%s" (System.Char.ToUpper triviaNode.Type[0]) (triviaNode.Type[1..])
 
+    let iconClassName =
+        if isBefore then
+            "fa-solid fa-arrow-turn-up fa-flip-both"
+        else
+            "fa-solid fa-arrow-turn-up fa-flip-horizontal"
+
     let content =
-        mkResultDivContent level triviaNode.Range (Option.defaultValue "Newline" triviaNode.Content)
+        mkResultDivContent triviaNode.Range (Option.defaultValue "Newline" triviaNode.Content)
 
     div [
         Title title
         Key key
+        ClassName className
         OnClick(fun ev ->
             ev.stopPropagation ()
             let div = (ev.target :?> Element)
             div.classList.add "highlight"
             JS.setTimeout (fun () -> div.classList.remove "highlight") 400 |> ignore
             dispatch (Bubble(BubbleMessage.HighLight triviaNode.Range)))
-    ] [ pre [ ClassName className ] [ str content ] ]
+    ] [ i [ ClassName iconClassName ] []; str content ]
 
 let rec mkResultDiv
     (dispatch: Msg -> unit)
@@ -63,13 +70,20 @@ let rec mkResultDiv
             mkResultDiv dispatch (level + 1) key child)
         |> Array.toList
 
+    let contentBefore =
+        Array.mapi (fun idx -> mkTriviaResultDiv dispatch true $"{key}_cb_{idx}") node.ContentBefore
+
+    let contentAfter =
+        Array.mapi (fun idx -> mkTriviaResultDiv dispatch false $"{key}_ca_{idx}") node.ContentAfter
+
     let current =
         let content =
-            mkResultDivContent level node.Range (Option.defaultValue node.Type node.Text)
+            mkResultDivContent node.Range (Option.defaultValue node.Type node.Text)
 
         div [
             Title node.Type
             Key key
+            Props.Style [ MarginLeft $"{level * 10}px" ]
             OnClick(fun ev ->
                 ev.stopPropagation ()
                 let div = (ev.target :?> Element)
@@ -77,26 +91,15 @@ let rec mkResultDiv
                 JS.setTimeout (fun () -> div.classList.remove "highlight") 400 |> ignore
 
                 dispatch (Bubble(BubbleMessage.HighLight node.Range)))
-        ] [ pre [] [ str content ] ]
-
-    let contentBefore =
-        Array.mapi (fun idx tn -> mkTriviaResultDiv dispatch level $"{key}_cb_{idx}" tn) node.ContentBefore
-
-    let contentAfter =
-        Array.mapi (fun idx tn -> mkTriviaResultDiv dispatch level $"{key}_ca_{idx}" tn) node.ContentAfter
+        ] [ yield! contentBefore; yield str content; yield! contentAfter ]
 
     let finalContinuation (elements: ReactElement array list) =
-        continuation [|
-            yield! contentBefore
-            yield current
-            yield! (Seq.collect id elements)
-            yield! contentAfter
-        |]
+        continuation [| yield current; yield! (Seq.collect id elements) |]
 
     Continuation.sequence continuations finalContinuation
 
 let results (oak: OakNode) dispatch =
-    div [ Id "oakResult"; ClassName Style.TabContent ] [
+    div [ Id "oak-tab"; ClassName Style.TabContent ] [
         let lines = mkResultDiv dispatch 0 "root" oak id
         ofArray lines
     ]
