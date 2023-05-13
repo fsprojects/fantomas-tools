@@ -114,7 +114,7 @@ html, body, #app {
     color: var(--white);
 }
 
-.btn.primary:hover, button.primary:hover  {
+.btn.primary:hover, button.primary:hover {
     background-color: var(--primary-hover);
 }
 
@@ -124,7 +124,7 @@ html, body, #app {
     color: var(--white);
 }
 
-.btn.secondary:hover, button.secondary:hover  {
+.btn.secondary:hover, button.secondary:hover {
     background-color: var(--secondary-hover);
 }
 
@@ -134,7 +134,7 @@ html, body, #app {
     color: var(--white);
 }
 
-.btn.danger:hover, button.danger:hover  {
+.btn.danger:hover, button.danger:hover {
     background-color: var(--danger-hover);
 }
 
@@ -167,6 +167,14 @@ html, body, #app {
 @media screen and (min-width: 768px) {
     #app main {
         flex-direction: row;
+    }
+
+    #app main #source {
+        flex-basis: 40%;
+    }
+
+    #app main #tools {
+        flex-basis: 60%;
     }
 }
 
@@ -349,6 +357,64 @@ nav > div #docs-btn .long-text {
     font-weight: 500;
     font-size: var(--unit-4);
     margin-top: 0;
+}
+
+#settings .version-bar {
+    color: var(--primary);
+    text-align: center;
+    font-size: calc(var(--unit) * 1.33);
+    margin-bottom: var(--unit);
+}
+
+#settings .setting {
+    margin-bottom: var(--unit-2);
+    width: 100%;
+}
+
+#settings .setting label {
+    display: block;
+    margin-bottom: calc(var(--unit) / 2);
+}
+
+#settings .setting input {
+    display: block;
+    width: 100%;
+    font-size: var(--unit-2);
+    line-height: 1.5;
+    font-weight: 400;
+    color: var(--black);
+    background-color: var(--white);
+    border: 1px solid var(--light-border);
+    border-radius: 0;
+    appearance: none;
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+    font-family: inherit;
+    padding: calc(var(--unit) / 1.333333) calc(var(--unit) / .66666);
+    outline: none;
+    box-sizing: border-box;
+}
+
+#settings .setting input:focus {
+    border-color: var(--secondary-border);
+    box-shadow: 0 0 0 0.25rem #338cbb40;
+}
+
+#settings .setting .toggle-button button {
+    border-radius: 0;
+    border: 1px solid var(--secondary);
+    background-color: var(--white);
+    color: var(--secondary);
+}
+
+#settings .setting .toggle-button button:hover {
+    background-color: var(--secondary);
+    color: var(--white);
+    transform: none;
+}
+
+#settings .setting .toggle-button button.active {
+    background-color: var(--secondary);
+    color: var(--white);
 }
 
 @media screen and (min-width: 768px) {
