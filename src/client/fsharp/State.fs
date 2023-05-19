@@ -86,8 +86,16 @@ let update msg model =
             | ActiveTab.FantomasTab ft when (ft <> model.FantomasModel.Mode) ->
                 { model with
                     ActiveTab = tab
+                    Bubble =
+                        { model.Bubble with
+                            Diagnostics = Array.empty }
                     FantomasModel = { model.FantomasModel with Mode = ft } }
-            | _ -> { model with ActiveTab = tab }
+            | _ ->
+                { model with
+                    ActiveTab = tab
+                    Bubble =
+                        { model.Bubble with
+                            Diagnostics = Array.empty } }
 
         let cmd = Navigation.cmdForCurrentTab tab model
 
