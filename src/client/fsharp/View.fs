@@ -16,7 +16,7 @@ let navigation dispatch =
     let title = "Fantomas tools"
 
     nav [] [
-        a [ Href baseUrl; Target "_self" ] [ img [ Src "./fantomas_logo.png"; ClassName $"{Style.Me3}" ]; str title ]
+        a [ Href baseUrl; Target "_self" ] [ img [ Src "./fantomas_logo.png" ]; str title ]
         a [
             Class "btn"
             Id "mobile-menu-toggle"
@@ -28,29 +28,26 @@ let navigation dispatch =
                 Href "https://github.com/sponsors/nojaf"
                 Target "_blank"
                 Id "sponsor-btn"
-            ] [
-                i [ ClassName $"far fa-heart {Style.Me1} {Style.Mt1} {Style.TextDanger}" ] []
-                str "Sponsor"
-            ]
+            ] [ i [ ClassName $"far fa-heart" ] []; str "Sponsor" ]
             a [
                 Class "btn"
                 Href "https://github.com/fsprojects/fantomas-tools"
                 Target "_blank"
                 Id "repository-btn"
-            ] [ i [ ClassName $"fab fa-github {Style.Me1} {Style.Mt1}" ] []; str "GitHub" ]
+            ] [ i [ ClassName $"fab fa-github" ] []; str "GitHub" ]
             a [
                 Class "btn"
                 Id "youtube-btn"
                 Href "https://www.youtube.com/playlist?list=PLvw_J2kfZCX3Mf6tEbIPZXbzJOD1VGl4K"
                 Target "_blank"
-            ] [ i [ ClassName $"fab fa-youtube {Style.Me1} {Style.Mt1}" ] []; str "YouTube" ]
+            ] [ i [ ClassName $"fab fa-youtube" ] []; str "YouTube" ]
             a [
                 Class "btn"
                 Id "docs-btn"
                 Href "https://fsprojects.github.io/fantomas/reference/fsharp-compiler-syntax.html"
                 Target "_blank"
             ] [
-                i [ ClassName $"fa fa-book {Style.Me1} {Style.Mt1}" ] []
+                i [ ClassName $"fa fa-book" ] []
                 span [ ClassName "short-text" ] [ str "Docs" ]
                 span [ ClassName "long-text" ] [ str "Fantomas.FCS Docs" ]
             ]

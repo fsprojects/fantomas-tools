@@ -40,6 +40,6 @@ let multiButton labelValue (options: MultiButtonSettings list) =
         |> List.map (fun { Label = l; OnClick = o; IsActive = i } -> toggleButton_ o i l)
 
     div [ ClassName Style.Setting ] [
-        label [ ClassName Style.FormLabel ] [ str labelValue ]
+        label [] [ str labelValue ]
         div [ ClassName Style.ToggleButton ] [ ofList buttons ]
     ]

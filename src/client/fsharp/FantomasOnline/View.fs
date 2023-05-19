@@ -224,7 +224,7 @@ let createGitHubIssue (bubble: BubbleModel) model =
         | _ -> "Code", bubble.SourceCode, "", ""
 
     if System.String.IsNullOrWhiteSpace(bubble.SourceCode) then
-        span [ ClassName $"{Style.TextMuted} {Style.Me2}" ] [ str "Looks wrong? Try using the main version!" ]
+        span [ ClassName Style.Muted ] [ str "Looks wrong? Try using the main version!" ]
     else
         match model.Mode with
         | Main
@@ -246,7 +246,7 @@ let createGitHubIssue (bubble: BubbleModel) model =
                 githubIssueUri githubIssue
                 Target "_blank"
             ] [ str "Looks wrong? Create an issue!" ]
-        | _ -> span [ ClassName $"{Style.TextMuted} {Style.Me2}" ] [ str "Looks wrong? Try using the main version!" ]
+        | _ -> span [ ClassName Style.Muted ] [ str "Looks wrong? Try using the main version!" ]
 
 let createIdempotencyIssue isFsi (model: Model) firstFormat secondFormat =
     let githubIssue =
@@ -302,7 +302,7 @@ let commands (bubble: BubbleModel) model dispatch =
 
 let settings isFsi model dispatch =
     match model.State with
-    | FantomasTabState.LoadingOptions -> span [ ClassName $"{Style.SpinnerBorder} {Style.TextPrimary}" ] []
+    | FantomasTabState.LoadingOptions -> Loader.loading
     | _ ->
         let fantomasMode =
             [ FantomasMode.V4, "4.x"

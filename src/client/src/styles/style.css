@@ -465,10 +465,6 @@ nav > div #docs-btn .long-text {
     font-weight: 500;
 }
 
-#settings #filter-settings input[type=search] {
-    
-}
-
 @media screen and (min-width: 768px) {
     #settings {
         transition: 300ms all;
@@ -570,9 +566,14 @@ nav > div #docs-btn .long-text {
     right: var(--unit-3);
 }
 
-#commands > button, #commands > a {
+#commands > button, #commands > a, #commands > .muted {
     display: inline-block;
     margin: 0 calc(var(--unit) / 2);
+}
+
+#commands .muted {
+    color: var(--grey);
+    margin-right: var(--unit);
 }
 
 /* Loader */
@@ -684,7 +685,7 @@ nav > div #docs-btn .long-text {
 
 .shine {
     position: relative;
-    top: 0%;
+    top: 0;
     left: calc(var(--logo-size) / 2);
     transform: translate(-50%, 0%);
     width: var(--logo-size);
@@ -784,18 +785,4 @@ nav > div #docs-btn .long-text {
 
 #idempotent-message h4 {
     margin: 0;
-}
-
-/* Temporary code to prevent the CSS type provider to fail */
-.version-bar, .loader, .spinner-border, .text-primary, .mb-3, .form-label, .form-control, .inner, .text-white, .btn-secondary,
-.btn-outline-secondary, .btn, .btn-group, .btn-primary, .me-1, .text-muted, .me-2,
-.btn-outline-danger, .text-bg-danger, .text-bg-warning, .text-bg-info, .badge, .text-bg-light,
-.text-bg-dark, .idempotent-error, .btn-danger, .tab-result, .fantomas-result, .fantomas-editor-container,
-.my-3, .border-bottom, .d-block, .h4, .text-center, .mb-2, .ast-editor-container, .navbar,
-.bg-light, .container-fluid, .navbar-brand, .py-0, .my-1, .h1, .me-3, .navbar-text, .py-1,
-.btn-outline-success, .mt-1, .pointer, .text-danger, .btn-dark, .col-5, .border-end, .h-100, .d-flex,
-.flex-grow-1, .p-5, .flex-column, .align-items-center, .justify-content-center,
-.mb-4, .display-3, .ms-4, .lead, .text-end, .btn-close, .active, .nav-item, .nav-link, .nav-tabs, .row, .g-0,
-.col-7, .nav {
-    unicode-bidi: initial;
 }

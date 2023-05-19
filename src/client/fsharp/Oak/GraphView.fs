@@ -232,7 +232,7 @@ let view =
             | LeftRight -> {| hierarchical = {| hier with direction = "LR" |} |}
             | Free -> {| hierarchical = {| hier with enabled = false |} |}
 
-        let parentElement = Browser.Dom.document.getElementById "tab-content"
+        let parentElement = Browser.Dom.document.querySelector ".tab-content"
 
         let options: VisNetwork.options =
             {| layout = layout
@@ -258,9 +258,8 @@ let view =
             graph
             div [ Id "graph-view-commands" ] [
                 if model.GraphViewRootNodes <> [] then
-                    button [
-                        ClassName $"{Style.Btn} {Style.BtnPrimary} {Style.TextWhite}"
-                        OnClick(fun _ -> dispatch GraphViewGoBack)
-                    ] [ str $"<- back({model.GraphViewRootNodes.Length})" ]
+                    button [ ClassName Style.Primary; OnClick(fun _ -> dispatch GraphViewGoBack) ] [
+                        str $"<- back({model.GraphViewRootNodes.Length})"
+                    ]
             ]
         ])
