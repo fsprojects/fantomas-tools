@@ -18,7 +18,7 @@ let private fsharpErrorInfoSeverity =
     | FSharpDiagnosticSeverity.Hidden -> "hidden"
     | FSharpDiagnosticSeverity.Info -> "info"
 
-let private encodeFSharpErrorInfo (info: FSharpParserDiagnostic) =
+let private encodeFSharpParserDiagnostic (info: FSharpParserDiagnostic) =
     ({ SubCategory = info.SubCategory
        Range =
          match info.Range with
@@ -30,6 +30,6 @@ let private encodeFSharpErrorInfo (info: FSharpParserDiagnostic) =
     : FantomasTools.Client.Diagnostic)
     |> FantomasTools.Client.Diagnostic.Encode
 
-let encodeResponse string (errors: FSharpParserDiagnostic list) =
-    let errors = List.map encodeFSharpErrorInfo errors |> Encode.list
-    Encode.object [ "string", Encode.string string; "errors", errors ]
+let encodeResponse ast (diagnostics: FSharpParserDiagnostic list) =
+    let errors = List.map encodeFSharpParserDiagnostic diagnostics |> Encode.list
+    Encode.object [ "ast", Encode.string ast; "diagnostics", errors ]

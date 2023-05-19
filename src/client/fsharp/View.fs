@@ -175,7 +175,7 @@ let rightPane (model: Model) dispatch =
             let resultEditor =
                 match model.ASTModel.State with
                 | AstViewerTabState.Loading -> HiddenEditor()
-                | AstViewerTabState.Error error -> ReadOnlyEditor [ MonacoEditorProp.Value error ]
+                | AstViewerTabState.Error error -> ReadOnlyEditor error
                 | AstViewerTabState.Result response ->
                     EditorAux
                         (ASTViewer.View.cursorChanged
@@ -183,7 +183,7 @@ let rightPane (model: Model) dispatch =
                             model.ASTModel)
                         true
                         model.Bubble.Diagnostics.Length
-                        [ MonacoEditorProp.Value response.String ]
+                        [ MonacoEditorProp.Value response.Ast ]
 
             resultEditor,
             ASTViewer.View.view model.ASTModel,

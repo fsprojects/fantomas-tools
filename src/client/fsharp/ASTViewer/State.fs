@@ -77,8 +77,7 @@ let update (bubble: BubbleModel) (msg: Msg) (model: Model) : Model * Cmd<Msg> =
             { model with
                 State = AstViewerTabState.Result astResult }
 
-        let resultCmd =
-            Cmd.ofMsg (BubbleMessage.SetResultCode astResult.String |> Msg.Bubble)
+        let resultCmd = Cmd.ofMsg (BubbleMessage.SetResultCode astResult.Ast |> Msg.Bubble)
 
         let diagnosticsCmd =
             Cmd.ofMsg (BubbleMessage.SetDiagnostics astResult.Diagnostics |> Msg.Bubble)

@@ -62,7 +62,7 @@ module GraphView =
 type Msg =
     | Bubble of BubbleMessage
     | GetOak
-    | OakReceived of OakNode
+    | OakReceived of oak: OakNode * diagnostics: Diagnostic array
     | FSCVersionReceived of string
     | SetGraphView of bool
     | SetGraphViewNodeLimit of int

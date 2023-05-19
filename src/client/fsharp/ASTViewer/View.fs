@@ -24,7 +24,7 @@ let cursorChanged (bubbleMsg: BubbleMessage -> unit) (model: Model) (e: obj) : u
     let column: int = e?position?column
 
     match model.State with
-    | AstViewerTabState.Result { String = astText } ->
+    | AstViewerTabState.Result { Ast = astText } ->
         let lines = astText.Split([| "\r\n"; "\n" |], StringSplitOptions.None)
         // Try and get the line where the cursor clicked in the AST editor
         match Array.tryItem (lineNumber - 1) lines with

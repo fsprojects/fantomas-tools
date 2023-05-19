@@ -134,7 +134,6 @@ let EditorAux (onCursorChanged: obj -> unit) (isReadOnly: bool) (diagnosticCount
 
     MonacoEditor(defaultProps @ props)
 
-let ReadOnlyEditor props = EditorAux ignore true 0 props
 let Editor props = EditorAux ignore false 0 props
 
 /// The main editor where the user will input the code
@@ -184,3 +183,11 @@ let InputEditor (onChange: string -> unit) (value: string) (maxLineLength: int) 
 [<ReactComponent>]
 let HiddenEditor () =
     MonacoEditor [ MonacoEditorProp.Height "0%"; MonacoEditorProp.ClassName "hidden-editor" ]
+
+[<ReactComponent>]
+let ReadOnlyEditor (value: string) =
+    MonacoEditor
+        [ MonacoEditorProp.Theme theme
+          MonacoEditorProp.Height "100%"
+          MonacoEditorProp.Value value
+          MonacoEditorProp.Options editorOptions ]

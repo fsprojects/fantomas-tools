@@ -20,7 +20,7 @@ let decodeKeyValue: Decoder<obj> = fun _ -> Ok
 
 let responseDecoder: Decoder<Response> =
     Decode.object (fun get ->
-        { String = get.Required.Field "string" Decode.string
-          Diagnostics = get.Required.Field "errors" (Decode.array Diagnostic.Decode) })
+        { Ast = get.Required.Field "ast" Decode.string
+          Diagnostics = get.Required.Field "diagnostics" (Decode.array Diagnostic.Decode) })
 
 let decodeResult json = Decode.fromString responseDecoder json

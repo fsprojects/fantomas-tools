@@ -111,7 +111,7 @@ let view (model: Model) dispatch =
             Oak.GraphView.view (oakNode, model, dispatch)
         else
             results oakNode dispatch
-    | OakViewerTabState.Error errors -> ReadOnlyEditor [ MonacoEditorProp.Value errors ]
+    | OakViewerTabState.Error errors -> ReadOnlyEditor errors
     | OakViewerTabState.Loading -> Loader.tabLoading
 
 let commands dispatch =

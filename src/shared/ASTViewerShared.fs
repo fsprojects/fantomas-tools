@@ -3,7 +3,7 @@ module ASTViewer.Shared
 open FantomasTools.Client
 
 type Response =
-    { String: string
+    { Ast: string
       Diagnostics: Diagnostic array }
 
 type Request =

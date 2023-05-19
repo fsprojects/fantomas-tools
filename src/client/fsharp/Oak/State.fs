@@ -21,7 +21,7 @@ let private fetchOak (payload: OakViewer.ParseRequest) dispatch =
         match status with
         | 200 ->
             match Decode.fromString decodeOak body with
-            | Ok oak -> Msg.OakReceived oak
+            | Ok response -> Msg.OakReceived response
             | Result.Error err -> Msg.Error err
         | _ -> Msg.Error body
         |> dispatch)
@@ -77,11 +77,13 @@ let update (bubble: BubbleModel) (msg: Msg) model : Model * Cmd<Msg> =
         { model with
             State = OakViewerTabState.Loading },
         cmd
-    | Msg.OakReceived result ->
+    | Msg.OakReceived(oak, diagnostics) ->
+        let cmd = Cmd.ofMsg (Msg.Bubble(BubbleMessage.SetDiagnostics diagnostics))
+
         { model with
-            State = OakViewerTabState.Result result
+            State = OakViewerTabState.Result oak
             GraphViewRootNodes = [] },
-        Cmd.none
+        cmd
     | Msg.Error error ->
         { initialModel with
             State = OakViewerTabState.Error error },
