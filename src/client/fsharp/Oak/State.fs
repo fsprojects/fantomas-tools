@@ -29,7 +29,19 @@ let private fetchOak (payload: OakViewer.ParseRequest) dispatch =
 let private fetchFSCVersion () = sprintf "%s/version" backend |> Http.getText
 
 let private initialModel: Model =
-    { State = OakViewerTabState.Loading
+    { State =
+        OakViewerTabState.Result(
+            { Type = "Oak"
+              Text = None
+              Range =
+                { StartLine = 0
+                  StartColumn = 0
+                  EndLine = 0
+                  EndColumn = 0 }
+              ContentBefore = Array.empty
+              Children = Array.empty
+              ContentAfter = Array.empty }
+        )
       Version = "???"
       IsGraphView = false
       GraphViewOptions =
