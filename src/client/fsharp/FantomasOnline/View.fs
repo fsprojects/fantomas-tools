@@ -54,38 +54,26 @@ let mapToOption dispatch (model: Model) (key, fantomasOption) =
                 label
                 (v = "crlf")
         | FantomasOption.MultilineBracketStyleOption(o, _, v) ->
-            let mkButton (value: string) =
+            let mkButton (value: string) : SettingControls.MultiButtonSettings =
                 let label =
                     let capital = System.Char.ToUpper value.[0]
                     $"{capital}{value.[1..]}".Replace("_", " ")
 
-                let activeBtnClass =
-                    if v <> value then
-                        Style.BtnOutlineSecondary
-                    else
-                        $"{Style.BtnSecondary} {Style.TextWhite}"
+                { Label = label
+                  OnClick = (fun _ -> UpdateOption(key, MultilineBracketStyleOption(o, key, value)) |> dispatch)
+                  IsActive = v = value }
 
-                button [
-                    ClassName $"{Style.Btn} {activeBtnClass}"
-                    Key value
-                    OnClick(fun _ -> UpdateOption(key, MultilineBracketStyleOption(o, key, value)) |> dispatch)
-                ] [ str label ]
-
-            div [ ClassName Style.Mb3 ] [
-                Standard.label [ ClassName Style.FormLabel ] [ label ]
-                br []
-                div [ ClassName $"{Style.BtnGroup}" ] [
-                    yield mkButton "cramped"
-                    yield mkButton "aligned"
-                    if model.Mode = FantomasMode.V5 then
-                        yield mkButton "experimental_stroustrup"
-                    if
-                        model.Mode = FantomasMode.V6
-                        || model.Mode = FantomasMode.Main
-                        || model.Mode = FantomasMode.Preview
-                    then
-                        yield mkButton "stroustrup"
-                ]
+            SettingControls.multiButton key [
+                yield mkButton "cramped"
+                yield mkButton "aligned"
+                if model.Mode = FantomasMode.V5 then
+                    yield mkButton "experimental_stroustrup"
+                if
+                    model.Mode = FantomasMode.V6
+                    || model.Mode = FantomasMode.Main
+                    || model.Mode = FantomasMode.Preview
+                then
+                    yield mkButton "stroustrup"
             ]
 
     div [ Key key ] [ editor ]
@@ -341,20 +329,13 @@ let settings isFsi model dispatch =
         let options = options model dispatch
 
         let searchBox =
-            div [ ClassName $"{Style.My3} {Style.BorderBottom}" ] [
-                div [] [
-                    label [ ClassName Style.DBlock ] [
-                        strong [ ClassName $"{Style.H4} {Style.TextCenter} {Style.DBlock} {Style.Mb2}" ] [
-                            str "Filter settings"
-                        ]
-                    ]
-                    input [
-                        Type "search"
-                        ClassName Style.FormControl
-                        DefaultValue model.SettingsFilter
-                        Placeholder "Filter settings"
-                        OnChange(fun (ev: Browser.Types.Event) -> ev.Value |> UpdateSettingsFilter |> dispatch)
-                    ]
+            div [ Id "filter-settings"; ClassName Style.Setting ] [
+                label [] [ strong [] [ str "Filter settings" ] ]
+                input [
+                    Type "search"
+                    DefaultValue model.SettingsFilter
+                    Placeholder "Filter settings"
+                    OnChange(fun (ev: Browser.Types.Event) -> ev.Value |> UpdateSettingsFilter |> dispatch)
                 ]
             ]
 

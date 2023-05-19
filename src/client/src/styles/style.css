@@ -343,6 +343,7 @@ nav > div #docs-btn .long-text {
 
 #settings .inner {
     margin: var(--unit) var(--unit-3);
+    overflow-y: auto;
 }
 
 #close-menu-btn {
@@ -386,6 +387,14 @@ nav > div #docs-btn .long-text {
     margin-bottom: calc(var(--unit) / 2);
 }
 
+#settings .setting label a {
+    color: var(--primary);
+}
+
+#settings .setting label a:hover {
+    color: var(--primary-hover);
+}
+
 #settings .setting input {
     display: block;
     width: 100%;
@@ -416,6 +425,10 @@ nav > div #docs-btn .long-text {
     color: var(--secondary);
 }
 
+#settings .setting .toggle-button button + button {
+    margin-left: -1px;
+}
+
 #settings .setting .toggle-button button:hover {
     background-color: var(--secondary);
     color: var(--white);
@@ -425,6 +438,35 @@ nav > div #docs-btn .long-text {
 #settings .setting .toggle-button button.active {
     background-color: var(--secondary);
     color: var(--white);
+}
+
+#settings hr {
+    margin: var(--unit-2) 0;
+    color: inherit;
+    border: 0;
+    border-top: 1px solid;
+    opacity: .25;
+}
+
+#settings #filter-settings {
+    margin: var(--unit-2) 0;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+}
+
+#settings #filter-settings label {
+    font-size: var(--unit-3);
+    font-family: var(--heading-font);
+    margin-bottom: var(--unit-2);
+}
+
+#settings #filter-settings label strong {
+    font-weight: 500;
+}
+
+#settings #filter-settings input[type=search] {
+    
 }
 
 @media screen and (min-width: 768px) {
