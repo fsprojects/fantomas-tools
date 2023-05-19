@@ -5,11 +5,8 @@ open Fable.Core.JsInterop
 open Fable.Core
 open Fable.React
 open Browser.Types
-open Browser
 open Feliz
 open FantomasTools.Client
-
-// TODO: make two components: one for editing and one for result view
 
 [<AllowNullLiteral>]
 type MonacoIDisposable =
@@ -66,76 +63,6 @@ let private editorOptions =
        minimap = {| enabled = false |}
        automaticLayout = true |}
 
-// createObj
-//     [ "readOnly" ==> isReadOnly
-//       "domReadOnly" ==> isReadOnly
-//       "selectionHighlight" ==> false
-//       "occurrencesHighlight" ==> false
-//       "selectOnLineNumbers" ==> true
-//       "lineNumbers" ==> true
-//       "theme" ==> "vs-light"
-//       "renderWhitespace" ==> "all"
-//       "minimap" ==> createObj [ "enabled" ==> false ]
-//       "automaticLayout" ==> true ]
-
-[<ReactComponent>]
-let EditorAux (onCursorChanged: obj -> unit) (isReadOnly: bool) (diagnosticCount: int) (props: MonacoEditorProp list) =
-    let editorRef = React.useRef<IMonacoEditor> Unchecked.defaultof<IMonacoEditor>
-
-    let isEditorMounted, setIsEditorMounted = React.useState false
-
-    let changeCursorPosition, setChangeCursorPosition =
-        React.useState<MonacoIDisposable> null
-
-    let handleEditorDidMount =
-        Action<_, _>(fun editor _ ->
-            editorRef.current <- editor
-            setIsEditorMounted true)
-
-    useEffect (
-        fun () ->
-            if not (isNullOrUndefined changeCursorPosition) then
-                changeCursorPosition.dispose ()
-
-            if not (isNullOrUndefined editorRef.current) then
-                editorRef.current.onDidChangeCursorPosition onCursorChanged
-                |> setChangeCursorPosition
-        , [| isEditorMounted |]
-    )
-
-    useEffect (
-        fun () ->
-            if not (isNullOrUndefined editorRef.current) then
-                let rect: IDimension =
-                    createObj [ "width", "100%"; "height", "100%" ] :?> IDimension
-
-                editorRef.current.layout rect
-        , [| diagnosticCount |]
-    )
-
-    let options =
-        createObj
-            [ "readOnly" ==> isReadOnly
-              "domReadOnly" ==> isReadOnly
-              "selectionHighlight" ==> false
-              "occurrencesHighlight" ==> false
-              "selectOnLineNumbers" ==> true
-              "lineNumbers" ==> true
-              "theme" ==> "vs-light"
-              "renderWhitespace" ==> "all"
-              "minimap" ==> createObj [ "enabled" ==> false ]
-              "automaticLayout" ==> true ]
-
-    let defaultProps: MonacoEditorProp list =
-        [ MonacoEditorProp.Height "100%"
-          MonacoEditorProp.DefaultLanguage "fsharp"
-          MonacoEditorProp.Options options
-          MonacoEditorProp.OnMount handleEditorDidMount ]
-
-    MonacoEditor(defaultProps @ props)
-
-let Editor props = EditorAux ignore false 0 props
-
 /// The main editor where the user will input the code
 [<ReactComponent>]
 let InputEditor (onChange: string -> unit) (value: string) (maxLineLength: int) (highlight: Range) =
@@ -191,3 +118,50 @@ let ReadOnlyEditor (value: string) =
           MonacoEditorProp.Height "100%"
           MonacoEditorProp.Value value
           MonacoEditorProp.Options editorOptions ]
+
+[<ReactComponent>]
+let AstResultEditor onCursorChanged value =
+    let editorRef = React.useRef<IMonacoEditor> Unchecked.defaultof<IMonacoEditor>
+
+    let isEditorMounted, setIsEditorMounted = React.useState false
+
+    let changeCursorPosition, setChangeCursorPosition =
+        React.useState<MonacoIDisposable> null
+
+    let handleEditorDidMount =
+        Action<_, _>(fun editor _ ->
+            editorRef.current <- editor
+            setIsEditorMounted true)
+
+    useEffect (
+        fun () ->
+            if not (isNullOrUndefined changeCursorPosition) then
+                changeCursorPosition.dispose ()
+
+            if not (isNullOrUndefined editorRef.current) then
+                editorRef.current.onDidChangeCursorPosition onCursorChanged
+                |> setChangeCursorPosition
+        , [| isEditorMounted |]
+    )
+
+    let options =
+        {| editorOptions with
+            readOnly = true
+            domReadOnly = true |}
+
+    MonacoEditor
+        [ MonacoEditorProp.Theme theme
+          MonacoEditorProp.Height "100%"
+          MonacoEditorProp.DefaultLanguage "fsharp"
+          MonacoEditorProp.Value value
+          MonacoEditorProp.Options options
+          MonacoEditorProp.OnMount handleEditorDidMount ]
+
+[<ReactComponent>]
+let FantomasResultEditor (value: string) =
+    MonacoEditor
+        [ MonacoEditorProp.Theme theme
+          MonacoEditorProp.Height "100%"
+          MonacoEditorProp.Value value
+          MonacoEditorProp.Options editorOptions
+          MonacoEditorProp.DefaultLanguage "fsharp" ]

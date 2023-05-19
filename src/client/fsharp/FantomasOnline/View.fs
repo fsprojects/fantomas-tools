@@ -260,95 +260,24 @@ let createGitHubIssue (bubble: BubbleModel) model =
             ] [ str "Looks wrong? Create an issue!" ]
         | _ -> span [ ClassName $"{Style.TextMuted} {Style.Me2}" ] [ str "Looks wrong? Try using the main version!" ]
 
-let viewErrors (model: Model) isFsi result isIdempotent errors =
-    let errors =
-        match errors with
-        | [] -> []
-        | errors ->
-            let badgeColor (e: Diagnostic) = e.Severity
+let createIdempotencyIssue isFsi (model: Model) firstFormat secondFormat =
+    let githubIssue =
+        { BeforeHeader = "Formatted code"
+          BeforeContent = firstFormat
+          AfterHeader = "Reformatted code"
+          AfterContent = secondFormat
+          Description = "Fantomas was not able to produce the same code after reformatting the result."
+          Title = "Idempotency problem when <add use-case>"
+          DefaultOptions = model.DefaultOptions
+          UserOptions = model.UserOptions
+          Version = model.Version
+          IsFsi = isFsi }
 
-            errors
-            |> List.mapi (fun i e ->
-                li [ Key(sprintf "ast-error-%i" i) ] [
-                    strong [] [
-                        str (
-                            sprintf
-                                "(%i,%i) (%i, %i)"
-                                e.Range.StartLine
-                                e.Range.StartColumn
-                                e.Range.EndLine
-                                e.Range.EndColumn
-                        )
-                    ]
-                    span [ ClassName $"{Style.Badge} {badgeColor}" ] [ str (e.Severity.ToString()) ]
-                    span [ ClassName $"{Style.Badge} {Style.TextBgDark}"; Title "ErrorNumber" ] [ ofInt e.ErrorNumber ]
-                    span [ ClassName $"{Style.Badge} {Style.TextBgLight}"; Title "SubCategory" ] [ str e.SubCategory ]
-                    p [] [ str e.Message ]
-                ])
-
-    let idempotency =
-        if isIdempotent then
-            None
-        else
-            let githubIssue =
-                { BeforeHeader = "Formatted code"
-                  BeforeContent = result.FirstFormat
-                  AfterHeader = "Reformatted code"
-                  AfterContent = Option.defaultValue result.FirstFormat result.SecondFormat
-                  Description = "Fantomas was not able to produce the same code after reformatting the result."
-                  Title = "Idempotency problem when <add use-case>"
-                  DefaultOptions = model.DefaultOptions
-                  UserOptions = model.UserOptions
-                  Version = model.Version
-                  IsFsi = isFsi }
-
-            div [ ClassName Style.IdempotentError ] [
-                h6 [] [ str "The result was not idempotent" ]
-                str "Fantomas was able to format the code, but when formatting the result again, the code changed."
-                br []
-                str "The result after the first format is being displayed."
-                br []
-                a [
-                    ClassName $"{Style.Btn} {Style.BtnDanger}"
-                    githubIssueUri githubIssue
-                    Target "_blank"
-                ] [ str "Report idempotancy issue" ]
-            ]
-            |> Some
-
-    if not isIdempotent || not (List.isEmpty errors) then
-        ul [ Id "ast-errors"; ClassName "" ] [ ofOption idempotency; ofList errors ]
-        |> Some
-    else
-        None
-
-// TODO: idempotency case
-// Sample link: https://fsprojects.github.io/fantomas-tools/#/fantomas/main?data=N4KABGBEDGD2AmBTSAuKBbBBXANosAKogM4AuAOgE7kB2VtepY0liAhqYgVgA55gAKNmjKUAljQDmASkEAjEaXFTZAXjBsANGDn061GozAA3Njiz5VeiBHQdoACzDlIoiZJdgA7mNIPrNgA%2BzpCm5oieALQAfCEAjC7aLgBMLgEQwQD6YDHxcfkFhUXFJaVl5RX5iSHJtXX1DY1NTWkGNmCBgbEs7JzcfMia4FDEiKSk7sSoYADawxCg7RCQACSkAJ48yGiQEqSQQ0tQK2EW03NHEAAMh5eQAJI0SDSkAMpiAF6D80sALD8QAC6PwAvrcFgDjhsttNdi8DpDVqdtrNIRA4uClpAALJsAAeABkJIgCYgpH4EZcwHFkldIcD2mCfossWtNijIGT4AB5ABmRJoiFeGzwlNZyPOaLAyUx7UgAFEnnyBd8qZAcLzIPTQZiWXK2TCdnJYLAcGL9RK0BdLgBmWU2B40UaUUgAMQkZgAcogvDhiealkoLNrGbrEQaOcbTQHliczGcrVLfvblq8eGxoIgAEKIXmwVgABTYlDY6DGiEoMZsQcQIZsTPaeodEdhUbN9qR8ZR1qOAFYU1A0xns7n8yTYF4K9A2KNHsZYNOJrAaFWIDW6xAGzYm7HoZGTe3w5bUVSAGwDyBDzM5vOsACqPC2lGns5o88XYmXq7AvLMow3YBbhCRyrHurYHlWnbhJKVIAOwXleI63ogADCOAzsQKHLqIWDQKQ%2Bbfr%2BOD-kcDL1mGIEtkaEEdnG0GJlSAAcCHpteo6sNiiDoHIFaEX%2BtakTqzLhmB1HRrRx49ksACcLHDjeY5YTgX4DkRJFLGRm4UayolQG2kF0QmJ6XHENxSperGIAAgrynCUFh6B2N%2B66CaGwmUbpkD6RJXYwSZGLmYhCmsK8XFiHAykrqp-EAUBYA7lC7LgeJR6%2BQxJkyoFlk2XZoXoOFpoqVKLkaUJjYiUlYmHpRklSnEdpZcOVmULAWBPAAIogfr5XZzmUMGrnke5OmVVAewGbVVJxMm5m4ni9y8gQDhkq8Dj5qQADqYjwBSA50oNWnDfqnnjT59HGUccT9rN%2BILUtZLysRQprS6W07Q436nvtpVueVHmjXC%2BxnUZUntHE543fNNC8mIeLck%2BHD5vKeI8KwxDEJ%2BUVSox33tJpgHacdAOnal52gzYcTwZDABKiBwJQ8BvbtSa4zY%2BNxQloHE-CwPdnVzE03T%2BbwJ6WDcRWfL3Jw6BTAOcSxYTzaeeguATH6gquvmdjjBWBBJbzfmXbJ5m0-T8DYqrYjq4gmuUNrvUXo4xYZnZmQ%2BO9WoHQTR1K9zQOkyDUq0hec3NSW6zcpQRJkEzH0DjjCs%2B7ufsTWlF1LMkAVqqHlDh5H0ekKL4uUJL0uy3Vid-SNhoYJb1u2-buv6wHfNUrUF5h2wEdR2IZAWzgavEg3HAO%2BZTslnhFZu9tFKV9uFU14Dqdk0HDXZ-iABqXZZhI8DuLH34J17HMLxyJM1Wn5MQMkM3r3irptXhmM708%2B8z3HLNz8B1dnzzLeGxna6d92qwFIAAcTGMjVGJAMbLgPvHVmQIyrz3%2Bovby-90pHGSBDNU3pfTEhzKQScZI9ZbE6jDGgvhMZWSeJxYu5cqQlTxsg7%2BRM0E0QwendoyQqZqisn6SQNAH40Cfsud4giOBYFYAQWAjxnikA4JjPiT0v7xVPslaq4pL5BwFnwgeFYaCKOMOOKQdCeKUHIRIKh2FlHqWYb9FBP8NHL0Dm3Y22dLYqgJKWOQ8A2BoVgBjKQeDra2IEj9IaVc2H7hShfFeVIbRmTVFAisYgywvDMAAaUQIgHgciySkEeFmEsIiP5UjUuE%2BxkTHHROcQbTBSwbRZzuFmdCNAADWKpiDNVak8b0ZBEDmzrsSKBaNYFOj6gNCJh0om%2B3YbErR8TbSZTVFmYswVEDtV7iwNJHpODwDvJQ5cnVoDoRLEuLG5SYrH0VsnReKsB5WwIRPdpYxhTrFFPUrhNgbRrzuP3QegpikZleW8EUqo7gsFLFseAntpne1mXc3%2B-s4muNtLfO42TclzSLuYvkrS2AdK6d%2BUyiCwDs1uYleZmiLTaISUAu4ISCHsUQACp5goHI8CwAoi5oyYFKIHEwtmLC1GoJiTS5sk1bQ4LuCk8Q6SFE4EevlYgZTLgVNisMQEtxdjEFdBjaYGqQRAA
-
-// let view isFsi model =
-//     match model.State with
-//     | EditorState.LoadingFormatRequest
-//     | EditorState.LoadingOptions -> Loader.tabLoading
-//     | EditorState.OptionsLoaded -> null
-//     | EditorState.FormatResult result ->
-//         let formattedCode, isIdempotent, astErrors =
-//             match result.SecondFormat with
-//             | Some sf when sf = result.FirstFormat -> sf, true, result.SecondValidation
-//             | Some _ -> result.FirstFormat, false, result.FirstValidation
-//             | None -> result.FirstFormat, true, result.FirstValidation
-//
-//         div [ ClassName Style.TabContent ] [
-//             div [ Id Style.FantomasEditorContainer ] [
-//                 ReadOnlyEditor [
-//                     MonacoEditorProp.Value formattedCode
-//                     MonacoEditorProp.Options(MonacoEditorProp.rulerOption model.MaxLineLength)
-//                 ]
-//             ]
-//             ofOption (viewErrors model isFsi result isIdempotent astErrors)
-//         ]
-//
-//     | EditorState.FormatError error ->
-//         div [ ClassName Style.TabContent ] [ ReadOnlyEditor [ MonacoEditorProp.Value error ] ]
+    a [
+        ClassName $"{Style.Btn} {Style.Warning}"
+        githubIssueUri githubIssue
+        Target "_blank"
+    ] [ str "Report idempotency issue!" ]
 
 let userChangedSettings (model: Model) =
     model.SettingsChangedByTheUser |> List.isEmpty |> not
@@ -364,12 +293,23 @@ let commands (bubble: BubbleModel) model dispatch =
         else
             None
 
+    let idempotencyButton model =
+        match model.State with
+        | FantomasTabState.FormatResult { FirstFormat = ff
+                                          SecondFormat = Some sf } when ff <> sf ->
+            [ createIdempotencyIssue bubble.IsFsi model ff sf ]
+        | _ -> []
+
     match model.State with
     | FantomasTabState.LoadingOptions -> []
     | FantomasTabState.LoadingFormatRequest -> [ formatButton; ofOption copySettingButton ]
     | FantomasTabState.OptionsLoaded
     | FantomasTabState.FormatResult _
-    | FantomasTabState.FormatError _ -> [ createGitHubIssue bubble model; formatButton; ofOption copySettingButton ]
+    | FantomasTabState.FormatError _ ->
+        [ yield! idempotencyButton model
+          createGitHubIssue bubble model
+          formatButton
+          ofOption copySettingButton ]
     |> fragment []
 
 let settings isFsi model dispatch =
@@ -427,8 +367,21 @@ let settings isFsi model dispatch =
             options
         ]
 
+let idempotencyProblem =
+    div [ Id "idempotent-message" ] [
+        h4 [] [ str "The result was not idempotent" ]
+        str "Fantomas was able to format the code, but when formatting the result again, the code changed."
+        br []
+        str "The result after the first format is being displayed."
+        br []
+    ]
+
 let view (model: Model) (dispatch: Msg -> unit) =
     match model.State with
     | FantomasTabState.LoadingOptions
     | FantomasTabState.LoadingFormatRequest -> Loader.tabLoading
+    | FantomasTabState.FormatResult result ->
+        match result.SecondFormat with
+        | Some secondFormat when (result.FirstFormat <> secondFormat) -> idempotencyProblem
+        | _ -> null
     | _ -> null

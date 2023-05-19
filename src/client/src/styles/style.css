@@ -138,6 +138,16 @@ html, body, #app {
     background-color: var(--danger-hover);
 }
 
+.btn.warning, button.warning {
+    background-color: var(--warning);
+    border-color: var(--warning-border);
+    color: var(--white);
+}
+
+.btn.warning:hover, button.warning:hover {
+    background-color: var(--warning-hover);
+}
+
 /* Basic App Layout */
 #app {
     display: flex;
@@ -721,6 +731,17 @@ nav > div #docs-btn .long-text {
 /* Fantomas tab */
 #fantomas-editor-container {
     height: 100%;
+}
+
+#idempotent-message {
+    background-color: #c749100d;
+    margin-bottom: calc(8 * var(--unit));
+    padding: var(--unit-2);
+    font-size: calc(1.666 * var(--unit));
+}
+
+#idempotent-message h4 {
+    margin: 0;
 }
 
 /* Temporary code to prevent the CSS type provider to fail */

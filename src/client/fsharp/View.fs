@@ -177,13 +177,11 @@ let rightPane (model: Model) dispatch =
                 | AstViewerTabState.Loading -> HiddenEditor()
                 | AstViewerTabState.Error error -> ReadOnlyEditor error
                 | AstViewerTabState.Result response ->
-                    EditorAux
+                    AstResultEditor
                         (ASTViewer.View.cursorChanged
                             (ASTViewer.Model.Msg.Bubble >> Msg.ASTMsg >> dispatch)
                             model.ASTModel)
-                        true
-                        model.Bubble.Diagnostics.Length
-                        [ MonacoEditorProp.Value response.Ast ]
+                        response.Ast
 
             resultEditor,
             ASTViewer.View.view model.ASTModel,
@@ -204,9 +202,20 @@ let rightPane (model: Model) dispatch =
                 match model.FantomasModel.State with
                 | FantomasTabState.LoadingOptions
                 | FantomasTabState.LoadingFormatRequest -> HiddenEditor()
-                | FantomasTabState.OptionsLoaded -> Editor []
-                | FantomasTabState.FormatResult _ -> Editor []
-                | FantomasTabState.FormatError _ -> Editor []
+                | FantomasTabState.OptionsLoaded -> HiddenEditor()
+                | FantomasTabState.FormatError error -> ReadOnlyEditor error
+                | FantomasTabState.FormatResult result ->
+                    let formattedCode =
+                        match result.SecondFormat with
+                        | Some sf ->
+                            if sf = result.FirstFormat then
+                                sf
+                            else
+                                // Result is not idempotent.
+                                result.FirstFormat
+                        | None -> result.FirstFormat
+
+                    FantomasResultEditor formattedCode
 
             resultEditor,
             FantomasOnline.View.view model.FantomasModel fantomasDispatch,
@@ -227,7 +236,6 @@ let rightPane (model: Model) dispatch =
             | _ -> false
         | _ -> false
 
-    // TODO: view diagnostics
     div [ Id "tools"; ClassName(if showEditor then "show-editor" else "") ] [
         pre [ Props.Style [ Display DisplayOptions.None ] ] [ str (Fable.Core.JS.JSON.stringify model) ]
         settings model dispatch settingsForTab
