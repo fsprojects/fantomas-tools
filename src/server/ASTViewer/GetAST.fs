@@ -35,7 +35,10 @@ let getUntypedAST json : ASTResponse =
 
         let astString =
             if input.Expand then
-                ExpandedAST.getExpandedAST ast
+                try
+                    ExpandedAST.getExpandedAST ast
+                with ex ->
+                    $"Failed to expand AST, please contribute a fix for this.\nError:%s{ex.Message}"
             else
                 $"%A{ast}"
 
