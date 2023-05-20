@@ -113,11 +113,16 @@ let HiddenEditor () =
 
 [<ReactComponent>]
 let ReadOnlyEditor (value: string) =
+    let options =
+        {| editorOptions with
+            readOnly = true
+            domReadOnly = true |}
+
     MonacoEditor
         [ MonacoEditorProp.Theme theme
           MonacoEditorProp.Height "100%"
           MonacoEditorProp.Value value
-          MonacoEditorProp.Options editorOptions ]
+          MonacoEditorProp.Options options ]
 
 [<ReactComponent>]
 let AstResultEditor onCursorChanged value =
@@ -159,9 +164,14 @@ let AstResultEditor onCursorChanged value =
 
 [<ReactComponent>]
 let FantomasResultEditor (value: string) =
+    let options =
+        {| editorOptions with
+            readOnly = true
+            domReadOnly = true |}
+
     MonacoEditor
         [ MonacoEditorProp.Theme theme
           MonacoEditorProp.Height "100%"
           MonacoEditorProp.Value value
-          MonacoEditorProp.Options editorOptions
+          MonacoEditorProp.Options options
           MonacoEditorProp.DefaultLanguage "fsharp" ]
