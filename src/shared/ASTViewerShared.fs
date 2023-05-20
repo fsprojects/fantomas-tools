@@ -9,4 +9,5 @@ type Response =
 type Request =
     { SourceCode: string
       Defines: string array
-      IsFsi: bool }
+      IsFsi: bool
+      Expand: bool }

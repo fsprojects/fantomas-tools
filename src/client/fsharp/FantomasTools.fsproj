@@ -39,6 +39,7 @@
     <Compile Include="ASTViewer\Model.fs" />
     <Compile Include="ASTViewer\Encoders.fs" />
     <Compile Include="ASTViewer\Decoders.fs" />
+    <Compile Include="ASTViewer\State.fsi" />
     <Compile Include="ASTViewer\State.fs" />
     <Compile Include="ASTViewer\View.fsi" />
     <Compile Include="ASTViewer\View.fs" />

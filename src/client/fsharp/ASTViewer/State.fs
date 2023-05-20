@@ -11,11 +11,11 @@ open FantomasTools.Client.ASTViewer.Decoders
 open FantomasTools.Client.ASTViewer.Encoders
 
 [<Emit("import.meta.env.VITE_AST_BACKEND")>]
-let private backend: string = jsNative
+let backend: string = jsNative
 
-let private getVersion () = sprintf "%s/%s" backend "version" |> Http.getText
+let getVersion () = sprintf "%s/%s" backend "version" |> Http.getText
 
-let private fetchNodeRequest url (payload: Shared.Request) dispatch =
+let fetchNodeRequest url (payload: Shared.Request) dispatch =
     let json = encodeInput payload
 
     Http.postJson url json
@@ -30,19 +30,16 @@ let private fetchNodeRequest url (payload: Shared.Request) dispatch =
         | _ -> Error body
         |> dispatch)
 
-let private fetchUntypedAST (payload: Shared.Request) dispatch =
+let fetchUntypedAST (payload: Shared.Request) dispatch =
     let url = $"%s{backend}/untyped-ast"
     fetchNodeRequest url payload dispatch
 
-let private fetchTypedAst (payload: Shared.Request) dispatch =
-    let url = $"%s{backend}/typed-ast"
-    fetchNodeRequest url payload dispatch
-
-let private initialModel =
+let initialModel =
     { State = AstViewerTabState.Result { Ast = ""; Diagnostics = Array.empty }
-      Version = "" }
+      Version = ""
+      Expand = false }
 
-let private getMessageFromError (ex: exn) = Error ex.Message
+let getMessageFromError (ex: exn) = Error ex.Message
 
 // defines the initial state and initial command (= side-effect) of the application
 let init isActive : Model * Cmd<Msg> =
@@ -54,16 +51,17 @@ let init isActive : Model * Cmd<Msg> =
 
     initialModel, cmd
 
-let private getDefines (bubble: BubbleModel) =
+let getDefines (bubble: BubbleModel) =
     bubble.Defines.Split([| ' '; ','; ';' |], StringSplitOptions.RemoveEmptyEntries)
 
-let private modelToParseRequest (bubble: BubbleModel) : Shared.Request =
+let modelToParseRequest expand (bubble: BubbleModel) : Shared.Request =
     { SourceCode = bubble.SourceCode
       Defines = getDefines bubble
-      IsFsi = bubble.IsFsi }
+      IsFsi = bubble.IsFsi
+      Expand = expand }
 
-let private updateUrl (bubble: BubbleModel) _ =
-    let json = Encode.toString 2 (encodeUrlModel bubble)
+let updateUrl expand (bubble: BubbleModel) _ =
+    let json = Encode.toString 2 (encodeUrlModel expand bubble)
     UrlTools.updateUrlWithData json
 
 // The update function computes the next state of the application based on the current state and the incoming events/messages
@@ -90,13 +88,16 @@ let update (bubble: BubbleModel) (msg: Msg) (model: Model) : Model * Cmd<Msg> =
 
         nextModel, Cmd.none
     | DoParse ->
-        let parseRequest = modelToParseRequest bubble
+        let parseRequest = modelToParseRequest model.Expand bubble
 
         let cmd =
-            Cmd.batch [ Cmd.ofEffect (fetchUntypedAST parseRequest); Cmd.ofEffect (updateUrl bubble) ]
+            Cmd.batch
+                [ Cmd.ofEffect (fetchUntypedAST parseRequest)
+                  Cmd.ofEffect (updateUrl model.Expand bubble) ]
 
         { model with
             State = AstViewerTabState.Loading },
         cmd
 
     | VersionFound version -> { model with Version = version }, Cmd.none
+    | SetExpand value -> { model with Expand = value }, Cmd.ofMsg DoParse

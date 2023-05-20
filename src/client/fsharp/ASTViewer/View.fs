@@ -75,9 +75,9 @@ let cursorChanged (bubbleMsg: BubbleMessage -> unit) (model: Model) (e: obj) : u
 let commands dispatch =
     button [ ClassName Style.Primary; OnClick(fun _ -> dispatch DoParse) ] [ str "Show Untyped AST" ]
 
-let settings (bubble: BubbleModel) version dispatch =
+let settings (bubble: BubbleModel) (model: Model) dispatch =
     fragment [] [
-        VersionBar.versionBar (sprintf "FSC - %s" version)
+        VersionBar.versionBar $"FSC - %s{model.Version}"
         SettingControls.input
             "ast-defines"
             (BubbleMessage.SetDefines >> Bubble >> dispatch)
@@ -91,6 +91,13 @@ let settings (bubble: BubbleModel) version dispatch =
             "*.fs"
             (str "File extension")
             bubble.IsFsi
+        SettingControls.toggleButton
+            (fun _ -> dispatch (SetExpand false))
+            (fun _ -> dispatch (SetExpand true))
+            "Regular"
+            "Expanded"
+            (str "Mode")
+            (not model.Expand)
     ]
 
 let view (model: Model) =

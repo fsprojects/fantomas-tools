@@ -8,6 +8,7 @@ type Msg =
     | DoParse
     | ASTParsed of ASTViewer.Shared.Response
     | Error of string
+    | SetExpand of value: bool
 
 [<RequireQualifiedAccess>]
 type AstViewerTabState =
@@ -17,4 +18,5 @@ type AstViewerTabState =
 
 type Model =
     { State: AstViewerTabState
-      Version: string }
+      Version: string
+      Expand: bool }

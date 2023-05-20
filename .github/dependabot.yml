@@ -13,7 +13,7 @@ updates:
     time: "10:00"
   open-pull-requests-limit: 10
   allow:
-    - dependency-name: "Fantomas.FCS"
+    - dependency-name: "Fantomas.Core"
 - package-ecosystem: nuget
   directory: "/src/server/FantomasOnlineV6"
   schedule:

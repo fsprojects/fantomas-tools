@@ -10,9 +10,14 @@ let decodeUrlModel: Decoder<Cmd<Msg> list> =
     Decode.object (fun get ->
         let defines = get.Required.Field "defines" Decode.string
         let source = get.Required.Field "code" Decode.string
+        // Optional to make old urls still work.
+        let expand = get.Optional.Field "expand" Decode.bool
 
-        [ Cmd.ofMsg (Bubble(BubbleMessage.SetSourceCode source))
-          Cmd.ofMsg (Bubble(BubbleMessage.SetDefines defines)) ])
+        [ yield Cmd.ofMsg (Bubble(BubbleMessage.SetSourceCode source))
+          yield Cmd.ofMsg (Bubble(BubbleMessage.SetDefines defines))
+          match expand with
+          | Some expand -> yield Cmd.ofMsg (SetExpand expand)
+          | None -> () ])
 
 let decodeKeyValue: Decoder<obj> = fun _ -> Ok
 

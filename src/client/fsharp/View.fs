@@ -182,7 +182,7 @@ let rightPane (model: Model) dispatch =
 
             resultEditor,
             ASTViewer.View.view model.ASTModel,
-            ASTViewer.View.settings model.Bubble model.ASTModel.Version astDispatch,
+            ASTViewer.View.settings model.Bubble model.ASTModel astDispatch,
             ASTViewer.View.commands astDispatch
         | OakTab ->
             let oakDispatch oMsg = dispatch (OakMsg oMsg)
