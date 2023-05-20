@@ -39,7 +39,7 @@ let private fetchTypedAst (payload: Shared.Request) dispatch =
     fetchNodeRequest url payload dispatch
 
 let private initialModel =
-    { State = AstViewerTabState.Loading
+    { State = AstViewerTabState.Result { Ast = ""; Diagnostics = Array.empty }
       Version = "" }
 
 let private getMessageFromError (ex: exn) = Error ex.Message
