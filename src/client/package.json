@@ -5,8 +5,7 @@
     "build": "vite build --base=/fantomas-tools/",
     "serve": "vite preview",
     "format": "prettier --write \"src/**/*.{js,jsx}\"",
-    "lint": "prettier --check \"src/**/*.{js,jsx}\"",
-    "sass": "sass src/styles/style.sass"
+    "lint": "prettier --check \"src/**/*.{js,jsx}\""
   },
   "dependencies": {
     "@monaco-editor/react": "4.5.0",
@@ -23,7 +22,6 @@
     "@vitejs/plugin-react-refresh": "^1.3.6",
     "prettier": "2.8.7",
     "prop-types": "^15.8.1",
-    "sass": "1.62.0",
     "vite": "^4.3.1"
   }
 }
