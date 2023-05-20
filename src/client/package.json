@@ -9,7 +9,6 @@
   },
   "dependencies": {
     "@monaco-editor/react": "4.5.0",
-    "bootstrap": "5.2.3",
     "lz-string": "1.4.4",
     "notyf": "3.10.0",
     "react": "^18.2.0",
