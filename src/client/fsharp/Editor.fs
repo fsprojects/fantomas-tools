@@ -109,7 +109,11 @@ let InputEditor (onChange: string -> unit) (value: string) (maxLineLength: int) 
 /// We hide it by settings the height to 0.
 [<ReactComponent>]
 let HiddenEditor () =
-    MonacoEditor [ MonacoEditorProp.Height "0%"; MonacoEditorProp.ClassName "hidden-editor" ]
+    MonacoEditor
+        [ MonacoEditorProp.Height "0%"
+          MonacoEditorProp.ClassName "hidden-editor"
+          MonacoEditorProp.Theme theme
+          MonacoEditorProp.DefaultLanguage "fsharp" ]
 
 [<ReactComponent>]
 let ReadOnlyEditor (value: string) =

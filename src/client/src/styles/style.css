@@ -786,3 +786,71 @@ nav > div #docs-btn .long-text {
 #idempotent-message h4 {
     margin: 0;
 }
+
+/* dark mode */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --dark: rgb(13, 17, 23);
+    }
+
+    nav {
+        background-color: var(--dark);
+    }
+
+    nav > a:first-of-type {
+        color: var(--white);
+    }
+
+    #tabs {
+        background-color: var(--dark);
+    }
+
+    #tabs li a {
+        color: var(--light);
+    }
+
+    #tabs li a:hover {
+        background: var(--grey);
+        color: var(--light);
+    }
+
+    #tabs li.active a {
+        background: var(--grey);
+        color: var(--light);
+    }
+    
+    #settings .inner {
+        background-color: var(--dark);
+        color: var(--light);
+    }
+
+    #settings .version-bar {
+        color: var(--secondary);
+    }
+
+    #settings .setting label a {
+        color: var(--secondary);
+    }
+
+    #close-menu-btn {
+        color: var(--white);
+    }
+
+    #close-menu-btn:hover {
+        color: var(--white-hover);
+    }
+
+    #home-tab {
+        background-color: var(--dark);
+        color: var(--light-hover);
+    }
+
+    #home-tab a:visited {
+        color: var(--grey);
+    }
+
+    #oak-tab {
+        background-color: var(--dark);
+        color: var(--light);
+    }
+}
