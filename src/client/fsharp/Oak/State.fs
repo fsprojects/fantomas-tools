@@ -33,11 +33,7 @@ let private initialModel: Model =
         OakViewerTabState.Result(
             { Type = "Oak"
               Text = None
-              Range =
-                { StartLine = 0
-                  StartColumn = 0
-                  EndLine = 0
-                  EndColumn = 0 }
+              Range = Range.Zero
               ContentBefore = Array.empty
               Children = Array.empty
               ContentAfter = Array.empty }
@@ -59,15 +55,11 @@ let private modelToParseRequest (bubble: BubbleModel) : OakViewer.ParseRequest =
       Defines = splitDefines bubble.Defines
       IsFsi = bubble.IsFsi }
 
-let init isActive =
-    let isGraphView, definesCmd =
-        UrlTools.restoreModelFromUrl decodeUrlModel (false, Cmd.none)
+let init () =
+    let isGraphView = UrlTools.restoreModelFromUrl decodeUrlModel false
 
     let cmd =
-        Cmd.batch
-            [ if isActive then
-                  yield definesCmd
-              yield Cmd.OfPromise.either fetchFSCVersion () FSCVersionReceived (fun ex -> Error ex.Message) ]
+        Cmd.OfPromise.either fetchFSCVersion () FSCVersionReceived (fun ex -> Error ex.Message)
 
     { initialModel with
         IsGraphView = isGraphView },

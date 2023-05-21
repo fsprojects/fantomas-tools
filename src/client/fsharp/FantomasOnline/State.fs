@@ -111,11 +111,12 @@ let private updateOptionValue defaultOption userOption =
     | MultilineFormatterTypeOption(o, k, _), MultilineFormatterTypeOption(_, _, v) ->
         MultilineFormatterTypeOption(o, k, v)
     | EndOfLineStyleOption(o, k, _), EndOfLineStyleOption(_, _, v) -> EndOfLineStyleOption(o, k, v)
+    | MultilineBracketStyleOption(o, k, _), MultilineBracketStyleOption(value = v) ->
+        MultilineBracketStyleOption(o, k, v)
     | _ -> defaultOption
 
 let private restoreUserOptionsFromUrl (defaultOptions: FantomasOption list) =
-    let userOptions, isFsi =
-        UrlTools.restoreModelFromUrl Decoders.decodeOptionsFromUrl ([], false)
+    let userOptions = UrlTools.restoreModelFromUrl Decoders.decodeOptionsFromUrl []
 
     let reconstructedOptions =
         match userOptions with
@@ -133,7 +134,7 @@ let private restoreUserOptionsFromUrl (defaultOptions: FantomasOption list) =
                 | None -> defOpt)
             |> optionsListToMap
 
-    reconstructedOptions, isFsi
+    reconstructedOptions
 
 [<Emit("navigator.clipboard.writeText($0)")>]
 let private writeText _text : JS.Promise<unit> = jsNative
@@ -178,17 +179,17 @@ let update isActiveTab (bubble: BubbleModel) msg model =
     | Msg.Bubble _ -> model, Cmd.none // handle in upper update function
     | VersionReceived version -> { model with Version = version }, Cmd.none
     | OptionsReceived options ->
-        let userOptions, isFsi =
+        let userOptions =
             if isActiveTab then
                 restoreUserOptionsFromUrl options
             else
-                optionsListToMap options, bubble.IsFsi
+                optionsListToMap options
 
         let cmd =
-            if not (System.String.IsNullOrWhiteSpace bubble.SourceCode) && isActiveTab then
-                Cmd.batch [ Cmd.ofMsg Format; Cmd.ofMsg (Bubble(BubbleMessage.SetFsi isFsi)) ]
+            if System.String.IsNullOrWhiteSpace bubble.SourceCode || not isActiveTab then
+                Cmd.none
             else
-                Cmd.ofMsg (Bubble(BubbleMessage.SetFsi isFsi))
+                Cmd.ofMsg Format
 
         { model with
             DefaultOptions = options

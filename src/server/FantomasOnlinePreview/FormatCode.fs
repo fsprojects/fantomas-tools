@@ -46,11 +46,7 @@ let private validate (fileName: string) code =
     |> List.map (fun e ->
         let range =
             match e.Range with
-            | None ->
-                { StartLine = 0
-                  StartColumn = 0
-                  EndLine = 0
-                  EndColumn = 0 }
+            | None -> Range.Zero
             | Some r ->
                 { StartLine = r.StartLine
                   StartColumn = r.StartColumn

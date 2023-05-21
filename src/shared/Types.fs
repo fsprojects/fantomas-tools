@@ -12,6 +12,12 @@ type Range =
       EndLine: int
       EndColumn: int }
 
+    static member Zero =
+        { StartLine = 0
+          StartColumn = 0
+          EndLine = 0
+          EndColumn = 0 }
+
 #if FABLE_COMPILER
     static member Decode: Decoder<Range> =
         Decode.object (fun get ->

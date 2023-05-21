@@ -1,18 +1,11 @@
 ﻿module FantomasTools.Client.OakViewer.Decoders
 
-open Elmish
 open Thoth.Json
 open FantomasTools.Client
 open FantomasTools.Client.OakViewer.Model
 
-let decodeUrlModel: Decoder<bool * Cmd<Msg>> =
-    Decode.object (fun get ->
-        let defines = get.Optional.Field "defines" Decode.string |> Option.defaultValue ""
-
-        let isGraphView =
-            get.Optional.Field "isGraphView" Decode.bool |> Option.defaultValue false
-
-        isGraphView, Cmd.ofMsg (BubbleMessage.SetDefines defines |> Msg.Bubble))
+let decodeUrlModel: Decoder<bool> =
+    Decode.object (fun get -> get.Optional.Field "isGraphView" Decode.bool |> Option.defaultValue false)
 
 let decodeTriviaNode: Decoder<TriviaNode> =
     Decode.object (fun get ->

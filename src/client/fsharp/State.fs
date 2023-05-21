@@ -6,21 +6,36 @@ open FantomasTools.Client.Model
 open Thoth.Json
 open Feliz.Router
 
-// TODO: decode and encode the bubble model as much as possible
+let private getBubbleFromUrl () : BubbleModel =
+    let empty =
+        { SourceCode = ""
+          IsFsi = false
+          Defines = ""
+          ResultCode = ""
+          Diagnostics = Array.empty
+          HighLight = Range.Zero }
 
-let private getCodeFromUrl () =
-    UrlTools.restoreModelFromUrl (Decode.object (fun get -> get.Required.Field "code" Decode.string)) ""
+    UrlTools.restoreModelFromUrl
+        (Decode.object (fun get ->
+            let sourceCode = get.Required.Field "code" Decode.string
+            let isFsi = get.Optional.Field "isFsi" Decode.bool |> Option.defaultValue false
+            let defines = get.Optional.Field "defines" Decode.string |> Option.defaultValue ""
+
+            { empty with
+                SourceCode = sourceCode
+                IsFsi = isFsi
+                Defines = defines }))
+        empty
 
 let private getIsFsiFileFromUrl () =
     UrlTools.restoreModelFromUrl (Decode.object (fun get -> get.Required.Field "isFsi" Decode.bool)) false
 
 let init _ =
-    let sourceCode = getCodeFromUrl ()
-    let isFsiFile = getIsFsiFileFromUrl ()
+    let bubble = getBubbleFromUrl ()
     let currentTab = Navigation.parseUrl (Router.currentUrl ())
 
     let astModel, astCmd = ASTViewer.State.init (currentTab = ASTTab)
-    let oakModel, oakCmd = OakViewer.State.init (currentTab = OakTab)
+    let oakModel, oakCmd = OakViewer.State.init ()
 
     let fantomasModel, fantomasCmd =
         let tab =
@@ -33,17 +48,7 @@ let init _ =
     let model =
         { ActiveTab = currentTab
           SettingsOpen = false
-          Bubble =
-            { SourceCode = sourceCode
-              IsFsi = isFsiFile
-              Defines = ""
-              ResultCode = ""
-              Diagnostics = Array.empty
-              HighLight =
-                { StartLine = 0
-                  StartColumn = 0
-                  EndLine = 0
-                  EndColumn = 0 } }
+          Bubble = bubble
           OakModel = oakModel
           ASTModel = astModel
           FantomasModel = fantomasModel }

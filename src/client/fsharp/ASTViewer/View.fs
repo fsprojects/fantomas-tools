@@ -13,12 +13,6 @@ open FantomasTools.Client.ASTViewer.Model
 let debugASTRangeHighlight: bool =
     not (String.IsNullOrWhiteSpace(Browser.WebStorage.localStorage.getItem "debugASTRangeHighlight"))
 
-let zeroRange =
-    { StartLine = 0
-      StartColumn = 0
-      EndLine = 0
-      EndColumn = 0 }
-
 let cursorChanged (bubbleMsg: BubbleMessage -> unit) (model: Model) (e: obj) : unit =
     let lineNumber: int = e?position?lineNumber
     let column: int = e?position?column
@@ -68,7 +62,7 @@ let cursorChanged (bubbleMsg: BubbleMessage -> unit) (model: Model) (e: obj) : u
                   EndColumn = endColumn }
 
             bubbleMsg (BubbleMessage.HighLight range)
-        | _ -> bubbleMsg (BubbleMessage.HighLight zeroRange)
+        | _ -> bubbleMsg (BubbleMessage.HighLight Range.Zero)
 
     | _ -> ()
 
