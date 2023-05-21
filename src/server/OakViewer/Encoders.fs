@@ -7,14 +7,14 @@ open Fantomas.FCS.Parse
 open Fantomas.Core
 open Fantomas.Core.SyntaxOak
 
-let private encodeRange (m: range) =
+let encodeRange (m: range) =
     Encode.object
         [ "startLine", Encode.int m.StartLine
           "startColumn", Encode.int m.StartColumn
           "endLine", Encode.int m.EndLine
           "endColumn", Encode.int m.EndColumn ]
 
-let private encodeTriviaNode (triviaNode: TriviaNode) : JsonValue =
+let encodeTriviaNode (triviaNode: TriviaNode) : JsonValue =
     let contentType, content =
         match triviaNode.Content with
         | CommentOnSingleLine comment -> "commentOnSingleLine", Some comment
@@ -29,7 +29,7 @@ let private encodeTriviaNode (triviaNode: TriviaNode) : JsonValue =
           "type", Encode.string contentType
           "content", Encode.option Encode.string content ]
 
-let rec private encodeNode (node: Node) (continuation: JsonValue -> JsonValue) : JsonValue =
+let rec encodeNode (node: Node) (continuation: JsonValue -> JsonValue) : JsonValue =
     let continuations = List.map encodeNode (Array.toList node.Children)
 
     let text =
@@ -54,20 +54,20 @@ let rec private encodeNode (node: Node) (continuation: JsonValue -> JsonValue) :
 
     Continuation.sequence continuations finalContinuation
 
-let private mkRange (range: Range) : FantomasTools.Client.Range =
+let mkRange (range: Range) : FantomasTools.Client.Range =
     { StartLine = range.StartLine
       StartColumn = range.StartColumn
       EndLine = range.EndLine
       EndColumn = range.EndColumn }
 
-let private fsharpErrorInfoSeverity =
+let fsharpErrorInfoSeverity =
     function
     | FSharpDiagnosticSeverity.Warning -> "warning"
     | FSharpDiagnosticSeverity.Error -> "error"
     | FSharpDiagnosticSeverity.Hidden -> "hidden"
     | FSharpDiagnosticSeverity.Info -> "info"
 
-let private encodeFSharpErrorInfo (info: FSharpParserDiagnostic) =
+let encodeFSharpErrorInfo (info: FSharpParserDiagnostic) =
     ({ SubCategory = info.SubCategory
        Range =
          match info.Range with
