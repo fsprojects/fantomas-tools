@@ -187,6 +187,7 @@ Issue created from [fantomas-online](%s)
 - [ ] The formatted result breaks my code.
 - [ ] The formatted result gives compiler warnings.
 - [ ] I or my company would be willing to help fix this.
+- [ ] I would like a release if this problem is solved.
 
 #### Options
 
@@ -195,7 +196,8 @@ Fantomas %s
 %s
 %s
 
-<sub>Did you know that you can ignore files when formatting from fantomas-tool or the FAKE targets by using a [.fantomasignore file](https://fsprojects.github.io/fantomas/docs/end-users/IgnoreFiles.html)?</sub>
+<sub>Did you know that you can ignore files when formatting by using a [.fantomasignore file](https://fsprojects.github.io/fantomas/docs/end-users/IgnoreFiles.html)?</sub>
+<sub>PS: It's unlikely that someone else will solve your specific issue, as it's something that you have a personal stake in.</sub>
         """
             location.href
             left
