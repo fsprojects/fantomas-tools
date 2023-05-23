@@ -10,9 +10,7 @@ let cmdForCurrentTab tab (model: Model) =
 
     match tab with
     | HomeTab -> Cmd.none
-    | ASTTab ->
-        Fable.Core.JS.console.log "ast tab Navigation.fs"
-        Cmd.ofMsg ASTViewer.Model.DoParse |> Cmd.map Msg.ASTMsg
+    | ASTTab -> Cmd.ofMsg ASTViewer.Model.DoParse |> Cmd.map Msg.ASTMsg
     | OakTab -> Cmd.ofMsg OakViewer.Model.GetOak |> Cmd.map Msg.OakMsg
     | FantomasTab mode ->
         if noSourceCode then

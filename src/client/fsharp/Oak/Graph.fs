@@ -80,12 +80,9 @@ let Graph (props: GraphProps) =
             network'.OnSelect(props.selectNode)
             network'.OnHover(props.hoverNode)
             setNetwork (Some network')
-            JS.console.log "Network created")
 
     React.useEffect (
         fun () ->
-            JS.console.log ("Data changed", props.data, network)
-
             network
             |> Option.iter (fun network ->
                 network.OffSelect()
@@ -98,7 +95,6 @@ let Graph (props: GraphProps) =
 
     React.useEffect (
         fun () ->
-            JS.console.log ("Options changed", props.options, network)
             network |> Option.iter (fun network -> network.SetOptions props.options)
         , [| box network; box props.options |]
     )
