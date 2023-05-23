@@ -14,7 +14,6 @@ let App () =
     let model, dispatch = React.useElmish (State.init, State.update, [||])
 
     let onUrlChanged url =
-        printfn "onUrlChanged"
         let activeTab = Navigation.parseUrl url
         dispatch (Model.Msg.SelectTab activeTab)
 
