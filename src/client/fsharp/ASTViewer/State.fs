@@ -100,4 +100,4 @@ let update (bubble: BubbleModel) (msg: Msg) (model: Model) : Model * Cmd<Msg> =
         cmd
 
     | VersionFound version -> { model with Version = version }, Cmd.none
-    | SetExpand value -> { model with Expand = value }, Cmd.ofMsg DoParse
+    | SetExpand value -> { model with Expand = value }, Cmd.none
