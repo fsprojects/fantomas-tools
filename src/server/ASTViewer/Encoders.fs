@@ -5,29 +5,31 @@ open Fantomas.FCS.Parse
 open Thoth.Json.Net
 open FSharp.Compiler.Diagnostics
 
-let private rangeEncoder (range: Range) =
-    Encode.object
-        [ "startLine", Encode.int range.StartLine
-          "startCol", Encode.int range.StartColumn
-          "endLine", Encode.int range.EndLine
-          "endCol", Encode.int range.EndColumn ]
+let private mkRange (range: Range) : FantomasTools.Client.Range =
+    { StartLine = range.StartLine
+      StartColumn = range.StartColumn
+      EndLine = range.EndLine
+      EndColumn = range.EndColumn }
 
-let private encodeFSharpErrorInfoSeverity =
+let private fsharpErrorInfoSeverity =
     function
-    | FSharpDiagnosticSeverity.Warning -> Encode.string "warning"
-    | FSharpDiagnosticSeverity.Error -> Encode.string "error"
-    | FSharpDiagnosticSeverity.Hidden -> Encode.string "hidden"
-    | FSharpDiagnosticSeverity.Info -> Encode.string "info"
+    | FSharpDiagnosticSeverity.Warning -> "warning"
+    | FSharpDiagnosticSeverity.Error -> "error"
+    | FSharpDiagnosticSeverity.Hidden -> "hidden"
+    | FSharpDiagnosticSeverity.Info -> "info"
 
-let private encodeFSharpErrorInfo (info: FSharpParserDiagnostic) =
-    Encode.object
-        [ "subcategory", Encode.string info.SubCategory
-          "range", rangeEncoder (Option.defaultValue Range.Zero info.Range)
-          "severity", encodeFSharpErrorInfoSeverity info.Severity
-          "errorNumber", Encode.int (Option.defaultValue -1 info.ErrorNumber)
-          "message", Encode.string info.Message ]
+let private encodeFSharpParserDiagnostic (info: FSharpParserDiagnostic) =
+    ({ SubCategory = info.SubCategory
+       Range =
+         match info.Range with
+         | None -> mkRange Range.Zero
+         | Some r -> mkRange r
+       Severity = fsharpErrorInfoSeverity info.Severity
+       ErrorNumber = Option.defaultValue 0 info.ErrorNumber
+       Message = info.Message }
+    : FantomasTools.Client.Diagnostic)
+    |> FantomasTools.Client.Diagnostic.Encode
 
-let encodeResponse string (errors: FSharpParserDiagnostic list) =
-    let errors = List.map encodeFSharpErrorInfo errors |> Encode.list
-
-    Encode.object [ "string", Encode.string string; "errors", errors ]
+let encodeResponse ast (diagnostics: FSharpParserDiagnostic list) =
+    let errors = List.map encodeFSharpParserDiagnostic diagnostics |> Encode.list
+    Encode.object [ "ast", Encode.string ast; "diagnostics", errors ]

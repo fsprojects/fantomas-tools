@@ -1,23 +1,22 @@
 module FantomasTools.Client.ASTViewer.Model
 
+open FantomasTools.Client
+
 type Msg =
+    | Bubble of BubbleMessage
     | VersionFound of string
-    | SetSourceText of string
     | DoParse
     | ASTParsed of ASTViewer.Shared.Response
     | Error of string
-    | DefinesUpdated of string
-    | SetFsiFile of bool
-    | HighLight of line: int * column: int
+    | SetExpand of value: bool
 
-type EditorState =
+[<RequireQualifiedAccess>]
+type AstViewerTabState =
     | Loading
-    | Loaded
+    | Result of ASTViewer.Shared.Response
+    | Error of string
 
 type Model =
-    { Source: string
-      Defines: string
-      Parsed: Result<ASTViewer.Shared.Response, string> option
-      IsLoading: bool
+    { State: AstViewerTabState
       Version: string
-      FSharpEditorState: EditorState }
+      Expand: bool }

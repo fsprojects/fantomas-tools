@@ -12,11 +12,13 @@
     <Tailcalls>true</Tailcalls>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="../../shared/Types.fs" />
     <Compile Include="../../shared/OakShared.fs" />
     <Compile Include="..\HttpConstants.fs" />
     <Compile Include="..\AWSLambdaExtensions.fs" />
     <Compile Include="..\SuaveExtensions.fs" />
     <Compile Include="Decoders.fs" />
+    <Compile Include="Encoders.fsi" />
     <Compile Include="Encoders.fs" />
     <Compile Include="GetOak.fs" />
     <Compile Include="Lambda.fs" />

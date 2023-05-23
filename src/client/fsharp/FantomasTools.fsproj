@@ -3,8 +3,10 @@
     <TargetFramework>net7.0</TargetFramework>
     <AssemblyName>FantomasTools.Client</AssemblyName>
     <RootNamespace>FantomasTools.Client</RootNamespace>
+    <DefineConstants>$(DefineConstants);FABLE_COMPILER</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="../../shared/Types.fs" />
     <Compile Include="../../shared/OakShared.fs" />
     <Compile Include="../../shared/ASTViewerShared.fs" />
     <Compile Include="../../shared/FantomasOnlineShared.fs" />
@@ -16,6 +18,7 @@
     <Compile Include="UrlTools.fs" />
     <Compile Include="Http.fs" />
     <Compile Include="Utils.fs" />
+    <Compile Include="BubbleMessage.fs" />
 
     <Compile Include="Oak\Model.fs" />
     <Compile Include="Oak\Encoders.fs" />
@@ -23,18 +26,22 @@
     <Compile Include="Oak\State.fs" />
     <Compile Include="Oak\Graph.fs" />
     <Compile Include="Oak\GraphView.fs" />
+    <Compile Include="Oak\View.fsi" />
     <Compile Include="Oak\View.fs" />
 
     <Compile Include="FantomasOnline\Model.fs" />
     <Compile Include="FantomasOnline\Encoders.fs" />
     <Compile Include="FantomasOnline\Decoders.fs" />
     <Compile Include="FantomasOnline\State.fs" />
+    <Compile Include="FantomasOnline\View.fsi" />
     <Compile Include="FantomasOnline\View.fs" />
 
     <Compile Include="ASTViewer\Model.fs" />
     <Compile Include="ASTViewer\Encoders.fs" />
     <Compile Include="ASTViewer\Decoders.fs" />
+    <Compile Include="ASTViewer\State.fsi" />
     <Compile Include="ASTViewer\State.fs" />
+    <Compile Include="ASTViewer\View.fsi" />
     <Compile Include="ASTViewer\View.fs" />
 
     <Compile Include="Model.fs" />

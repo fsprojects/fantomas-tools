@@ -5,22 +5,26 @@ open FantomasTools.Client.Model
 open Elmish
 open Feliz.Router
 
-let cmdForCurrentTab tab model =
-    if not (System.String.IsNullOrWhiteSpace model.SourceCode) then
-        match tab with
-        | HomeTab -> Cmd.none
-        | ASTTab -> Cmd.ofMsg ASTViewer.Model.DoParse |> Cmd.map Msg.ASTMsg
-        | OakTab -> Cmd.ofMsg OakViewer.Model.GetOak |> Cmd.map Msg.OakMsg
-        | FantomasTab mode when (mode <> model.FantomasModel.Mode) ->
+let cmdForCurrentTab tab (model: Model) =
+    let noSourceCode = System.String.IsNullOrWhiteSpace model.Bubble.SourceCode
+
+    match tab with
+    | HomeTab -> Cmd.none
+    | ASTTab ->
+        Fable.Core.JS.console.log "ast tab Navigation.fs"
+        Cmd.ofMsg ASTViewer.Model.DoParse |> Cmd.map Msg.ASTMsg
+    | OakTab -> Cmd.ofMsg OakViewer.Model.GetOak |> Cmd.map Msg.OakMsg
+    | FantomasTab mode ->
+        if noSourceCode then
+            Cmd.none
+        elif mode <> model.FantomasModel.Mode then
             Cmd.batch
                 [ Cmd.map FantomasMsg (FantomasOnline.State.getOptionsCmd mode)
                   Cmd.map FantomasMsg (FantomasOnline.State.getVersionCmd mode) ]
-
-        | FantomasTab _ when not (List.isEmpty model.FantomasModel.DefaultOptions) ->
+        elif not (List.isEmpty model.FantomasModel.DefaultOptions) then
             Cmd.ofMsg FantomasOnline.Model.Format |> Cmd.map FantomasMsg
-        | FantomasTab _ -> Cmd.none
-    else
-        Cmd.none
+        else
+            Cmd.none
 
 let toHash =
     function

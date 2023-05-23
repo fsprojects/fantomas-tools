@@ -1,7 +1,8 @@
 module FantomasOnline.Server.Shared.Encoders
 
-open FantomasOnline.Shared
 open Thoth.Json.Net
+open FantomasOnline.Shared
+open FantomasTools.Client
 
 let encodeOptions options =
     options
@@ -31,31 +32,9 @@ let encodeOptions options =
     |> Encode.array
     |> Encode.toString 4
 
-let private encodeRange (range: Range) =
-    Encode.object
-        [ "startLine", Encode.int range.StartLine
-          "startCol", Encode.int range.StartCol
-          "endLine", Encode.int range.EndLine
-          "endCol", Encode.int range.EndCol ]
-
-let private encodeASTErrorSeverity =
-    function
-    | ASTErrorSeverity.Error -> Encode.string "error"
-    | ASTErrorSeverity.Warning -> Encode.string "warning"
-    | ASTErrorSeverity.Info -> Encode.string "info"
-    | ASTErrorSeverity.Hidden -> Encode.string "hidden"
-
-let private encodeASTError (astError: ASTError) =
-    Encode.object
-        [ "subCategory", Encode.string astError.SubCategory
-          "range", encodeRange astError.Range
-          "severity", encodeASTErrorSeverity astError.Severity
-          "errorNumber", Encode.int astError.ErrorNumber
-          "message", Encode.string astError.Message ]
-
 let encodeFormatResponse (formatResponse: FormatResponse) =
     Encode.object
         [ "firstFormat", Encode.string formatResponse.FirstFormat
-          "firstValidation", (formatResponse.FirstValidation |> List.map encodeASTError |> Encode.list)
+          "firstValidation", (formatResponse.FirstValidation |> List.map Diagnostic.Encode |> Encode.list)
           "secondFormat", Encode.option Encode.string formatResponse.SecondFormat
-          "secondValidation", (formatResponse.SecondValidation |> List.map encodeASTError |> Encode.list) ]
+          "secondValidation", (formatResponse.SecondValidation |> List.map Diagnostic.Encode |> Encode.list) ]

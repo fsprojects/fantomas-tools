@@ -33,7 +33,16 @@ let getUntypedAST json : ASTResponse =
         let ast, errors =
             parseFile input.IsFsi (SourceText.ofString input.SourceCode) (List.ofArray input.Defines)
 
-        Encoders.encodeResponse $"%A{ast}" errors |> Encode.toString 2 |> ASTResponse.Ok
+        let astString =
+            if input.Expand then
+                try
+                    ExpandedAST.getExpandedAST ast
+                with ex ->
+                    $"Failed to expand AST, please contribute a fix for this.\nError:%s{ex.Message}"
+            else
+                $"%A{ast}"
+
+        Encoders.encodeResponse astString errors |> Encode.toString 2 |> ASTResponse.Ok
 
     | Ok _ -> ASTResponse.TooLarge
     | Error err -> ASTResponse.InternalError $"%A{err}"

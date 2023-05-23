@@ -90,7 +90,7 @@ let init (mode: FantomasMode) =
       DefaultOptions = []
       UserOptions = Map.empty
       Mode = mode
-      State = LoadingOptions
+      State = FantomasTabState.LoadingOptions
       SettingsFilter = "" },
     cmd
 
@@ -111,11 +111,12 @@ let private updateOptionValue defaultOption userOption =
     | MultilineFormatterTypeOption(o, k, _), MultilineFormatterTypeOption(_, _, v) ->
         MultilineFormatterTypeOption(o, k, v)
     | EndOfLineStyleOption(o, k, _), EndOfLineStyleOption(_, _, v) -> EndOfLineStyleOption(o, k, v)
+    | MultilineBracketStyleOption(o, k, _), MultilineBracketStyleOption(value = v) ->
+        MultilineBracketStyleOption(o, k, v)
     | _ -> defaultOption
 
 let private restoreUserOptionsFromUrl (defaultOptions: FantomasOption list) =
-    let userOptions, isFsi =
-        UrlTools.restoreModelFromUrl Decoders.decodeOptionsFromUrl ([], false)
+    let userOptions = UrlTools.restoreModelFromUrl Decoders.decodeOptionsFromUrl []
 
     let reconstructedOptions =
         match userOptions with
@@ -133,7 +134,7 @@ let private restoreUserOptionsFromUrl (defaultOptions: FantomasOption list) =
                 | None -> defOpt)
             |> optionsListToMap
 
-    reconstructedOptions, isFsi
+    reconstructedOptions
 
 [<Emit("navigator.clipboard.writeText($0)")>]
 let private writeText _text : JS.Promise<unit> = jsNative
@@ -173,49 +174,51 @@ let private copySettings (model: Model) _ =
         printfn "%A" err)
     |> Promise.iter (fun () -> showSuccess "Copied .editorconfig settings to clipboard!")
 
-let update isActiveTab code isFsi msg model =
+let update isActiveTab (bubble: BubbleModel) msg model =
     match msg with
+    | Msg.Bubble _ -> model, Cmd.none // handle in upper update function
     | VersionReceived version -> { model with Version = version }, Cmd.none
     | OptionsReceived options ->
-        let userOptions, isFsi =
+        let userOptions =
             if isActiveTab then
                 restoreUserOptionsFromUrl options
             else
-                optionsListToMap options, isFsi
+                optionsListToMap options
 
         let cmd =
-            if not (System.String.IsNullOrWhiteSpace code) && isActiveTab then
-                Cmd.batch [ Cmd.ofMsg Format; Cmd.ofMsg (SetFsiFile isFsi) ]
+            if System.String.IsNullOrWhiteSpace bubble.SourceCode || not isActiveTab then
+                Cmd.none
             else
-                Cmd.ofMsg (SetFsiFile isFsi)
+                Cmd.ofMsg Format
 
         { model with
             DefaultOptions = options
             UserOptions = userOptions
-            State = OptionsLoaded },
+            State = FantomasTabState.OptionsLoaded },
         cmd
     | Format ->
         let cmd =
             Cmd.batch
-                [ Cmd.ofEffect (getFormattedCode code isFsi model)
-                  Cmd.ofEffect (updateUrl code isFsi model) ]
+                [ Cmd.ofEffect (getFormattedCode bubble.SourceCode bubble.IsFsi model)
+                  Cmd.ofEffect (updateUrl bubble.SourceCode bubble.IsFsi model) ]
 
         { model with
-            State = LoadingFormatRequest },
+            State = FantomasTabState.LoadingFormatRequest },
         cmd
 
-    | FormatException error -> { model with State = FormatError error }, Cmd.none
+    | FormatException error ->
+        { model with
+            State = FantomasTabState.FormatError error },
+        Cmd.none
 
     | FormattedReceived result ->
         { model with
-            State = FormatResult result },
+            State = FantomasTabState.FormatResult result },
         Cmd.none
     | UpdateOption(key, value) ->
         let userOptions = Map.add key value model.UserOptions
         { model with UserOptions = userOptions }, Cmd.none
     | ChangeMode _ -> model, Cmd.none // handle in upper update function
-
-    | SetFsiFile _ -> model, Cmd.none // handle in upper update function
 
     | CopySettings -> model, Cmd.ofEffect (copySettings model)
 

@@ -1,6 +1,7 @@
 module FantomasOnline.Server.Shared.Http
 
 open System.Net
+open FantomasTools.Client
 open Thoth.Json.Net
 open HttpConstants
 open AWSLambdaExtensions
@@ -27,7 +28,7 @@ type FormatResponse =
 let formatCode
     (mapFantomasOptionsToRecord: FantomasOption list -> 'options)
     (format: string -> string -> 'options -> Async<string>)
-    (validate: string -> string -> Async<ASTError list>)
+    (validate: string -> string -> Async<Diagnostic list>)
     (json: string)
     : Async<FormatResponse>
     =

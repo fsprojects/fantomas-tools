@@ -5,10 +5,9 @@ open Fable.React
 open Fable.React.Props
 open FantomasOnline.Shared
 open FantomasTools.Client
-open FantomasTools.Client.Editor
 open FantomasTools.Client.FantomasOnline.Model
 
-let private mapToOption dispatch (model: Model) (key, fantomasOption) =
+let mapToOption dispatch (model: Model) (key, fantomasOption) =
     let editor =
         let label =
             a [
@@ -55,38 +54,26 @@ let private mapToOption dispatch (model: Model) (key, fantomasOption) =
                 label
                 (v = "crlf")
         | FantomasOption.MultilineBracketStyleOption(o, _, v) ->
-            let mkButton (value: string) =
+            let mkButton (value: string) : SettingControls.MultiButtonSettings =
                 let label =
                     let capital = System.Char.ToUpper value.[0]
                     $"{capital}{value.[1..]}".Replace("_", " ")
 
-                let activeBtnClass =
-                    if v <> value then
-                        Style.BtnOutlineSecondary
-                    else
-                        $"{Style.BtnSecondary} {Style.TextWhite}"
+                { Label = label
+                  OnClick = (fun _ -> UpdateOption(key, MultilineBracketStyleOption(o, key, value)) |> dispatch)
+                  IsActive = v = value }
 
-                button [
-                    ClassName $"{Style.Btn} {activeBtnClass}"
-                    Key value
-                    OnClick(fun _ -> UpdateOption(key, MultilineBracketStyleOption(o, key, value)) |> dispatch)
-                ] [ str label ]
-
-            div [ ClassName Style.Mb3 ] [
-                Standard.label [ ClassName Style.FormLabel ] [ label ]
-                br []
-                div [ ClassName $"{Style.BtnGroup}" ] [
-                    yield mkButton "cramped"
-                    yield mkButton "aligned"
-                    if model.Mode = FantomasMode.V5 then
-                        yield mkButton "experimental_stroustrup"
-                    if
-                        model.Mode = FantomasMode.V6
-                        || model.Mode = FantomasMode.Main
-                        || model.Mode = FantomasMode.Preview
-                    then
-                        yield mkButton "stroustrup"
-                ]
+            SettingControls.multiButton key [
+                yield mkButton "cramped"
+                yield mkButton "aligned"
+                if model.Mode = FantomasMode.V5 then
+                    yield mkButton "experimental_stroustrup"
+                if
+                    model.Mode = FantomasMode.V6
+                    || model.Mode = FantomasMode.Main
+                    || model.Mode = FantomasMode.Preview
+                then
+                    yield mkButton "stroustrup"
             ]
 
     div [ Key key ] [ editor ]
@@ -200,6 +187,7 @@ Issue created from [fantomas-online](%s)
 - [ ] The formatted result breaks my code.
 - [ ] The formatted result gives compiler warnings.
 - [ ] I or my company would be willing to help fix this.
+- [ ] I would like a release if this problem is solved.
 
 #### Options
 
@@ -208,7 +196,8 @@ Fantomas %s
 %s
 %s
 
-<sub>Did you know that you can ignore files when formatting from fantomas-tool or the FAKE targets by using a [.fantomasignore file](https://fsprojects.github.io/fantomas/docs/end-users/IgnoreFiles.html)?</sub>
+<sub>Did you know that you can ignore files when formatting by using a [.fantomasignore file](https://fsprojects.github.io/fantomas/docs/end-users/IgnoreFiles.html)?</sub>
+<sub>PS: It's unlikely that someone else will solve your specific issue, as it's something that you have a personal stake in.</sub>
         """
             location.href
             left
@@ -224,19 +213,20 @@ Fantomas %s
 
     uri |> Href
 
-let private createGitHubIssue code isFsi model =
+let createGitHubIssue (bubble: BubbleModel) model =
     let description =
         """Please describe here the Fantomas problem you encountered.
                     Check out our [Contribution Guidelines](https://github.com/fsprojects/fantomas/blob/main/CONTRIBUTING.md#bug-reports)."""
 
     let bh, bc, ah, ac =
         match model.State with
-        | FormatError e -> "Code", code, "Error", e
-        | FormatResult result -> "Code", code, "Result", (Option.defaultValue result.FirstFormat result.SecondFormat)
-        | _ -> "Code", code, "", ""
+        | FantomasTabState.FormatError e -> "Code", bubble.SourceCode, "Error", e
+        | FantomasTabState.FormatResult result ->
+            "Code", bubble.SourceCode, "Result", (Option.defaultValue result.FirstFormat result.SecondFormat)
+        | _ -> "Code", bubble.SourceCode, "", ""
 
-    if System.String.IsNullOrWhiteSpace(code) then
-        span [ ClassName $"{Style.TextMuted} {Style.Me2}" ] [ str "Looks wrong? Try using the main version!" ]
+    if System.String.IsNullOrWhiteSpace(bubble.SourceCode) then
+        span [ ClassName Style.Muted ] [ str "Looks wrong? Try using the main version!" ]
     else
         match model.Mode with
         | Main
@@ -251,137 +241,70 @@ let private createGitHubIssue code isFsi model =
                   DefaultOptions = model.DefaultOptions
                   UserOptions = model.UserOptions
                   Version = model.Version
-                  IsFsi = isFsi }
+                  IsFsi = bubble.IsFsi }
 
             a [
-                ClassName $"{Style.Btn} {Style.BtnOutlineDanger}"
+                ClassName $"{Style.Btn} {Style.Danger}"
                 githubIssueUri githubIssue
                 Target "_blank"
             ] [ str "Looks wrong? Create an issue!" ]
-        | _ -> span [ ClassName $"{Style.TextMuted} {Style.Me2}" ] [ str "Looks wrong? Try using the main version!" ]
+        | _ -> span [ ClassName Style.Muted ] [ str "Looks wrong? Try using the main version!" ]
 
-let private viewErrors (model: Model) isFsi result isIdempotent errors =
-    let errors =
-        match errors with
-        | [] -> []
-        | errors ->
-            let badgeColor (e: ASTError) =
-                match e.Severity with
-                | ASTErrorSeverity.Error -> Style.TextBgDanger
-                | ASTErrorSeverity.Warning -> Style.TextBgWarning
-                | _ -> Style.TextBgInfo
+let createIdempotencyIssue isFsi (model: Model) firstFormat secondFormat =
+    let githubIssue =
+        { BeforeHeader = "Formatted code"
+          BeforeContent = firstFormat
+          AfterHeader = "Reformatted code"
+          AfterContent = secondFormat
+          Description = "Fantomas was not able to produce the same code after reformatting the result."
+          Title = "Idempotency problem when <add use-case>"
+          DefaultOptions = model.DefaultOptions
+          UserOptions = model.UserOptions
+          Version = model.Version
+          IsFsi = isFsi }
 
-            errors
-            |> List.mapi (fun i e ->
-                li [ Key(sprintf "ast-error-%i" i) ] [
-                    strong [] [
-                        str (
-                            sprintf
-                                "(%i,%i) (%i, %i)"
-                                e.Range.StartLine
-                                e.Range.StartCol
-                                e.Range.EndLine
-                                e.Range.EndCol
-                        )
-                    ]
-                    span [ ClassName $"{Style.Badge} {badgeColor}" ] [ str (e.Severity.ToString()) ]
-                    span [ ClassName $"{Style.Badge} {Style.TextBgDark}"; Title "ErrorNumber" ] [ ofInt e.ErrorNumber ]
-                    span [ ClassName $"{Style.Badge} {Style.TextBgLight}"; Title "SubCategory" ] [ str e.SubCategory ]
-                    p [] [ str e.Message ]
-                ])
+    a [
+        ClassName $"{Style.Btn} {Style.Warning}"
+        githubIssueUri githubIssue
+        Target "_blank"
+    ] [ str "Report idempotency issue!" ]
 
-    let idempotency =
-        if isIdempotent then
-            None
-        else
-            let githubIssue =
-                { BeforeHeader = "Formatted code"
-                  BeforeContent = result.FirstFormat
-                  AfterHeader = "Reformatted code"
-                  AfterContent = Option.defaultValue result.FirstFormat result.SecondFormat
-                  Description = "Fantomas was not able to produce the same code after reformatting the result."
-                  Title = "Idempotency problem when <add use-case>"
-                  DefaultOptions = model.DefaultOptions
-                  UserOptions = model.UserOptions
-                  Version = model.Version
-                  IsFsi = isFsi }
-
-            div [ ClassName Style.IdempotentError ] [
-                h6 [] [ str "The result was not idempotent" ]
-                str "Fantomas was able to format the code, but when formatting the result again, the code changed."
-                br []
-                str "The result after the first format is being displayed."
-                br []
-                a [
-                    ClassName $"{Style.Btn} {Style.BtnDanger}"
-                    githubIssueUri githubIssue
-                    Target "_blank"
-                ] [ str "Report idempotancy issue" ]
-            ]
-            |> Some
-
-    if not isIdempotent || not (List.isEmpty errors) then
-        ul [ Id "ast-errors"; ClassName "" ] [ ofOption idempotency; ofList errors ]
-        |> Some
-    else
-        None
-
-let view isFsi model =
-    match model.State with
-    | EditorState.LoadingFormatRequest
-    | EditorState.LoadingOptions -> Loader.loader
-    | EditorState.OptionsLoaded -> null
-    | EditorState.FormatResult result ->
-        let formattedCode, isIdempotent, astErrors =
-            match result.SecondFormat with
-            | Some sf when sf = result.FirstFormat -> sf, true, result.SecondValidation
-            | Some _ -> result.FirstFormat, false, result.FirstValidation
-            | None -> result.FirstFormat, true, result.FirstValidation
-
-        div [ ClassName $"{Style.TabResult} {Style.FantomasResult}" ] [
-            div [ ClassName Style.FantomasEditorContainer ] [
-                ReadOnlyEditor [
-                    MonacoEditorProp.DefaultValue formattedCode
-                    MonacoEditorProp.Options(MonacoEditorProp.rulerOption model.MaxLineLength)
-                ]
-            ]
-            ofOption (viewErrors model isFsi result isIdempotent astErrors)
-        ]
-
-    | EditorState.FormatError error ->
-        div [ ClassName Style.TabResult ] [ ReadOnlyEditor [ MonacoEditorProp.DefaultValue error ] ]
-
-let private userChangedSettings (model: Model) =
+let userChangedSettings (model: Model) =
     model.SettingsChangedByTheUser |> List.isEmpty |> not
 
-let commands code isFsi model dispatch =
+let commands (bubble: BubbleModel) model dispatch =
     let formatButton =
-        button [
-            ClassName $"{Style.Btn} {Style.BtnPrimary} {Style.TextWhite}"
-            OnClick(fun _ -> dispatch Msg.Format)
-        ] [ str "Format" ]
+        button [ ClassName Style.Primary; OnClick(fun _ -> dispatch Msg.Format) ] [ str "Format" ]
 
     let copySettingButton =
         if userChangedSettings model then
-            button [
-                ClassName $"{Style.Btn} {Style.BtnSecondary} {Style.TextWhite}"
-                OnClick(fun _ -> dispatch CopySettings)
-            ] [ str "Copy settings" ]
+            button [ ClassName Style.Secondary; OnClick(fun _ -> dispatch CopySettings) ] [ str "Copy settings" ]
             |> Some
         else
             None
 
+    let idempotencyButton model =
+        match model.State with
+        | FantomasTabState.FormatResult { FirstFormat = ff
+                                          SecondFormat = Some sf } when ff <> sf ->
+            [ createIdempotencyIssue bubble.IsFsi model ff sf ]
+        | _ -> []
+
     match model.State with
-    | EditorState.LoadingOptions -> []
-    | EditorState.LoadingFormatRequest -> [ formatButton; ofOption copySettingButton ]
-    | EditorState.OptionsLoaded
-    | EditorState.FormatResult _
-    | EditorState.FormatError _ -> [ createGitHubIssue code isFsi model; formatButton; ofOption copySettingButton ]
+    | FantomasTabState.LoadingOptions -> []
+    | FantomasTabState.LoadingFormatRequest -> [ formatButton; ofOption copySettingButton ]
+    | FantomasTabState.OptionsLoaded
+    | FantomasTabState.FormatResult _
+    | FantomasTabState.FormatError _ ->
+        [ yield! idempotencyButton model
+          createGitHubIssue bubble model
+          formatButton
+          ofOption copySettingButton ]
     |> fragment []
 
 let settings isFsi model dispatch =
     match model.State with
-    | EditorState.LoadingOptions -> span [ ClassName $"{Style.SpinnerBorder} {Style.TextPrimary}" ] []
+    | FantomasTabState.LoadingOptions -> Loader.loading
     | _ ->
         let fantomasMode =
             [ FantomasMode.V4, "4.x"
@@ -398,8 +321,8 @@ let settings isFsi model dispatch =
 
         let fileExtension =
             SettingControls.toggleButton
-                (fun _ -> SetFsiFile true |> dispatch)
-                (fun _ -> SetFsiFile false |> dispatch)
+                (fun _ -> BubbleMessage.SetFsi true |> Bubble |> dispatch)
+                (fun _ -> BubbleMessage.SetFsi false |> Bubble |> dispatch)
                 "*.fsi"
                 "*.fs"
                 (str "File extension")
@@ -408,20 +331,13 @@ let settings isFsi model dispatch =
         let options = options model dispatch
 
         let searchBox =
-            div [ ClassName $"{Style.My3} {Style.BorderBottom}" ] [
-                div [] [
-                    label [ ClassName Style.DBlock ] [
-                        strong [ ClassName $"{Style.H4} {Style.TextCenter} {Style.DBlock} {Style.Mb2}" ] [
-                            str "Filter settings"
-                        ]
-                    ]
-                    input [
-                        Type "search"
-                        ClassName Style.FormControl
-                        DefaultValue model.SettingsFilter
-                        Placeholder "Filter settings"
-                        Props.OnChange(fun (ev: Browser.Types.Event) -> ev.Value |> UpdateSettingsFilter |> dispatch)
-                    ]
+            div [ Id "filter-settings"; ClassName Style.Setting ] [
+                label [] [ strong [] [ str "Filter settings" ] ]
+                input [
+                    Type "search"
+                    DefaultValue model.SettingsFilter
+                    Placeholder "Filter settings"
+                    OnChange(fun (ev: Browser.Types.Event) -> ev.Value |> UpdateSettingsFilter |> dispatch)
                 ]
             ]
 
@@ -433,3 +349,22 @@ let settings isFsi model dispatch =
             searchBox
             options
         ]
+
+let idempotencyProblem =
+    div [ Id "idempotent-message" ] [
+        h4 [] [ str "The result was not idempotent" ]
+        str "Fantomas was able to format the code, but when formatting the result again, the code changed."
+        br []
+        str "The result after the first format is being displayed."
+        br []
+    ]
+
+let view (model: Model) (dispatch: Msg -> unit) =
+    match model.State with
+    | FantomasTabState.LoadingOptions
+    | FantomasTabState.LoadingFormatRequest -> Loader.tabLoading
+    | FantomasTabState.FormatResult result ->
+        match result.SecondFormat with
+        | Some secondFormat when (result.FirstFormat <> secondFormat) -> idempotencyProblem
+        | _ -> null
+    | _ -> null

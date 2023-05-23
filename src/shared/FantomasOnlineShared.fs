@@ -1,5 +1,7 @@
 module FantomasOnline.Shared
 
+open FantomasTools.Client
+
 type FantomasOption =
     | IntOption of order: int * name: string * value: int
     | BoolOption of order: int * name: string * value: bool
@@ -51,31 +53,11 @@ type FormatRequest =
       Options: FantomasOption list
       IsFsi: bool }
 
-type Range =
-    { StartLine: int
-      StartCol: int
-      EndLine: int
-      EndCol: int }
-
-[<RequireQualifiedAccess>]
-type ASTErrorSeverity =
-    | Error
-    | Warning
-    | Info
-    | Hidden
-
-type ASTError =
-    { SubCategory: string
-      Range: Range
-      Severity: ASTErrorSeverity
-      ErrorNumber: int
-      Message: string }
-
 type FormatResponse =
     { FirstFormat: string
-      FirstValidation: ASTError list
+      FirstValidation: Diagnostic list
       SecondFormat: string option
-      SecondValidation: ASTError list }
+      SecondValidation: Diagnostic list }
 
 let private supportedProperties =
     set [| "max_line_length"; "indent_size"; "end_of_line" |]

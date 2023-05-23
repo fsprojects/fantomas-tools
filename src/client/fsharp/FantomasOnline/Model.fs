@@ -1,6 +1,7 @@
 module FantomasTools.Client.FantomasOnline.Model
 
 open FantomasOnline.Shared
+open FantomasTools.Client
 
 type FantomasMode =
     | V4
@@ -10,6 +11,7 @@ type FantomasMode =
     | Preview // Also main branch, formerly v6.0 branch
 
 type Msg =
+    | Bubble of BubbleMessage
     | VersionReceived of string
     | OptionsReceived of FantomasOption list
     | FormatException of string
@@ -17,11 +19,11 @@ type Msg =
     | FormattedReceived of FormatResponse
     | UpdateOption of (string * FantomasOption)
     | ChangeMode of FantomasMode
-    | SetFsiFile of bool
     | CopySettings
     | UpdateSettingsFilter of string
 
-type EditorState =
+[<RequireQualifiedAccess>]
+type FantomasTabState =
     | LoadingOptions
     | OptionsLoaded
     | LoadingFormatRequest
@@ -33,7 +35,7 @@ type Model =
       DefaultOptions: FantomasOption list
       UserOptions: Map<string, FantomasOption>
       Mode: FantomasMode
-      State: EditorState
+      State: FantomasTabState
       SettingsFilter: string }
 
     member this.SettingsChangedByTheUser =
@@ -47,5 +49,5 @@ type Model =
         |> List.map snd
 
     member this.MaxLineLength: int =
-        FantomasOnline.Shared.tryGetOptionValue this.UserOptions this.DefaultOptions "MaxLineLength" int
+        tryGetOptionValue this.UserOptions this.DefaultOptions "MaxLineLength" int
         |> Option.defaultValue 120

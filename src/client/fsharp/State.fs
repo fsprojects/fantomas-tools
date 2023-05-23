@@ -6,19 +6,36 @@ open FantomasTools.Client.Model
 open Thoth.Json
 open Feliz.Router
 
-let private getCodeFromUrl () =
-    UrlTools.restoreModelFromUrl (Decode.object (fun get -> get.Required.Field "code" Decode.string)) ""
+let private getBubbleFromUrl () : BubbleModel =
+    let empty =
+        { SourceCode = ""
+          IsFsi = false
+          Defines = ""
+          ResultCode = ""
+          Diagnostics = Array.empty
+          HighLight = Range.Zero }
+
+    UrlTools.restoreModelFromUrl
+        (Decode.object (fun get ->
+            let sourceCode = get.Required.Field "code" Decode.string
+            let isFsi = get.Optional.Field "isFsi" Decode.bool |> Option.defaultValue false
+            let defines = get.Optional.Field "defines" Decode.string |> Option.defaultValue ""
+
+            { empty with
+                SourceCode = sourceCode
+                IsFsi = isFsi
+                Defines = defines }))
+        empty
 
 let private getIsFsiFileFromUrl () =
     UrlTools.restoreModelFromUrl (Decode.object (fun get -> get.Required.Field "isFsi" Decode.bool)) false
 
 let init _ =
-    let sourceCode = getCodeFromUrl ()
-    let isFsiFile = getIsFsiFileFromUrl ()
+    let bubble = getBubbleFromUrl ()
     let currentTab = Navigation.parseUrl (Router.currentUrl ())
 
     let astModel, astCmd = ASTViewer.State.init (currentTab = ASTTab)
-    let oakModel, oakCmd = OakViewer.State.init (currentTab = OakTab)
+    let oakModel, oakCmd = OakViewer.State.init ()
 
     let fantomasModel, fantomasCmd =
         let tab =
@@ -30,21 +47,17 @@ let init _ =
 
     let model =
         { ActiveTab = currentTab
-          SourceCode = sourceCode
           SettingsOpen = false
-          IsFsi = isFsiFile
+          Bubble = bubble
           OakModel = oakModel
           ASTModel = astModel
           FantomasModel = fantomasModel }
 
-    let initialCmd = Navigation.cmdForCurrentTab currentTab model
-    //
     let cmd =
         Cmd.batch
             [ Cmd.map ASTMsg astCmd
               Cmd.map OakMsg oakCmd
-              Cmd.map FantomasMsg fantomasCmd
-              initialCmd ]
+              Cmd.map FantomasMsg fantomasCmd ]
 
     model, cmd
 
@@ -61,6 +74,16 @@ let private reload model =
         Cmd.none
 
 let update msg model =
+    sprintf "%A" msg
+    |> fun msg ->
+        let msg =
+            if msg.Length > 300 then
+                msg.Substring(0, 297) + "..."
+            else
+                msg
+
+        Fable.Core.JS.console.log msg
+
     match msg with
     | SelectTab tab ->
         let nextModel =
@@ -68,34 +91,57 @@ let update msg model =
             | ActiveTab.FantomasTab ft when (ft <> model.FantomasModel.Mode) ->
                 { model with
                     ActiveTab = tab
+                    Bubble =
+                        { model.Bubble with
+                            Diagnostics = Array.empty }
                     FantomasModel = { model.FantomasModel with Mode = ft } }
-            | _ -> { model with ActiveTab = tab }
+            | _ ->
+                { model with
+                    ActiveTab = tab
+                    Bubble =
+                        { model.Bubble with
+                            Diagnostics = Array.empty } }
 
         let cmd = Navigation.cmdForCurrentTab tab model
 
         nextModel, cmd
     | UpdateSourceCode code ->
-        let cmd = Cmd.ofMsg (ASTMsg(ASTViewer.Model.Msg.SetSourceText code))
-        { model with SourceCode = code }, cmd
+        let bubble = { model.Bubble with SourceCode = code }
+        { model with Bubble = bubble }, Cmd.none
     | ToggleSettings ->
         let m =
             { model with
                 SettingsOpen = not model.SettingsOpen }
 
         m, reload m
-    | OakMsg(OakViewer.Model.Msg.SetFsiFile isFsiFile) -> { model with IsFsi = isFsiFile }, Cmd.none
+
+    | ASTMsg(ASTViewer.Model.Msg.Bubble bubbleMsg)
+    | OakMsg(OakViewer.Model.Msg.Bubble bubbleMsg)
+    | FantomasMsg(FantomasOnline.Model.Msg.Bubble bubbleMsg) ->
+        let bubble, cmd =
+            match bubbleMsg with
+            | SetSourceCode code -> { model.Bubble with SourceCode = code }, Cmd.none
+            | SetFsi isFsiFile -> { model.Bubble with IsFsi = isFsiFile }, Cmd.none
+            | SetDefines defines -> { model.Bubble with Defines = defines }, Cmd.none
+            | SetResultCode code -> { model.Bubble with ResultCode = code }, Cmd.none
+            | SetDiagnostics diagnostics ->
+                { model.Bubble with
+                    Diagnostics = diagnostics },
+                Cmd.none
+            | HighLight hlr -> { model.Bubble with HighLight = hlr }, Cmd.none
+
+        { model with Bubble = bubble }, cmd
+
     | OakMsg oMsg ->
-        let oModel, oCmd =
-            OakViewer.State.update model.SourceCode model.IsFsi oMsg model.OakModel
+        let oModel, oCmd = OakViewer.State.update model.Bubble oMsg model.OakModel
 
         { model with OakModel = oModel }, Cmd.map OakMsg oCmd
-    | ASTMsg(ASTViewer.Model.Msg.SetFsiFile isFsiFile) -> { model with IsFsi = isFsiFile }, Cmd.none
+
     | ASTMsg aMsg ->
-        let aModel, aCmd =
-            ASTViewer.State.update model.SourceCode model.IsFsi aMsg model.ASTModel
+        let aModel, aCmd = ASTViewer.State.update model.Bubble aMsg model.ASTModel
 
         { model with ASTModel = aModel }, Cmd.map ASTMsg aCmd
-    | FantomasMsg(FantomasOnline.Model.Msg.SetFsiFile isFsiFile) -> { model with IsFsi = isFsiFile }, Cmd.none
+
     | FantomasMsg(FantomasOnline.Model.ChangeMode mode) ->
         let cmd =
             let changeVersion (hashWithoutQuery: string) =
@@ -123,6 +169,6 @@ let update msg model =
             | _ -> false
 
         let fModel, fCmd =
-            FantomasOnline.State.update isActiveTab model.SourceCode model.IsFsi fMsg model.FantomasModel
+            FantomasOnline.State.update isActiveTab model.Bubble fMsg model.FantomasModel
 
         { model with FantomasModel = fModel }, Cmd.map FantomasMsg fCmd

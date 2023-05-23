@@ -1,11 +1,11 @@
 module FantomasOnlineV5.FormatCode
 
-open FSharp.Compiler.Diagnostics
 open Fantomas.FCS.Parse
 open Fantomas.Core
 open Fantomas.Core.FormatConfig
 open FantomasOnline.Shared
 open FantomasOnline.Server.Shared.Http
+open FantomasTools.Client
 
 let private mapFantomasOptionsToRecord options =
     let newValues =
@@ -49,17 +49,13 @@ let private validate (fileName: string) code =
                 { SubCategory = e.SubCategory
                   Range =
                     { StartLine = orZero (fun r -> r.StartLine)
-                      StartCol = orZero (fun r -> r.StartColumn)
+                      StartColumn = orZero (fun r -> r.StartColumn)
                       EndLine = orZero (fun r -> r.EndLine)
-                      EndCol = orZero (fun r -> r.EndColumn) }
-                  Severity =
-                    match e.Severity with
-                    | FSharpDiagnosticSeverity.Warning -> ASTErrorSeverity.Warning
-                    | FSharpDiagnosticSeverity.Error -> ASTErrorSeverity.Error
-                    | FSharpDiagnosticSeverity.Hidden -> ASTErrorSeverity.Hidden
-                    | FSharpDiagnosticSeverity.Info -> ASTErrorSeverity.Info
+                      EndColumn = orZero (fun r -> r.EndColumn) }
+                  Severity = $"{e.Severity}".ToLower()
                   ErrorNumber = Option.defaultValue 0 e.ErrorNumber
-                  Message = e.Message })
+                  Message = e.Message }
+                : Diagnostic)
     }
 
 let getVersion () =

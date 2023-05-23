@@ -9,18 +9,21 @@
     <IsLambda>true</IsLambda>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\..\shared\Types.fs" />
     <Compile Include="..\..\shared\ASTViewerShared.fs" />
     <Compile Include="..\HttpConstants.fs" />
     <Compile Include="..\AWSLambdaExtensions.fs" />
     <Compile Include="..\SuaveExtensions.fs" />
     <Compile Include="Encoders.fs" />
     <Compile Include="Decoders.fs" />
+    <Compile Include="ExpandedAST.fsi" />
+    <Compile Include="ExpandedAST.fs" />
     <Compile Include="GetAST.fs" />
     <Compile Include="Lambda.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Fantomas.FCS" Version="6.0.3" />
+    <PackageReference Include="Fantomas.Core" Version="6.0.3" />
     <PackageReference Include="FSharp.Core" Version="6.0.6" />
     <PackageReference Include="Thoth.Json.Net" Version="8.0.0" />
   </ItemGroup>

@@ -1,91 +1,100 @@
 module FantomasTools.Client.ASTViewer.View
 
+open System
+open System.Text.RegularExpressions
+open Fable.Core
 open Fable.Core.JsInterop
 open Fable.React
 open Fable.React.Props
 open FantomasTools.Client
 open FantomasTools.Client.ASTViewer.Model
-open FantomasTools.Client.Editor
 
-let private cursorChanged dispatch (e: obj) =
+// Enter 'localStorage.setItem("debugASTRangeHighlight", "true");' in your browser console to enable.
+let debugASTRangeHighlight: bool =
+    not (String.IsNullOrWhiteSpace(Browser.WebStorage.localStorage.getItem "debugASTRangeHighlight"))
+
+let cursorChanged (bubbleMsg: BubbleMessage -> unit) (model: Model) (e: obj) : unit =
     let lineNumber: int = e?position?lineNumber
     let column: int = e?position?column
-    dispatch (HighLight(lineNumber, column))
 
-let private results dispatch model =
-    let result =
-        match model.Parsed with
-        | Some(Ok parsed) -> EditorAux (cursorChanged dispatch) true [ MonacoEditorProp.DefaultValue parsed.String ]
-        | Some(Result.Error errors) -> ReadOnlyEditor [ MonacoEditorProp.DefaultValue errors ]
-        | None -> str ""
+    match model.State with
+    | AstViewerTabState.Result { Ast = astText } ->
+        let lines = astText.Split([| "\r\n"; "\n" |], StringSplitOptions.None)
+        // Try and get the line where the cursor clicked in the AST editor
+        match Array.tryItem (lineNumber - 1) lines with
+        | None -> ()
+        | Some sourceLine ->
 
-    let astErrors =
-        model.Parsed
-        |> Option.bind (fun parsed ->
-            match parsed with
-            | Ok parsed when (not (Seq.isEmpty parsed.Errors)) ->
-                let badgeColor (e: ASTViewer.Shared.ASTError) =
-                    if e.Severity = "warning" then
-                        Style.TextBgWarning
-                    else
-                        Style.TextBgDanger
+        if debugASTRangeHighlight then
+            JS.console.log (sourceLine.Trim())
 
-                let errors =
-                    parsed.Errors
-                    |> Array.mapi (fun i e ->
-                        li [ Key(sprintf "ast-error-%i" i) ] [
-                            strong [] [
-                                str (
-                                    sprintf
-                                        "(%i,%i) (%i, %i)"
-                                        e.Range.StartLine
-                                        e.Range.StartCol
-                                        e.Range.EndLine
-                                        e.Range.EndCol
-                                )
-                            ]
-                            span [ ClassName $"{Style.Badge} {badgeColor e}" ] [ str e.Severity ]
-                            span [ ClassName $"{Style.Badge} {Style.TextBgDark}"; Title "ErrorNumber" ] [
-                                ofInt e.ErrorNumber
-                            ]
-                            span [ ClassName $"{Style.Badge} {Style.TextBgLight}"; Title "SubCategory" ] [
-                                str e.SubCategory
-                            ]
-                            p [] [ str e.Message ]
-                        ])
+        let pattern = @"\(\d+,\d+--\d+,\d+\)"
 
-                ul [ Id "ast-errors"; ClassName "" ] [ ofArray errors ] |> Some
-            | _ -> None)
-        |> ofOption
+        let rangeDigits =
+            Regex.Matches(sourceLine, pattern)
+            |> Seq.cast<Match>
+            |> fun matches ->
+                if debugASTRangeHighlight then
+                    JS.console.log matches
 
-    div [ Id "ast-content" ] [ div [ ClassName Style.AstEditorContainer ] [ result ]; astErrors ]
+                matches
+            |> Seq.tryPick (fun m ->
+                if debugASTRangeHighlight then
+                    JS.console.log m.Value
 
-let view model dispatch =
-    if model.IsLoading then
-        Loader.loader
-    else
-        results dispatch model
+                let startIndex = m.Index
+                let endIndex = m.Index + m.Value.Length
+                // Verify the match contains the cursor column.
+                if startIndex <= column && column <= endIndex then
+                    m.Value.Split([| ','; '-'; '('; ')' |], StringSplitOptions.RemoveEmptyEntries)
+                    |> Array.map int
+                    |> Array.toList
+                    |> Some
+                else
+                    None)
+
+        match rangeDigits with
+        | Some [ startLine; startColumn; endLine; endColumn ] ->
+            let range =
+                { StartLine = startLine
+                  StartColumn = startColumn
+                  EndLine = endLine
+                  EndColumn = endColumn }
+
+            bubbleMsg (BubbleMessage.HighLight range)
+        | _ -> bubbleMsg (BubbleMessage.HighLight Range.Zero)
+
+    | _ -> ()
 
 let commands dispatch =
-    button [
-        ClassName $"{Style.Btn} {Style.BtnPrimary} {Style.TextWhite}"
-        OnClick(fun _ -> dispatch DoParse)
-    ] [ str "Show Untyped AST" ]
+    button [ ClassName Style.Primary; OnClick(fun _ -> dispatch DoParse) ] [ str "Show Untyped AST" ]
 
-let settings isFsi model dispatch =
+let settings (bubble: BubbleModel) (model: Model) dispatch =
     fragment [] [
-        VersionBar.versionBar (sprintf "FSC - %s" model.Version)
+        VersionBar.versionBar $"FSC - %s{model.Version}"
         SettingControls.input
             "ast-defines"
-            (DefinesUpdated >> dispatch)
+            (BubbleMessage.SetDefines >> Bubble >> dispatch)
             (str "Defines")
             "Enter your defines separated with a space"
-            model.Defines
+            bubble.Defines
         SettingControls.toggleButton
-            (fun _ -> dispatch (SetFsiFile true))
-            (fun _ -> dispatch (SetFsiFile false))
+            (fun _ -> BubbleMessage.SetFsi true |> Bubble |> dispatch)
+            (fun _ -> BubbleMessage.SetFsi false |> Bubble |> dispatch)
             "*.fsi"
             "*.fs"
             (str "File extension")
-            isFsi
+            bubble.IsFsi
+        SettingControls.toggleButton
+            (fun _ -> dispatch (SetExpand false))
+            (fun _ -> dispatch (SetExpand true))
+            "Regular"
+            "Expanded"
+            (str "Mode")
+            (not model.Expand)
     ]
+
+let view (model: Model) =
+    match model.State with
+    | AstViewerTabState.Loading -> Loader.tabLoading
+    | _ -> null

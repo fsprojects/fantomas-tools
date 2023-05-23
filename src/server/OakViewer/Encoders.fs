@@ -1,18 +1,20 @@
 ﻿module internal OakViewer.Encoders
 
 open Thoth.Json.Net
+open FSharp.Compiler.Diagnostics
 open FSharp.Compiler.Text
+open Fantomas.FCS.Parse
 open Fantomas.Core
 open Fantomas.Core.SyntaxOak
 
-let private encodeRange (m: range) =
+let encodeRange (m: range) =
     Encode.object
         [ "startLine", Encode.int m.StartLine
           "startColumn", Encode.int m.StartColumn
           "endLine", Encode.int m.EndLine
           "endColumn", Encode.int m.EndColumn ]
 
-let private encodeTriviaNode (triviaNode: TriviaNode) : JsonValue =
+let encodeTriviaNode (triviaNode: TriviaNode) : JsonValue =
     let contentType, content =
         match triviaNode.Content with
         | CommentOnSingleLine comment -> "commentOnSingleLine", Some comment
@@ -51,3 +53,33 @@ let rec encodeNode (node: Node) (continuation: JsonValue -> JsonValue) : JsonVal
         |> continuation
 
     Continuation.sequence continuations finalContinuation
+
+let mkRange (range: Range) : FantomasTools.Client.Range =
+    { StartLine = range.StartLine
+      StartColumn = range.StartColumn
+      EndLine = range.EndLine
+      EndColumn = range.EndColumn }
+
+let fsharpErrorInfoSeverity =
+    function
+    | FSharpDiagnosticSeverity.Warning -> "warning"
+    | FSharpDiagnosticSeverity.Error -> "error"
+    | FSharpDiagnosticSeverity.Hidden -> "hidden"
+    | FSharpDiagnosticSeverity.Info -> "info"
+
+let encodeFSharpErrorInfo (info: FSharpParserDiagnostic) =
+    ({ SubCategory = info.SubCategory
+       Range =
+         match info.Range with
+         | None -> mkRange Range.Zero
+         | Some r -> mkRange r
+       Severity = fsharpErrorInfoSeverity info.Severity
+       ErrorNumber = Option.defaultValue 0 info.ErrorNumber
+       Message = info.Message }
+    : FantomasTools.Client.Diagnostic)
+    |> FantomasTools.Client.Diagnostic.Encode
+
+let encode (root: Node) (diagnostics: FSharpParserDiagnostic list) =
+    Encode.object
+        [ "oak", encodeNode root id
+          "diagnostics", Encode.list (List.map encodeFSharpErrorInfo diagnostics) ]

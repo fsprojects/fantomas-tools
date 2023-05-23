@@ -1,23 +1,13 @@
 module ASTViewer.Shared
 
-type Range =
-    { StartLine: int
-      StartCol: int
-      EndLine: int
-      EndCol: int }
-
-type ASTError =
-    { SubCategory: string
-      Range: Range
-      Severity: string
-      ErrorNumber: int
-      Message: string }
+open FantomasTools.Client
 
 type Response =
-    { String: string
-      Errors: ASTError array }
+    { Ast: string
+      Diagnostics: Diagnostic array }
 
 type Request =
     { SourceCode: string
       Defines: string array
-      IsFsi: bool }
+      IsFsi: bool
+      Expand: bool }

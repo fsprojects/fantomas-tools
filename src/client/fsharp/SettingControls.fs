@@ -5,10 +5,9 @@ open Fable.React.Props
 open FantomasTools.Client
 
 let input key onChange (labelValue: ReactElement) placeholder value =
-    div [ ClassName Style.Mb3 ] [
-        label [ ClassName Style.FormLabel ] [ labelValue ]
+    div [ ClassName Style.Setting ] [
+        label [] [ labelValue ]
         input [
-            ClassName Style.FormControl
             Placeholder placeholder
             OnChange(fun ev -> ev.Value |> onChange)
             DefaultValue value
@@ -17,19 +16,14 @@ let input key onChange (labelValue: ReactElement) placeholder value =
     ]
 
 let private toggleButton_ onClick active label =
-    let className =
-        if active then
-            $"{Style.TextWhite} {Style.BtnSecondary}"
-        else
-            Style.BtnOutlineSecondary
+    let className = if active then Style.Active else ""
 
-    button [ ClassName $"{Style.Btn} {className}"; Key label; OnClick onClick ] [ str label ]
+    button [ ClassName className; Key label; OnClick onClick ] [ str label ]
 
 let toggleButton onTrue onFalse labelTrue labelFalse (labelValue: ReactElement) value =
-    div [ ClassName Style.Mb3 ] [
-        label [ ClassName Style.FormLabel ] [ labelValue ]
-        br []
-        div [ ClassName Style.BtnGroup ] [
+    div [ ClassName Style.Setting ] [
+        label [] [ labelValue ]
+        div [ ClassName Style.ToggleButton ] [
             toggleButton_ onTrue value labelTrue
             toggleButton_ onFalse (not value) labelFalse
         ]
@@ -45,8 +39,7 @@ let multiButton labelValue (options: MultiButtonSettings list) =
         options
         |> List.map (fun { Label = l; OnClick = o; IsActive = i } -> toggleButton_ o i l)
 
-    div [] [
-        label [ ClassName Style.FormLabel ] [ str labelValue ]
-        br []
-        div [ ClassName Style.BtnGroup ] [ ofList buttons ]
+    div [ ClassName Style.Setting ] [
+        label [] [ str labelValue ]
+        div [ ClassName Style.ToggleButton ] [ ofList buttons ]
     ]
