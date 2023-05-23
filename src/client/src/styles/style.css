@@ -801,8 +801,12 @@ nav > div #docs-btn .long-text {
         color: var(--white);
     }
 
-    #tabs {
-        background-color: var(--dark);
+    #app main #tools {
+        background: var(--dark);
+    }
+
+    #loading {
+        background: var(--dark);
     }
 
     #tabs li a {
@@ -818,7 +822,7 @@ nav > div #docs-btn .long-text {
         background: var(--grey);
         color: var(--light);
     }
-    
+
     #settings .inner {
         background-color: var(--dark);
         color: var(--light);
