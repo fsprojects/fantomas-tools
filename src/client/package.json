@@ -8,7 +8,7 @@
     "lint": "prettier --check \"src/**/*.{js,jsx}\""
   },
   "dependencies": {
-    "@monaco-editor/react": "4.5.0",
+    "@monaco-editor/react": "4.5.1",
     "lz-string": "1.4.4",
     "notyf": "3.10.0",
     "react": "^18.2.0",
