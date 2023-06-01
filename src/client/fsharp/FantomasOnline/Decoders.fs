@@ -36,6 +36,6 @@ let decodeOptionsFromUrl: Decoder<FantomasOption list> =
 let decodeFormatResponse: Decoder<FormatResponse> =
     Decode.object (fun get ->
         { FirstFormat = get.Required.Field "firstFormat" Decode.string
-          FirstValidation = get.Required.Field "firstValidation" (Decode.list Diagnostic.Decode)
+          FirstValidation = get.Required.Field "firstValidation" (Decode.array Diagnostic.Decode)
           SecondFormat = get.Optional.Field "secondFormat" Decode.string
-          SecondValidation = get.Required.Field "secondValidation" (Decode.list Diagnostic.Decode) })
+          SecondValidation = get.Required.Field "secondValidation" (Decode.array Diagnostic.Decode) })

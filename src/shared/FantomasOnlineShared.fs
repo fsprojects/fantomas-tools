@@ -55,9 +55,9 @@ type FormatRequest =
 
 type FormatResponse =
     { FirstFormat: string
-      FirstValidation: Diagnostic list
+      FirstValidation: Diagnostic array
       SecondFormat: string option
-      SecondValidation: Diagnostic list }
+      SecondValidation: Diagnostic array }
 
 let private supportedProperties =
     set [| "max_line_length"; "indent_size"; "end_of_line" |]

@@ -58,9 +58,9 @@ let formatCode
 
                 let response =
                     { FirstFormat = firstFormat
-                      FirstValidation = firstValidation
+                      FirstValidation = Array.ofList firstValidation
                       SecondFormat = secondFormat
-                      SecondValidation = secondValidation }
+                      SecondValidation = Array.ofList secondValidation }
                     |> Encoders.encodeFormatResponse
                     |> Encode.toString 4
 

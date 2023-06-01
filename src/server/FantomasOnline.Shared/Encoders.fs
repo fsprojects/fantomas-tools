@@ -35,6 +35,6 @@ let encodeOptions options =
 let encodeFormatResponse (formatResponse: FormatResponse) =
     Encode.object
         [ "firstFormat", Encode.string formatResponse.FirstFormat
-          "firstValidation", (formatResponse.FirstValidation |> List.map Diagnostic.Encode |> Encode.list)
+          "firstValidation", (formatResponse.FirstValidation |> Array.map Diagnostic.Encode |> Encode.array)
           "secondFormat", Encode.option Encode.string formatResponse.SecondFormat
-          "secondValidation", (formatResponse.SecondValidation |> List.map Diagnostic.Encode |> Encode.list) ]
+          "secondValidation", (formatResponse.SecondValidation |> Array.map Diagnostic.Encode |> Encode.array) ]

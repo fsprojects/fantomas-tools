@@ -212,9 +212,23 @@ let update isActiveTab (bubble: BubbleModel) msg model =
         Cmd.none
 
     | FormattedReceived result ->
+        let cmd =
+            if Array.isEmpty result.FirstValidation && Array.isEmpty result.SecondValidation then
+                Cmd.none
+            elif Array.isEmpty result.SecondValidation then
+                result.FirstValidation
+                |> BubbleMessage.SetDiagnostics
+                |> Msg.Bubble
+                |> Cmd.ofMsg
+            else
+                result.SecondValidation
+                |> BubbleMessage.SetDiagnostics
+                |> Msg.Bubble
+                |> Cmd.ofMsg
+
         { model with
             State = FantomasTabState.FormatResult result },
-        Cmd.none
+        cmd
     | UpdateOption(key, value) ->
         let userOptions = Map.add key value model.UserOptions
         { model with UserOptions = userOptions }, Cmd.none
