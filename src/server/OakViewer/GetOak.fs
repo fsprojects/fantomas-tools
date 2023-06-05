@@ -30,7 +30,7 @@ let getOak json : GetOakResponse =
                 let ast, diagnostics =
                     Fantomas.FCS.Parse.parseFile
                         isFsi
-                        (FSharp.Compiler.Text.SourceText.ofString content)
+                        (Fantomas.FCS.Text.SourceText.ofString content)
                         (List.ofArray defines)
 
                 let oak = CodeFormatter.TransformAST(ast, content)

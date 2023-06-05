@@ -1,8 +1,8 @@
 ﻿module internal OakViewer.Encoders
 
 open Thoth.Json.Net
-open FSharp.Compiler.Diagnostics
-open FSharp.Compiler.Text
+open Fantomas.FCS.Diagnostics
+open Fantomas.FCS.Text
 open Fantomas.FCS.Parse
 open Fantomas.Core
 open Fantomas.Core.SyntaxOak

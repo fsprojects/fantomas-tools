@@ -1,6 +1,6 @@
 module FantomasOnlinePreview.FormatCode
 
-open FSharp.Compiler.Text
+open Fantomas.FCS.Text
 open Fantomas.Core
 open FantomasOnline.Shared
 open FantomasOnline.Server.Shared.Http

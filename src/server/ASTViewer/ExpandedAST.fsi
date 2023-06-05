@@ -1,6 +1,6 @@
 module ASTViewer.ExpandedAST
 
-open FSharp.Compiler.Syntax
+open Fantomas.FCS.Syntax
 
 /// Process the ParsedInput tree using reflection to produce a rich "ToString" representation.
 /// This string comes very close to usable input if one were to construct the AST manually.

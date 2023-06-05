@@ -1,11 +1,11 @@
 module ASTViewer.GetAST
 
 open System.Reflection
-open FSharp.Compiler.Text
 open Thoth.Json.Net
+open Fantomas.FCS.Text
+open Fantomas.FCS.Parse
 open ASTViewer.Shared
 open ASTViewer.Server
-open Fantomas.FCS.Parse
 
 module Const =
     let sourceSizeLimit = 100 * 1024

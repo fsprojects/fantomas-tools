@@ -2,10 +2,10 @@ module ASTViewer.ExpandedAST
 
 open System
 open System.Collections.Generic
-open FSharp.Compiler.Syntax
-open FSharp.Compiler.Xml
 open FSharp.Reflection
-open FSharp.Compiler.Text
+open Fantomas.FCS.Syntax
+open Fantomas.FCS.Xml
+open Fantomas.FCS.Text
 open Fantomas.Core
 open Fantomas.Core.SyntaxOak
 
