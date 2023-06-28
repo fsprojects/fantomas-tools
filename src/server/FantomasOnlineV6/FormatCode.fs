@@ -1,6 +1,7 @@
 module FantomasOnlineV6.FormatCode
 
 open FantomasTools.Client
+open Fantomas.FCS
 open Fantomas.FCS.Parse
 open Fantomas.Core
 open FantomasOnline.Shared
@@ -41,8 +42,7 @@ let private validate (fileName: string) code =
     async {
         let isSignature = fileName.EndsWith(".fsi")
 
-        let _tree, diagnostics =
-            parseFile isSignature (FSharp.Compiler.Text.SourceText.ofString code) []
+        let _tree, diagnostics = parseFile isSignature (Text.SourceText.ofString code) []
 
         return
             diagnostics
