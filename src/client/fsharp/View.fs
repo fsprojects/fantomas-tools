@@ -44,7 +44,7 @@ let navigation dispatch =
             a [
                 Class "btn"
                 Id "docs-btn"
-                Href "https://fsprojects.github.io/fantomas/reference/fsharp-compiler-syntax.html"
+                Href "https://fsprojects.github.io/fantomas/reference/fantomas-fcs-syntax.html"
                 Target "_blank"
             ] [
                 i [ ClassName $"fa fa-book" ] []
