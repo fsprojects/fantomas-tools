@@ -37,7 +37,7 @@ let fetchUntypedAST (payload: Shared.Request) dispatch =
 let initialModel =
     { State = AstViewerTabState.Result { Ast = ""; Diagnostics = Array.empty }
       Version = ""
-      Expand = false }
+      Expand = true }
 
 let getMessageFromError (ex: exn) = Error ex.Message
 

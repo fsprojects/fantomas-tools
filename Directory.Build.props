@@ -14,6 +14,7 @@
         <!-- Override these values to point to your local fantomas repository -->
         <FantomasMainRepository>$(MSBuildThisFileDirectory).deps\fantomas</FantomasMainRepository>
         <FantomasPreviewRepository>$(MSBuildThisFileDirectory).deps\main</FantomasPreviewRepository>
+        <RollForward>LatestMajor</RollForward>
     </PropertyGroup>
 
     <ItemGroup Condition="'$(IsLambda)' == 'true'">
