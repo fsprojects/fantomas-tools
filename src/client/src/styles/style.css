@@ -857,4 +857,12 @@ nav > div #docs-btn .long-text {
         background-color: var(--dark);
         color: var(--light);
     }
+
+    #diagnostics li p {
+        color: var(--light);
+    }
+
+    #diagnostics li strong {
+        color: var(--light);
+    }
 }
