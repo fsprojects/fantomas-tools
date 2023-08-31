@@ -223,7 +223,7 @@ let rightPane (model: Model) dispatch =
         match model.ActiveTab with
         | ASTTab ->
             match model.ASTModel.State with
-            | AstViewerTabState.Loading _ -> false
+            | AstViewerTabState.Loading -> false
             | _ -> true
         | FantomasTab _ ->
             match model.FantomasModel.State with
