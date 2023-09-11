@@ -1,13 +1,19 @@
-import { defineConfig } from 'vite'
-import reactRefresh from '@vitejs/plugin-react-refresh'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [reactRefresh()],
+  plugins: [react()],
   server: {
-    port: 9060
+    port: 9060,
+    watch: {
+      ignored: [
+        '**/*.fs',
+        '**/*.fsi', // Don't watch F# files
+      ],
+    },
   },
   build: {
-    outDir: 'build'
-  }
-})
+    outDir: 'build',
+  },
+});
