@@ -111,11 +111,13 @@ let setViteToProduction () =
     setEnv "VITE_FANTOMAS_MAIN" $"{mainStageUrl}/fantomas/main"
     setEnv "VITE_FANTOMAS_PREVIEW" $"{mainStageUrl}/fantomas/preview"
 
+let nodeRunner = if OperatingSystem.IsWindows() then "npm" else "bun"
+
 pipeline "Build" {
     workingDir __SOURCE_DIRECTORY__
-    stage "bun install" {
+    stage $"{nodeRunner} install" {
         workingDir clientDir
-        run "bun i"
+        run $"{nodeRunner} i"
     }
     stage "dotnet install" {
         run "dotnet tool restore"
@@ -124,7 +126,7 @@ pipeline "Build" {
     stage "check format F#" { run "dotnet fantomas src infrastructure build.fsx --check" }
     stage "check format JS" {
         workingDir clientDir
-        run "bun run lint"
+        run $"{nodeRunner} run lint"
     }
     stage "clean" {
         run (fun _ ->
@@ -158,7 +160,7 @@ pipeline "Build" {
                 setViteToProduction ()
                 return 0
             })
-        run "bun run build"
+        run $"{nodeRunner} run build"
         run (fun _ ->
             async {
                 File.Create(clientDir </> "build" </> ".nojekyll").Close()
@@ -225,7 +227,7 @@ pipeline "FormatChanged" {
                         async.Return 0
                     else
                         Cli
-                            .Wrap("bun")
+                            .Wrap(nodeRunner)
                             .WithWorkingDirectory(clientDir)
                             .WithArguments($"x prettier --write {prettierArgument}")
                             .ExecuteBufferedAsync()
@@ -241,9 +243,9 @@ pipeline "FormatChanged" {
 }
 
 pipeline "Watch" {
-    stage "bun install" {
+    stage $"{nodeRunner} install" {
         workingDir clientDir
-        run "bun i"
+        run $"{nodeRunner} i"
     }
     stage "dotnet install" {
         run "dotnet tool restore"
@@ -284,7 +286,7 @@ pipeline "Watch" {
         stage "frontend" {
             workingDir clientDir
             run "dotnet tool restore"
-            run "dotnet fable watch ./fsharp/FantomasTools.fsproj --outDir ./src/bin --run bun x vite"
+            run $"dotnet fable watch ./fsharp/FantomasTools.fsproj --outDir ./src/bin --run {nodeRunner} x vite"
         }
     }
     runIfOnlySpecified true
