@@ -30,9 +30,7 @@ module VisNetwork =
            nodes: obj |}
 
     [<Import("DataSet", "vis-data/peer")>]
-    type DataSet(_data: U2<node, edge> array) =
-        class
-        end
+    type DataSet(_data: U2<node, edge> array) = class end
 
     type data = {| nodes: DataSet; edges: DataSet |}
 

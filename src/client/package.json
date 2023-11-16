@@ -7,20 +7,22 @@
     "format": "prettier --write \"src/**/*.{js,jsx}\"",
     "lint": "prettier --check \"src/**/*.{js,jsx}\""
   },
+
+  "type": "module",
   "dependencies": {
-    "@monaco-editor/react": "4.5.1",
+    "@monaco-editor/react": "4.6.0",
     "lz-string": "1.4.4",
     "notyf": "3.10.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "use-sync-external-store": "^1.2.0",
-    "vis-data": "7.1.6",
-    "vis-network": "9.1.6"
+    "vis-data": "7.1.8",
+    "vis-network": "9.1.9"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.0.3",
+    "@vitejs/plugin-react": "4.2.0",
     "prettier": "2.8.7",
     "prop-types": "^15.8.1",
-    "vite": "^4.4.5"
+    "vite": "5.0.0"
   }
 }

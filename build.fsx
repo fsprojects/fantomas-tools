@@ -1,5 +1,5 @@
-#r "nuget: Fun.Build, 0.2.9"
-#r "nuget: CliWrap, 3.5.0"
+#r "nuget: Fun.Build, 1.0.3"
+#r "nuget: CliWrap, 3.6.4"
 #r "nuget: Fake.IO.FileSystem, 5.23.0"
 
 open System
@@ -8,6 +8,7 @@ open System.Threading.Tasks
 open CliWrap
 open CliWrap.Buffered
 open Fun.Build
+open Fun.Build.Internal
 open Fake.IO
 open Fake.IO.FileSystemOperators
 open Fake.IO.Globbing.Operators
@@ -92,10 +93,10 @@ pipeline "Fantomas-Git" {
 }
 
 let publishLambda name =
-    $"dotnet publish -c Release -o {artifactDir </> name} {serverDir}/{name}/{name}.fsproj"
+    $"dotnet publish --tl -c Release -o {artifactDir </> name} {serverDir}/{name}/{name}.fsproj"
 
 let runLambda name =
-    $"dotnet watch run --project {serverDir </> name </> name}.fsproj"
+    $"dotnet watch run --project {serverDir </> name </> name}.fsproj --tl"
 
 let setViteToProduction () =
     setEnv "NODE_ENV" "production"
@@ -119,7 +120,7 @@ pipeline "Build" {
     }
     stage "dotnet install" {
         run "dotnet tool restore"
-        run "dotnet restore"
+        run "dotnet restore --tl"
     }
     stage "check format F#" { run "dotnet fantomas src infrastructure build.fsx --check" }
     stage "check format JS" {
@@ -169,12 +170,12 @@ pipeline "Build" {
     runIfOnlySpecified false
 }
 
-let changedFiles () : Async<string array> =
+let changedFiles (ctx: StageContext) : Async<string array> =
     async {
-        let! exitCode, stdout = git "status --porcelain" pwd
-        if exitCode <> 0 then
-            return failwithf $"could not check the git status: %s{stdout}"
-        else
+        let! result = ctx.RunCommandCaptureOutput "git status --porcelain"
+        match result with
+        | Error _ -> return failwithf "Could not run git status"
+        | Ok stdout ->
             return
                 stdout.Split('\n')
                 |> Array.choose (fun line ->
@@ -192,25 +193,35 @@ let isFSharpFile path =
 let isJSFile path =
     FileInfo(path).Extension |> jsExtensions.Contains
 
+let alwaysOk = async { return Ok() }
+let mapResultToCode =
+    function
+    | Ok _ -> 0
+    | Error _ -> 1
+
 pipeline "FormatChanged" {
     workingDir __SOURCE_DIRECTORY__
-    stage "Format" {
-        run (fun _ ->
+    stage "Format F#" {
+        run (fun ctx ->
             async {
-                let! files = changedFiles ()
+                let! files = changedFiles ctx
                 let fantomasArgument = files |> Array.filter isFSharpFile |> String.concat " "
+                printfn "%s" fantomasArgument
 
-                let! fantomasExit =
+                let! result =
                     if String.IsNullOrWhiteSpace fantomasArgument then
-                        async.Return 0
+                        alwaysOk
                     else
-                        Cli
-                            .Wrap("dotnet")
-                            .WithArguments($"fantomas {fantomasArgument}")
-                            .ExecuteAsync()
-                            .Task.ContinueWith(fun (t: Task<CommandResult>) -> t.Result.ExitCode)
-                        |> Async.AwaitTask
+                        ctx.RunCommand $"dotnet fantomas %s{fantomasArgument}"
 
+                return mapResultToCode result
+            })
+    }
+    stage "Format JS" {
+        workingDir (__SOURCE_DIRECTORY__ </> "src" </> "client")
+        run (fun ctx ->
+            async {
+                let! files = changedFiles ctx
                 let prettierArgument =
                     files
                     |> Array.choose (fun path ->
@@ -220,22 +231,14 @@ pipeline "FormatChanged" {
                             None)
                     |> String.concat " "
 
-                let! prettierExit =
+                let! result =
                     if String.IsNullOrWhiteSpace prettierArgument then
-                        async.Return 0
+                        alwaysOk
                     else
-                        Cli
-                            .Wrap("bun")
-                            .WithWorkingDirectory(clientDir)
-                            .WithArguments($"x prettier --write {prettierArgument}")
-                            .ExecuteBufferedAsync()
-                            .Task.ContinueWith(fun (t: Task<BufferedCommandResult>) -> t.Result.ExitCode)
-                        |> Async.AwaitTask
+                        ctx.RunCommand $"bun x prettier --write {prettierArgument}"
 
-                // Exit code should in both cases by zero
-                return fantomasExit + prettierExit
-            }
-            |> Async.RunSynchronously)
+                return mapResultToCode result
+            })
     }
     runIfOnlySpecified true
 }
@@ -289,3 +292,5 @@ pipeline "Watch" {
     }
     runIfOnlySpecified true
 }
+
+tryPrintPipelineCommandHelp ()
