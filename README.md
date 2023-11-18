@@ -6,18 +6,22 @@ Collection of tools used when developing for Fantomas
 
 To run this tool locally you need:
 
-* [Node.js 14.x](https://nodejs.org/en/download/) or higher
-* [.NET 7.x SDK](https://dotnet.microsoft.com/en-us/download/dotnet/7.0)
+* [Bun](https://bun.sh/)
+* [.NET 8.x SDK](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
 
 ## Running locally
 
 * Pull in the source dependencies:
 
-> dotnet fsi build.fsx -p Fantomas-Git
+```shell
+dotnet fsi build.fsx -p Fantomas-Git
+```
 
 * Run the Watch pipeline:
 
-> dotnet fsi build.fsx -p Watch
+```shell
+dotnet fsi build.fsx -p Watch
+```
 
 * Open http://localhost:9060
 
@@ -25,9 +29,22 @@ To run this tool locally you need:
 
 * Open the repository via https://gitpod.io/#https://github.com/fsprojects/fantomas-tools
 
-* Run 
-> dotnet fsi build.fsx -p Fantomas-Git
+* Run
 
-> dotnet fsi build.fsx -p Watch
+```shell
+dotnet fsi build.fsx -p Fantomas-Git
+```
+
+```shell
+dotnet fsi build.fsx -p Watch
+```
 
 * Open browser for port `9060`
+
+## Other pipelines
+
+To see any other avaiable build script pipelines:
+
+```shell
+dotnet fsi build.fsx -- --help
+```

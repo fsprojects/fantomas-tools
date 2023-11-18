@@ -25,12 +25,12 @@
       },
       "Fantomas.Core": {
         "type": "Direct",
-        "requested": "[6.2.0, )",
-        "resolved": "6.2.0",
-        "contentHash": "ietlAsbGxxmJZePX4/5/iVRk1ArNtV5cVFZ7jj0+tv0pOaW4GU1qWF0zMuiVAu+EVTHa2+BLx89ZOI1F081AiA==",
+        "requested": "[6.3.0-alpha-003, )",
+        "resolved": "6.3.0-alpha-003",
+        "contentHash": "d7bGzhkGQnW6sUMqjZO4Fw8yNHiROvRjcsOVUXLvuLCAlmivhx0+DwBkDawwDHZJfeeBht8rVw+W17iUobI3lg==",
         "dependencies": {
           "FSharp.Core": "6.0.1",
-          "Fantomas.FCS": "6.2.0"
+          "Fantomas.FCS": "6.3.0-alpha-003"
         }
       },
       "FSharp.Core": {
@@ -79,8 +79,8 @@
       },
       "Fantomas.FCS": {
         "type": "Transitive",
-        "resolved": "6.2.0",
-        "contentHash": "rRIwyfHMxVCe/WmImhLa7wDEV4nPfUJ3LPpgEaahOFOZQmIiFv8n0gCbofVSucPt7C2SrXaqhmAis2y+slBxlQ==",
+        "resolved": "6.3.0-alpha-003",
+        "contentHash": "3Y4/lhMTpAWJ0nm8nXRTsNvYc2MqZFMhBE0ggp51Qyrtrcmk4JV0trSprESNiEV18DKKFGQUTxykpkwIekykzQ==",
         "dependencies": {
           "FSharp.Core": "6.0.1",
           "System.Diagnostics.DiagnosticSource": "7.0.0",

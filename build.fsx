@@ -1,18 +1,14 @@
-#r "nuget: Fun.Build, 0.2.9"
-#r "nuget: CliWrap, 3.5.0"
+#r "nuget: Fun.Build, 1.0.4"
 #r "nuget: Fake.IO.FileSystem, 5.23.0"
 
 open System
 open System.IO
-open System.Threading.Tasks
-open CliWrap
-open CliWrap.Buffered
 open Fun.Build
+open Fun.Build.Internal
 open Fake.IO
 open Fake.IO.FileSystemOperators
 open Fake.IO.Globbing.Operators
 
-let fablePort = 9060
 let astPort = 7412
 let oakPort = 8904
 let fantomasMainPort = 11084
@@ -28,19 +24,15 @@ let clientDir = pwd </> "src" </> "client"
 let serverDir = __SOURCE_DIRECTORY__ </> "src" </> "server"
 let artifactDir = __SOURCE_DIRECTORY__ </> "artifacts"
 
-let git (arguments: string) workingDir =
-    async {
-        let! result =
-            Cli
-                .Wrap("git")
-                .WithArguments(arguments)
-                .WithWorkingDirectory(workingDir)
-                .ExecuteBufferedAsync()
-                .Task
-            |> Async.AwaitTask
+let alwaysOk = async { return Ok() }
 
-        return (result.ExitCode, result.StandardOutput)
-    }
+let mapResultToCode =
+    function
+    | Ok _ -> 0
+    | Error _ -> 1
+
+let git (ctx: StageContext) (workingDir: string) (arguments: string) : Async<Result<unit, string>> =
+    ctx.RunCommand($"git %s{arguments}", workingDir = workingDir)
 
 let setEnv name value =
     Environment.SetEnvironmentVariable(name, value)
@@ -48,31 +40,35 @@ let setEnv name value =
 pipeline "Fantomas-Git" {
     stage "git" {
         paralle
-        run (fun _ ->
+        run (fun ctx ->
             async {
                 let branch = "main"
 
                 if Directory.Exists(fantomasDepDir) then
-                    let! exitCode, _ = git "pull" fantomasDepDir
-                    return exitCode
+                    let! result = git ctx fantomasDepDir "pull"
+                    return mapResultToCode result
                 else
-                    let! exitCode, _ =
+                    let! result =
                         git
-                            $"clone -b {branch} --single-branch https://github.com/fsprojects/fantomas.git .deps/fantomas"
+                            ctx
                             __SOURCE_DIRECTORY__
-                    return exitCode
+                            $"clone -b {branch} --single-branch https://github.com/fsprojects/fantomas.git .deps/fantomas"
+
+                    return mapResultToCode result
             })
-        run (fun _ ->
+        run (fun ctx ->
             async {
                 if Directory.Exists(previewDepDir) then
-                    let! exitCode, _ = git "pull" previewDepDir
-                    return exitCode
+                    let! result = git ctx previewDepDir "pull"
+                    return mapResultToCode result
                 else
-                    let! exitCode, _ =
+                    let! result =
                         git
-                            $"clone -b {previewBranch} --single-branch https://github.com/fsprojects/fantomas.git .deps/{previewBranch}"
+                            ctx
                             __SOURCE_DIRECTORY__
-                    return exitCode
+                            $"clone -b {previewBranch} --single-branch https://github.com/fsprojects/fantomas.git .deps/{previewBranch}"
+
+                    return mapResultToCode result
             })
     }
     stage "build" {
@@ -92,10 +88,10 @@ pipeline "Fantomas-Git" {
 }
 
 let publishLambda name =
-    $"dotnet publish -c Release -o {artifactDir </> name} {serverDir}/{name}/{name}.fsproj"
+    $"dotnet publish --tl -c Release -o {artifactDir </> name} {serverDir}/{name}/{name}.fsproj"
 
 let runLambda name =
-    $"dotnet watch run --project {serverDir </> name </> name}.fsproj"
+    $"dotnet watch run --project {serverDir </> name </> name}.fsproj --tl"
 
 let setViteToProduction () =
     setEnv "NODE_ENV" "production"
@@ -119,7 +115,7 @@ pipeline "Build" {
     }
     stage "dotnet install" {
         run "dotnet tool restore"
-        run "dotnet restore"
+        run "dotnet restore --tl"
     }
     stage "check format F#" { run "dotnet fantomas src infrastructure build.fsx --check" }
     stage "check format JS" {
@@ -169,12 +165,12 @@ pipeline "Build" {
     runIfOnlySpecified false
 }
 
-let changedFiles () : Async<string array> =
+let changedFiles (ctx: StageContext) : Async<string array> =
     async {
-        let! exitCode, stdout = git "status --porcelain" pwd
-        if exitCode <> 0 then
-            return failwithf $"could not check the git status: %s{stdout}"
-        else
+        let! result = ctx.RunCommandCaptureOutput "git status --porcelain"
+        match result with
+        | Error _ -> return failwithf "Could not run git status"
+        | Ok stdout ->
             return
                 stdout.Split('\n')
                 |> Array.choose (fun line ->
@@ -194,23 +190,20 @@ let isJSFile path =
 
 pipeline "FormatChanged" {
     workingDir __SOURCE_DIRECTORY__
-    stage "Format" {
-        run (fun _ ->
+    stage "Format code" {
+        run (fun ctx ->
             async {
-                let! files = changedFiles ()
+                let! files = changedFiles ctx
                 let fantomasArgument = files |> Array.filter isFSharpFile |> String.concat " "
+                printfn "%s" fantomasArgument
 
-                let! fantomasExit =
+                let! fsharpResult =
                     if String.IsNullOrWhiteSpace fantomasArgument then
-                        async.Return 0
+                        alwaysOk
                     else
-                        Cli
-                            .Wrap("dotnet")
-                            .WithArguments($"fantomas {fantomasArgument}")
-                            .ExecuteAsync()
-                            .Task.ContinueWith(fun (t: Task<CommandResult>) -> t.Result.ExitCode)
-                        |> Async.AwaitTask
+                        ctx.RunCommand $"dotnet fantomas %s{fantomasArgument}"
 
+                let! files = changedFiles ctx
                 let prettierArgument =
                     files
                     |> Array.choose (fun path ->
@@ -220,22 +213,17 @@ pipeline "FormatChanged" {
                             None)
                     |> String.concat " "
 
-                let! prettierExit =
+                let! prettierResult =
                     if String.IsNullOrWhiteSpace prettierArgument then
-                        async.Return 0
+                        alwaysOk
                     else
-                        Cli
-                            .Wrap("bun")
-                            .WithWorkingDirectory(clientDir)
-                            .WithArguments($"x prettier --write {prettierArgument}")
-                            .ExecuteBufferedAsync()
-                            .Task.ContinueWith(fun (t: Task<BufferedCommandResult>) -> t.Result.ExitCode)
-                        |> Async.AwaitTask
+                        ctx.RunCommand(
+                            $"bun x prettier --write {prettierArgument}",
+                            workingDir = (__SOURCE_DIRECTORY__ </> "src" </> "client")
+                        )
 
-                // Exit code should in both cases by zero
-                return fantomasExit + prettierExit
-            }
-            |> Async.RunSynchronously)
+                return (mapResultToCode fsharpResult + mapResultToCode prettierResult)
+            })
     }
     runIfOnlySpecified true
 }
@@ -284,8 +272,10 @@ pipeline "Watch" {
         stage "frontend" {
             workingDir clientDir
             run "dotnet tool restore"
-            run "dotnet fable watch ./fsharp/FantomasTools.fsproj --outDir ./src/bin --run bun x vite"
+            run "dotnet fable watch ./fsharp/FantomasTools.fsproj --outDir ./src/bin --run bunx --bun vite"
         }
     }
     runIfOnlySpecified true
 }
+
+tryPrintPipelineCommandHelp ()
