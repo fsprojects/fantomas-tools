@@ -272,7 +272,7 @@ pipeline "Watch" {
         stage "frontend" {
             workingDir clientDir
             run "dotnet tool restore"
-            run "dotnet fable watch ./fsharp/FantomasTools.fsproj --outDir ./src/bin --run bun x vite"
+            run "dotnet fable watch ./fsharp/FantomasTools.fsproj --outDir ./src/bin --run bunx --bun vite"
         }
     }
     runIfOnlySpecified true

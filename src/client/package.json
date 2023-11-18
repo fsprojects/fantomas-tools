@@ -1,8 +1,7 @@
 {
   "scripts": {
-    "start": "dotnet fable watch ./fsharp/FantomasTools.fsproj --outDir ./src/bin --run vite",
     "prebuild": "dotnet fable ./fsharp/FantomasTools.fsproj --outDir ./src/bin",
-    "build": "vite build --base=/fantomas-tools/",
+    "build": "bunx --bun vite build --base=/fantomas-tools/",
     "serve": "vite preview",
     "format": "prettier --write \"src/**/*.{js,jsx}\"",
     "lint": "prettier --check \"src/**/*.{js,jsx}\""
