@@ -19,7 +19,7 @@
     "vis-network": "9.1.9"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "4.2.0",
+    "@vitejs/plugin-react": "4.2.1",
     "prettier": "2.8.7",
     "prop-types": "^15.8.1",
     "vite": "5.0.0"
