@@ -23,16 +23,6 @@
           "Amazon.Lambda.Core": "2.1.0"
         }
       },
-      "Fantomas.Core": {
-        "type": "Direct",
-        "requested": "[6.3.0-alpha-003, )",
-        "resolved": "6.3.0-alpha-003",
-        "contentHash": "d7bGzhkGQnW6sUMqjZO4Fw8yNHiROvRjcsOVUXLvuLCAlmivhx0+DwBkDawwDHZJfeeBht8rVw+W17iUobI3lg==",
-        "dependencies": {
-          "FSharp.Core": "6.0.1",
-          "Fantomas.FCS": "6.3.0-alpha-003"
-        }
-      },
       "FSharp.Core": {
         "type": "Direct",
         "requested": "[6.0.6, )",
@@ -75,17 +65,6 @@
         "contentHash": "pkCOWJKAkCk36f5+q4F3XqlfsgCJL6i2lTLl4ZZVDswn8rjXo21EBG/gJ296a88LVBkI5LL2VwxQYqGZncomJw==",
         "dependencies": {
           "FSharp.Core": "4.5.2"
-        }
-      },
-      "Fantomas.FCS": {
-        "type": "Transitive",
-        "resolved": "6.3.0-alpha-003",
-        "contentHash": "3Y4/lhMTpAWJ0nm8nXRTsNvYc2MqZFMhBE0ggp51Qyrtrcmk4JV0trSprESNiEV18DKKFGQUTxykpkwIekykzQ==",
-        "dependencies": {
-          "FSharp.Core": "6.0.1",
-          "System.Diagnostics.DiagnosticSource": "7.0.0",
-          "System.Memory": "4.5.5",
-          "System.Runtime": "4.3.1"
         }
       },
       "Microsoft.Extensions.Primitives": {
@@ -143,6 +122,22 @@
         "type": "Transitive",
         "resolved": "6.0.0",
         "contentHash": "/iUeP3tq1S0XdNNoMz5C9twLSrM/TH+qElHkXWaPvuNOt+99G75NrV0OS2EqHx5wMN7popYjpc8oTjC1y16DLg=="
+      },
+      "fantomas.core": {
+        "type": "Project",
+        "dependencies": {
+          "FSharp.Core": "[6.0.1, )",
+          "Fantomas.FCS": "[1.0.0, )"
+        }
+      },
+      "fantomas.fcs": {
+        "type": "Project",
+        "dependencies": {
+          "FSharp.Core": "[6.0.1, )",
+          "System.Diagnostics.DiagnosticSource": "[7.0.0, )",
+          "System.Memory": "[4.5.5, )",
+          "System.Runtime": "[4.3.1, )"
+        }
       }
     }
   }
