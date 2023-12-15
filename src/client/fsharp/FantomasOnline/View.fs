@@ -341,6 +341,13 @@ let settings isFsi model dispatch =
                 ]
             ]
 
+        let resetSettings =
+            div [ ClassName Style.ResetSettings ] [
+                button [ ClassName Style.Secondary; OnClick(fun _ -> ResetSettings |> dispatch) ] [
+                    str "Reset settings"
+                ]
+            ]
+
         fragment [] [
             VersionBar.versionBar (sprintf "Version: %s" model.Version)
             fantomasMode
@@ -348,6 +355,12 @@ let settings isFsi model dispatch =
             hr []
             searchBox
             options
+            if userChangedSettings model then
+                hr []
+                resetSettings
+                // Needed for spacing at the bottom of the screen
+                // Could not find the correct CSS to do this
+                br []
         ]
 
 let idempotencyProblem =

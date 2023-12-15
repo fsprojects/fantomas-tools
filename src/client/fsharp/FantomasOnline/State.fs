@@ -196,6 +196,14 @@ let update isActiveTab (bubble: BubbleModel) msg model =
             UserOptions = userOptions
             State = FantomasTabState.OptionsLoaded },
         cmd
+
+    | ResetSettings ->
+        showSuccess "Settings reset to default values"
+
+        { model with
+            UserOptions = optionsListToMap model.DefaultOptions },
+        Cmd.none
+
     | Format ->
         let cmd =
             Cmd.batch

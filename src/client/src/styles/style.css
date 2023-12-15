@@ -866,3 +866,11 @@ nav > div #docs-btn .long-text {
         color: var(--light);
     }
 }
+
+.reset-settings {
+    display: flex;
+}
+
+.reset-settings > button {
+    margin: auto;
+}

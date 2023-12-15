@@ -21,6 +21,7 @@ type Msg =
     | ChangeMode of FantomasMode
     | CopySettings
     | UpdateSettingsFilter of string
+    | ResetSettings
 
 [<RequireQualifiedAccess>]
 type FantomasTabState =
