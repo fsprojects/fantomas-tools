@@ -214,7 +214,8 @@ let update isActiveTab (bubble: BubbleModel) msg model =
     | FormattedReceived result ->
         let cmd =
             if Array.isEmpty result.FirstValidation && Array.isEmpty result.SecondValidation then
-                Cmd.none
+                // Make sure to reset the diagnostics if there are no errors
+                Array.empty |> BubbleMessage.SetDiagnostics |> Msg.Bubble |> Cmd.ofMsg
             elif Array.isEmpty result.SecondValidation then
                 result.FirstValidation
                 |> BubbleMessage.SetDiagnostics
