@@ -215,7 +215,7 @@ let update isActiveTab (bubble: BubbleModel) msg model =
         let cmd =
             if Array.isEmpty result.FirstValidation && Array.isEmpty result.SecondValidation then
                 // Make sure to reset the diagnostics if there are no errors
-                [||] |> BubbleMessage.SetDiagnostics |> Msg.Bubble |> Cmd.ofMsg
+                Array.empty |> BubbleMessage.SetDiagnostics |> Msg.Bubble |> Cmd.ofMsg
             elif Array.isEmpty result.SecondValidation then
                 result.FirstValidation
                 |> BubbleMessage.SetDiagnostics
