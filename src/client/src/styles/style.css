@@ -787,6 +787,14 @@ nav > div #docs-btn .long-text {
     margin: 0;
 }
 
+.reset-settings {
+    display: flex;
+}
+
+.reset-settings > button {
+    margin: auto;
+}
+
 /* dark mode */
 @media (prefers-color-scheme: dark) {
     :root {

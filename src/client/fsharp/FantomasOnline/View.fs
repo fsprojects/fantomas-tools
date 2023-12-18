@@ -341,11 +341,21 @@ let settings isFsi model dispatch =
                 ]
             ]
 
+        let resetSettings =
+            div [ ClassName Style.ResetSettings ] [
+                button [ ClassName Style.Secondary; OnClick(fun _ -> ResetSettings |> dispatch) ] [
+                    str "Reset settings"
+                ]
+            ]
+
         fragment [] [
             VersionBar.versionBar (sprintf "Version: %s" model.Version)
             fantomasMode
             fileExtension
             hr []
+            if userChangedSettings model then
+                resetSettings
+                hr []
             searchBox
             options
         ]
