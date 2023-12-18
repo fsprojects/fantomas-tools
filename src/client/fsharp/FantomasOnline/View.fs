@@ -353,14 +353,11 @@ let settings isFsi model dispatch =
             fantomasMode
             fileExtension
             hr []
+            if userChangedSettings model then
+                resetSettings
+                hr []
             searchBox
             options
-            if userChangedSettings model then
-                hr []
-                resetSettings
-                // Needed for spacing at the bottom of the screen
-                // Could not find the correct CSS to do this
-                br []
         ]
 
 let idempotencyProblem =
