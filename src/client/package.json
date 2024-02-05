@@ -1,5 +1,6 @@
 {
   "scripts": {
+    "dev": "bunx --bun vite",
     "build": "bunx --bun vite build --base=/fantomas-tools/",
     "serve": "vite preview",
     "format": "prettier --write \"src/**/*.{js,jsx}\" vite.config.js",
