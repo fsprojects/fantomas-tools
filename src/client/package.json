@@ -1,12 +1,10 @@
 {
   "scripts": {
-    "prebuild": "dotnet fable ./fsharp/FantomasTools.fsproj --outDir ./src/bin",
     "build": "bunx --bun vite build --base=/fantomas-tools/",
     "serve": "vite preview",
-    "format": "prettier --write \"src/**/*.{js,jsx}\"",
-    "lint": "prettier --check \"src/**/*.{js,jsx}\""
+    "format": "prettier --write \"src/**/*.{js,jsx}\" vite.config.js",
+    "lint": "prettier --check \"src/**/*.{js,jsx}\" vite.config.js"
   },
-
   "type": "module",
   "dependencies": {
     "@monaco-editor/react": "4.6.0",
@@ -22,6 +20,10 @@
     "@vitejs/plugin-react": "4.2.1",
     "prettier": "3.1.1",
     "prop-types": "^15.8.1",
-    "vite": "5.0.7"
-  }
+    "vite": "^5.0.12",
+    "vite-plugin-fable": "^0.0.5"
+  },
+  "trustedDependencies": [
+    "vite-plugin-fable"
+  ]
 }
