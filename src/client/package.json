@@ -21,8 +21,8 @@
     "@vitejs/plugin-react": "4.2.1",
     "prettier": "3.1.1",
     "prop-types": "^15.8.1",
-    "vite": "^5.0.12",
-    "vite-plugin-fable": "^0.0.9"
+    "vite": "^5.1.1",
+    "vite-plugin-fable": "^0.0.10"
   },
   "trustedDependencies": [
     "vite-plugin-fable"
