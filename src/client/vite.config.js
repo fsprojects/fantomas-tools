@@ -17,4 +17,7 @@ export default defineConfig({
     outDir: 'build',
   },
   base: '/fantomas-tools/',
+  preview: {
+    port: 9060,
+  },
 });

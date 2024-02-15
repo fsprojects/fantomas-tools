@@ -71,7 +71,13 @@ let getAllLambdas (lastSha, lastTime) =
           Environment = environment }
 
     let mkLambdaProject (name: string) lambdas =
-        let archive = __SOURCE_DIRECTORY__ </> ".." </> "artifacts" </> name
+        let archive =
+            __SOURCE_DIRECTORY__
+            </> ".."
+            </> "artifacts"
+            </> "publish"
+            </> name
+            </> "release"
 
         { Name = name
           FileArchive = archive

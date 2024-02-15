@@ -14,14 +14,24 @@ To run this tool locally you need:
 * Pull in the source dependencies:
 
 ```shell
-dotnet fsi build.fsx -p Fantomas-Git
+dotnet fsi build.fsx -- -p Fantomas-Git
 ```
 
 * Run the Watch pipeline:
 
 ```shell
-dotnet fsi build.fsx -p Watch
+dotnet fsi build.fsx -- -p Watch
 ```
+
+Making changes should reflect in the tool.
+
+Or try the Run pipeline:
+
+```shell
+dotnet fsi build -- -p Run
+```
+
+This will run a published version of the tools.
 
 * Open http://localhost:9060
 
@@ -32,11 +42,11 @@ dotnet fsi build.fsx -p Watch
 * Run
 
 ```shell
-dotnet fsi build.fsx -p Fantomas-Git
+dotnet fsi build.fsx -- -p Fantomas-Git
 ```
 
 ```shell
-dotnet fsi build.fsx -p Watch
+dotnet fsi build.fsx -- -p Watch
 ```
 
 * Open browser for port `9060`
