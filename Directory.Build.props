@@ -16,6 +16,7 @@
         <FantomasMainRepository>$(MSBuildThisFileDirectory).deps\fantomas</FantomasMainRepository>
         <FantomasPreviewRepository>$(MSBuildThisFileDirectory).deps\main</FantomasPreviewRepository>
         <RollForward>LatestMajor</RollForward>
+        <UseArtifactsOutput>true</UseArtifactsOutput>
     </PropertyGroup>
 
     <ItemGroup Condition="'$(IsLambda)' == 'true'">

@@ -107,16 +107,22 @@ let setViteToProduction () =
     setEnv "VITE_FANTOMAS_MAIN" $"{mainStageUrl}/fantomas/main"
     setEnv "VITE_FANTOMAS_PREVIEW" $"{mainStageUrl}/fantomas/preview"
 
-pipeline "Build" {
-    workingDir __SOURCE_DIRECTORY__
+let bunInstall =
     stage "bun install" {
         workingDir clientDir
         run "bun i"
     }
+
+let dotnetInstall =
     stage "dotnet install" {
         run "dotnet tool restore"
         run "dotnet restore --tl"
     }
+
+pipeline "Build" {
+    workingDir __SOURCE_DIRECTORY__
+    bunInstall
+    dotnetInstall
     stage "check format F#" { run "dotnet fantomas src infrastructure build.fsx --check" }
     stage "check format JS" {
         workingDir clientDir
@@ -227,15 +233,7 @@ pipeline "FormatChanged" {
     runIfOnlySpecified true
 }
 
-pipeline "Watch" {
-    stage "bun install" {
-        workingDir clientDir
-        run "bun i"
-    }
-    stage "dotnet install" {
-        run "dotnet tool restore"
-        run "dotnet restore"
-    }
+let prepareEnvironmentVariables =
     stage "prepare environment variables" {
         run (fun _ ->
             async {
@@ -259,6 +257,11 @@ pipeline "Watch" {
                 return 0
             })
     }
+
+pipeline "Watch" {
+    bunInstall
+    dotnetInstall
+    prepareEnvironmentVariables
     stage "launch services" {
         paralle
         run (runLambda "ASTViewer")
@@ -271,6 +274,43 @@ pipeline "Watch" {
         stage "frontend" {
             workingDir clientDir
             run "bunx --bun vite"
+        }
+    }
+    runIfOnlySpecified true
+}
+
+let runPublishedLambda name =
+    let binary =
+        __SOURCE_DIRECTORY__
+        </> "artifacts"
+        </> "publish"
+        </> name
+        </> "debug"
+        </> $"%s{name}.dll"
+
+    stage $"Run %s{name}" {
+        run
+            $"dotnet publish /p:PublishReadyToRun=true /p:RestoreLockedMode=false /p:RestorePackagesWithLockFile=false  /p:NuGetLockFilePath=Temp.lock --nologo -c Debug --ucr -tl {serverDir </> name </> name}.fsproj"
+        run $"dotnet %s{binary}"
+    }
+
+pipeline "Start" {
+    bunInstall
+    dotnetInstall
+    prepareEnvironmentVariables
+    stage "launch services" {
+        paralle
+        runPublishedLambda "ASTViewer"
+        runPublishedLambda "OakViewer"
+        runPublishedLambda "FantomasOnlineV4"
+        runPublishedLambda "FantomasOnlineV5"
+        runPublishedLambda "FantomasOnlineV6"
+        runPublishedLambda "FantomasOnlineMain"
+        runPublishedLambda "FantomasOnlinePreview"
+        stage "frontend" {
+            workingDir clientDir
+            run "bun run build"
+            run "bun run serve"
         }
     }
     runIfOnlySpecified true

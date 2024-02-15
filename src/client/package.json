@@ -2,7 +2,7 @@
   "scripts": {
     "dev": "bunx --bun vite",
     "build": "bunx --bun vite build --base=/fantomas-tools/",
-    "serve": "vite preview",
+    "serve": "bunx --bun vite preview",
     "format": "prettier --write \"src/**/*.{js,jsx}\" vite.config.js",
     "lint": "prettier --check \"src/**/*.{js,jsx}\" vite.config.js"
   },
