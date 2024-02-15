@@ -17,6 +17,7 @@
         <FantomasPreviewRepository>$(MSBuildThisFileDirectory).deps\main</FantomasPreviewRepository>
         <RollForward>LatestMajor</RollForward>
         <UseArtifactsOutput>true</UseArtifactsOutput>
+        <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
     </PropertyGroup>
 
     <ItemGroup Condition="'$(IsLambda)' == 'true'">

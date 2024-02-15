@@ -88,7 +88,7 @@ pipeline "Fantomas-Git" {
 }
 
 let publishLambda name =
-    $"dotnet publish --tl -c Release -o {artifactDir </> name} {serverDir}/{name}/{name}.fsproj"
+    $"dotnet publish --tl -c Release {serverDir}/{name}/{name}.fsproj"
 
 let runLambda name =
     $"dotnet watch run --project {serverDir </> name </> name}.fsproj --tl"
@@ -132,11 +132,7 @@ pipeline "Build" {
         run (fun _ ->
             async {
                 Shell.rm_rf artifactDir
-                !!(serverDir + "/*/bin")
-                ++ (serverDir + "/*/obj")
-                ++ (clientDir + "/src/bin")
-                ++ (clientDir + "/build")
-                |> Seq.iter Shell.rm_rf
+                Shell.rm_rf (clientDir + "/build")
                 return 0
             })
     }
