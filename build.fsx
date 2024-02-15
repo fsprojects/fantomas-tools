@@ -285,8 +285,7 @@ let runPublishedLambda name =
         </> $"%s{name}.dll"
 
     stage $"Run %s{name}" {
-        run
-            $"dotnet publish --nologo -c Debug -tl {serverDir </> name </> name}.fsproj"
+        run $"dotnet publish --nologo -c Debug -tl {serverDir </> name </> name}.fsproj"
         run $"dotnet %s{binary}"
     }
 
