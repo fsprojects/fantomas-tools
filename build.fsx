@@ -286,7 +286,7 @@ let runPublishedLambda name =
 
     stage $"Run %s{name}" {
         run
-            $"dotnet publish /p:PublishReadyToRun=true /p:RestoreLockedMode=false /p:RestorePackagesWithLockFile=false  /p:NuGetLockFilePath=Temp.lock --nologo -c Debug --ucr -tl {serverDir </> name </> name}.fsproj"
+            $"dotnet publish --nologo -c Debug -tl {serverDir </> name </> name}.fsproj"
         run $"dotnet %s{binary}"
     }
 
