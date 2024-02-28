@@ -28,7 +28,7 @@ Making changes should reflect in the tool.
 Or try the Run pipeline:
 
 ```shell
-dotnet fsi build -- -p Run
+dotnet fsi build -- -p Start
 ```
 
 This will run a published version of the tools.
