@@ -1,7 +1,7 @@
 {
   "scripts": {
     "dev": "bunx --bun vite",
-    "build": "bunx --bun vite build --base=/fantomas-tools/",
+    "build": "bunx --bun vite build",
     "serve": "bunx --bun vite preview",
     "format": "prettier --write \"src/**/*.{js,jsx}\" vite.config.js",
     "lint": "prettier --check \"src/**/*.{js,jsx}\" vite.config.js"
@@ -21,8 +21,8 @@
     "@vitejs/plugin-react": "4.2.1",
     "prettier": "3.1.1",
     "prop-types": "^15.8.1",
-    "vite": "^5.1.1",
-    "vite-plugin-fable": "^0.0.10"
+    "vite": "^5.2.0-beta.1",
+    "vite-plugin-fable": "^0.0.26"
   },
   "trustedDependencies": [
     "vite-plugin-fable"
