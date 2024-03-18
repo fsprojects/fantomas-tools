@@ -24,7 +24,7 @@ jobs:
     - uses: oven-sh/setup-bun@v1
 
     - name: Setup dotnet
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
 
     - name: Download Fantomas
       run: dotnet fsi build.fsx -p Fantomas-Git
