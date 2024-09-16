@@ -311,7 +311,7 @@ let settings isFsi model dispatch =
               FantomasMode.V5, "5.x"
               FantomasMode.V6, "6.x"
               FantomasMode.Main, "Main"
-              FantomasMode.Preview, "6.1 preview" ]
+              FantomasMode.Preview, "7.0 preview" ]
             |> List.map (fun (m, l) ->
                 { IsActive = model.Mode = m
                   Label = l

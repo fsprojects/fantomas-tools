@@ -8,7 +8,7 @@ type FantomasMode =
     | V5
     | V6
     | Main // main branch
-    | Preview // Also main branch, formerly v6.0 branch
+    | Preview // v7.0 branch
 
 type Msg =
     | Bubble of BubbleMessage
