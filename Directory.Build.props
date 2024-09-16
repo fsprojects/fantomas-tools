@@ -14,7 +14,7 @@
         <OtherFlags>$(OtherFlags) --test:GraphBasedChecking --test:ParallelOptimization --test:ParallelIlxGen</OtherFlags>
         <!-- Override these values to point to your local fantomas repository -->
         <FantomasMainRepository>$(MSBuildThisFileDirectory).deps\fantomas</FantomasMainRepository>
-        <FantomasPreviewRepository>$(MSBuildThisFileDirectory).deps\main</FantomasPreviewRepository>
+        <FantomasPreviewRepository>$(MSBuildThisFileDirectory).deps\v7.0</FantomasPreviewRepository>
         <RollForward>LatestMajor</RollForward>
         <UseArtifactsOutput>true</UseArtifactsOutput>
         <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
