@@ -1,7 +1,7 @@
 {
   "version": 1,
   "dependencies": {
-    "net6.0": {
+    "net8.0": {
       "Amazon.Lambda.APIGatewayEvents": {
         "type": "Direct",
         "requested": "[2.5.0, )",

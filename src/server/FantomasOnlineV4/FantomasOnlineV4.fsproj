@@ -26,7 +26,7 @@
     <PackageReference Include="Fantomas" Version="4.7.9" />
     <PackageReference Include="Fantomas.Extras" Version="4.7.9" />
     <PackageReference Include="FSharp.Compiler.Service" Version="41.0.3" />
-    <PackageReference Include="FSharp.Core" Version="8.0.403" />
+    <PackageReference Include="FSharp.Core" Version="6.0.3" />
     <PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.0.0" />
     <PackageReference Include="Thoth.Json.Net" Version="5.0.0" />
   </ItemGroup>
