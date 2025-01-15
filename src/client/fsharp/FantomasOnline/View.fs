@@ -87,11 +87,7 @@ let options model dispatch =
                 optionList
             else
                 let settingsFilter =
-                    model.SettingsFilter
-                        .Replace("fsharp_", "")
-                        .Replace("_", "")
-                        .Replace(" ", "")
-                        .ToLowerInvariant()
+                    model.SettingsFilter.Replace("fsharp_", "").Replace("_", "").Replace(" ", "").ToLowerInvariant()
 
                 optionList
                 |> List.filter (fun (n, _) ->
@@ -307,11 +303,11 @@ let settings isFsi model dispatch =
     | FantomasTabState.LoadingOptions -> Loader.loading
     | _ ->
         let fantomasMode =
-            [ FantomasMode.V4, "4.x"
-              FantomasMode.V5, "5.x"
+            [ FantomasMode.V5, "5.x"
               FantomasMode.V6, "6.x"
+              FantomasMode.V7, "7.x"
               FantomasMode.Main, "Main"
-              FantomasMode.Preview, "7.0 preview" ]
+              FantomasMode.Preview, "Preview" ]
             |> List.map (fun (m, l) ->
                 { IsActive = model.Mode = m
                   Label = l

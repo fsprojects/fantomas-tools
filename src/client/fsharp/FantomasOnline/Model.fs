@@ -4,11 +4,11 @@ open FantomasOnline.Shared
 open FantomasTools.Client
 
 type FantomasMode =
-    | V4
     | V5
     | V6
+    | V7
     | Main // main branch
-    | Preview // v7.0 branch
+    | Preview // also main branch
 
 type Msg =
     | Bubble of BubbleMessage

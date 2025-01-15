@@ -1,6 +1,7 @@
 ﻿module SuaveExtensions
 
 open System.Net
+open System.Net.Sockets
 open Suave
 open Suave.Operators
 open Suave.Writers
@@ -27,8 +28,11 @@ let setCORSHeaders =
     >=> addHeader "Access-Control-Allow-Methods" "*"
 
 let startFantomasTool port routes =
-    setCORSHeaders
-    >=> choose [ OPTIONS >=> no_content; yield! routes; NOT_FOUND "Not found" ]
-    |> startWebServer
-        { defaultConfig with
-            bindings = [ HttpBinding.create HTTP IPAddress.Loopback port ] }
+    try
+        setCORSHeaders
+        >=> choose [ OPTIONS >=> no_content; yield! routes; NOT_FOUND "Not found" ]
+        |> startWebServer
+            { defaultConfig with
+                bindings = [ HttpBinding.create HTTP IPAddress.Loopback port ] }
+    with :? SocketException ->
+        printfn $"Port {port} is already in use"

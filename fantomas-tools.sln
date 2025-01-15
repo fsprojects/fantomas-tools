@@ -13,7 +13,7 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "ASTViewer", "src\server\AST
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FantomasOnlineMain", "src\server\FantomasOnlineMain\FantomasOnlineMain.fsproj", "{5D394D9E-CBEF-40CD-9EBD-ECC624A68665}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FantomasOnlineV4", "src\server\FantomasOnlineV4\FantomasOnlineV4.fsproj", "{691DC36D-C0CC-481B-AA25-4E7C6C35E73D}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FantomasOnlineV7", "src\server\FantomasOnlineV7\FantomasOnlineV7.fsproj", "{691DC36D-C0CC-481B-AA25-4E7C6C35E73D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".deps", ".deps", "{9F0DEF2C-4315-4E09-AE92-A5A422C24709}"
 EndProject

@@ -29,9 +29,9 @@ let toHash =
     | HomeTab -> "#/"
     | OakTab -> "#/oak"
     | ASTTab -> "#/ast"
-    | FantomasTab FantomasOnline.Model.V4 -> "#/fantomas/v4"
     | FantomasTab FantomasOnline.Model.V5 -> "#/fantomas/v5"
     | FantomasTab FantomasOnline.Model.V6 -> "#/fantomas/v6"
+    | FantomasTab FantomasOnline.Model.V7 -> "#/fantomas/v7"
     | FantomasTab FantomasOnline.Model.Main -> "#/fantomas/main"
     | FantomasTab FantomasOnline.Model.Preview -> "#/fantomas/preview"
 
@@ -41,8 +41,12 @@ let parseUrl segments =
     | [ "ast"; Route.Query [ "data", _ ] ] -> ActiveTab.ASTTab
     | [ "oak" ]
     | [ "oak"; Route.Query [ "data", _ ] ] -> ActiveTab.OakTab
-    | [ "fantomas"; "v4" ]
-    | [ "fantomas"; "v4"; Route.Query [ "data", _ ] ] -> ActiveTab.FantomasTab(FantomasOnline.Model.V4)
+    | [ "fantomas"; "v5" ]
+    | [ "fantomas"; "v5"; Route.Query [ "data", _ ] ] -> ActiveTab.FantomasTab(FantomasOnline.Model.V5)
+    | [ "fantomas"; "v6" ]
+    | [ "fantomas"; "v6"; Route.Query [ "data", _ ] ] -> ActiveTab.FantomasTab(FantomasOnline.Model.V6)
+    | [ "fantomas"; "v7" ]
+    | [ "fantomas"; "v7"; Route.Query [ "data", _ ] ] -> ActiveTab.FantomasTab(FantomasOnline.Model.V7)
     | [ "fantomas"; "main" ]
     | [ "fantomas"; "main"; Route.Query [ "data", _ ] ] -> ActiveTab.FantomasTab(FantomasOnline.Model.Main)
     | [ "fantomas"; "preview" ]
