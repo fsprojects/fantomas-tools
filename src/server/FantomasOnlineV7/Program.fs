@@ -18,14 +18,14 @@ let main argv =
         request (fun req ctx ->
             async {
                 let json = req.BodyText
-                let! formatResponse = FantomasOnlineV4.FormatCode.formatCode json
+                let! formatResponse = FantomasOnlineV7.FormatCode.formatCode json
                 return! (mapFormatResponseToWebPart formatResponse) ctx
             })
 
     let routes =
-        [ GET >=> path "/fantomas/v4/version" >=> textPlain >=> OK(FantomasOnlineV4.FormatCode.getVersion ())
-          GET >=> path "/fantomas/v4/options" >=> applicationJson >=> OK(FantomasOnlineV4.FormatCode.getOptions ())
-          POST >=> path "/fantomas/v4/format" >=> formatWebPart ]
+        [ GET >=> path "/fantomas/v7/version" >=> textPlain >=> OK(FantomasOnlineV7.FormatCode.getVersion ())
+          GET >=> path "/fantomas/v7/options" >=> applicationJson >=> OK(FantomasOnlineV7.FormatCode.getOptions ())
+          POST >=> path "/fantomas/v7/format" >=> formatWebPart ]
 
     let port =
         match List.ofArray argv with
