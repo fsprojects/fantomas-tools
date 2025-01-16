@@ -9,7 +9,7 @@ updates:
   allow:
     - dependency-name: "Fantomas.Core"
 - package-ecosystem: nuget
-  directory: "/src/server/FantomasOnlineV6"
+  directory: "/src/server/FantomasOnlineV7"
   schedule:
     interval: daily
     time: "10:00"
