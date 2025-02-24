@@ -25,12 +25,12 @@
       },
       "Fantomas.Core": {
         "type": "Direct",
-        "requested": "[7.0.0, )",
-        "resolved": "7.0.0",
-        "contentHash": "Ozji9rXlLTUOJUV2inkDK7XWxyIIGGvowUkwoWY9oBHdjYf+md+w3p7nolhnLtasa4N4J8X7s8sRE9e50/RcIw==",
+        "requested": "[7.0.1, )",
+        "resolved": "7.0.1",
+        "contentHash": "q8bjwtuGR8vw/PvbgYJYNUjepnZ3fwcUhu99e+qwBofOCyj/V+t/NIvsySQ0iO1flPvAacf6yd4z8dpeGkjzyQ==",
         "dependencies": {
           "FSharp.Core": "8.0.100",
-          "Fantomas.FCS": "7.0.0",
+          "Fantomas.FCS": "7.0.1",
           "System.Collections.Immutable": "8.0.0",
           "System.Diagnostics.DiagnosticSource": "8.0.1",
           "System.Memory": "4.6.0",
@@ -83,8 +83,8 @@
       },
       "Fantomas.FCS": {
         "type": "Transitive",
-        "resolved": "7.0.0",
-        "contentHash": "yboo4E9OmfMDpKG2JmBm8XU0XAo2wVAYlmN+SNYnviiRekZKj8vUI22fiN+HZVdKYwTzpArrlaG8VhbVKyU8Mg==",
+        "resolved": "7.0.1",
+        "contentHash": "YWNfpuadyHLnMeXt20q5XSz4E12VldPLDaEDzFBunoNM9srPV243pWRv61CiWoTkgzy6okuBtE9hZcjJeftLnA==",
         "dependencies": {
           "FSharp.Core": "8.0.100",
           "System.Collections.Immutable": "8.0.0",
