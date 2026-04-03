@@ -27,7 +27,8 @@ let mkTriviaResultDiv (dispatch: Msg -> unit) (isBefore: bool) (key: string) (tr
         match triviaNode.Type with
         | "commentOnSingleLine"
         | "lineCommentAfterSourceCode"
-        | "blockComment" -> "comment"
+        | "blockComment"
+        | "commentOnSingleLineWithLeadingNewlines" -> "comment"
         | "newline" -> "newline"
         | "directive" -> "directive"
         | _ -> ""

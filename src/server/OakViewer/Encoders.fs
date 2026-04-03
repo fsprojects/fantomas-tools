@@ -20,6 +20,9 @@ let encodeTriviaNode (triviaNode: TriviaNode) : JsonValue =
         | CommentOnSingleLine comment -> "commentOnSingleLine", Some comment
         | LineCommentAfterSourceCode comment -> "lineCommentAfterSourceCode", Some comment
         | BlockComment(comment, _, _) -> "blockComment", Some comment
+        | CommentOnSingleLineWithLeadingNewlines(newlines, comment) -> 
+            let newlines = Array.init newlines (fun _ -> "newline") |> String.concat ", "
+            "commentOnSingleLineWithLeadingNewlines", Some($"%s{newlines} $%s{comment}")
         | Newline -> "newline", None
         | Directive directive -> "directive", Some directive
         | Cursor -> "cursor", None
@@ -71,7 +74,7 @@ let encodeFSharpErrorInfo (info: FSharpParserDiagnostic) =
     ({ SubCategory = info.SubCategory
        Range =
          match info.Range with
-         | None -> mkRange Range.Zero
+         | None -> mkRange Range.range0
          | Some r -> mkRange r
        Severity = fsharpErrorInfoSeverity info.Severity
        ErrorNumber = Option.defaultValue 0 info.ErrorNumber
