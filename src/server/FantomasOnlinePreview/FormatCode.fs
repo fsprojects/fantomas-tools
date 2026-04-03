@@ -48,16 +48,20 @@ let private validate (fileName: string) code =
             match e.Range with
             | None -> Range.Zero
             | Some r ->
-                { StartLine = r.StartLine
-                  StartColumn = r.StartColumn
-                  EndLine = r.EndLine
-                  EndColumn = r.EndColumn }
+                {
+                    StartLine = r.StartLine
+                    StartColumn = r.StartColumn
+                    EndLine = r.EndLine
+                    EndColumn = r.EndColumn
+                }
 
-        { SubCategory = e.SubCategory
-          Range = range
-          Severity = $"{e.Severity}".ToLower()
-          ErrorNumber = Option.defaultValue -1 e.ErrorNumber
-          Message = e.Message }
+        {
+            SubCategory = e.SubCategory
+            Range = range
+            Severity = $"{e.Severity}".ToLower()
+            ErrorNumber = Option.defaultValue -1 e.ErrorNumber
+            Message = e.Message
+        }
         : Diagnostic)
     |> fun errors -> async { return errors }
 

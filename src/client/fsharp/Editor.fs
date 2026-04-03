@@ -35,7 +35,10 @@ type MonacoEditorProp =
     | ClassName of string
 
     static member rulerOption column =
-        {| rulers = [| {| column = column; color = "#2FBADC" |} |] |} :> obj
+        {|
+            rulers = [| {| column = column; color = "#2FBADC" |} |]
+        |}
+        :> obj
 
 let inline private MonacoEditor (props: MonacoEditorProp list) : ReactElement =
     ofImport "default" "@monaco-editor/react" (keyValueList CaseRules.LowerFirst props) []
@@ -45,7 +48,8 @@ let private useEventListener (target: Element, ``type``: string, listener: Event
         target.addEventListener (``type``, listener)
 
         { new IDisposable with
-            member this.Dispose() = target.removeEventListener (``type``, listener) }
+            member this.Dispose() = target.removeEventListener (``type``, listener)
+        }
 
     React.useEffect (subscribe, [| box target; box ``type``; box listener |])
 
@@ -55,13 +59,15 @@ let private theme =
     emitJsExpr<string> () "(window.matchMedia(\"(prefers-color-scheme: dark)\").matches ? \"vs-dark\" : \"vs-light\")"
 
 let private editorOptions =
-    {| selectionHighlight = false
-       occurrencesHighlight = false
-       selectOnLineNumbers = true
-       lineNumbers = true
-       renderWhitespace = "all"
-       minimap = {| enabled = false |}
-       automaticLayout = true |}
+    {|
+        selectionHighlight = false
+        occurrencesHighlight = false
+        selectOnLineNumbers = true
+        lineNumbers = true
+        renderWhitespace = "all"
+        minimap = {| enabled = false |}
+        automaticLayout = true
+    |}
 
 /// The main editor where the user will input the code
 [<ReactComponent>]
@@ -78,17 +84,24 @@ let InputEditor (onChange: string -> unit) (value: string) (maxLineLength: int) 
     let options =
         {| editorOptions with
             rulers =
-                [| {| column = maxLineLength
-                      color = "#2FBADC" |} |] |}
+                [|
+                    {|
+                        column = maxLineLength
+                        color = "#2FBADC"
+                    |}
+                |]
+        |}
 
     useEffect (
         fun () ->
             if not (isNullOrUndefined editorRef.current) then
                 let selection =
-                    {| startColumn = highlight.StartColumn + 1
-                       startLineNumber = highlight.StartLine
-                       endLineNumber = highlight.EndLine
-                       endColumn = highlight.EndColumn + 1 |}
+                    {|
+                        startColumn = highlight.StartColumn + 1
+                        startLineNumber = highlight.StartLine
+                        endLineNumber = highlight.EndLine
+                        endColumn = highlight.EndColumn + 1
+                    |}
 
                 editorRef.current.setSelection selection
                 editorRef.current.revealRangeInCenter (selection, 0)
@@ -96,13 +109,15 @@ let InputEditor (onChange: string -> unit) (value: string) (maxLineLength: int) 
     )
 
     MonacoEditor
-        [ MonacoEditorProp.Theme theme
-          MonacoEditorProp.Height "100%"
-          MonacoEditorProp.DefaultLanguage "fsharp"
-          MonacoEditorProp.OnChange onChange
-          MonacoEditorProp.Value value
-          MonacoEditorProp.Options options
-          MonacoEditorProp.OnMount handleEditorDidMount ]
+        [
+            MonacoEditorProp.Theme theme
+            MonacoEditorProp.Height "100%"
+            MonacoEditorProp.DefaultLanguage "fsharp"
+            MonacoEditorProp.OnChange onChange
+            MonacoEditorProp.Value value
+            MonacoEditorProp.Options options
+            MonacoEditorProp.OnMount handleEditorDidMount
+        ]
 
 /// The hidden editor.
 /// We always want React to render this editor for performance reasons.
@@ -110,23 +125,28 @@ let InputEditor (onChange: string -> unit) (value: string) (maxLineLength: int) 
 [<ReactComponent>]
 let HiddenEditor () =
     MonacoEditor
-        [ MonacoEditorProp.Height "0%"
-          MonacoEditorProp.ClassName "hidden-editor"
-          MonacoEditorProp.Theme theme
-          MonacoEditorProp.DefaultLanguage "fsharp" ]
+        [
+            MonacoEditorProp.Height "0%"
+            MonacoEditorProp.ClassName "hidden-editor"
+            MonacoEditorProp.Theme theme
+            MonacoEditorProp.DefaultLanguage "fsharp"
+        ]
 
 [<ReactComponent>]
 let ReadOnlyEditor (value: string) =
     let options =
         {| editorOptions with
             readOnly = true
-            domReadOnly = true |}
+            domReadOnly = true
+        |}
 
     MonacoEditor
-        [ MonacoEditorProp.Theme theme
-          MonacoEditorProp.Height "100%"
-          MonacoEditorProp.Value value
-          MonacoEditorProp.Options options ]
+        [
+            MonacoEditorProp.Theme theme
+            MonacoEditorProp.Height "100%"
+            MonacoEditorProp.Value value
+            MonacoEditorProp.Options options
+        ]
 
 [<ReactComponent>]
 let AstResultEditor onCursorChanged value =
@@ -156,26 +176,32 @@ let AstResultEditor onCursorChanged value =
     let options =
         {| editorOptions with
             readOnly = true
-            domReadOnly = true |}
+            domReadOnly = true
+        |}
 
     MonacoEditor
-        [ MonacoEditorProp.Theme theme
-          MonacoEditorProp.Height "100%"
-          MonacoEditorProp.DefaultLanguage "fsharp"
-          MonacoEditorProp.Value value
-          MonacoEditorProp.Options options
-          MonacoEditorProp.OnMount handleEditorDidMount ]
+        [
+            MonacoEditorProp.Theme theme
+            MonacoEditorProp.Height "100%"
+            MonacoEditorProp.DefaultLanguage "fsharp"
+            MonacoEditorProp.Value value
+            MonacoEditorProp.Options options
+            MonacoEditorProp.OnMount handleEditorDidMount
+        ]
 
 [<ReactComponent>]
 let FantomasResultEditor (value: string) =
     let options =
         {| editorOptions with
             readOnly = true
-            domReadOnly = true |}
+            domReadOnly = true
+        |}
 
     MonacoEditor
-        [ MonacoEditorProp.Theme theme
-          MonacoEditorProp.Height "100%"
-          MonacoEditorProp.Value value
-          MonacoEditorProp.Options options
-          MonacoEditorProp.DefaultLanguage "fsharp" ]
+        [
+            MonacoEditorProp.Theme theme
+            MonacoEditorProp.Height "100%"
+            MonacoEditorProp.Value value
+            MonacoEditorProp.Options options
+            MonacoEditorProp.DefaultLanguage "fsharp"
+        ]

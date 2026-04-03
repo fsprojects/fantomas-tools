@@ -49,15 +49,19 @@ let tryGetOptionValue userOptions defaultOptions key castFunc =
     | None -> tryGetDefaultOptionValue defaultOptions key castFunc
 
 type FormatRequest =
-    { SourceCode: string
-      Options: FantomasOption list
-      IsFsi: bool }
+    {
+        SourceCode: string
+        Options: FantomasOption list
+        IsFsi: bool
+    }
 
 type FormatResponse =
-    { FirstFormat: string
-      FirstValidation: Diagnostic array
-      SecondFormat: string option
-      SecondValidation: Diagnostic array }
+    {
+        FirstFormat: string
+        FirstValidation: Diagnostic array
+        SecondFormat: string option
+        SecondValidation: Diagnostic array
+    }
 
 let private supportedProperties =
     set [| "max_line_length"; "indent_size"; "end_of_line" |]

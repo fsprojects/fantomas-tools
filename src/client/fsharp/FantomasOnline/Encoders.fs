@@ -27,16 +27,20 @@ let private encodeUserSettings model =
 
 let encodeRequest code isFsi (model: Model) =
     Encode.object
-        [ "sourceCode", Encode.string code
-          "options", encodeUserSettings model
-          "isFsi", Encode.bool isFsi ]
+        [
+            "sourceCode", Encode.string code
+            "options", encodeUserSettings model
+            "isFsi", Encode.bool isFsi
+        ]
     |> Encode.toString 2
 
 let encodeUrlModel code isFsi model =
     Encode.object
-        [ "code", Encode.string code
-          "settings", encodeUserSettings model
-          "isFsi", Encode.bool isFsi ]
+        [
+            "code", Encode.string code
+            "settings", encodeUserSettings model
+            "isFsi", Encode.bool isFsi
+        ]
 
 let encodeUserSettingToConfiguration options =
     let encodeValue option =

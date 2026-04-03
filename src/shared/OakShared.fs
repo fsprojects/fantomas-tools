@@ -1,6 +1,8 @@
 namespace OakViewer
 
 type ParseRequest =
-    { SourceCode: string
-      Defines: string array
-      IsFsi: bool }
+    {
+        SourceCode: string
+        Defines: string array
+        IsFsi: bool
+    }

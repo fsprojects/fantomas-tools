@@ -17,6 +17,8 @@ type AstViewerTabState =
     | Error of string
 
 type Model =
-    { State: AstViewerTabState
-      Version: string
-      Expand: bool }
+    {
+        State: AstViewerTabState
+        Version: string
+        Expand: bool
+    }

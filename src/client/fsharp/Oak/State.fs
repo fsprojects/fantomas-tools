@@ -29,31 +29,39 @@ let private fetchOak (payload: OakViewer.ParseRequest) dispatch =
 let private fetchFSCVersion () = sprintf "%s/version" backend |> Http.getText
 
 let private initialModel: Model =
-    { State =
-        OakViewerTabState.Result(
-            { Type = "Oak"
-              Text = None
-              Range = Range.Zero
-              ContentBefore = Array.empty
-              Children = Array.empty
-              ContentAfter = Array.empty }
-        )
-      Version = "???"
-      IsGraphView = false
-      GraphViewOptions =
-        { Layout = GraphView.TopDown
-          NodeLimit = 25
-          Scale = GraphView.SubTreeNodes
-          ScaleMaxSize = 25 }
-      GraphViewRootNodes = [] }
+    {
+        State =
+            OakViewerTabState.Result(
+                {
+                    Type = "Oak"
+                    Text = None
+                    Range = Range.Zero
+                    ContentBefore = Array.empty
+                    Children = Array.empty
+                    ContentAfter = Array.empty
+                }
+            )
+        Version = "???"
+        IsGraphView = false
+        GraphViewOptions =
+            {
+                Layout = GraphView.TopDown
+                NodeLimit = 25
+                Scale = GraphView.SubTreeNodes
+                ScaleMaxSize = 25
+            }
+        GraphViewRootNodes = []
+    }
 
 let private splitDefines (value: string) =
     value.Split([| ' '; ';' |], StringSplitOptions.RemoveEmptyEntries)
 
 let private modelToParseRequest (bubble: BubbleModel) : OakViewer.ParseRequest =
-    { SourceCode = bubble.SourceCode
-      Defines = splitDefines bubble.Defines
-      IsFsi = bubble.IsFsi }
+    {
+        SourceCode = bubble.SourceCode
+        Defines = splitDefines bubble.Defines
+        IsFsi = bubble.IsFsi
+    }
 
 let init () =
     let isGraphView = UrlTools.restoreModelFromUrl decodeUrlModel false
@@ -62,7 +70,8 @@ let init () =
         Cmd.OfPromise.either fetchFSCVersion () FSCVersionReceived (fun ex -> Error ex.Message)
 
     { initialModel with
-        IsGraphView = isGraphView },
+        IsGraphView = isGraphView
+    },
     cmd
 
 let private updateUrl (bubble: BubbleModel) (model: Model) _ =
@@ -79,18 +88,21 @@ let update (bubble: BubbleModel) (msg: Msg) model : Model * Cmd<Msg> =
             Cmd.batch [ Cmd.ofEffect (fetchOak parseRequest); Cmd.ofEffect (updateUrl bubble model) ]
 
         { model with
-            State = OakViewerTabState.Loading },
+            State = OakViewerTabState.Loading
+        },
         cmd
     | Msg.OakReceived(oak, diagnostics) ->
         let cmd = Cmd.ofMsg (Msg.Bubble(BubbleMessage.SetDiagnostics diagnostics))
 
         { model with
             State = OakViewerTabState.Result oak
-            GraphViewRootNodes = [] },
+            GraphViewRootNodes = []
+        },
         cmd
     | Msg.Error error ->
         { initialModel with
-            State = OakViewerTabState.Error error },
+            State = OakViewerTabState.Error error
+        },
         Cmd.none
     | FSCVersionReceived version -> { model with Version = version }, Cmd.none
     | SetGraphView value -> let m = { model with IsGraphView = value } in m, Cmd.ofEffect (updateUrl bubble m)
@@ -98,29 +110,38 @@ let update (bubble: BubbleModel) (msg: Msg) model : Model * Cmd<Msg> =
         { model with
             GraphViewOptions =
                 { model.GraphViewOptions with
-                    Layout = value } },
+                    Layout = value
+                }
+        },
         Cmd.none
     | SetGraphViewNodeLimit value ->
         { model with
             GraphViewOptions =
                 { model.GraphViewOptions with
-                    NodeLimit = value } },
+                    NodeLimit = value
+                }
+        },
         Cmd.none
     | SetGraphViewScale value ->
         { model with
             GraphViewOptions =
                 { model.GraphViewOptions with
-                    Scale = value } },
+                    Scale = value
+                }
+        },
         Cmd.none
     | SetGraphViewScaleMax value ->
         { model with
             GraphViewOptions =
                 { model.GraphViewOptions with
-                    ScaleMaxSize = value } },
+                    ScaleMaxSize = value
+                }
+        },
         Cmd.none
     | GraphViewSetRoot nodeId ->
         { model with
-            GraphViewRootNodes = nodeId :: model.GraphViewRootNodes },
+            GraphViewRootNodes = nodeId :: model.GraphViewRootNodes
+        },
         Cmd.none
     | GraphViewGoBack ->
         { model with
@@ -128,5 +149,6 @@ let update (bubble: BubbleModel) (msg: Msg) model : Model * Cmd<Msg> =
                 if model.GraphViewRootNodes = [] then
                     []
                 else
-                    List.tail model.GraphViewRootNodes },
+                    List.tail model.GraphViewRootNodes
+        },
         Cmd.none

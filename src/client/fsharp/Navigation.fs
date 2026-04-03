@@ -17,8 +17,10 @@ let cmdForCurrentTab tab (model: Model) =
             Cmd.none
         elif mode <> model.FantomasModel.Mode then
             Cmd.batch
-                [ Cmd.map FantomasMsg (FantomasOnline.State.getOptionsCmd mode)
-                  Cmd.map FantomasMsg (FantomasOnline.State.getVersionCmd mode) ]
+                [
+                    Cmd.map FantomasMsg (FantomasOnline.State.getOptionsCmd mode)
+                    Cmd.map FantomasMsg (FantomasOnline.State.getVersionCmd mode)
+                ]
         elif not (List.isEmpty model.FantomasModel.DefaultOptions) then
             Cmd.ofMsg FantomasOnline.Model.Format |> Cmd.map FantomasMsg
         else

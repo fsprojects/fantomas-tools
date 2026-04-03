@@ -59,9 +59,11 @@ let mapToOption dispatch (model: Model) (key, fantomasOption) =
                     let capital = System.Char.ToUpper value.[0]
                     $"{capital}{value.[1..]}".Replace("_", " ")
 
-                { Label = label
-                  OnClick = (fun _ -> UpdateOption(key, MultilineBracketStyleOption(o, key, value)) |> dispatch)
-                  IsActive = v = value }
+                {
+                    Label = label
+                    OnClick = (fun _ -> UpdateOption(key, MultilineBracketStyleOption(o, key, value)) |> dispatch)
+                    IsActive = v = value
+                }
 
             SettingControls.multiButton key [
                 yield mkButton "cramped"
@@ -97,16 +99,18 @@ let options model dispatch =
     optionList |> List.map (mapToOption dispatch model) |> ofList
 
 type GithubIssue =
-    { BeforeHeader: string
-      BeforeContent: string
-      AfterHeader: string
-      AfterContent: string
-      Description: string
-      Title: string
-      DefaultOptions: FantomasOption list
-      UserOptions: Map<string, FantomasOption>
-      Version: string
-      IsFsi: bool }
+    {
+        BeforeHeader: string
+        BeforeContent: string
+        AfterHeader: string
+        AfterContent: string
+        Description: string
+        Title: string
+        DefaultOptions: FantomasOption list
+        UserOptions: Map<string, FantomasOption>
+        Version: string
+        IsFsi: bool
+    }
 
 let githubIssueUri (githubIssue: GithubIssue) =
     let location = Browser.Dom.window.location
@@ -228,16 +232,18 @@ let createGitHubIssue (bubble: BubbleModel) model =
         | Main
         | Preview ->
             let githubIssue =
-                { BeforeHeader = bh
-                  BeforeContent = bc
-                  AfterHeader = ah
-                  AfterContent = ac
-                  Description = description
-                  Title = "<Insert meaningful title>"
-                  DefaultOptions = model.DefaultOptions
-                  UserOptions = model.UserOptions
-                  Version = model.Version
-                  IsFsi = bubble.IsFsi }
+                {
+                    BeforeHeader = bh
+                    BeforeContent = bc
+                    AfterHeader = ah
+                    AfterContent = ac
+                    Description = description
+                    Title = "<Insert meaningful title>"
+                    DefaultOptions = model.DefaultOptions
+                    UserOptions = model.UserOptions
+                    Version = model.Version
+                    IsFsi = bubble.IsFsi
+                }
 
             a [
                 ClassName $"{Style.Btn} {Style.Danger}"
@@ -248,16 +254,18 @@ let createGitHubIssue (bubble: BubbleModel) model =
 
 let createIdempotencyIssue isFsi (model: Model) firstFormat secondFormat =
     let githubIssue =
-        { BeforeHeader = "Formatted code"
-          BeforeContent = firstFormat
-          AfterHeader = "Reformatted code"
-          AfterContent = secondFormat
-          Description = "Fantomas was not able to produce the same code after reformatting the result."
-          Title = "Idempotency problem when <add use-case>"
-          DefaultOptions = model.DefaultOptions
-          UserOptions = model.UserOptions
-          Version = model.Version
-          IsFsi = isFsi }
+        {
+            BeforeHeader = "Formatted code"
+            BeforeContent = firstFormat
+            AfterHeader = "Reformatted code"
+            AfterContent = secondFormat
+            Description = "Fantomas was not able to produce the same code after reformatting the result."
+            Title = "Idempotency problem when <add use-case>"
+            DefaultOptions = model.DefaultOptions
+            UserOptions = model.UserOptions
+            Version = model.Version
+            IsFsi = isFsi
+        }
 
     a [
         ClassName $"{Style.Btn} {Style.Warning}"
@@ -281,9 +289,10 @@ let commands (bubble: BubbleModel) model dispatch =
 
     let idempotencyButton model =
         match model.State with
-        | FantomasTabState.FormatResult { FirstFormat = ff
-                                          SecondFormat = Some sf } when ff <> sf ->
-            [ createIdempotencyIssue bubble.IsFsi model ff sf ]
+        | FantomasTabState.FormatResult {
+                                            FirstFormat = ff
+                                            SecondFormat = Some sf
+                                        } when ff <> sf -> [ createIdempotencyIssue bubble.IsFsi model ff sf ]
         | _ -> []
 
     match model.State with
@@ -292,10 +301,12 @@ let commands (bubble: BubbleModel) model dispatch =
     | FantomasTabState.OptionsLoaded
     | FantomasTabState.FormatResult _
     | FantomasTabState.FormatError _ ->
-        [ yield! idempotencyButton model
-          createGitHubIssue bubble model
-          formatButton
-          ofOption copySettingButton ]
+        [
+            yield! idempotencyButton model
+            createGitHubIssue bubble model
+            formatButton
+            ofOption copySettingButton
+        ]
     |> fragment []
 
 let settings isFsi model dispatch =
@@ -303,15 +314,19 @@ let settings isFsi model dispatch =
     | FantomasTabState.LoadingOptions -> Loader.loading
     | _ ->
         let fantomasMode =
-            [ FantomasMode.V5, "5.x"
-              FantomasMode.V6, "6.x"
-              FantomasMode.V7, "7.x"
-              FantomasMode.Main, "Main"
-              FantomasMode.Preview, "Preview" ]
+            [
+                FantomasMode.V5, "5.x"
+                FantomasMode.V6, "6.x"
+                FantomasMode.V7, "7.x"
+                FantomasMode.Main, "Main"
+                FantomasMode.Preview, "Preview"
+            ]
             |> List.map (fun (m, l) ->
-                { IsActive = model.Mode = m
-                  Label = l
-                  OnClick = (fun _ -> ChangeMode m |> dispatch) }
+                {
+                    IsActive = model.Mode = m
+                    Label = l
+                    OnClick = (fun _ -> ChangeMode m |> dispatch)
+                }
                 : SettingControls.MultiButtonSettings)
             |> SettingControls.multiButton "Mode"
 

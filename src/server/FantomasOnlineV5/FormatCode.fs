@@ -46,15 +46,19 @@ let private validate (fileName: string) code =
             |> List.map (fun (e: FSharpParserDiagnostic) ->
                 let orZero f = Option.map f e.Range |> Option.defaultValue 0
 
-                { SubCategory = e.SubCategory
-                  Range =
-                    { StartLine = orZero (fun r -> r.StartLine)
-                      StartColumn = orZero (fun r -> r.StartColumn)
-                      EndLine = orZero (fun r -> r.EndLine)
-                      EndColumn = orZero (fun r -> r.EndColumn) }
-                  Severity = $"{e.Severity}".ToLower()
-                  ErrorNumber = Option.defaultValue 0 e.ErrorNumber
-                  Message = e.Message }
+                {
+                    SubCategory = e.SubCategory
+                    Range =
+                        {
+                            StartLine = orZero (fun r -> r.StartLine)
+                            StartColumn = orZero (fun r -> r.StartColumn)
+                            EndLine = orZero (fun r -> r.EndLine)
+                            EndColumn = orZero (fun r -> r.EndColumn)
+                        }
+                    Severity = $"{e.Severity}".ToLower()
+                    ErrorNumber = Option.defaultValue 0 e.ErrorNumber
+                    Message = e.Message
+                }
                 : Diagnostic)
     }
 

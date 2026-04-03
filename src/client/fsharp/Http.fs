@@ -7,9 +7,11 @@ open Fetch
 let postJson<'TResponse> (url: string) (body: string) : JS.Promise<int * string> =
     let options =
         requestProps
-            [ requestHeaders [ ContentType "application/json" ]
-              Method HttpMethod.POST
-              Body !^body ]
+            [
+                requestHeaders [ ContentType "application/json" ]
+                Method HttpMethod.POST
+                Body !^body
+            ]
 
     GlobalFetch.fetch (RequestInfo.Url url, options)
     |> Promise.bind (fun res ->

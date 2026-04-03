@@ -9,19 +9,23 @@ let decodeUrlModel: Decoder<bool> =
 
 let decodeTriviaNode: Decoder<TriviaNode> =
     Decode.object (fun get ->
-        { Type = get.Required.Field "type" Decode.string
-          Range = get.Required.Field "range" Range.Decode
-          Content = get.Optional.Field "content" Decode.string })
+        {
+            Type = get.Required.Field "type" Decode.string
+            Range = get.Required.Field "range" Range.Decode
+            Content = get.Optional.Field "content" Decode.string
+        })
 
 let rec private decodeNode (name: string) (value: JsonValue) =
     Decode.object
         (fun get ->
-            { Type = get.Required.Field "type" Decode.string
-              Text = get.Optional.Field "text" Decode.string
-              Range = get.Required.Field "range" Range.Decode
-              ContentBefore = get.Required.Field "contentBefore" (Decode.array decodeTriviaNode)
-              Children = get.Required.Field "children" (Decode.array decodeNode)
-              ContentAfter = get.Required.Field "contentAfter" (Decode.array decodeTriviaNode) })
+            {
+                Type = get.Required.Field "type" Decode.string
+                Text = get.Optional.Field "text" Decode.string
+                Range = get.Required.Field "range" Range.Decode
+                ContentBefore = get.Required.Field "contentBefore" (Decode.array decodeTriviaNode)
+                Children = get.Required.Field "children" (Decode.array decodeNode)
+                ContentAfter = get.Required.Field "contentAfter" (Decode.array decodeTriviaNode)
+            })
         name
         value
 

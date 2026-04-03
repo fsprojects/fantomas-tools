@@ -6,10 +6,12 @@ open Fantomas.FCS.Parse
 open Thoth.Json.Net
 
 let private mkRange (range: Range) : FantomasTools.Client.Range =
-    { StartLine = range.StartLine
-      StartColumn = range.StartColumn
-      EndLine = range.EndLine
-      EndColumn = range.EndColumn }
+    {
+        StartLine = range.StartLine
+        StartColumn = range.StartColumn
+        EndLine = range.EndLine
+        EndColumn = range.EndColumn
+    }
 
 let private fsharpErrorInfoSeverity =
     function
@@ -19,14 +21,16 @@ let private fsharpErrorInfoSeverity =
     | FSharpDiagnosticSeverity.Info -> "info"
 
 let private encodeFSharpParserDiagnostic (info: FSharpParserDiagnostic) =
-    ({ SubCategory = info.SubCategory
-       Range =
-         match info.Range with
-         | None -> mkRange Range.range0
-         | Some r -> mkRange r
-       Severity = fsharpErrorInfoSeverity info.Severity
-       ErrorNumber = Option.defaultValue 0 info.ErrorNumber
-       Message = info.Message }
+    ({
+        SubCategory = info.SubCategory
+        Range =
+            match info.Range with
+            | None -> mkRange Range.range0
+            | Some r -> mkRange r
+        Severity = fsharpErrorInfoSeverity info.Severity
+        ErrorNumber = Option.defaultValue 0 info.ErrorNumber
+        Message = info.Message
+    }
     : FantomasTools.Client.Diagnostic)
     |> FantomasTools.Client.Diagnostic.Encode
 

@@ -56,10 +56,12 @@ let cursorChanged (bubbleMsg: BubbleMessage -> unit) (model: Model) (e: obj) : u
         match rangeDigits with
         | Some [ startLine; startColumn; endLine; endColumn ] ->
             let range =
-                { StartLine = startLine
-                  StartColumn = startColumn
-                  EndLine = endLine
-                  EndColumn = endColumn }
+                {
+                    StartLine = startLine
+                    StartColumn = startColumn
+                    EndLine = endLine
+                    EndColumn = endColumn
+                }
 
             bubbleMsg (BubbleMessage.HighLight range)
         | _ -> bubbleMsg (BubbleMessage.HighLight Range.Zero)

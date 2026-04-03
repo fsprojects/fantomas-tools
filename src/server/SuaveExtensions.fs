@@ -33,6 +33,7 @@ let startFantomasTool port routes =
         >=> choose [ OPTIONS >=> no_content; yield! routes; NOT_FOUND "Not found" ]
         |> startWebServer
             { defaultConfig with
-                bindings = [ HttpBinding.create HTTP IPAddress.Loopback port ] }
+                bindings = [ HttpBinding.create HTTP IPAddress.Loopback port ]
+            }
     with :? SocketException ->
         printfn $"Port {port} is already in use"

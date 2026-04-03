@@ -9,12 +9,14 @@ type ActiveTab =
     | FantomasTab of FantomasTools.Client.FantomasOnline.Model.FantomasMode
 
 type Model =
-    { ActiveTab: ActiveTab
-      SettingsOpen: bool
-      Bubble: BubbleModel
-      OakModel: OakViewer.Model.Model
-      ASTModel: ASTViewer.Model.Model
-      FantomasModel: FantomasOnline.Model.Model }
+    {
+        ActiveTab: ActiveTab
+        SettingsOpen: bool
+        Bubble: BubbleModel
+        OakModel: OakViewer.Model.Model
+        ASTModel: ASTViewer.Model.Model
+        FantomasModel: FantomasOnline.Model.Model
+    }
 
 type Msg =
     | SelectTab of ActiveTab

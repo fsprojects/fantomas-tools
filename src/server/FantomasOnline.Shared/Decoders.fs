@@ -27,8 +27,10 @@ let optionDecoder: Decoder<FantomasOption> =
 
 let requestDecoder: Decoder<FormatRequest> =
     Decode.object (fun get ->
-        { SourceCode = get.Required.Field "sourceCode" Decode.string
-          Options = get.Required.Field "options" (Decode.list optionDecoder |> Decode.map (List.sortBy sortByOption))
-          IsFsi = get.Required.Field "isFsi" Decode.bool })
+        {
+            SourceCode = get.Required.Field "sourceCode" Decode.string
+            Options = get.Required.Field "options" (Decode.list optionDecoder |> Decode.map (List.sortBy sortByOption))
+            IsFsi = get.Required.Field "isFsi" Decode.bool
+        })
 
 let decodeRequest json = Decode.fromString requestDecoder json

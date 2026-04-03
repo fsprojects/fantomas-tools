@@ -35,9 +35,11 @@ let fetchUntypedAST (payload: Shared.Request) dispatch =
     fetchNodeRequest url payload dispatch
 
 let initialModel =
-    { State = AstViewerTabState.Result { Ast = ""; Diagnostics = Array.empty }
-      Version = ""
-      Expand = true }
+    {
+        State = AstViewerTabState.Result { Ast = ""; Diagnostics = Array.empty }
+        Version = ""
+        Expand = true
+    }
 
 let getMessageFromError (ex: exn) = Error ex.Message
 
@@ -45,9 +47,11 @@ let getMessageFromError (ex: exn) = Error ex.Message
 let init isActive : Model * Cmd<Msg> =
     let cmd =
         Cmd.batch
-            [ if isActive then
-                  yield! UrlTools.restoreModelFromUrl decodeUrlModel []
-              yield Cmd.OfPromise.either getVersion () VersionFound getMessageFromError ]
+            [
+                if isActive then
+                    yield! UrlTools.restoreModelFromUrl decodeUrlModel []
+                yield Cmd.OfPromise.either getVersion () VersionFound getMessageFromError
+            ]
 
     initialModel, cmd
 
@@ -55,10 +59,12 @@ let getDefines (bubble: BubbleModel) =
     bubble.Defines.Split([| ' '; ','; ';' |], StringSplitOptions.RemoveEmptyEntries)
 
 let modelToParseRequest expand (bubble: BubbleModel) : Shared.Request =
-    { SourceCode = bubble.SourceCode
-      Defines = getDefines bubble
-      IsFsi = bubble.IsFsi
-      Expand = expand }
+    {
+        SourceCode = bubble.SourceCode
+        Defines = getDefines bubble
+        IsFsi = bubble.IsFsi
+        Expand = expand
+    }
 
 let updateUrl expand (bubble: BubbleModel) _ =
     let json = Encode.toString 2 (encodeUrlModel expand bubble)
@@ -73,7 +79,8 @@ let update (bubble: BubbleModel) (msg: Msg) (model: Model) : Model * Cmd<Msg> =
     | ASTParsed astResult ->
         let nextModel =
             { model with
-                State = AstViewerTabState.Result astResult }
+                State = AstViewerTabState.Result astResult
+            }
 
         let resultCmd = Cmd.ofMsg (BubbleMessage.SetResultCode astResult.Ast |> Msg.Bubble)
 
@@ -84,7 +91,8 @@ let update (bubble: BubbleModel) (msg: Msg) (model: Model) : Model * Cmd<Msg> =
     | Error e ->
         let nextModel =
             { model with
-                State = AstViewerTabState.Error e }
+                State = AstViewerTabState.Error e
+            }
 
         nextModel, Cmd.none
     | DoParse ->
@@ -92,11 +100,14 @@ let update (bubble: BubbleModel) (msg: Msg) (model: Model) : Model * Cmd<Msg> =
 
         let cmd =
             Cmd.batch
-                [ Cmd.ofEffect (fetchUntypedAST parseRequest)
-                  Cmd.ofEffect (updateUrl model.Expand bubble) ]
+                [
+                    Cmd.ofEffect (fetchUntypedAST parseRequest)
+                    Cmd.ofEffect (updateUrl model.Expand bubble)
+                ]
 
         { model with
-            State = AstViewerTabState.Loading },
+            State = AstViewerTabState.Loading
+        },
         cmd
 
     | VersionFound version -> { model with Version = version }, Cmd.none

@@ -22,8 +22,10 @@ let main argv =
             })
 
     let routes =
-        [ GET >=> path "/oak-viewer/version" >=> textPlain >=> OK(getVersion ())
-          POST >=> path "/oak-viewer/get-oak" >=> getOakWebPart ]
+        [
+            GET >=> path "/oak-viewer/version" >=> textPlain >=> OK(getVersion ())
+            POST >=> path "/oak-viewer/get-oak" >=> getOakWebPart
+        ]
 
     let port =
         match List.ofArray argv with

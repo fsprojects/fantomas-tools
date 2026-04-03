@@ -57,10 +57,12 @@ let formatCode
                         }
 
                 let response =
-                    { FirstFormat = firstFormat
-                      FirstValidation = Array.ofList firstValidation
-                      SecondFormat = secondFormat
-                      SecondValidation = Array.ofList secondValidation }
+                    {
+                        FirstFormat = firstFormat
+                        FirstValidation = Array.ofList firstValidation
+                        SecondFormat = secondFormat
+                        SecondValidation = Array.ofList secondValidation
+                    }
                     |> Encoders.encodeFormatResponse
                     |> Encode.toString 4
 

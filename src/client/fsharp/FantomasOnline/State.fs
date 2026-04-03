@@ -26,11 +26,13 @@ let private previewBackend: string = jsNative
 
 let private backend =
     Map.ofList
-        [ (FantomasMode.V5, v5Backend)
-          (FantomasMode.V6, v6Backend)
-          (FantomasMode.V7, v7Backend)
-          (FantomasMode.Main, mainBackend)
-          (FantomasMode.Preview, previewBackend) ]
+        [
+            (FantomasMode.V5, v5Backend)
+            (FantomasMode.V6, v6Backend)
+            (FantomasMode.V7, v7Backend)
+            (FantomasMode.Main, mainBackend)
+            (FantomasMode.Preview, previewBackend)
+        ]
 
 let private getVersion mode =
     sprintf "%s/%s" (Map.find mode backend) "version" |> Http.getText
@@ -80,12 +82,14 @@ let init (mode: FantomasMode) =
         let optionsCmd = getOptionsCmd mode
         Cmd.batch [ versionCmd; optionsCmd ]
 
-    { Version = "???"
-      DefaultOptions = []
-      UserOptions = Map.empty
-      Mode = mode
-      State = FantomasTabState.LoadingOptions
-      SettingsFilter = "" },
+    {
+        Version = "???"
+        DefaultOptions = []
+        UserOptions = Map.empty
+        Mode = mode
+        State = FantomasTabState.LoadingOptions
+        SettingsFilter = ""
+    },
     cmd
 
 let optionsListToMap options =
@@ -188,29 +192,35 @@ let update isActiveTab (bubble: BubbleModel) msg model =
         { model with
             DefaultOptions = options
             UserOptions = userOptions
-            State = FantomasTabState.OptionsLoaded },
+            State = FantomasTabState.OptionsLoaded
+        },
         cmd
 
     | ResetSettings ->
         showSuccess "Settings reset to default values"
 
         { model with
-            UserOptions = optionsListToMap model.DefaultOptions },
+            UserOptions = optionsListToMap model.DefaultOptions
+        },
         Cmd.none
 
     | Format ->
         let cmd =
             Cmd.batch
-                [ Cmd.ofEffect (getFormattedCode bubble.SourceCode bubble.IsFsi model)
-                  Cmd.ofEffect (updateUrl bubble.SourceCode bubble.IsFsi model) ]
+                [
+                    Cmd.ofEffect (getFormattedCode bubble.SourceCode bubble.IsFsi model)
+                    Cmd.ofEffect (updateUrl bubble.SourceCode bubble.IsFsi model)
+                ]
 
         { model with
-            State = FantomasTabState.LoadingFormatRequest },
+            State = FantomasTabState.LoadingFormatRequest
+        },
         cmd
 
     | FormatException error ->
         { model with
-            State = FantomasTabState.FormatError error },
+            State = FantomasTabState.FormatError error
+        },
         Cmd.none
 
     | FormattedReceived result ->
@@ -230,7 +240,8 @@ let update isActiveTab (bubble: BubbleModel) msg model =
                 |> Cmd.ofMsg
 
         { model with
-            State = FantomasTabState.FormatResult result },
+            State = FantomasTabState.FormatResult result
+        },
         cmd
     | UpdateOption(key, value) ->
         let userOptions = Map.add key value model.UserOptions

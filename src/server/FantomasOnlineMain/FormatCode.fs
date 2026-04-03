@@ -47,21 +47,27 @@ let private validate (fileName: string) code =
         let range =
             match e.Range with
             | None ->
-                { StartLine = 0
-                  StartColumn = 0
-                  EndLine = 0
-                  EndColumn = 0 }
+                {
+                    StartLine = 0
+                    StartColumn = 0
+                    EndLine = 0
+                    EndColumn = 0
+                }
             | Some r ->
-                { StartLine = r.StartLine
-                  StartColumn = r.StartColumn
-                  EndLine = r.EndLine
-                  EndColumn = r.EndColumn }
+                {
+                    StartLine = r.StartLine
+                    StartColumn = r.StartColumn
+                    EndLine = r.EndLine
+                    EndColumn = r.EndColumn
+                }
 
-        { SubCategory = e.SubCategory
-          Range = range
-          Severity = $"{e.Severity}".ToLower()
-          ErrorNumber = Option.defaultValue -1 e.ErrorNumber
-          Message = e.Message }
+        {
+            SubCategory = e.SubCategory
+            Range = range
+            Severity = $"{e.Severity}".ToLower()
+            ErrorNumber = Option.defaultValue -1 e.ErrorNumber
+            Message = e.Message
+        }
         : Diagnostic)
     |> fun errors -> async { return errors }
 

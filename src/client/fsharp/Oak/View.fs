@@ -146,38 +146,52 @@ let settings (bubble: BubbleModel) (model: Model) dispatch =
             model.IsGraphView
         if model.IsGraphView then
             yield!
-                [ SettingControls.multiButton "Graph view layout" [
-                      { Label = "Top-down layout"
-                        OnClick = (fun _ -> dispatch (SetGraphViewLayout TopDown))
-                        IsActive = model.GraphViewOptions.Layout = TopDown }
-                      { Label = "Left-right layout"
-                        OnClick = (fun _ -> dispatch (SetGraphViewLayout LeftRight))
-                        IsActive = model.GraphViewOptions.Layout = LeftRight }
-                      { Label = "Free layout"
-                        OnClick = (fun _ -> dispatch (SetGraphViewLayout Free))
-                        IsActive = model.GraphViewOptions.Layout = Free }
-                  ]
-                  SettingControls.input
-                      "graph-view-node-limit"
-                      (int >> SetGraphViewNodeLimit >> dispatch)
-                      (str "Graph view node limit")
-                      "Max nodes in graph view"
-                      model.GraphViewOptions.NodeLimit
-                  SettingControls.multiButton "Graph view scaling by subtree size" [
-                      { Label = "No scaling"
-                        OnClick = (fun _ -> dispatch (SetGraphViewScale NoScale))
-                        IsActive = model.GraphViewOptions.Scale = NoScale }
-                      { Label = "Scale only collapsed subtree nodes"
-                        OnClick = (fun _ -> dispatch (SetGraphViewScale SubTreeNodes))
-                        IsActive = model.GraphViewOptions.Scale = SubTreeNodes }
-                      { Label = "Scale all nodes"
-                        OnClick = (fun _ -> dispatch (SetGraphViewScale AllNodes))
-                        IsActive = model.GraphViewOptions.Scale = AllNodes }
-                  ]
-                  SettingControls.input
-                      "graph-view-scale-max-size"
-                      (int >> SetGraphViewScaleMax >> dispatch)
-                      (str "Graph view scale max size limit")
-                      "Max size of scaled node"
-                      model.GraphViewOptions.ScaleMaxSize ]
+                [
+                    SettingControls.multiButton "Graph view layout" [
+                        {
+                            Label = "Top-down layout"
+                            OnClick = (fun _ -> dispatch (SetGraphViewLayout TopDown))
+                            IsActive = model.GraphViewOptions.Layout = TopDown
+                        }
+                        {
+                            Label = "Left-right layout"
+                            OnClick = (fun _ -> dispatch (SetGraphViewLayout LeftRight))
+                            IsActive = model.GraphViewOptions.Layout = LeftRight
+                        }
+                        {
+                            Label = "Free layout"
+                            OnClick = (fun _ -> dispatch (SetGraphViewLayout Free))
+                            IsActive = model.GraphViewOptions.Layout = Free
+                        }
+                    ]
+                    SettingControls.input
+                        "graph-view-node-limit"
+                        (int >> SetGraphViewNodeLimit >> dispatch)
+                        (str "Graph view node limit")
+                        "Max nodes in graph view"
+                        model.GraphViewOptions.NodeLimit
+                    SettingControls.multiButton "Graph view scaling by subtree size" [
+                        {
+                            Label = "No scaling"
+                            OnClick = (fun _ -> dispatch (SetGraphViewScale NoScale))
+                            IsActive = model.GraphViewOptions.Scale = NoScale
+                        }
+                        {
+                            Label = "Scale only collapsed subtree nodes"
+                            OnClick = (fun _ -> dispatch (SetGraphViewScale SubTreeNodes))
+                            IsActive = model.GraphViewOptions.Scale = SubTreeNodes
+                        }
+                        {
+                            Label = "Scale all nodes"
+                            OnClick = (fun _ -> dispatch (SetGraphViewScale AllNodes))
+                            IsActive = model.GraphViewOptions.Scale = AllNodes
+                        }
+                    ]
+                    SettingControls.input
+                        "graph-view-scale-max-size"
+                        (int >> SetGraphViewScaleMax >> dispatch)
+                        (str "Graph view scale max size limit")
+                        "Max size of scaled node"
+                        model.GraphViewOptions.ScaleMaxSize
+                ]
     ]

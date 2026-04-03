@@ -22,8 +22,10 @@ let main argv =
             })
 
     let routes =
-        [ GET >=> path "/ast-viewer/version" >=> textPlain >=> OK(getVersion ())
-          POST >=> path "/ast-viewer/untyped-ast" >=> untypedAst ]
+        [
+            GET >=> path "/ast-viewer/version" >=> textPlain >=> OK(getVersion ())
+            POST >=> path "/ast-viewer/untyped-ast" >=> untypedAst
+        ]
 
     let port =
         match List.ofArray argv with

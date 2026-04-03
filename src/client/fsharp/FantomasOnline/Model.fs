@@ -32,12 +32,14 @@ type FantomasTabState =
     | FormatError of string
 
 type Model =
-    { Version: string
-      DefaultOptions: FantomasOption list
-      UserOptions: Map<string, FantomasOption>
-      Mode: FantomasMode
-      State: FantomasTabState
-      SettingsFilter: string }
+    {
+        Version: string
+        DefaultOptions: FantomasOption list
+        UserOptions: Map<string, FantomasOption>
+        Mode: FantomasMode
+        State: FantomasTabState
+        SettingsFilter: string
+    }
 
     member this.SettingsChangedByTheUser =
         let defaultValues = this.DefaultOptions |> List.sortBy sortByOption

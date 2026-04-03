@@ -8,26 +8,32 @@ open Feliz
 
 module VisNetwork =
     type node =
-        {| id: int
-           label: string
-           title: string
-           level: int
-           color: string
-           shape: string
-           value: int
-           font: obj |}
+        {|
+            id: int
+            label: string
+            title: string
+            level: int
+            color: string
+            shape: string
+            value: int
+            font: obj
+        |}
 
     type edge =
-        {| from: int
-           ``to``: int
-           dashes: bool |}
+        {|
+            from: int
+            ``to``: int
+            dashes: bool
+        |}
 
     type options =
-        {| layout: obj
-           interaction: obj
-           width: string
-           height: string
-           nodes: obj |}
+        {|
+            layout: obj
+            interaction: obj
+            width: string
+            height: string
+            nodes: obj
+        |}
 
     [<Import("DataSet", "vis-data/peer")>]
     type DataSet(_data: U2<node, edge> array) = class end
@@ -57,10 +63,12 @@ module VisNetwork =
         member this.SetOptions(_options: options) = jsNative
 
 type GraphProps =
-    {| options: VisNetwork.options
-       data: VisNetwork.data
-       selectNode: {| nodes: int array |} -> unit
-       hoverNode: {| node: int |} -> unit |}
+    {|
+        options: VisNetwork.options
+        data: VisNetwork.data
+        selectNode: {| nodes: int array |} -> unit
+        hoverNode: {| node: int |} -> unit
+    |}
 
 type RefProp =
     | Ref of obj

@@ -20,9 +20,11 @@ let getOak json : GetOakResponse =
 
     match parseRequest with
     | Ok pr ->
-        let { SourceCode = content
-              Defines = defines
-              IsFsi = isFsi } =
+        let {
+                SourceCode = content
+                Defines = defines
+                IsFsi = isFsi
+            } =
             pr
 
         let oakResult =

@@ -18,10 +18,12 @@ let identList values =
     | [ singleValue ] -> IdentListNode([ IdentifierOrDot.Ident(stn singleValue) ], zeroRange)
     | head :: tail ->
         let content =
-            [ yield IdentifierOrDot.Ident(stn head)
-              for t in tail do
-                  yield IdentifierOrDot.UnknownDot
-                  yield IdentifierOrDot.Ident(stn t) ]
+            [
+                yield IdentifierOrDot.Ident(stn head)
+                for t in tail do
+                    yield IdentifierOrDot.UnknownDot
+                    yield IdentifierOrDot.Ident(stn t)
+            ]
 
         IdentListNode(content, zeroRange)
 
@@ -38,10 +40,12 @@ let mkExprTuple xs =
     | [ _ ] -> failwith "No point in making a tuple out of less than two items"
     | head :: tail ->
         let content =
-            [ yield Choice1Of2 head
-              for t in tail do
-                  yield Choice2Of2(stn ",")
-                  yield Choice1Of2 t ]
+            [
+                yield Choice1Of2 head
+                for t in tail do
+                    yield Choice2Of2(stn ",")
+                    yield Choice1Of2 t
+            ]
 
         ExprTupleNode(content, zeroRange) |> Expr.Tuple
 
@@ -81,9 +85,11 @@ let mkPositionExpr (p: Position) : Expr =
 
 let mkIdent (ident: Ident) : Expr =
     ExprTupleNode(
-        [ Choice1Of2(mkStringExpr ident.idText)
-          Choice2Of2(stn ",")
-          Choice1Of2(mkRangeExpr ident.idRange) ],
+        [
+            Choice1Of2(mkStringExpr ident.idText)
+            Choice2Of2(stn ",")
+            Choice1Of2(mkRangeExpr ident.idRange)
+        ],
         zeroRange
     )
     |> Expr.Tuple
@@ -158,9 +164,11 @@ and mapUnion (value: obj) (t: System.Type) : Expr =
 
     let caseName =
         identList
-            [ if caseInfo.DeclaringType.Name <> "FSharpOption`1" then
-                  yield caseInfo.DeclaringType.Name
-              yield caseInfo.Name ]
+            [
+                if caseInfo.DeclaringType.Name <> "FSharpOption`1" then
+                    yield caseInfo.DeclaringType.Name
+                yield caseInfo.Name
+            ]
 
     if caseFields.Length = 0 then
         mkExprOptVarNode caseName
@@ -188,8 +196,10 @@ and mapList (value: obj) =
     | :? IEnumerable<Ident> as enumerable -> mkListExpr ((Seq.map mkIdent >> Seq.toList) enumerable)
     | :? System.Collections.IEnumerable as enumerable ->
         mkListExpr
-            [ for item in enumerable do
-                  map (box item) ]
+            [
+                for item in enumerable do
+                    map (box item)
+            ]
     | _ -> failwithf $"Excepted %A{value} to implement IEnumerable"
 
 let getExpandedAST (ast: ParsedInput) : string =
@@ -202,6 +212,7 @@ let getExpandedAST (ast: ParsedInput) : string =
         oak,
         { FormatConfig.Default with
             MultilineBracketStyle = Stroustrup
-            MaxLineLength = 200 }
+            MaxLineLength = 200
+        }
     )
     |> Async.RunSynchronously

@@ -8,12 +8,14 @@ open Feliz.Router
 
 let private getBubbleFromUrl () : BubbleModel =
     let empty =
-        { SourceCode = ""
-          IsFsi = false
-          Defines = ""
-          ResultCode = ""
-          Diagnostics = Array.empty
-          HighLight = Range.Zero }
+        {
+            SourceCode = ""
+            IsFsi = false
+            Defines = ""
+            ResultCode = ""
+            Diagnostics = Array.empty
+            HighLight = Range.Zero
+        }
 
     UrlTools.restoreModelFromUrl
         (Decode.object (fun get ->
@@ -24,7 +26,8 @@ let private getBubbleFromUrl () : BubbleModel =
             { empty with
                 SourceCode = sourceCode
                 IsFsi = isFsi
-                Defines = defines }))
+                Defines = defines
+            }))
         empty
 
 let private getIsFsiFileFromUrl () =
@@ -46,18 +49,22 @@ let init _ =
         FantomasOnline.State.init tab
 
     let model =
-        { ActiveTab = currentTab
-          SettingsOpen = false
-          Bubble = bubble
-          OakModel = oakModel
-          ASTModel = astModel
-          FantomasModel = fantomasModel }
+        {
+            ActiveTab = currentTab
+            SettingsOpen = false
+            Bubble = bubble
+            OakModel = oakModel
+            ASTModel = astModel
+            FantomasModel = fantomasModel
+        }
 
     let cmd =
         Cmd.batch
-            [ Cmd.map ASTMsg astCmd
-              Cmd.map OakMsg oakCmd
-              Cmd.map FantomasMsg fantomasCmd ]
+            [
+                Cmd.map ASTMsg astCmd
+                Cmd.map OakMsg oakCmd
+                Cmd.map FantomasMsg fantomasCmd
+            ]
 
     model, cmd
 
@@ -83,14 +90,18 @@ let update msg model =
                     ActiveTab = tab
                     Bubble =
                         { model.Bubble with
-                            Diagnostics = Array.empty }
-                    FantomasModel = { model.FantomasModel with Mode = ft } }
+                            Diagnostics = Array.empty
+                        }
+                    FantomasModel = { model.FantomasModel with Mode = ft }
+                }
             | _ ->
                 { model with
                     ActiveTab = tab
                     Bubble =
                         { model.Bubble with
-                            Diagnostics = Array.empty } }
+                            Diagnostics = Array.empty
+                        }
+                }
 
         let cmd = Navigation.cmdForCurrentTab tab model
 
@@ -101,7 +112,8 @@ let update msg model =
     | ToggleSettings ->
         let m =
             { model with
-                SettingsOpen = not model.SettingsOpen }
+                SettingsOpen = not model.SettingsOpen
+            }
 
         m, reload m
 
@@ -116,7 +128,8 @@ let update msg model =
             | SetResultCode code -> { model.Bubble with ResultCode = code }, Cmd.none
             | SetDiagnostics diagnostics ->
                 { model.Bubble with
-                    Diagnostics = diagnostics },
+                    Diagnostics = diagnostics
+                },
                 Cmd.none
             | HighLight hlr -> { model.Bubble with HighLight = hlr }, Cmd.none
 

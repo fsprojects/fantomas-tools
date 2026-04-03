@@ -23,9 +23,11 @@ let main argv =
             })
 
     let routes =
-        [ GET >=> path "/fantomas/v5/version" >=> textPlain >=> OK(FantomasOnlineV5.FormatCode.getVersion ())
-          GET >=> path "/fantomas/v5/options" >=> applicationJson >=> OK(FantomasOnlineV5.FormatCode.getOptions ())
-          POST >=> path "/fantomas/v5/format" >=> formatWebPart ]
+        [
+            GET >=> path "/fantomas/v5/version" >=> textPlain >=> OK(FantomasOnlineV5.FormatCode.getVersion ())
+            GET >=> path "/fantomas/v5/options" >=> applicationJson >=> OK(FantomasOnlineV5.FormatCode.getOptions ())
+            POST >=> path "/fantomas/v5/format" >=> formatWebPart
+        ]
 
     let port =
         match List.ofArray argv with

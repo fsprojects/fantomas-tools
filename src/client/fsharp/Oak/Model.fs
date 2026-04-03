@@ -4,17 +4,21 @@ open Fable.Core
 open FantomasTools.Client
 
 type TriviaNode =
-    { Type: string
-      Range: Range
-      Content: string option }
+    {
+        Type: string
+        Range: Range
+        Content: string option
+    }
 
 type OakNode =
-    { Type: string
-      Text: string option
-      Range: Range
-      ContentBefore: TriviaNode array
-      Children: OakNode array
-      ContentAfter: TriviaNode array }
+    {
+        Type: string
+        Text: string option
+        Range: Range
+        ContentBefore: TriviaNode array
+        Children: OakNode array
+        ContentAfter: TriviaNode array
+    }
 
 module GraphView =
     [<Erase>]
@@ -32,16 +36,20 @@ module GraphView =
         | Box
 
     type Node =
-        { Label: NodeLabel
-          Level: int
-          Color: NodeColor
-          Shape: NodeShape
-          ScaleValue: int }
+        {
+            Label: NodeLabel
+            Level: int
+            Color: NodeColor
+            Shape: NodeShape
+            ScaleValue: int
+        }
 
     type Edge =
-        { From: NodeId
-          To: NodeId
-          Dashed: bool }
+        {
+            From: NodeId
+            To: NodeId
+            Dashed: bool
+        }
 
     type Layout =
         | TopDown
@@ -54,10 +62,12 @@ module GraphView =
         | AllNodes
 
     type Options =
-        { NodeLimit: int
-          Layout: Layout
-          Scale: Scale
-          ScaleMaxSize: int }
+        {
+            NodeLimit: int
+            Layout: Layout
+            Scale: Scale
+            ScaleMaxSize: int
+        }
 
 type Msg =
     | Bubble of BubbleMessage
@@ -80,8 +90,10 @@ type OakViewerTabState =
     | Error of string
 
 type Model =
-    { State: OakViewerTabState
-      Version: string
-      IsGraphView: bool
-      GraphViewOptions: GraphView.Options
-      GraphViewRootNodes: GraphView.NodeId list }
+    {
+        State: OakViewerTabState
+        Version: string
+        IsGraphView: bool
+        GraphViewOptions: GraphView.Options
+        GraphViewRootNodes: GraphView.NodeId list
+    }

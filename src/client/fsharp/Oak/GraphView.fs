@@ -46,15 +46,17 @@ let private parseResults =
     let rec parseNode level (n: OakNode) =
         let mkNode (level: int) (title: string) (text: string) (range: Range) (t: NodeType) : GraphOakNode =
             let n =
-                { Id = nodeIdCounter
-                  Node = text
-                  Title = title
-                  Range = range
-                  Type = t
-                  Children = []
-                  Limited = false
-                  Level = level
-                  Size = 1 }
+                {
+                    Id = nodeIdCounter
+                    Node = text
+                    Title = title
+                    Range = range
+                    Type = t
+                    Children = []
+                    Limited = false
+                    Level = level
+                    Size = 1
+                }
 
             nodeIdCounter <- nodeIdCounter + 1
             n
@@ -76,9 +78,11 @@ let private parseResults =
             | Choice2Of2 x -> parseTriviaNode level x
 
         let children =
-            [ yield! n.ContentBefore |> Array.map Choice2Of2
-              yield! n.Children |> Array.map Choice1Of2
-              yield! n.ContentAfter |> Array.map Choice2Of2 ]
+            [
+                yield! n.ContentBefore |> Array.map Choice2Of2
+                yield! n.Children |> Array.map Choice1Of2
+                yield! n.ContentAfter |> Array.map Choice2Of2
+            ]
             |> List.map (parseNodeOrTriviaNode (level + 1))
 
         let node =
@@ -88,7 +92,8 @@ let private parseResults =
 
             { n with
                 Children = children
-                Size = n.Size + (children |> Seq.sumBy (fun x -> x.Size)) }
+                Size = n.Size + (children |> Seq.sumBy (fun x -> x.Size))
+            }
 
         node
 
@@ -109,7 +114,8 @@ let limitTree =
 
             { n with
                 Children = children |> List.map f
-                Limited = limit }
+                Limited = limit
+            }
 
         f n)
 
@@ -134,15 +140,17 @@ let limitTreeByNodes =
 let view =
     // copied from variables.sass
     let colors =
-        {| dark = "#222222"
-           primary = "#338CBB"
-           secondary = "#2d94b0"
-           danger = "#C74910"
-           warning = "#C7901B"
-           success = "#88D1A6"
-           white = "#FFF"
-           grey = "#DDD"
-           purple300 = "#a98eda" |}
+        {|
+            dark = "#222222"
+            primary = "#338CBB"
+            secondary = "#2d94b0"
+            danger = "#C74910"
+            warning = "#C7901B"
+            success = "#88D1A6"
+            white = "#FFF"
+            grey = "#DDD"
+            purple300 = "#a98eda"
+        |}
 
     let getColor =
         function
@@ -172,9 +180,11 @@ let view =
 
         let scalingLabel =
             let opt =
-                {| enabled = true
-                   min = minScaling
-                   max = model.GraphViewOptions.ScaleMaxSize |}
+                {|
+                    enabled = true
+                    min = minScaling
+                    max = model.GraphViewOptions.ScaleMaxSize
+                |}
 
             match model.GraphViewOptions.Scale with
             | NoScale -> {| opt with enabled = false |}
@@ -195,14 +205,19 @@ let view =
                             graphOakNode.Size
                     | AllNodes -> minScaling + graphOakNode.Size - 1
 
-                {| id = !!graphOakNode.Id
-                   label = graphOakNode.Node.Trim()
-                   title = graphOakNode.Title
-                   level = graphOakNode.Level
-                   color = getColor graphOakNode.Type
-                   shape = if graphOakNode.Limited then "box" else "ellipse"
-                   value = scaleValue
-                   font = {| color = getFontColor graphOakNode.Type |} |})
+                {|
+                    id = !!graphOakNode.Id
+                    label = graphOakNode.Node.Trim()
+                    title = graphOakNode.Title
+                    level = graphOakNode.Level
+                    color = getColor graphOakNode.Type
+                    shape = if graphOakNode.Limited then "box" else "ellipse"
+                    value = scaleValue
+                    font =
+                        {|
+                            color = getFontColor graphOakNode.Type
+                        |}
+                |})
 
         let edges: VisNetwork.edge array =
             oakNodes
@@ -211,48 +226,69 @@ let view =
                 n.Children
                 |> Seq.map (fun m ->
                     if m.Type = Standard then
-                        {| from = !!n.Id
-                           ``to`` = !!m.Id
-                           dashes = false |}
+                        {|
+                            from = !!n.Id
+                            ``to`` = !!m.Id
+                            dashes = false
+                        |}
                         : VisNetwork.edge
                     else
-                        {| from = !!m.Id
-                           ``to`` = !!n.Id
-                           dashes = true |}))
+                        {|
+                            from = !!m.Id
+                            ``to`` = !!n.Id
+                            dashes = true
+                        |}))
             |> Seq.toArray
 
         let layout =
             let hier =
-                {| enabled = true
-                   direction = "UD"
-                   levelSeparation = 75 |}
+                {|
+                    enabled = true
+                    direction = "UD"
+                    levelSeparation = 75
+                |}
 
             match model.GraphViewOptions.Layout with
             | TopDown -> {| hierarchical = hier |}
-            | LeftRight -> {| hierarchical = {| hier with direction = "LR" |} |}
-            | Free -> {| hierarchical = {| hier with enabled = false |} |}
+            | LeftRight ->
+                {|
+                    hierarchical = {| hier with direction = "LR" |}
+                |}
+            | Free ->
+                {|
+                    hierarchical = {| hier with enabled = false |}
+                |}
 
         let parentElement = Browser.Dom.document.querySelector ".tab-content"
 
         let options: VisNetwork.options =
-            {| layout = layout
-               interaction = {| hover = true |}
-               width = $"{parentElement.clientWidth}"
-               height = $"{parentElement.clientHeight}"
-               nodes = {| scaling = {| label = scalingLabel |} |} |}
+            {|
+                layout = layout
+                interaction = {| hover = true |}
+                width = $"{parentElement.clientWidth}"
+                height = $"{parentElement.clientHeight}"
+                nodes =
+                    {|
+                        scaling = {| label = scalingLabel |}
+                    |}
+            |}
 
         let graph =
             Graph
-                {| options = options
-                   data =
-                    {| nodes = VisNetwork.DataSet(!!nodes)
-                       edges = VisNetwork.DataSet(!!edges) |}
-                   selectNode =
-                    (fun ev ->
-                        for nodeId in ev.nodes do
-                            dispatch (GraphViewSetRoot(NodeId nodeId)))
-                   hoverNode =
-                    (fun ev -> BubbleMessage.HighLight oakNodes.[NodeId ev.node].Range |> Bubble |> dispatch) |}
+                {|
+                    options = options
+                    data =
+                        {|
+                            nodes = VisNetwork.DataSet(!!nodes)
+                            edges = VisNetwork.DataSet(!!edges)
+                        |}
+                    selectNode =
+                        (fun ev ->
+                            for nodeId in ev.nodes do
+                                dispatch (GraphViewSetRoot(NodeId nodeId)))
+                    hoverNode =
+                        (fun ev -> BubbleMessage.HighLight oakNodes.[NodeId ev.node].Range |> Bubble |> dispatch)
+                |}
 
         fragment [] [
             graph
