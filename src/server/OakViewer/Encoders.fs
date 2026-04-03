@@ -20,7 +20,7 @@ let encodeTriviaNode (triviaNode: TriviaNode) : JsonValue =
         | CommentOnSingleLine comment -> "commentOnSingleLine", Some comment
         | LineCommentAfterSourceCode comment -> "lineCommentAfterSourceCode", Some comment
         | BlockComment(comment, _, _) -> "blockComment", Some comment
-        | CommentOnSingleLineWithLeadingNewlines(newlines, comment) -> 
+        | CommentOnSingleLineWithLeadingNewlines(newlines, comment) ->
             let newlines = Array.init newlines (fun _ -> "newline") |> String.concat ", "
             "commentOnSingleLineWithLeadingNewlines", Some($"%s{newlines} $%s{comment}")
         | Newline -> "newline", None
