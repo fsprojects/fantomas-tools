@@ -14,17 +14,17 @@
         <OtherFlags>$(OtherFlags) --test:GraphBasedChecking --test:ParallelOptimization --test:ParallelIlxGen</OtherFlags>
         <!-- Override these values to point to your local fantomas repository -->
         <FantomasMainRepository>$(MSBuildThisFileDirectory).deps\fantomas</FantomasMainRepository>
-        <FantomasPreviewRepository>$(MSBuildThisFileDirectory).deps\v7.0</FantomasPreviewRepository>
+        <FantomasPreviewRepository>$(MSBuildThisFileDirectory).deps\fantomas</FantomasPreviewRepository>
         <RollForward>LatestMajor</RollForward>
         <UseArtifactsOutput>true</UseArtifactsOutput>
         <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
     </PropertyGroup>
 
     <ItemGroup Condition="'$(IsLambda)' == 'true'">
-        <PackageReference Include="Microsoft.Net.Http.Headers" Version="2.2.8" />
-        <PackageReference Include="Amazon.Lambda.Core" Version="2.1.0" />
-        <PackageReference Include="Amazon.Lambda.Serialization.SystemTextJson" Version="2.3.0" />
-        <PackageReference Include="Amazon.Lambda.APIGatewayEvents" Version="2.5.0" />
-        <PackageReference Include="Suave" Version="2.6.2" />
+        <PackageReference Include="Microsoft.Net.Http.Headers" Version="10.0.5" />
+        <PackageReference Include="Amazon.Lambda.Core" Version="2.8.1" />
+        <PackageReference Include="Amazon.Lambda.Serialization.SystemTextJson" Version="2.4.5" />
+        <PackageReference Include="Amazon.Lambda.APIGatewayEvents" Version="2.7.3" />
+        <PackageReference Include="Suave" Version="3.2.3" />
     </ItemGroup>
 </Project>

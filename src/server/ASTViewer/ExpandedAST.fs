@@ -9,7 +9,7 @@ open Fantomas.FCS.Text
 open Fantomas.Core
 open Fantomas.Core.SyntaxOak
 
-let zeroRange = Range.Zero
+let zeroRange = Range.range0
 let stn v = SingleTextNode(v, zeroRange)
 
 let identList values =

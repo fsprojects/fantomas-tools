@@ -134,7 +134,7 @@ let infra () =
                 "FantomasLambdaRole",
                 Iam.RoleArgs(
                     AssumeRolePolicy =
-                        input
+                        inputUnion1Of2
                             """{
                                	"Version": "2012-10-17",
                                	"Statement": [{
@@ -153,7 +153,7 @@ let infra () =
             let args =
                 Iam.RolePolicyArgs(
                     Policy =
-                        input
+                        inputUnion1Of2
                             """{
 	                                "Version": "2012-10-17",
 	                                "Statement": [{
@@ -208,7 +208,7 @@ let infra () =
                         let args =
                             Lambda.FunctionArgs(
                                 Handler = input $"{lambdaProject.FunctionPrefix}::{lambdaInfo.Name}",
-                                Runtime = inputUnion2Of2 Lambda.Runtime.Dotnet8,
+                                Runtime = inputUnion2Of2 Lambda.Runtime.Dotnet10,
                                 Code = input (FileArchive(lambdaProject.FileArchive) :> Archive),
                                 Role = io lambdaRole.Arn,
                                 Timeout = input 30,
