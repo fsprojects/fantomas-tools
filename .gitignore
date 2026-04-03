@@ -362,3 +362,5 @@ snowpack.crt
 snowpack.key
 
 TypedCssClasses.log
+
+.claude/
