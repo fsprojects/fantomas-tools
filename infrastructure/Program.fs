@@ -51,24 +51,30 @@ let private getLastCommit () =
 let (</>) a b = Path.Combine(a, b)
 
 type LambdaProject =
-    { Name: string
-      FileArchive: string
-      HandlerPrefix: string
-      Lambdas: LambdaInfo list
-      FunctionPrefix: string }
+    {
+        Name: string
+        FileArchive: string
+        HandlerPrefix: string
+        Lambdas: LambdaInfo list
+        FunctionPrefix: string
+    }
 
 and LambdaInfo =
-    { Name: string
-      Verb: string
-      Route: string
-      Environment: (string * string) list }
+    {
+        Name: string
+        Verb: string
+        Route: string
+        Environment: (string * string) list
+    }
 
 let getAllLambdas (lastSha, lastTime) =
     let mkLambdaInfo name verb route environment =
-        { Name = name
-          Verb = verb
-          Route = route
-          Environment = environment }
+        {
+            Name = name
+            Verb = verb
+            Route = route
+            Environment = environment
+        }
 
     let mkLambdaProject (name: string) lambdas =
         let archive =
@@ -79,50 +85,68 @@ let getAllLambdas (lastSha, lastTime) =
             </> name
             </> "release"
 
-        { Name = name
-          FileArchive = archive
-          HandlerPrefix = name.Kebaberize()
-          Lambdas = lambdas
-          FunctionPrefix = $"{name}::{name}.Lambda" }
+        {
+            Name = name
+            FileArchive = archive
+            HandlerPrefix = name.Kebaberize()
+            Lambdas = lambdas
+            FunctionPrefix = $"{name}::{name}.Lambda"
+        }
 
-    [ mkLambdaProject
-          "ASTViewer"
-          [ mkLambdaInfo "GetVersion" "GET" "/ast-viewer/version" List.empty
-            mkLambdaInfo "PostUntypedAST" "POST" "/ast-viewer/untyped-ast" List.empty
-            mkLambdaInfo "PostTypedAST" "POST" "/ast-viewer/typed-ast" List.empty ]
-      mkLambdaProject
-          "OakViewer"
-          [ mkLambdaInfo "GetVersion" "GET" "/oak-viewer/version" List.empty
-            mkLambdaInfo "GetOak" "POST" "/oak-viewer/get-oak" List.empty ]
-      mkLambdaProject
-          "FantomasOnlineV5"
-          [ mkLambdaInfo "GetVersion" "GET" "/fantomas/v5/version" List.empty
-            mkLambdaInfo "GetOptions" "GET" "/fantomas/v5/options" List.empty
-            mkLambdaInfo "PostFormat" "POST" "/fantomas/v5/format" List.empty ]
-      mkLambdaProject
-          "FantomasOnlineV6"
-          [ mkLambdaInfo "GetVersion" "GET" "/fantomas/v6/version" List.empty
-            mkLambdaInfo "GetOptions" "GET" "/fantomas/v6/options" List.empty
-            mkLambdaInfo "PostFormat" "POST" "/fantomas/v6/format" List.empty ]
-      mkLambdaProject
-          "FantomasOnlineV7"
-          [ mkLambdaInfo "GetVersion" "GET" "/fantomas/v7/version" List.empty
-            mkLambdaInfo "GetOptions" "GET" "/fantomas/v7/options" List.empty
-            mkLambdaInfo "PostFormat" "POST" "/fantomas/v7/format" List.empty ]
-      mkLambdaProject
-          "FantomasOnlineMain"
-          [ mkLambdaInfo
-                "GetVersion"
-                "GET"
-                "/fantomas/main/version"
-                [ "LAST_COMMIT_TIMESTAMP", lastTime; "LAST_COMMIT_SHA", lastSha ]
-            mkLambdaInfo "GetOptions" "GET" "/fantomas/main/options" List.empty
-            mkLambdaInfo "PostFormat" "POST" "/fantomas/main/format" List.empty ]
-      mkLambdaProject
-          "FantomasOnlinePreview"
-          [ mkLambdaInfo "GetVersion" "GET" "/fantomas/preview/version" List.empty
-            mkLambdaInfo "GetOptions" "GET" "/fantomas/preview/options" List.empty
-            mkLambdaInfo "PostFormat" "POST" "/fantomas/preview/format" List.empty ] ]
+    [
+        mkLambdaProject
+            "ASTViewer"
+            [
+                mkLambdaInfo "GetVersion" "GET" "/ast-viewer/version" List.empty
+                mkLambdaInfo "PostUntypedAST" "POST" "/ast-viewer/untyped-ast" List.empty
+                mkLambdaInfo "PostTypedAST" "POST" "/ast-viewer/typed-ast" List.empty
+            ]
+        mkLambdaProject
+            "OakViewer"
+            [
+                mkLambdaInfo "GetVersion" "GET" "/oak-viewer/version" List.empty
+                mkLambdaInfo "GetOak" "POST" "/oak-viewer/get-oak" List.empty
+            ]
+        mkLambdaProject
+            "FantomasOnlineV5"
+            [
+                mkLambdaInfo "GetVersion" "GET" "/fantomas/v5/version" List.empty
+                mkLambdaInfo "GetOptions" "GET" "/fantomas/v5/options" List.empty
+                mkLambdaInfo "PostFormat" "POST" "/fantomas/v5/format" List.empty
+            ]
+        mkLambdaProject
+            "FantomasOnlineV6"
+            [
+                mkLambdaInfo "GetVersion" "GET" "/fantomas/v6/version" List.empty
+                mkLambdaInfo "GetOptions" "GET" "/fantomas/v6/options" List.empty
+                mkLambdaInfo "PostFormat" "POST" "/fantomas/v6/format" List.empty
+            ]
+        mkLambdaProject
+            "FantomasOnlineV7"
+            [
+                mkLambdaInfo "GetVersion" "GET" "/fantomas/v7/version" List.empty
+                mkLambdaInfo "GetOptions" "GET" "/fantomas/v7/options" List.empty
+                mkLambdaInfo "PostFormat" "POST" "/fantomas/v7/format" List.empty
+            ]
+        mkLambdaProject
+            "FantomasOnlineMain"
+            [
+                mkLambdaInfo
+                    "GetVersion"
+                    "GET"
+                    "/fantomas/main/version"
+                    [ "LAST_COMMIT_TIMESTAMP", lastTime; "LAST_COMMIT_SHA", lastSha ]
+                mkLambdaInfo "GetOptions" "GET" "/fantomas/main/options" List.empty
+                mkLambdaInfo "PostFormat" "POST" "/fantomas/main/format" List.empty
+            ]
+        mkLambdaProject
+            "FantomasOnlinePreview"
+            [
+                mkLambdaInfo "GetVersion" "GET" "/fantomas/preview/version" List.empty
+                mkLambdaInfo "GetOptions" "GET" "/fantomas/preview/options" List.empty
+                mkLambdaInfo "PostFormat" "POST" "/fantomas/preview/format" List.empty
+            ]
+    ]
 
 let infra () =
     async {
