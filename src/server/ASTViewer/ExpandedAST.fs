@@ -118,7 +118,8 @@ let rec map (value: obj) : Expr =
         let recordFields =
             fieldDefs
             |> Array.map (fun rf ->
-                RecordFieldNode(identList [ rf.Name ], stn "=", map (FSharpValue.GetRecordField(value, rf)), zeroRange))
+                RecordFieldNode(identList [ rf.Name ], stn "=", map (FSharpValue.GetRecordField(value, rf)), zeroRange)
+                |> ExprRecordFieldOrSpread.Field)
             |> Array.toList
 
         ExprRecordNode(stn "{", None, recordFields, stn "}", zeroRange) |> Expr.Record
@@ -147,8 +148,8 @@ let rec map (value: obj) : Expr =
             let rangeExpr = mkRangeExpr preXmlDoc.Range
             let argExpr = mkExprTuple [ linesExpr; rangeExpr ] |> mkExprParen
 
-            ExprAppLongIdentAndSingleParenArgNode(identList [ "PreXmlDoc"; "Create" ], argExpr, zeroRange)
-            |> Expr.AppLongIdentAndSingleParenArg
+            ExprAppSingleParenArgNode(mkExprOptVarNode (identList [ "PreXmlDoc"; "Create" ]), argExpr, zeroRange)
+            |> Expr.AppSingleParenArg
     | :? string as s -> wrapInQuotes s |> mkConstExpr
     | :? bool as b -> mkConstExpr (if b then "true" else "false")
     | _ ->
@@ -187,8 +188,8 @@ and mapUnion (value: obj) (t: System.Type) : Expr =
             |> mkExprTuple
             |> mkExprParen
 
-    ExprAppLongIdentAndSingleParenArgNode(caseName, arg, zeroRange)
-    |> Expr.AppLongIdentAndSingleParenArg
+    ExprAppSingleParenArgNode(mkExprOptVarNode caseName, arg, zeroRange)
+    |> Expr.AppSingleParenArg
 
 and mapList (value: obj) =
     match value with
