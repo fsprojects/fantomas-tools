@@ -1,4 +1,4 @@
-﻿module FantomasTools.Client.OakViewer.State
+module FantomasTools.Client.OakViewer.State
 
 open System
 open Fable.Core
@@ -22,8 +22,13 @@ let private fetchOak (payload: OakViewer.ParseRequest) dispatch =
         | 200 ->
             match Decode.fromString decodeOak body with
             | Ok response -> Msg.OakReceived response
-            | Result.Error err -> Msg.Error err
-        | _ -> Msg.Error body
+            | Result.Error err -> Msg.Failed(FormatError.ofMessage err)
+        // The backend reports a failure as a `FormatError` document. A gateway refusing the request
+        // sends whatever it sends, and then the body is all the user gets to know about it.
+        | _ ->
+            match Decode.fromString FormatError.Decode body with
+            | Ok error -> Msg.Failed error
+            | Result.Error _ -> Msg.Failed(FormatError.ofMessage body)
         |> dispatch)
 
 let private fetchFSCVersion () = sprintf "%s/version" backend |> Http.getText
@@ -67,7 +72,7 @@ let init () =
     let isGraphView = UrlTools.restoreModelFromUrl decodeUrlModel false
 
     let cmd =
-        Cmd.OfPromise.either fetchFSCVersion () FSCVersionReceived (fun ex -> Error ex.Message)
+        Cmd.OfPromise.either fetchFSCVersion () FSCVersionReceived (fun ex -> Failed(FormatError.ofMessage ex.Message))
 
     { initialModel with
         IsGraphView = isGraphView
@@ -99,11 +104,13 @@ let update (bubble: BubbleModel) (msg: Msg) model : Model * Cmd<Msg> =
             GraphViewRootNodes = []
         },
         cmd
-    | Msg.Error error ->
+    | Msg.Failed error ->
+        // Show the parse diagnostics where every other diagnostic in the tool shows up, pointing at
+        // the line they mean.
         { initialModel with
-            State = OakViewerTabState.Error error
+            State = OakViewerTabState.Failed error
         },
-        Cmd.none
+        error.Diagnostics |> BubbleMessage.SetDiagnostics |> Msg.Bubble |> Cmd.ofMsg
     | FSCVersionReceived version -> { model with Version = version }, Cmd.none
     | SetGraphView value -> let m = { model with IsGraphView = value } in m, Cmd.ofEffect (updateUrl bubble m)
     | SetGraphViewLayout value ->

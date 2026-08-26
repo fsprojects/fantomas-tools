@@ -12,6 +12,13 @@ let main argv =
         match response with
         | GetOakResponse.Ok body -> (applicationText >=> OK body)
         | GetOakResponse.BadRequest errors -> (applicationText >=> BAD_REQUEST errors)
+        | GetOakResponse.Failed error ->
+            let statusCode, json = describeFailure error
+
+            if statusCode = 400 then
+                (applicationJson >=> BAD_REQUEST json)
+            else
+                (applicationJson >=> INTERNAL_SERVER_ERROR json)
 
     let getOakWebPart =
         request (fun req ctx ->

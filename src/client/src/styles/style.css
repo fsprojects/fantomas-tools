@@ -636,6 +636,12 @@ nav > div #docs-btn .long-text {
     margin: 0 0 var(--unit) 0;
 }
 
+/* Says whose code the list below it is about, so it must not read as one of the entries. */
+#diagnostics li.muted {
+    color: var(--grey);
+    margin-bottom: var(--unit);
+}
+
 #diagnostics .badge {
     display: inline-block;
     padding: 3px 6px;

@@ -34,6 +34,23 @@ let private format (fileName: string) code config =
     let isSignature = fileName.EndsWith(".fsi")
     CodeFormatter.FormatDocumentAsync(isSignature, code, config)
 
+let private toDiagnostic (e: FSharpParserDiagnostic) : Diagnostic =
+    let orZero f = Option.map f e.Range |> Option.defaultValue 0
+
+    {
+        SubCategory = e.SubCategory
+        Range =
+            {
+                StartLine = orZero (fun r -> r.StartLine)
+                StartColumn = orZero (fun r -> r.StartColumn)
+                EndLine = orZero (fun r -> r.EndLine)
+                EndColumn = orZero (fun r -> r.EndColumn)
+            }
+        Severity = $"{e.Severity}".ToLower()
+        ErrorNumber = Option.defaultValue 0 e.ErrorNumber
+        Message = e.Message
+    }
+
 let private validate (fileName: string) code =
     async {
         let isSignature = fileName.EndsWith(".fsi")
@@ -41,26 +58,34 @@ let private validate (fileName: string) code =
         let _tree, diagnostics =
             parseFile isSignature (FSharp.Compiler.Text.SourceText.ofString code) []
 
-        return
-            diagnostics
-            |> List.map (fun (e: FSharpParserDiagnostic) ->
-                let orZero f = Option.map f e.Range |> Option.defaultValue 0
-
-                {
-                    SubCategory = e.SubCategory
-                    Range =
-                        {
-                            StartLine = orZero (fun r -> r.StartLine)
-                            StartColumn = orZero (fun r -> r.StartColumn)
-                            EndLine = orZero (fun r -> r.EndLine)
-                            EndColumn = orZero (fun r -> r.EndColumn)
-                        }
-                    Severity = $"{e.Severity}".ToLower()
-                    ErrorNumber = Option.defaultValue 0 e.ErrorNumber
-                    Message = e.Message
-                }
-                : Diagnostic)
+        return diagnostics |> List.map toDiagnostic
     }
+
+/// The little this version of Fantomas says about a failure, said as well as it can be. Version 5
+/// raises `FormatException` for everything, source that does not parse included, so the kind cannot
+/// be told apart here and the message is all there is to pass on. The stack trace is kept for a
+/// failure nobody planned for, where it is the only thing that explains anything.
+let private describeException (ex: exn) : FormatError =
+    match ex with
+    | :? FormatException as formatException ->
+        {
+            Kind = FormatErrorKind.FantomasBug
+            Message = formatException.Message
+            Diagnostics = Array.empty
+            Detail = None
+        }
+    | ex ->
+        // The stack trace goes to the log and no further. It is of no use to whoever pasted the
+        // code, and the tool hands the error to GitHub as part of a URL: one long enough to push
+        // that URL past what GitHub accepts takes the report down with it.
+        eprintfn $"%O{ex}"
+
+        {
+            Kind = FormatErrorKind.Unknown
+            Message = $"%s{ex.GetType().Name}: %s{ex.Message}"
+            Diagnostics = Array.empty
+            Detail = None
+        }
 
 let getVersion () =
     let assembly = typeof<FormatConfig.FormatConfig>.Assembly
@@ -89,4 +114,4 @@ let getOptions () : string =
     |> mapOptionsToJson
 
 let formatCode: string -> Async<FormatResponse> =
-    formatCode mapFantomasOptionsToRecord format validate
+    formatCode mapFantomasOptionsToRecord format validate describeException

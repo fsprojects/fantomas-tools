@@ -1,4 +1,4 @@
-﻿module FantomasTools.Client.OakViewer.Model
+module FantomasTools.Client.OakViewer.Model
 
 open Fable.Core
 open FantomasTools.Client
@@ -81,13 +81,13 @@ type Msg =
     | SetGraphViewScaleMax of int
     | GraphViewSetRoot of GraphView.NodeId
     | GraphViewGoBack
-    | Error of string
+    | Failed of FormatError
 
 [<RequireQualifiedAccess>]
 type OakViewerTabState =
     | Loading
     | Result of OakNode
-    | Error of string
+    | Failed of FormatError
 
 type Model =
     {

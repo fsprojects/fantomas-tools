@@ -220,13 +220,22 @@ let createGitHubIssue (bubble: BubbleModel) model =
 
     let bh, bc, ah, ac =
         match model.State with
-        | FantomasTabState.FormatError e -> "Code", bubble.SourceCode, "Error", e
+        | FantomasTabState.FormatFailed error -> "Code", bubble.SourceCode, "Error", FormatError.toIssueText error
         | FantomasTabState.FormatResult result ->
             "Code", bubble.SourceCode, "Result", (Option.defaultValue result.FirstFormat result.SecondFormat)
         | _ -> "Code", bubble.SourceCode, "", ""
 
+    // Source that does not parse is the one failure Fantomas is not to blame for. Inviting an issue
+    // for it sends the user to the wrong place, so say what happened instead.
+    let sourceIsTheProblem =
+        match model.State with
+        | FantomasTabState.FormatFailed error -> error.Kind = FormatErrorKind.InvalidSource
+        | _ -> false
+
     if System.String.IsNullOrWhiteSpace(bubble.SourceCode) then
         span [ ClassName Style.Muted ] [ str "Looks wrong? Try using the main version!" ]
+    elif sourceIsTheProblem then
+        span [ ClassName Style.Muted ] [ str "This code is not valid F#, nothing to report." ]
     else
         match model.Mode with
         | Main
@@ -300,7 +309,7 @@ let commands (bubble: BubbleModel) model dispatch =
     | FantomasTabState.LoadingFormatRequest -> [ formatButton; ofOption copySettingButton ]
     | FantomasTabState.OptionsLoaded
     | FantomasTabState.FormatResult _
-    | FantomasTabState.FormatError _ ->
+    | FantomasTabState.FormatFailed _ ->
         [
             yield! idempotencyButton model
             createGitHubIssue bubble model

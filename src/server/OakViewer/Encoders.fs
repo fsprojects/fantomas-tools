@@ -1,4 +1,4 @@
-﻿module internal OakViewer.Encoders
+module internal OakViewer.Encoders
 
 open Thoth.Json.Net
 open Fantomas.FCS.Diagnostics
@@ -78,8 +78,8 @@ let fsharpErrorInfoSeverity =
     | FSharpDiagnosticSeverity.Hidden -> "hidden"
     | FSharpDiagnosticSeverity.Info -> "info"
 
-let encodeFSharpErrorInfo (info: FSharpParserDiagnostic) =
-    ({
+let mkDiagnostic (info: FSharpParserDiagnostic) : FantomasTools.Client.Diagnostic =
+    {
         SubCategory = info.SubCategory
         Range =
             match info.Range with
@@ -89,8 +89,9 @@ let encodeFSharpErrorInfo (info: FSharpParserDiagnostic) =
         ErrorNumber = Option.defaultValue 0 info.ErrorNumber
         Message = info.Message
     }
-    : FantomasTools.Client.Diagnostic)
-    |> FantomasTools.Client.Diagnostic.Encode
+
+let encodeFSharpErrorInfo (info: FSharpParserDiagnostic) =
+    mkDiagnostic info |> FantomasTools.Client.Diagnostic.Encode
 
 let encode (root: Node) (diagnostics: FSharpParserDiagnostic list) =
     Encode.object

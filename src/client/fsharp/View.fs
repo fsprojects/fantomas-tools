@@ -4,6 +4,7 @@ open Browser.Types
 open Fable.Core.JsInterop
 open Fable.React
 open Fable.React.Props
+open FantomasOnline.Shared
 open FantomasTools.Client
 open FantomasTools.Client.ASTViewer.Model
 open FantomasTools.Client.FantomasOnline.Model
@@ -140,7 +141,7 @@ let tabs model =
         li [] []
     ]
 
-let diagnostics (bubble: BubbleModel) =
+let diagnostics (caption: string option) (bubble: BubbleModel) =
     if Array.isEmpty bubble.Diagnostics then
         null
     else
@@ -158,9 +159,30 @@ let diagnostics (bubble: BubbleModel) =
                     p [] [ str diag.Message ]
                 ])
 
-        ul [ Id "diagnostics" ] [ ofArray diagnostics ]
+        ul [ Id "diagnostics" ] [
+            ofOption (
+                caption
+                |> Option.map (fun text -> li [ Key "caption"; ClassName Style.Muted ] [ str text ])
+            )
+            ofArray diagnostics
+        ]
 
 let tempLoading = str "temp loading"
+
+/// Whose code the diagnostics are about. The Fantomas tab has two answers: the code that was
+/// submitted, when that is what would not parse, and the code Fantomas wrote, when Fantomas is the
+/// one who could not read it back. They look the same in the list, so the list says which it is.
+let private diagnosticsCaption (model: Model) : string option =
+    match model.ActiveTab with
+    | FantomasTab _ ->
+        match model.FantomasModel.State with
+        | FantomasTabState.FormatResult result when
+            not (Array.isEmpty result.FirstValidation && Array.isEmpty result.SecondValidation)
+            ->
+            Some "About the code Fantomas produced, not the code you submitted."
+        | FantomasTabState.FormatFailed _ -> Some "About the code you submitted."
+        | _ -> None
+    | _ -> None
 
 let rightPane (model: Model) dispatch =
     let resultEditor, activeTab, settingsForTab, commands =
@@ -200,7 +222,7 @@ let rightPane (model: Model) dispatch =
                 | FantomasTabState.LoadingOptions
                 | FantomasTabState.LoadingFormatRequest -> HiddenEditor()
                 | FantomasTabState.OptionsLoaded -> HiddenEditor()
-                | FantomasTabState.FormatError error -> ReadOnlyEditor error
+                | FantomasTabState.FormatFailed error -> ReadOnlyEditor(FormatError.toText error)
                 | FantomasTabState.FormatResult result ->
                     let formattedCode =
                         match result.SecondFormat with
@@ -228,7 +250,7 @@ let rightPane (model: Model) dispatch =
         | FantomasTab _ ->
             match model.FantomasModel.State with
             | FantomasTabState.OptionsLoaded
-            | FantomasTabState.FormatError _
+            | FantomasTabState.FormatFailed _
             | FantomasTabState.FormatResult _ -> true
             | _ -> false
         | _ -> false
@@ -242,5 +264,5 @@ let rightPane (model: Model) dispatch =
         if not (isNull commands) then
             div [ Id "commands" ] [ commands ]
         if model.ActiveTab <> HomeTab then
-            diagnostics model.Bubble
+            diagnostics (diagnosticsCaption model) model.Bubble
     ]
