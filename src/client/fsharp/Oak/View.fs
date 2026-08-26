@@ -1,4 +1,4 @@
-﻿module FantomasTools.Client.OakViewer.View
+module FantomasTools.Client.OakViewer.View
 
 open Browser.Types
 open Fable.Core
@@ -112,7 +112,19 @@ let view (model: Model) dispatch =
             Oak.GraphView.view (oakNode, model, dispatch)
         else
             results oakNode dispatch
-    | OakViewerTabState.Error errors -> ReadOnlyEditor errors
+    | OakViewerTabState.Failed error ->
+        // The Fantomas tabs have a button that files the issue for you; this tab has none, so the
+        // text has to say where a bug in Fantomas goes.
+        let error =
+            match error.Kind with
+            | FormatErrorKind.FantomasBug ->
+                { error with
+                    Message =
+                        $"%s{error.Message}\n\nThis is a bug in Fantomas. Please report it at https://github.com/fsprojects/fantomas/issues."
+                }
+            | _ -> error
+
+        ReadOnlyEditor(FormatError.toText error)
     | OakViewerTabState.Loading -> Loader.tabLoading
 
 let commands dispatch =

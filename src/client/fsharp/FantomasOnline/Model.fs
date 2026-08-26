@@ -14,7 +14,7 @@ type Msg =
     | Bubble of BubbleMessage
     | VersionReceived of string
     | OptionsReceived of FantomasOption list
-    | FormatException of string
+    | FormatFailed of FormatError
     | Format
     | FormattedReceived of FormatResponse
     | UpdateOption of (string * FantomasOption)
@@ -29,7 +29,7 @@ type FantomasTabState =
     | OptionsLoaded
     | LoadingFormatRequest
     | FormatResult of FormatResponse
-    | FormatError of string
+    | FormatFailed of FormatError
 
 type Model =
     {

@@ -47,6 +47,14 @@ let private getOptions mode =
         | Ok v -> v
         | Error e -> failwithf "%A" e)
 
+/// Our backends report a failure as a `FormatError` document. Anything else along the way, a
+/// gateway refusing the request among them, only has the body it sent, which is then all the user
+/// gets to know about it.
+let private decodeFormatError (body: string) : FormatError =
+    match Decode.fromString FormatError.Decode body with
+    | Ok error -> error
+    | Error _ -> FormatError.ofMessage body
+
 let private getFormattedCode code isFsi model dispatch =
     let url = sprintf "%s/%s" (Map.find model.Mode backend) "format"
 
@@ -58,11 +66,10 @@ let private getFormattedCode code isFsi model dispatch =
         | 200 ->
             match Decode.fromString Decoders.decodeFormatResponse body with
             | Ok res -> Msg.FormattedReceived res
-            | Error err -> Msg.FormatException err
+            | Error err -> Msg.FormatFailed(FormatError.ofMessage err)
 
-        | 400 -> Msg.FormatException body
-        | 413 -> Msg.FormatException "the input was too large to process"
-        | _ -> Msg.FormatException body
+        | 413 -> Msg.FormatFailed(FormatError.ofMessage "the input was too large to process")
+        | _ -> Msg.FormatFailed(decodeFormatError body)
         |> dispatch)
 
 let private updateUrl code isFsi model _ =
@@ -71,10 +78,12 @@ let private updateUrl code isFsi model _ =
     UrlTools.updateUrlWithData json
 
 let getOptionsCmd mode =
-    Cmd.OfPromise.either getOptions mode OptionsReceived (fun exn -> Msg.FormatException exn.Message)
+    Cmd.OfPromise.either getOptions mode OptionsReceived (fun exn ->
+        Msg.FormatFailed(FormatError.ofMessage exn.Message))
 
 let getVersionCmd mode =
-    Cmd.OfPromise.either getVersion mode VersionReceived (fun exn -> Msg.FormatException exn.Message)
+    Cmd.OfPromise.either getVersion mode VersionReceived (fun exn ->
+        Msg.FormatFailed(FormatError.ofMessage exn.Message))
 
 let init (mode: FantomasMode) =
     let cmd =
@@ -217,11 +226,13 @@ let update isActiveTab (bubble: BubbleModel) msg model =
         },
         cmd
 
-    | FormatException error ->
+    | FormatFailed error ->
+        // Parse diagnostics are the point of the failure when the source is what went wrong: show
+        // them where every other diagnostic in the tool shows up, pointing at the line they mean.
         { model with
-            State = FantomasTabState.FormatError error
+            State = FantomasTabState.FormatFailed error
         },
-        Cmd.none
+        error.Diagnostics |> BubbleMessage.SetDiagnostics |> Msg.Bubble |> Cmd.ofMsg
 
     | FormattedReceived result ->
         let cmd =

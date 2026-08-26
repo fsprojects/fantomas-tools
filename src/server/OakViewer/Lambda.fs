@@ -22,5 +22,8 @@ let GetOak (request: APIGatewayProxyRequest) (_context: ILambdaContext) =
         match oakResponse with
         | GetOakResponse.Ok body -> HttpStatusCode.OK, HeaderValues.ApplicationText, body
         | GetOakResponse.BadRequest body -> HttpStatusCode.BadRequest, HeaderValues.ApplicationText, body
+        | GetOakResponse.Failed error ->
+            let statusCode, json = describeFailure error
+            enum<HttpStatusCode> statusCode, HeaderValues.ApplicationJson, json
 
     mkAPIGatewayProxyResponse responseData
