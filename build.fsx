@@ -19,9 +19,30 @@ let fantomasV5Port = 11009
 let fantomasV6Port = 13042
 let fantomasV7Port = 10707
 let pwd = __SOURCE_DIRECTORY__
-let fantomasDepDir = pwd </> ".deps" </> "fantomas"
-let previewBranch = "v7.0"
-let previewDepDir = pwd </> ".deps" </> previewBranch
+
+/// The branch the preview backend is built from, when there is one.
+///
+/// Preview exists so the next major version can be worked on in its own branch while the stable
+/// release keeps shipping. There is no such branch right now: everything is on main, and
+/// `FantomasPreviewRepository` in Directory.Build.props points at the same checkout as main. A
+/// second clone would then be a second copy of what main already built, and nothing would read it.
+///
+/// When the next major gets its own branch, name it here and point `FantomasPreviewRepository` at
+/// `.deps/<branch>`. The two go together: this decides what is cloned and built, that decides what
+/// the preview backend compiles against.
+let previewBranch: string option = None
+
+/// Every Fantomas checkout the tools build against, as the branch to clone and the folder under
+/// `.deps` to keep it in.
+let fantomasCheckouts: (string * string) list =
+    [
+        yield "main", "fantomas"
+
+        match previewBranch with
+        | Some branch -> yield branch, branch
+        | None -> ()
+    ]
+
 let clientDir = pwd </> "src" </> "client"
 let serverDir = __SOURCE_DIRECTORY__ </> "src" </> "server"
 let artifactDir = __SOURCE_DIRECTORY__ </> "artifacts"
@@ -41,50 +62,46 @@ let setEnv name value =
 
 pipeline "Fantomas-Git" {
     stage "git" {
-        paralle
         run (fun ctx ->
             async {
-                let branch = "main"
+                let! results =
+                    fantomasCheckouts
+                    |> List.map (fun (branch, folder) ->
+                        let checkoutDir = pwd </> ".deps" </> folder
 
-                if Directory.Exists(fantomasDepDir) then
-                    let! result = git ctx fantomasDepDir "pull"
-                    return mapResultToCode result
-                else
-                    let! result =
-                        git
-                            ctx
-                            __SOURCE_DIRECTORY__
-                            $"clone -b {branch} --single-branch https://github.com/fsprojects/fantomas.git .deps/fantomas"
+                        async {
+                            if Directory.Exists checkoutDir then
+                                return! git ctx checkoutDir "pull"
+                            else
+                                return!
+                                    git
+                                        ctx
+                                        __SOURCE_DIRECTORY__
+                                        $"clone -b {branch} --single-branch https://github.com/fsprojects/fantomas.git .deps/{folder}"
+                        })
+                    |> Async.Parallel
 
-                    return mapResultToCode result
-            })
-        run (fun ctx ->
-            async {
-                if Directory.Exists(previewDepDir) then
-                    let! result = git ctx previewDepDir "pull"
-                    return mapResultToCode result
-                else
-                    let! result =
-                        git
-                            ctx
-                            __SOURCE_DIRECTORY__
-                            $"clone -b {previewBranch} --single-branch https://github.com/fsprojects/fantomas.git .deps/{previewBranch}"
-
-                    return mapResultToCode result
+                return results |> Array.map mapResultToCode |> Array.fold max 0
             })
     }
     stage "build" {
-        paralle
-        stage "build fantomas main" {
-            workingDir fantomasDepDir
-            run "dotnet fsi build.fsx -p Init"
-            run "dotnet build src/Fantomas.Core"
-        }
-        stage "build fantomas preview" {
-            workingDir previewDepDir
-            run "dotnet fsi build.fsx -p Init"
-            run "dotnet build src/Fantomas.Core"
-        }
+        run (fun ctx ->
+            async {
+                let! results =
+                    fantomasCheckouts
+                    |> List.map (fun (_, folder) ->
+                        let checkoutDir = pwd </> ".deps" </> folder
+
+                        async {
+                            match! ctx.RunCommand("dotnet fsi build.fsx -p Init", workingDir = checkoutDir) with
+                            | Error error -> return Error error
+                            | Ok() ->
+                                return! ctx.RunCommand("dotnet build src/Fantomas.Core", workingDir = checkoutDir)
+                        })
+                    |> Async.Parallel
+
+                return results |> Array.map mapResultToCode |> Array.fold max 0
+            })
     }
     runIfOnlySpecified true
 }
