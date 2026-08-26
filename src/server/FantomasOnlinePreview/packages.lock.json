@@ -25,9 +25,9 @@
       },
       "FSharp.Core": {
         "type": "Direct",
-        "requested": "[10.0.102, )",
-        "resolved": "10.0.102",
-        "contentHash": "umz5pbtOvL/F9U5sibhREzZT2ewAs//nRTMwj8XcOOjMdOP828tipLpEhb2fZNijhiyikJ6Nr/dsMc/lj58W9w=="
+        "requested": "[10.1.400, )",
+        "resolved": "10.1.400",
+        "contentHash": "C8Myl8/HMoTWw0K/xJ+Q6JHlS5fUw2VTI91a3v3eVs0FVkVb5XIevzH7S2AmvIoD7s186uNyeRTGbrpef9gZyQ=="
       },
       "Microsoft.Net.Http.Headers": {
         "type": "Direct",
@@ -40,11 +40,11 @@
       },
       "Suave": {
         "type": "Direct",
-        "requested": "[3.4.4, )",
-        "resolved": "3.4.4",
-        "contentHash": "d4Ei+/LIphDaHoL0pTpXERSFUYUIxB92C/AJ29PggglFgekQqwRbJRse+tDmca30PYL0Z7VbX32NzTr80RpGkA==",
+        "requested": "[3.4.5, )",
+        "resolved": "3.4.5",
+        "contentHash": "nAmftaHg67n5FV8f/3NeIPr/W9VPkeJ2NHtH8S3G93xx1dNEoZ8xRc4fTo9CabNIcZtsNX6zdTbeo+AWzJzXZg==",
         "dependencies": {
-          "FSharp.Core": "[10.0.102]"
+          "FSharp.Core": "10.0.102"
         }
       },
       "Thoth.Json.Net": {

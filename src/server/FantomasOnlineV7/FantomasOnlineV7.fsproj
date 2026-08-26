@@ -24,7 +24,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Fantomas.Core" Version="7.0.6" />
-    <PackageReference Include="FSharp.Core" Version="10.0.102" />
+    <PackageReference Include="FSharp.Core" Version="10.1.400" />
     <PackageReference Include="Thoth.Json.Net" Version="12.0.0" />
   </ItemGroup>
 </Project>
