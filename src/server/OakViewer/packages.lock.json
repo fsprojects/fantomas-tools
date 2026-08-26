@@ -4,23 +4,23 @@
     "net10.0": {
       "Amazon.Lambda.APIGatewayEvents": {
         "type": "Direct",
-        "requested": "[2.7.3, )",
-        "resolved": "2.7.3",
-        "contentHash": "CXmiXdwuSXSJA0YH+7OJqG2uGDnhDcKkN2ei2u2/kdRFK+RH8JC5GbdechdJoldpogxHdHy12TuAfqqKSC67Nw=="
+        "requested": "[3.0.1, )",
+        "resolved": "3.0.1",
+        "contentHash": "+gTGEtrcoCBRtCgcqEl3AlFrYrQY4pFreL22KkmpvXaNX1Lwlrbgk/crEcfuD3Q0wO2AspsJ3xMMj7pJxDYTKA=="
       },
       "Amazon.Lambda.Core": {
         "type": "Direct",
-        "requested": "[2.8.1, )",
-        "resolved": "2.8.1",
-        "contentHash": "wLrBdUXY1jn12o3+sar5c5ApMJPGEMye+1rnyDjwCKA2rcPNMZbNsKLQ76bV+DGnx5CN8bArB26SKB/rEuxIxQ=="
+        "requested": "[3.3.0, )",
+        "resolved": "3.3.0",
+        "contentHash": "CZKlX8ZDMi6aKPo5lPAjmsJFDXNJHX00aiiYeRQOEszP8cjx6qklBvTPj4qpr4dlp3YYQjmB87CqAiWV7vk2fA=="
       },
       "Amazon.Lambda.Serialization.SystemTextJson": {
         "type": "Direct",
-        "requested": "[2.4.5, )",
-        "resolved": "2.4.5",
-        "contentHash": "5A/uFtcGBbRP7yA2dAaG6H67Sb0HKvzy8tscHj8b4QiYsZ3fFykBdfqcYuLgIlTHJIutz6JzF8gOvlYH9/5s7g==",
+        "requested": "[3.0.1, )",
+        "resolved": "3.0.1",
+        "contentHash": "QsHygaMyxQdgh5NPs5GGyBjK6mqQr5nv8rpqlrWC5+e1k7sVx+2xwDHv493S5IMw461S/PyHfjkUDjIQU5ArSA==",
         "dependencies": {
-          "Amazon.Lambda.Core": "2.8.0"
+          "Amazon.Lambda.Core": "3.3.0"
         }
       },
       "FSharp.Core": {
@@ -31,20 +31,20 @@
       },
       "Microsoft.Net.Http.Headers": {
         "type": "Direct",
-        "requested": "[10.0.5, )",
-        "resolved": "10.0.5",
-        "contentHash": "TGUHL+k6OikGvIDpwwFUBkhSYs+1Z6BYab6EJM8xrIvuSNdf+Ni0hiNRyM7WeoycZo8yHttdCHlbj3QfLtGM6Q==",
+        "requested": "[10.0.11, )",
+        "resolved": "10.0.11",
+        "contentHash": "k1F3ueFIHU8V9rd9qzCJoeZGhuErKauOdymjyZh3ECxnssa503bHtNfM5LmHHhrBGPqFq4HDq5rEElfDzFNsEA==",
         "dependencies": {
-          "Microsoft.Extensions.Primitives": "10.0.5"
+          "Microsoft.Extensions.Primitives": "10.0.11"
         }
       },
       "Suave": {
         "type": "Direct",
-        "requested": "[3.2.3, )",
-        "resolved": "3.2.3",
-        "contentHash": "o35yJDABIJ/rJ3lnrMo/vIk4CKN00HZScd5AulSTKgfcfD3KfU5kFZesa4ZGVMwogNgHRx0b0g05hgkY98oUlQ==",
+        "requested": "[3.4.4, )",
+        "resolved": "3.4.4",
+        "contentHash": "d4Ei+/LIphDaHoL0pTpXERSFUYUIxB92C/AJ29PggglFgekQqwRbJRse+tDmca30PYL0Z7VbX32NzTr80RpGkA==",
         "dependencies": {
-          "FSharp.Core": "[10.0.102, 10.1.0)"
+          "FSharp.Core": "[10.0.102]"
         }
       },
       "Thoth.Json.Net": {
@@ -68,8 +68,8 @@
       },
       "Microsoft.Extensions.Primitives": {
         "type": "Transitive",
-        "resolved": "10.0.5",
-        "contentHash": "/HUHJ0tw/LQvD0DZrz50eQy/3z7PfX7WWEaXnjKTV9/TNdcgFlNTZGo49QhS7PTmhDqMyHRMqAXSBxLh0vso4g=="
+        "resolved": "10.0.11",
+        "contentHash": "SXcz+kF+4Oo9b1+55zntpJFYfwb1jw66ioxptyNOOTDc8g2FHnBFWjZpsWfCvZIhzr0x+4e2trVTs4OKwQfBtw=="
       },
       "Newtonsoft.Json": {
         "type": "Transitive",

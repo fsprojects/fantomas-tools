@@ -92,8 +92,11 @@ pipeline "Fantomas-Git" {
 let publishLambda name =
     $"dotnet publish --tl -c Release {serverDir}/{name}/{name}.fsproj"
 
+// Hot Reload has no F# support, so `dotnet watch` announces that every project does not support it
+// and rebuilds anyway, once per change per project. Ask for the rebuild it was going to do and the
+// output stays about the code.
 let runLambda name =
-    $"dotnet watch run --project {serverDir </> name </> name}.fsproj --tl"
+    $"dotnet watch --no-hot-reload run --project {serverDir </> name </> name}.fsproj --tl"
 
 let setViteToProduction () =
     setEnv "NODE_ENV" "production"
