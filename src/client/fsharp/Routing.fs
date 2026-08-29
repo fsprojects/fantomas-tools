@@ -1,11 +1,11 @@
-/// Hash-based routing, cut down to the three things Fantomas Tools actually needs:
-/// the current URL as segments, a pattern for the query string, and an element that
-/// reports hash changes.
-///
-/// Adapted from Feliz.Router (https://github.com/Zaid-Ajaj/Feliz.Router), MIT licensed,
-/// Copyright (c) 2018 Zaid Ajaj. That package targets Feliz 2 and has been unmaintained
-/// since 2022; on Feliz 3 it silently compiles to `throw 1` because `React.fragment`,
-/// `React.useCallbackRef` and `React.createDisposable` no longer exist.
+// Hash-based routing, cut down to the three things Fantomas Tools actually needs:
+// the current URL as segments, a pattern for the query string, and an element that
+// reports hash changes.
+//
+// Adapted from Feliz.Router (https://github.com/Zaid-Ajaj/Feliz.Router), MIT licensed,
+// Copyright (c) 2018 Zaid Ajaj. That package targets Feliz 2 and has been unmaintained
+// since 2022; on Feliz 3 it silently compiles to `throw 1` because `React.fragment`,
+// `React.useCallbackRef` and `React.createDisposable` no longer exist.
 namespace FantomasTools.Client.Routing
 
 open System
