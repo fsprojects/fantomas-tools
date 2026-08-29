@@ -7,7 +7,8 @@ open Pulumi
 open Pulumi.Aws.Lambda.Inputs
 open Pulumi.FSharp
 open Pulumi.Aws
-open Thoth.Json.Net
+open Thoth.Json.Core
+open Thoth.Json.System.Text.Json
 open Humanizer
 
 let private commitDecoder: Decoder<string * string> =
