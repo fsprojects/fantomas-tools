@@ -1,10 +1,5 @@
 #!/usr/bin/env -S dotnet fsi
 
-// Pin FSharp.Core so `dotnet fsi` restores it from nuget.org. Left implicit, the script picks up
-// the copy bundled in the SDK's FSharp/library-packs folder, which is a different file per
-// platform for the same version. That lands in the shared package folder before `dotnet restore`
-// runs, and then disagrees with the hash in packages.lock.json (NU1403).
-#r "nuget: FSharp.Core, 10.1.400"
 #r "nuget: Fun.Build, 1.1.17"
 #r "nuget: Fake.IO.FileSystem, 6.1.4"
 

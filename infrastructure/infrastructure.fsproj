@@ -9,7 +9,7 @@
     <Content Include="Pulumi.main.yaml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="FSharp.Core" Version="10.1.400" />
+    <PackageReference Include="FSharp.Core" Version="10.1.203" />
     <PackageReference Include="Humanizer.Core" Version="3.0.10" />
     <PackageReference Include="Pulumi.Aws" Version="7.44.0" />
     <PackageReference Include="Pulumi.FSharp" Version="3.113.0" />

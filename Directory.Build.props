@@ -9,7 +9,6 @@
         <RestoreUseStaticGraphEvaluation>true</RestoreUseStaticGraphEvaluation>
         <NoWarn>NU1603</NoWarn>
         <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
-        <DisableImplicitLibraryPacksFolder>true</DisableImplicitLibraryPacksFolder>
         <ServerGarbageCollection>true</ServerGarbageCollection>
         <LangVersion>preview</LangVersion>
         <OtherFlags>$(OtherFlags) --test:GraphBasedChecking --test:ParallelOptimization --test:ParallelIlxGen</OtherFlags>

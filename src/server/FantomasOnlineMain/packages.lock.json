@@ -25,9 +25,9 @@
       },
       "FSharp.Core": {
         "type": "Direct",
-        "requested": "[10.1.400, )",
-        "resolved": "10.1.400",
-        "contentHash": "H9wlZ/tWgNp+Q4WQ5aUSi3XOBXrL6z+UkR0PNeyDFyoZR3c3PbtA21B9FqlthrhEwQ6f5AtQV0JLhBBDqjjscw=="
+        "requested": "[10.1.203, )",
+        "resolved": "10.1.203",
+        "contentHash": "I2MFk72yHqfgI594gKFigq8PVIso0Mh1ZUgG9R4n8gyYQ4IwpBxmvecfjnKA7iMLdVHYULB70PsLwYW/K76gew=="
       },
       "Microsoft.Net.Http.Headers": {
         "type": "Direct",
