@@ -1,0 +1,27 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/.deps/" />
+  <Folder Name="/.deps/fantomas/" />
+  <Folder Name="/.deps/fantomas/src/">
+    <Project Path=".deps/fantomas/src/Fantomas.Core/Fantomas.Core.fsproj" />
+    <Project Path=".deps/fantomas/src/Fantomas.FCS/Fantomas.FCS.fsproj" />
+  </Folder>
+  <Folder Name="/src/" />
+  <Folder Name="/src/client/">
+    <Project Path="src/client/fsharp/FantomasTools.fsproj" />
+  </Folder>
+  <Folder Name="/src/server/">
+    <Project Path="src/server/ASTViewer/ASTViewer.fsproj" />
+    <Project Path="src/server/FantomasOnlineMain/FantomasOnlineMain.fsproj" />
+    <Project Path="src/server/FantomasOnlinePreview/FantomasOnlinePreview.fsproj" />
+    <Project Path="src/server/FantomasOnlineV5/FantomasOnlineV5.fsproj" />
+    <Project Path="src/server/FantomasOnlineV6/FantomasOnlineV6.fsproj" />
+    <Project Path="src/server/FantomasOnlineV7/FantomasOnlineV7.fsproj" />
+    <Project Path="src/server/OakViewer/OakViewer.fsproj" />
+  </Folder>
+  <Project Path="infrastructure/infrastructure.fsproj" />
+</Solution>
