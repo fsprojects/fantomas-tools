@@ -9,6 +9,12 @@
         <RestoreUseStaticGraphEvaluation>true</RestoreUseStaticGraphEvaluation>
         <NoWarn>NU1603</NoWarn>
         <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
+        <!-- The SDK adds its own `FSharp/library-packs` folder as a restore source, which carries a
+             different FSharp.Core nupkg than nuget.org ships for the same version (the SDK copy is not
+             repository-signed). Whichever one wins gets its hash written into packages.lock.json, so a
+             machine that picks the other one fails with NU1403. A NuGet.config cannot gate this, because
+             the folder arrives via RestoreAdditionalProjectSources rather than as a package source. -->
+        <DisableImplicitLibraryPacksFolder>true</DisableImplicitLibraryPacksFolder>
         <ServerGarbageCollection>true</ServerGarbageCollection>
         <LangVersion>preview</LangVersion>
         <OtherFlags>$(OtherFlags) --test:GraphBasedChecking --test:ParallelOptimization --test:ParallelIlxGen</OtherFlags>
