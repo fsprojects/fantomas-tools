@@ -1,7 +1,8 @@
 module ASTViewer.GetAST
 
 open System.Reflection
-open Thoth.Json.Net
+open Thoth.Json.Core
+open Thoth.Json.System.Text.Json
 open Fantomas.FCS.Text
 open Fantomas.FCS.Parse
 open ASTViewer.Shared

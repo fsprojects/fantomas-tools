@@ -4,14 +4,15 @@ open Fable.Core.JsInterop
 open Browser.Types
 open Fable.React
 open Feliz
-open Feliz.Router
+open FantomasTools.Client.Routing
 open Feliz.UseElmish
 open Browser.Dom
 open FantomasTools.Client
 
 [<ReactComponent>]
 let App () =
-    let model, dispatch = React.useElmish (State.init, State.update, [||])
+    let model, dispatch =
+        React.useElmish (State.init, State.update, dependencies = [||])
 
     let onUrlChanged url =
         let activeTab = Navigation.parseUrl url
@@ -21,14 +22,11 @@ let App () =
 
     fragment [] [
         View.navigation dispatch
-        main [] [
-            View.editor model dispatch
-            React.router [ router.onUrlChanged onUrlChanged; router.children [ routes ] ]
-        ]
+        main [] [ View.editor model dispatch; RouteListener onUrlChanged routes ]
     ]
 
 let createRoot: Element -> {| render: ReactElement -> unit |} =
     import "createRoot" "react-dom/client"
 
 let root = createRoot (document.getElementById "app")
-root.render (React.strictMode [ App() ])
+root.render (React.StrictMode [ App() ])

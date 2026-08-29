@@ -1,6 +1,7 @@
 module OakViewer.Server.Decoders
 
-open Thoth.Json.Net
+open Thoth.Json.Core
+open Thoth.Json.System.Text.Json
 open OakViewer
 
 let private parseRequestDecoder: Decoder<ParseRequest> =

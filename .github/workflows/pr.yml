@@ -16,11 +16,11 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
         # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v1
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2
 
       - name: Setup dotnet
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v6
 
       - name: Clone Fantomas
         run: dotnet fsi build.fsx -p Fantomas-Git

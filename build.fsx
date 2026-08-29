@@ -1,7 +1,7 @@
 #!/usr/bin/env -S dotnet fsi
 
-#r "nuget: Fun.Build, 1.0.4"
-#r "nuget: Fake.IO.FileSystem, 5.23.0"
+#r "nuget: Fun.Build, 1.1.17"
+#r "nuget: Fake.IO.FileSystem, 6.1.4"
 
 open System
 open System.IO
@@ -145,7 +145,7 @@ pipeline "Build" {
     workingDir __SOURCE_DIRECTORY__
     bunInstall
     dotnetInstall
-    stage "check format F#" { run "dotnet fantomas src infrastructure build.fsx --check" }
+    stage "check format F#" { run "dotnet fantomas check src infrastructure build.fsx" }
     stage "check format JS" {
         workingDir clientDir
         run "bun run lint"

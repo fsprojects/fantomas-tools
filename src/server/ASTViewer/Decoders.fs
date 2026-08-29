@@ -1,6 +1,7 @@
 module ASTViewer.Server.Decoders
 
-open Thoth.Json.Net
+open Thoth.Json.Core
+open Thoth.Json.System.Text.Json
 open ASTViewer.Shared
 
 let private decodeInput =

@@ -1,6 +1,7 @@
 module FantomasOnline.Server.Shared.Encoders
 
-open Thoth.Json.Net
+open Thoth.Json.Core
+open Thoth.Json.System.Text.Json
 open FantomasOnline.Shared
 open FantomasTools.Client
 
@@ -47,6 +48,6 @@ let encodeFormatResponse (formatResponse: FormatResponse) =
         [
             "firstFormat", Encode.string formatResponse.FirstFormat
             "firstValidation", (formatResponse.FirstValidation |> Array.map Diagnostic.Encode |> Encode.array)
-            "secondFormat", Encode.option Encode.string formatResponse.SecondFormat
+            "secondFormat", Encode.lossyOption Encode.string formatResponse.SecondFormat
             "secondValidation", (formatResponse.SecondValidation |> Array.map Diagnostic.Encode |> Encode.array)
         ]

@@ -2,7 +2,8 @@ module FantomasOnline.Server.Shared.Http
 
 open System.Net
 open FantomasTools.Client
-open Thoth.Json.Net
+open Thoth.Json.Core
+open Thoth.Json.System.Text.Json
 open HttpConstants
 open AWSLambdaExtensions
 open FantomasOnline.Server.Shared

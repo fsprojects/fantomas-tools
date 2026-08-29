@@ -3,7 +3,8 @@ namespace FantomasTools.Client
 #if FABLE_COMPILER
 open Thoth.Json
 #else
-open Thoth.Json.Net
+open Thoth.Json.Core
+open Thoth.Json.System.Text.Json
 #endif
 
 type Range =
@@ -32,7 +33,7 @@ type Range =
                 EndColumn = get.Required.Field "endColumn" Decode.int
             })
 #else
-    static member Encode(range: Range) : JsonValue =
+    static member Encode(range: Range) : IEncodable =
         Encode.object
             [
                 "startLine", Encode.int range.StartLine
@@ -62,7 +63,7 @@ type Diagnostic =
                 Message = get.Required.Field "message" Decode.string
             })
 #else
-    static member Encode(diagnostic: Diagnostic) : JsonValue =
+    static member Encode(diagnostic: Diagnostic) : IEncodable =
         Encode.object
             [
                 "subcategory", Encode.string diagnostic.SubCategory
@@ -118,20 +119,20 @@ type FormatError =
                 Detail = get.Optional.Field "detail" Decode.string
             })
 #else
-    static member private EncodeKind(kind: FormatErrorKind) : JsonValue =
+    static member private EncodeKind(kind: FormatErrorKind) : IEncodable =
         match kind with
         | FormatErrorKind.InvalidSource -> "invalidSource"
         | FormatErrorKind.FantomasBug -> "fantomasBug"
         | FormatErrorKind.Unknown -> "unknown"
         |> Encode.string
 
-    static member Encode(error: FormatError) : JsonValue =
+    static member Encode(error: FormatError) : IEncodable =
         Encode.object
             [
                 "kind", FormatError.EncodeKind error.Kind
                 "message", Encode.string error.Message
                 "diagnostics", (error.Diagnostics |> Array.map Diagnostic.Encode |> Encode.array)
-                "detail", Encode.option Encode.string error.Detail
+                "detail", Encode.lossyOption Encode.string error.Detail
             ]
 #endif
 

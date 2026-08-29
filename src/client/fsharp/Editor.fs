@@ -53,7 +53,7 @@ let private useEventListener (target: Element, ``type``: string, listener: Event
 
     React.useEffect (subscribe, [| box target; box ``type``; box listener |])
 
-let useEffect (_action: unit -> unit, _dependencies: obj array) : unit = import "useEffect" "react"
+let private useEffectRaw (_action: unit -> unit, _dependencies: obj array) : unit = import "useEffect" "react"
 
 let private theme =
     emitJsExpr<string> () "(window.matchMedia(\"(prefers-color-scheme: dark)\").matches ? \"vs-dark\" : \"vs-light\")"
@@ -92,7 +92,7 @@ let InputEditor (onChange: string -> unit) (value: string) (maxLineLength: int) 
                 |]
         |}
 
-    useEffect (
+    useEffectRaw (
         fun () ->
             if not (isNullOrUndefined editorRef.current) then
                 let selection =
@@ -162,7 +162,7 @@ let AstResultEditor onCursorChanged value =
             editorRef.current <- editor
             setIsEditorMounted true)
 
-    useEffect (
+    useEffectRaw (
         fun () ->
             if not (isNullOrUndefined changeCursorPosition) then
                 changeCursorPosition.dispose ()

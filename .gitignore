@@ -358,8 +358,6 @@ sync.ps1
 src/client/src/bin/
 *.fs.js
 src/client-old/
-snowpack.crt
-snowpack.key
 
 TypedCssClasses.log
 
