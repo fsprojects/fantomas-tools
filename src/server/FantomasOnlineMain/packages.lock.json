@@ -27,7 +27,7 @@
         "type": "Direct",
         "requested": "[10.1.400, )",
         "resolved": "10.1.400",
-        "contentHash": "C8Myl8/HMoTWw0K/xJ+Q6JHlS5fUw2VTI91a3v3eVs0FVkVb5XIevzH7S2AmvIoD7s186uNyeRTGbrpef9gZyQ=="
+        "contentHash": "H9wlZ/tWgNp+Q4WQ5aUSi3XOBXrL6z+UkR0PNeyDFyoZR3c3PbtA21B9FqlthrhEwQ6f5AtQV0JLhBBDqjjscw=="
       },
       "Microsoft.Net.Http.Headers": {
         "type": "Direct",

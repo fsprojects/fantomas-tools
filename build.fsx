@@ -145,7 +145,7 @@ pipeline "Build" {
     workingDir __SOURCE_DIRECTORY__
     bunInstall
     dotnetInstall
-    stage "check format F#" { run "dotnet fantomas src infrastructure build.fsx --check" }
+    stage "check format F#" { run "dotnet fantomas check src infrastructure build.fsx" }
     stage "check format JS" {
         workingDir clientDir
         run "bun run lint"
