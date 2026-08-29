@@ -21,9 +21,6 @@
     "@vitejs/plugin-react": "6.1.0",
     "prettier": "3.9.6",
     "vite": "8.2.2",
-    "vite-plugin-fable": "0.2.1"
-  },
-  "trustedDependencies": [
-    "vite-plugin-fable"
-  ]
+    "vite-plugin-fable": "0.3.0"
+  }
 }

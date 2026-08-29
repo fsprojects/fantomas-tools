@@ -1,7 +1,8 @@
 module FantomasOnline.Server.Shared.Decoders
 
 open FantomasOnline.Shared
-open Thoth.Json.Net
+open Thoth.Json.Core
+open Thoth.Json.System.Text.Json
 
 let optionDecoder: Decoder<FantomasOption> =
     Decode.object (fun get ->

@@ -4,7 +4,7 @@ open FantomasTools.Client
 open Elmish
 open FantomasTools.Client.Model
 open Thoth.Json
-open Feliz.Router
+open FantomasTools.Client.Routing
 
 let private getBubbleFromUrl () : BubbleModel =
     let empty =

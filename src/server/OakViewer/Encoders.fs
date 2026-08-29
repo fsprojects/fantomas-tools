@@ -1,6 +1,7 @@
 module internal OakViewer.Encoders
 
-open Thoth.Json.Net
+open Thoth.Json.Core
+open Thoth.Json.System.Text.Json
 open Fantomas.FCS.Diagnostics
 open Fantomas.FCS.Text
 open Fantomas.FCS.Parse
@@ -16,7 +17,7 @@ let encodeRange (m: range) =
             "endColumn", Encode.int m.EndColumn
         ]
 
-let encodeTriviaNode (triviaNode: TriviaNode) : JsonValue =
+let encodeTriviaNode (triviaNode: TriviaNode) : IEncodable =
     let contentType, content =
         match triviaNode.Content with
         | CommentOnSingleLine comment -> "commentOnSingleLine", Some comment
@@ -33,10 +34,10 @@ let encodeTriviaNode (triviaNode: TriviaNode) : JsonValue =
         [
             "range", encodeRange triviaNode.Range
             "type", Encode.string contentType
-            "content", Encode.option Encode.string content
+            "content", Encode.lossyOption Encode.string content
         ]
 
-let rec encodeNode (node: Node) (continuation: JsonValue -> JsonValue) : JsonValue =
+let rec encodeNode (node: Node) (continuation: IEncodable -> IEncodable) : IEncodable =
     let continuations = List.map encodeNode (Array.toList node.Children)
 
     let text =
@@ -49,11 +50,11 @@ let rec encodeNode (node: Node) (continuation: JsonValue -> JsonValue) : JsonVal
             |> Some
         | _ -> None
 
-    let finalContinuation (children: JsonValue list) =
+    let finalContinuation (children: IEncodable list) =
         Encode.object
             [
                 "type", Encode.string (node.GetType().Name)
-                "text", Encode.option Encode.string text
+                "text", Encode.lossyOption Encode.string text
                 "range", encodeRange node.Range
                 "contentBefore", Encode.seq (Seq.map encodeTriviaNode node.ContentBefore)
                 "children", Encode.list children

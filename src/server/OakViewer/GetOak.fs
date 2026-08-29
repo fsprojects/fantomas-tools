@@ -1,6 +1,7 @@
 module OakViewer.GetOak
 
 open Fantomas.Core
+open Thoth.Json.System.Text.Json
 open Fantomas.FCS.Diagnostics
 open Fantomas.FCS.Parse
 open FantomasTools.Client
@@ -29,7 +30,7 @@ let describeFailure (error: FormatError) : int * string =
         | FormatErrorKind.FantomasBug
         | FormatErrorKind.Unknown -> 500
 
-    statusCode, (FormatError.Encode error |> Thoth.Json.Net.Encode.toString 4)
+    statusCode, (FormatError.Encode error |> Encode.toString 4)
 
 /// What the parser said about the source, as one sentence naming the earliest error.
 let private firstParseError (errors: FSharpParserDiagnostic list) : string =
@@ -147,8 +148,7 @@ let getOak json : GetOakResponse =
         try
             let oak = CodeFormatter.TransformAST(ast, content)
 
-            let responseText =
-                Encoders.encode oak diagnostics |> Thoth.Json.Net.Encode.toString 4
+            let responseText = Encoders.encode oak diagnostics |> Encode.toString 4
 
             GetOakResponse.Ok responseText
         with ex ->

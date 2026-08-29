@@ -3,7 +3,8 @@ module ASTViewer.Server.Encoders
 open Fantomas.FCS.Diagnostics
 open Fantomas.FCS.Text
 open Fantomas.FCS.Parse
-open Thoth.Json.Net
+open Thoth.Json.Core
+open Thoth.Json.System.Text.Json
 
 let private mkRange (range: Range) : FantomasTools.Client.Range =
     {

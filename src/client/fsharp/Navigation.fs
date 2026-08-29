@@ -3,7 +3,7 @@ module FantomasTools.Client.Navigation
 open FantomasTools.Client
 open FantomasTools.Client.Model
 open Elmish
-open Feliz.Router
+open FantomasTools.Client.Routing
 
 let cmdForCurrentTab tab (model: Model) =
     let noSourceCode = System.String.IsNullOrWhiteSpace model.Bubble.SourceCode
