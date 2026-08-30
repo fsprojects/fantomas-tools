@@ -48,8 +48,6 @@ module private Parsing =
 
 [<RequireQualifiedAccess>]
 module Route =
-    /// Matches the query string segment of a route, so that `#/ast?data=xyz` can be
-    /// matched as `[ "ast"; Route.Query [ "data", data ] ]`.
     let (|Query|_|) (input: string) =
         if not (input.StartsWith "?") then
             None
@@ -65,13 +63,10 @@ module Route =
 
 [<RequireQualifiedAccess>]
 module Router =
-    /// The segments of the URL currently in the address bar.
     let currentUrl () : string list = Parsing.urlSegments window.location.hash
 
 [<AutoOpen>]
 module Components =
-    /// Renders `content` and reports the current route to `onUrlChanged`, both on mount and
-    /// whenever the hash changes.
     [<ReactComponent>]
     let RouteListener (onUrlChanged: string list -> unit) (content: ReactElement) : ReactElement =
         // The listeners are registered once, so they read the handler from a ref rather than
