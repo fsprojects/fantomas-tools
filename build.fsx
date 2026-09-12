@@ -90,7 +90,7 @@ pipeline "Fantomas-Git" {
                                     git
                                         ctx
                                         __SOURCE_DIRECTORY__
-                                        $"clone -b {branch} --single-branch https://github.com/fsprojects/fantomas.git .deps/{folder}"
+                                        $"clone -b %s{branch} --single-branch https://github.com/fsprojects/fantomas.git .deps/%s{folder}"
                         })
                     |> Async.Parallel
 
@@ -120,13 +120,13 @@ pipeline "Fantomas-Git" {
 }
 
 let publishLambda name =
-    $"dotnet publish --tl -c Release {serverDir}/{name}/{name}.fsproj"
+    $"dotnet publish --tl -c Release %s{serverDir}/%s{name}/%s{name}.fsproj"
 
 // Hot Reload has no F# support, so `dotnet watch` announces that every project does not support it
 // and rebuilds anyway, once per change per project. Ask for the rebuild it was going to do and the
 // output stays about the code.
 let runLambda name =
-    $"dotnet watch --no-hot-reload run --project {serverDir </> name </> name}.fsproj --tl"
+    $"dotnet watch --no-hot-reload run --project %s{serverDir </> name </> name}.fsproj --tl"
 
 let setViteToProduction () =
     setEnv "NODE_ENV" "production"
@@ -134,13 +134,13 @@ let setViteToProduction () =
     let mainStageUrl =
         "https://arlp8cgo97.execute-api.eu-west-1.amazonaws.com/fantomas-main-stage-1c52a6a"
 
-    setEnv "VITE_AST_BACKEND" $"{mainStageUrl}/ast-viewer"
-    setEnv "VITE_OAK_BACKEND" $"{mainStageUrl}/oak-viewer"
-    setEnv "VITE_FANTOMAS_V5" $"{mainStageUrl}/fantomas/v5"
-    setEnv "VITE_FANTOMAS_V6" $"{mainStageUrl}/fantomas/v6"
-    setEnv "VITE_FANTOMAS_V7" $"{mainStageUrl}/fantomas/v7"
-    setEnv "VITE_FANTOMAS_MAIN" $"{mainStageUrl}/fantomas/main"
-    setEnv "VITE_FANTOMAS_PREVIEW" $"{mainStageUrl}/fantomas/preview"
+    setEnv "VITE_AST_BACKEND" $"%s{mainStageUrl}/ast-viewer"
+    setEnv "VITE_OAK_BACKEND" $"%s{mainStageUrl}/oak-viewer"
+    setEnv "VITE_FANTOMAS_V5" $"%s{mainStageUrl}/fantomas/v5"
+    setEnv "VITE_FANTOMAS_V6" $"%s{mainStageUrl}/fantomas/v6"
+    setEnv "VITE_FANTOMAS_V7" $"%s{mainStageUrl}/fantomas/v7"
+    setEnv "VITE_FANTOMAS_MAIN" $"%s{mainStageUrl}/fantomas/main"
+    setEnv "VITE_FANTOMAS_PREVIEW" $"%s{mainStageUrl}/fantomas/preview"
 
 let bunInstall =
     stage "bun install" {
@@ -205,13 +205,16 @@ let changedFiles (ctx: StageContext) : Async<string array> =
     async {
         let! result = ctx.RunCommandCaptureOutput "git status --porcelain"
         match result with
-        | Error _ -> return failwithf "Could not run git status"
+        | Error _ -> return failwith "Could not run git status"
         | Ok stdout ->
             return
                 stdout.Split('\n')
                 |> Array.choose (fun line ->
                     let line = line.Trim()
-                    if (line.StartsWith("AM") || line.StartsWith("M")) then
+                    if
+                        line.StartsWith("AM", StringComparison.Ordinal)
+                        || line.StartsWith("M", StringComparison.Ordinal)
+                    then
                         Some(line.Replace("AM ", "").Replace("M ", ""))
                     else
                         None)
@@ -254,7 +257,7 @@ pipeline "FormatChanged" {
                         alwaysOk
                     else
                         ctx.RunCommand(
-                            $"bun x prettier --write {prettierArgument}",
+                            $"bun x prettier --write %s{prettierArgument}",
                             workingDir = (__SOURCE_DIRECTORY__ </> "src" </> "client")
                         )
 
@@ -344,8 +347,13 @@ let backends: Backend list =
 /// report upstream rather than something to fix here.
 let projectsToAnalyze: string list =
     XDocument.Load(pwd </> "fantomas-tools.slnx").XPathSelectElements("//Project")
-    |> Seq.map (fun (project: XElement) -> project.Attribute(XName.Get "Path").Value.Replace('\\', '/'))
-    |> Seq.filter (fun (path: string) -> not (path.StartsWith(".deps/", StringComparison.Ordinal)))
+    |> Seq.choose (fun (project: XElement) ->
+        let path: string = project.Attribute(XName.Get "Path").Value.Replace('\\', '/')
+
+        if path.StartsWith(".deps/", StringComparison.Ordinal) then
+            None
+        else
+            Some path)
     |> Seq.toList
 
 /// Where the analyzer packages are restored to. They are ordinary package references, so MSBuild
@@ -371,10 +379,12 @@ let analyzerPaths (ctx: StageContext) : Async<string list> =
         return
             [
                 for property in document.RootElement.GetProperty("Properties").EnumerateObject() do
-                    match property.Value.GetString() with
-                    | null
-                    | "" -> failwith $"MSBuild has no value for %s{property.Name}. Run `dotnet restore` first."
-                    | path -> path </> "analyzers" </> "dotnet" </> "fs"
+                    let path = property.Value.GetString()
+
+                    if String.IsNullOrEmpty path then
+                        failwith $"MSBuild has no value for %s{property.Name}. Run `dotnet restore` first."
+
+                    path </> "analyzers" </> "dotnet" </> "fs"
             ]
     }
 
@@ -432,8 +442,11 @@ let private relativizeResult (result: JsonNode) : unit =
 let mergeSarifReports (reports: string list) (target: string) : unit =
     let documents =
         reports
-        |> List.filter File.Exists
-        |> List.map (fun (report: string) -> JsonNode.Parse(File.ReadAllText report))
+        |> List.choose (fun (report: string) ->
+            if File.Exists report then
+                Some(JsonNode.Parse(File.ReadAllText report))
+            else
+                None)
 
     let runs =
         documents
@@ -564,7 +577,7 @@ let analyzeTargets (ctx: StageContext) (targets: AnalysisTarget list) : Async<in
         Directory.CreateDirectory analysisReportsDir |> ignore
 
         printfn
-            $"""Analyzing {"target".ToQuantity targets.Length}: %s{targets |> List.map targetName |> String.concat ", "}"""
+            $"""Analyzing %s{"target".ToQuantity targets.Length}: %s{targets |> List.map targetName |> String.concat ", "}"""
 
         let analyzeTarget (target: AnalysisTarget) : Async<string * int> =
             async {
@@ -715,7 +728,7 @@ let runPublishedLambda name =
         </> $"%s{name}.dll"
 
     stage $"Run %s{name}" {
-        run $"dotnet publish --nologo -c Debug -tl {serverDir </> name </> name}.fsproj"
+        run $"dotnet publish --nologo -c Debug -tl %s{serverDir </> name </> name}.fsproj"
         run $"dotnet %s{binary}"
     }
 

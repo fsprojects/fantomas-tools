@@ -18,7 +18,7 @@ module Continuation =
 
 let mkResultDivContent range text =
     let range =
-        $"({range.StartLine},{range.StartColumn}-{range.EndLine},{range.EndColumn})"
+        $"(%i{range.StartLine},%i{range.StartColumn}-%i{range.EndLine},%i{range.EndColumn})"
 
     sprintf "%s %s" text range
 
@@ -67,15 +67,15 @@ let rec mkResultDiv
     let continuations =
         node.Children
         |> Array.mapi (fun idx child ->
-            let key = $"{key}_{idx}"
+            let key = $"%s{key}_%i{idx}"
             mkResultDiv dispatch (level + 1) key child)
         |> Array.toList
 
     let contentBefore =
-        Array.mapi (fun idx -> mkTriviaResultDiv dispatch true $"{key}_cb_{idx}") node.ContentBefore
+        Array.mapi (fun idx -> mkTriviaResultDiv dispatch true $"%s{key}_cb_%i{idx}") node.ContentBefore
 
     let contentAfter =
-        Array.mapi (fun idx -> mkTriviaResultDiv dispatch false $"{key}_ca_{idx}") node.ContentAfter
+        Array.mapi (fun idx -> mkTriviaResultDiv dispatch false $"%s{key}_ca_%i{idx}") node.ContentAfter
 
     let current =
         let content =
@@ -84,7 +84,7 @@ let rec mkResultDiv
         div [
             Title node.Type
             Key key
-            Props.Style [ MarginLeft $"{level * 10}px" ]
+            Props.Style [ MarginLeft $"%i{level * 10}px" ]
             OnClick(fun ev ->
                 ev.stopPropagation ()
                 let div = (ev.target :?> Element)

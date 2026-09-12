@@ -75,7 +75,7 @@ type Diagnostic =
 #endif
 
 /// What sort of failure a backend ran into, which decides what the user can do about it.
-[<RequireQualifiedAccess>]
+[<RequireQualifiedAccess; Struct>]
 type FormatErrorKind =
     /// The submitted code is not valid F#. Fantomas never got as far as doing anything with it, and
     /// there is nothing here for the Fantomas maintainers to fix.

@@ -91,7 +91,7 @@ let getAllLambdas (lastSha, lastTime) =
             FileArchive = archive
             HandlerPrefix = name.Kebaberize()
             Lambdas = lambdas
-            FunctionPrefix = $"{name}::{name}.Lambda"
+            FunctionPrefix = $"%s{name}::%s{name}.Lambda"
         }
 
     [
@@ -219,7 +219,7 @@ let infra () =
             |> List.collect (fun lambdaProject ->
                 lambdaProject.Lambdas
                 |> List.map (fun lambdaInfo ->
-                    let lambdaFunctionName = $"{lambdaProject.Name}{lambdaInfo.Name}".Kebaberize()
+                    let lambdaFunctionName = $"%s{lambdaProject.Name}%s{lambdaInfo.Name}".Kebaberize()
 
                     let environmentArgs =
                         if lambdaInfo.Environment.IsEmpty then
@@ -232,7 +232,7 @@ let infra () =
                     let lambda =
                         let args =
                             Lambda.FunctionArgs(
-                                Handler = input $"{lambdaProject.FunctionPrefix}::{lambdaInfo.Name}",
+                                Handler = input $"%s{lambdaProject.FunctionPrefix}::%s{lambdaInfo.Name}",
                                 Runtime = inputUnion2Of2 Lambda.Runtime.Dotnet10,
                                 Code = input (FileArchive(lambdaProject.FileArchive) :> Archive),
                                 Role = io lambdaRole.Arn,
@@ -245,16 +245,16 @@ let infra () =
 
                     let _log =
                         CloudWatch.LogGroup(
-                            $"{lambdaFunctionName}-log-group",
+                            $"%s{lambdaFunctionName}-log-group",
                             CloudWatch.LogGroupArgs(
                                 RetentionInDays = input 30,
-                                Name = io (lambda.Id.Apply(fun id -> $"/aws/lambda/{id}"))
+                                Name = io (lambda.Id.Apply(fun id -> $"/aws/lambda/%s{id}"))
                             )
                         )
 
                     let _lambdaPermission =
                         Lambda.Permission(
-                            $"{lambdaFunctionName}-lambda-permissions",
+                            $"%s{lambdaFunctionName}-lambda-permissions",
                             Lambda.PermissionArgs(
                                 Function = io lambda.Name,
                                 Principal = input "apigateway.amazonaws.com",
@@ -272,19 +272,19 @@ let infra () =
                                 IntegrationUri = io lambda.Arn
                             )
 
-                        ApiGatewayV2.Integration($"{lambdaFunctionName}-integration", args)
+                        ApiGatewayV2.Integration($"%s{lambdaFunctionName}-integration", args)
 
                     let _apiRoute =
                         let args =
                             ApiGatewayV2.RouteArgs(
                                 ApiId = io gateway.Id,
-                                RouteKey = input $"{lambdaInfo.Verb} {lambdaInfo.Route}",
-                                Target = io (lambdaIntegration.Id.Apply(fun id -> $"integrations/{id}"))
+                                RouteKey = input $"%s{lambdaInfo.Verb} %s{lambdaInfo.Route}",
+                                Target = io (lambdaIntegration.Id.Apply(fun id -> $"integrations/%s{id}"))
                             )
 
-                        ApiGatewayV2.Route($"{lambdaFunctionName}-route", args)
+                        ApiGatewayV2.Route($"%s{lambdaFunctionName}-route", args)
 
-                    $"{lambdaProject.Name}_{lambdaInfo.Name}", null))
+                    $"%s{lambdaProject.Name}_%s{lambdaInfo.Name}", null))
 
         return dict lambdaIds
     }

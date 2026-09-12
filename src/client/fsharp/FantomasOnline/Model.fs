@@ -3,6 +3,7 @@ module FantomasTools.Client.FantomasOnline.Model
 open FantomasOnline.Shared
 open FantomasTools.Client
 
+[<Struct>]
 type FantomasMode =
     | V5
     | V6
@@ -48,8 +49,7 @@ type Model =
             this.UserOptions |> Map.toList |> List.map snd |> List.sortBy sortByOption
 
         List.zip defaultValues userValues
-        |> List.filter (fun (dv, uv) -> dv <> uv)
-        |> List.map snd
+        |> List.choose (fun (dv, uv) -> if dv <> uv then Some uv else None)
 
     member this.MaxLineLength: int =
         tryGetOptionValue this.UserOptions this.DefaultOptions "MaxLineLength" int

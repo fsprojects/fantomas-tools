@@ -10,6 +10,7 @@ open FantomasTools.Client.OakViewer.Model
 open FantomasTools.Client.OakViewer.Model.GraphView
 open FantomasTools.Client.Utils
 
+[<Struct>]
 type NodeType =
     | Standard
     | Comment
@@ -34,7 +35,7 @@ type GraphOakNode =
 let nodesFromRoot root =
     let rec getChildren acc n =
         n.Children
-        |> Seq.fold (fun s x -> getChildren s x |> Set.add x) (acc |> Set.add n)
+        |> List.fold (fun s x -> getChildren s x |> Set.add x) (acc |> Set.add n)
 
     let oakNodes = getChildren Set.empty root
     let nodeMap = oakNodes |> Seq.map (fun n -> NodeId n.Id, n) |> Map.ofSeq
@@ -92,7 +93,7 @@ let private parseResults =
 
             { n with
                 Children = children
-                Size = n.Size + (children |> Seq.sumBy (fun x -> x.Size))
+                Size = n.Size + (children |> List.sumBy (fun x -> x.Size))
             }
 
         node
@@ -295,7 +296,7 @@ let view =
             div [ Id "graph-view-commands" ] [
                 if model.GraphViewRootNodes <> [] then
                     button [ ClassName Style.Primary; OnClick(fun _ -> dispatch GraphViewGoBack) ] [
-                        str $"<- back({model.GraphViewRootNodes.Length})"
+                        str $"<- back(%i{model.GraphViewRootNodes.Length})"
                     ]
             ]
         ])

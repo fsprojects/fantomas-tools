@@ -20,7 +20,7 @@ let getVersion () =
         let version = assembly.GetName().Version
         sprintf "%i.%i.%i" version.Major version.Minor version.Revision
 
-[<RequireQualifiedAccess>]
+[<RequireQualifiedAccess; Struct>]
 type ASTResponse =
     | Ok of json: string
     | TooLarge

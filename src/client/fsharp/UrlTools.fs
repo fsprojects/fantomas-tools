@@ -25,7 +25,7 @@ let private setGetParam (encodedJson: string) : unit =
         ``params``.set ("data", encodedJson)
 
         let newUrl =
-            $"{window.location.protocol}//{window.location.host}{window.location.pathname}{hash}?{``params``.ToString()}"
+            $"%s{window.location.protocol}//%s{window.location.host}%s{window.location.pathname}%s{hash}?%s{``params``.ToString()}"
 
         let currentUrl = window.location.toString ()
 
@@ -54,25 +54,26 @@ let updateUrlBy (mapFn: string -> string) : unit =
         let newHash = (mapFn safeHash).Split('?').[0]
 
         let newUrl =
-            $"{window.location.protocol}//{window.location.host}{window.location.pathname}{newHash}?{``params``.ToString()}"
+            $"%s{window.location.protocol}//%s{window.location.host}%s{window.location.pathname}%s{newHash}?%s{``params``.ToString()}"
 
         history.pushState ({| path = newUrl |}, "", newUrl)
 
 let updateUrlWithData json = setGetParam (encodeUrl json)
 
+[<return: Struct>]
 let private (|KeyValuesFromHash|_|) hash =
     if String.IsNullOrWhiteSpace(hash) then
-        None
+        ValueNone
     else
         let search = hash.Split('?')
 
-        if Seq.length search > 1 then
+        if Array.length search > 1 then
             search.[1].Split('&')
             |> Array.map (fun kv -> kv.Split('=').[0], kv.Split('=').[1])
-            |> Array.choose (fun (k, v) -> if k = "data" then Some v else None)
-            |> Array.tryHead
+            |> Array.tryPick (fun (k, v) -> if k = "data" then Some v else None)
+            |> ValueOption.ofOption
         else
-            None
+            ValueNone
 
 let restoreModelFromUrl decoder defaultValue =
     match Browser.Dom.window.location.hash with

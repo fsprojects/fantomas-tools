@@ -38,4 +38,4 @@ let startFantomasTool port routes =
                 hideStartupMessage = true
             }
     with :? SocketException ->
-        printfn $"Port {port} is already in use"
+        printfn $"Port %i{port} is already in use"
