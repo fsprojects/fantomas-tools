@@ -34,6 +34,8 @@ let startFantomasTool port routes =
         |> startWebServer
             { defaultConfig with
                 bindings = [ HttpBinding.create HTTP IPAddress.Loopback port ]
+                // The dev script prints its own overview of what is listening where.
+                hideStartupMessage = true
             }
     with :? SocketException ->
-        printfn $"Port {port} is already in use"
+        printfn $"Port %i{port} is already in use"

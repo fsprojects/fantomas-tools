@@ -362,3 +362,6 @@ src/client-old/
 TypedCssClasses.log
 
 .claude/
+# Analyzer reports, see the Analyze pipeline in build.fsx
+analysisreports/
+*.sarif

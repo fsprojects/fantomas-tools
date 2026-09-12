@@ -1,5 +1,6 @@
 module FantomasOnlineMain.FormatCode
 
+open System
 open Fantomas.FCS.Diagnostics
 open Fantomas.FCS.Parse
 open Fantomas.FCS.Text
@@ -32,7 +33,7 @@ let private mapFantomasOptionsToRecord options =
     Microsoft.FSharp.Reflection.FSharpValue.MakeRecord(formatConfigType, newValues) :?> FormatConfig
 
 let private format (fileName: string) code config =
-    let isSignature = fileName.EndsWith(".fsi")
+    let isSignature = fileName.EndsWith(".fsi", StringComparison.Ordinal)
 
     async {
         let! result = CodeFormatter.FormatDocumentAsync(isSignature, code, config)
@@ -60,13 +61,13 @@ let private toDiagnostic (e: FSharpParserDiagnostic) : Diagnostic =
     {
         SubCategory = e.SubCategory
         Range = range
-        Severity = $"{e.Severity}".ToLower()
+        Severity = $"%O{e.Severity}".ToLower()
         ErrorNumber = Option.defaultValue -1 e.ErrorNumber
         Message = e.Message
     }
 
 let private validate (fileName: string) code =
-    let isSignature = fileName.EndsWith(".fsi")
+    let isSignature = fileName.EndsWith(".fsi", StringComparison.Ordinal)
 
     async {
         // Ask Fantomas rather than parsing once here. Fantomas reads the code once per define

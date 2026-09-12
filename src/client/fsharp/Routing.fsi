@@ -10,7 +10,8 @@ open Feliz
 module Route =
     /// Matches the query string segment of a route, so that `#/ast?data=xyz` can be
     /// matched as `[ "ast"; Route.Query [ "data", data ] ]`.
-    val (|Query|_|): input: string -> (string * string) list option
+    [<return: Struct>]
+    val (|Query|_|): input: string -> (string * string) list voption
 
 [<RequireQualifiedAccess>]
 module Router =

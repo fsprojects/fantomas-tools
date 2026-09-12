@@ -11,7 +11,8 @@ let mapToOption dispatch (model: Model) (key, fantomasOption) =
     let editor =
         let label =
             a [
-                Href $"https://fsprojects.github.io/fantomas/docs/end-users/Configuration.html#{toEditorConfigName key}"
+                Href
+                    $"https://fsprojects.github.io/fantomas/docs/end-users/Configuration.html#%s{toEditorConfigName key}"
                 Target "_blank"
             ] [ str key ]
 
@@ -57,7 +58,7 @@ let mapToOption dispatch (model: Model) (key, fantomasOption) =
             let mkButton (value: string) : SettingControls.MultiButtonSettings =
                 let label =
                     let capital = System.Char.ToUpper value.[0]
-                    $"{capital}{value.[1..]}".Replace("_", " ")
+                    $"%c{capital}%s{value.[1..]}".Replace("_", " ")
 
                 {
                     Label = label
@@ -255,7 +256,7 @@ let createGitHubIssue (bubble: BubbleModel) model =
                 }
 
             a [
-                ClassName $"{Style.Btn} {Style.Danger}"
+                ClassName $"%s{Style.Btn} %s{Style.Danger}"
                 githubIssueUri githubIssue
                 Target "_blank"
             ] [ str "Looks wrong? Create an issue!" ]
@@ -277,7 +278,7 @@ let createIdempotencyIssue isFsi (model: Model) firstFormat secondFormat =
         }
 
     a [
-        ClassName $"{Style.Btn} {Style.Warning}"
+        ClassName $"%s{Style.Btn} %s{Style.Warning}"
         githubIssueUri githubIssue
         Target "_blank"
     ] [ str "Report idempotency issue!" ]

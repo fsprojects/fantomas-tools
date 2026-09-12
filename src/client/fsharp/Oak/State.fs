@@ -153,7 +153,7 @@ let update (bubble: BubbleModel) (msg: Msg) model : Model * Cmd<Msg> =
     | GraphViewGoBack ->
         { model with
             GraphViewRootNodes =
-                if model.GraphViewRootNodes = [] then
+                if List.isEmpty model.GraphViewRootNodes then
                     []
                 else
                     List.tail model.GraphViewRootNodes

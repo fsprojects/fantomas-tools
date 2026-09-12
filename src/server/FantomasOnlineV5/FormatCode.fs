@@ -1,5 +1,6 @@
 module FantomasOnlineV5.FormatCode
 
+open System
 open Fantomas.FCS.Parse
 open Fantomas.Core
 open Fantomas.Core.FormatConfig
@@ -31,7 +32,7 @@ let private mapFantomasOptionsToRecord options =
     Microsoft.FSharp.Reflection.FSharpValue.MakeRecord(formatConfigType, newValues) :?> FormatConfig.FormatConfig
 
 let private format (fileName: string) code config =
-    let isSignature = fileName.EndsWith(".fsi")
+    let isSignature = fileName.EndsWith(".fsi", StringComparison.Ordinal)
     CodeFormatter.FormatDocumentAsync(isSignature, code, config)
 
 let private toDiagnostic (e: FSharpParserDiagnostic) : Diagnostic =
@@ -46,14 +47,14 @@ let private toDiagnostic (e: FSharpParserDiagnostic) : Diagnostic =
                 EndLine = orZero (fun r -> r.EndLine)
                 EndColumn = orZero (fun r -> r.EndColumn)
             }
-        Severity = $"{e.Severity}".ToLower()
+        Severity = $"%O{e.Severity}".ToLower()
         ErrorNumber = Option.defaultValue 0 e.ErrorNumber
         Message = e.Message
     }
 
 let private validate (fileName: string) code =
     async {
-        let isSignature = fileName.EndsWith(".fsi")
+        let isSignature = fileName.EndsWith(".fsi", StringComparison.Ordinal)
 
         let _tree, diagnostics =
             parseFile isSignature (FSharp.Compiler.Text.SourceText.ofString code) []

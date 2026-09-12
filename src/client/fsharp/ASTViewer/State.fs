@@ -24,10 +24,10 @@ let fetchNodeRequest url (payload: Shared.Request) dispatch =
         | 200 ->
             match decodeResult body with
             | Ok r -> ASTParsed r
-            | Result.Error err -> Error $"failed to decode response: %A{err}"
-        | 400 -> Error body
-        | 413 -> Error "the input was too large to process"
-        | _ -> Error body
+            | Result.Error err -> Failed $"failed to decode response: %A{err}"
+        | 400 -> Failed body
+        | 413 -> Failed "the input was too large to process"
+        | _ -> Failed body
         |> dispatch)
 
 let fetchUntypedAST (payload: Shared.Request) dispatch =
@@ -41,7 +41,7 @@ let initialModel =
         Expand = true
     }
 
-let getMessageFromError (ex: exn) = Error ex.Message
+let getMessageFromError (ex: exn) = Failed ex.Message
 
 // defines the initial state and initial command (= side-effect) of the application
 let init isActive : Model * Cmd<Msg> =
@@ -88,7 +88,7 @@ let update (bubble: BubbleModel) (msg: Msg) (model: Model) : Model * Cmd<Msg> =
             Cmd.ofMsg (BubbleMessage.SetDiagnostics astResult.Diagnostics |> Msg.Bubble)
 
         nextModel, Cmd.batch [ resultCmd; diagnosticsCmd ]
-    | Error e ->
+    | Failed e ->
         let nextModel =
             { model with
                 State = AstViewerTabState.Error e

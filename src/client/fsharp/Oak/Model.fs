@@ -21,16 +21,16 @@ type OakNode =
     }
 
 module GraphView =
-    [<Erase>]
+    [<Erase; Struct>]
     type NodeId = NodeId of int
 
-    [<Erase>]
+    [<Erase; Struct>]
     type NodeLabel = NodeLabel of string
 
-    [<Erase>]
+    [<Erase; Struct>]
     type NodeColor = NodeColor of string
 
-    [<Erase>]
+    [<Erase; Struct>]
     type NodeShape =
         | Ellipse
         | Box
@@ -51,11 +51,13 @@ module GraphView =
             Dashed: bool
         }
 
+    [<Struct>]
     type Layout =
         | TopDown
         | LeftRight
         | Free
 
+    [<Struct>]
     type Scale =
         | NoScale
         | SubTreeNodes

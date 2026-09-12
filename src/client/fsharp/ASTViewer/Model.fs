@@ -7,7 +7,7 @@ type Msg =
     | VersionFound of string
     | DoParse
     | ASTParsed of ASTViewer.Shared.Response
-    | Error of string
+    | Failed of string
     | SetExpand of value: bool
 
 [<RequireQualifiedAccess>]

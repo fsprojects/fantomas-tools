@@ -20,9 +20,12 @@ module private Parsing =
     /// `#/ast?data=xyz` becomes `[ "ast"; "?data=xyz" ]`.
     let urlSegments (path: string) : string list =
         let withoutHash =
-            if path.StartsWith "#" then
+            if path.StartsWith("#", StringComparison.Ordinal) then
                 path.Substring(1, path.Length - 1)
-            elif path.EndsWith "#" || path.EndsWith "#/" then
+            elif
+                path.EndsWith("#", StringComparison.Ordinal)
+                || path.EndsWith("#/", StringComparison.Ordinal)
+            then
                 ""
             else
                 path
@@ -37,20 +40,21 @@ module private Parsing =
 
                 if segment = "?" then
                     []
-                elif segment.StartsWith "?" then
+                elif segment.StartsWith("?", StringComparison.Ordinal) then
                     [ segment ]
                 else
                     match segment.Split [| '?' |] with
-                    | [| value |]
-                    | [| value; "" |] -> [ JS.decodeURIComponent value ]
+                    | [| value |] -> [ JS.decodeURIComponent value ]
+                    | [| value; query |] when String.IsNullOrEmpty query -> [ JS.decodeURIComponent value ]
                     | [| value; query |] -> [ JS.decodeURIComponent value; "?" + query ]
                     | _ -> [])
 
 [<RequireQualifiedAccess>]
 module Route =
+    [<return: Struct>]
     let (|Query|_|) (input: string) =
-        if not (input.StartsWith "?") then
-            None
+        if not (input.StartsWith("?", StringComparison.Ordinal)) then
+            ValueNone
         else
             input.Substring 1
             |> fun query -> query.Split '&'
@@ -59,7 +63,7 @@ module Route =
                 match pair.Split([| '=' |], 2) with
                 | [| key; value |] -> Some(JS.decodeURIComponent key, JS.decodeURIComponent value)
                 | _ -> None)
-            |> Some
+            |> ValueSome
 
 [<RequireQualifiedAccess>]
 module Router =

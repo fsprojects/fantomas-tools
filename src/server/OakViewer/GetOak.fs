@@ -154,4 +154,4 @@ let getOak json : GetOakResponse =
         with ex ->
             GetOakResponse.Failed(describeException diagnostics ex)
 
-    | Error err -> GetOakResponse.BadRequest(string err)
+    | Error err -> GetOakResponse.BadRequest err

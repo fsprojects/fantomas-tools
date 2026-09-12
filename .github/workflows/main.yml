@@ -52,3 +52,29 @@ jobs:
         work-dir: ./infrastructure
       env:
         PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+
+    steps:
+    - uses: actions/checkout@v7
+
+    - name: Setup dotnet
+      uses: actions/setup-dotnet@v6
+
+    - name: Download Fantomas
+      run: dotnet fsi build.fsx -p Fantomas-Git
+
+    - name: Run analyzers
+      run: dotnet fsi build.fsx -p Analyze
+
+    # always(), because the run this most wants to report on is the one that just failed.
+    - name: Upload SARIF
+      if: always()
+      uses: github/codeql-action/upload-sarif@v4
+      with:
+        sarif_file: analysis.sarif

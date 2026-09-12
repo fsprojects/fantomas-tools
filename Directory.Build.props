@@ -22,11 +22,25 @@
         <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
     </PropertyGroup>
 
+    <!-- The analyzers every project is checked with. Both are build time only and ship nothing
+         into the output; the Analyze pipeline in build.fsx points fsharp-analyzers at the folders
+         these packages restore to. -->
+    <ItemGroup>
+        <PackageReference Include="G-Research.FSharp.Analyzers" Version="0.25.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>build</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Ionide.Analyzers" Version="0.19.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+
     <ItemGroup Condition="'$(IsLambda)' == 'true'">
         <PackageReference Include="Microsoft.Net.Http.Headers" Version="10.0.11" />
         <PackageReference Include="Amazon.Lambda.Core" Version="3.3.0" />
         <PackageReference Include="Amazon.Lambda.Serialization.SystemTextJson" Version="3.0.1" />
         <PackageReference Include="Amazon.Lambda.APIGatewayEvents" Version="3.0.1" />
-        <PackageReference Include="Suave" Version="3.4.6" />
+        <PackageReference Include="Suave" Version="3.5.0" />
     </ItemGroup>
 </Project>

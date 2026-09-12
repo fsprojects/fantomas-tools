@@ -153,9 +153,9 @@ let diagnostics (caption: string option) (bubble: BubbleModel) =
                         str
                             $"(%i{diag.Range.StartLine},%i{diag.Range.StartColumn}) (%i{diag.Range.EndLine}, %i{diag.Range.EndColumn})"
                     ]
-                    span [ ClassName $"{Style.Badge} {diag.Severity}" ] [ str diag.Severity ]
-                    span [ ClassName $"{Style.Badge} error-number"; Title "ErrorNumber" ] [ ofInt diag.ErrorNumber ]
-                    span [ ClassName $"{Style.Badge} subcategory"; Title "SubCategory" ] [ str diag.SubCategory ]
+                    span [ ClassName $"%s{Style.Badge} %s{diag.Severity}" ] [ str diag.Severity ]
+                    span [ ClassName $"%s{Style.Badge} error-number"; Title "ErrorNumber" ] [ ofInt diag.ErrorNumber ]
+                    span [ ClassName $"%s{Style.Badge} subcategory"; Title "SubCategory" ] [ str diag.SubCategory ]
                     p [] [ str diag.Message ]
                 ])
 

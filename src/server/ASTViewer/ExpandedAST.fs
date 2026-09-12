@@ -72,13 +72,13 @@ let mkExprAppSingleParenArgNode functionName argExpr =
     |> Expr.AppSingleParenArg
 
 let mkRangeExpr (r: range) : Expr =
-    $"({r.StartLine},{r.StartColumn}--{r.EndLine},{r.EndColumn})"
+    $"(%i{r.StartLine},%i{r.StartColumn}--%i{r.EndLine},%i{r.EndColumn})"
     |> mkStringExpr
     |> mkExprParen
     |> mkExprAppSingleParenArgNode "R"
 
 let mkPositionExpr (p: Position) : Expr =
-    $"{p.Line},{p.Column}"
+    $"%i{p.Line},%i{p.Column}"
     |> mkStringExpr
     |> mkExprParen
     |> mkExprAppSingleParenArgNode "P"
