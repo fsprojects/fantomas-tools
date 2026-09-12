@@ -50,9 +50,9 @@
       },
       "Suave": {
         "type": "Direct",
-        "requested": "[3.4.6, )",
-        "resolved": "3.4.6",
-        "contentHash": "CDCXdAxBSeaWOYfnZp/p5zf2a0LErEmHZkxwlpHK4GvcprMdcFwgGw8bYRiyTiP9p5W8IJ7VugWD7e88yHtqGw==",
+        "requested": "[3.5.0, )",
+        "resolved": "3.5.0",
+        "contentHash": "mHVPnpaId4UD2/x1yfytp1wbZ49m491WMmnj5fiKjEVrNYLxmI76ZaWAmTWrWJpRyH1s1m5ZiyFPpYSoPyVoZA==",
         "dependencies": {
           "FSharp.Core": "10.0.102"
         }

@@ -21,7 +21,7 @@ let private setGetParam (encodedJson: string) : unit =
             else
                 ""
 
-        let ``params`` = URLSearchParams.Create()
+        let ``params`` = URLSearchParams.Create("")
         ``params``.set ("data", encodedJson)
 
         let newUrl =

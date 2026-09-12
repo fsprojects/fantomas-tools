@@ -1,7 +1,10 @@
 #!/usr/bin/env -S dotnet fsi
 
-#r "nuget: Fun.Build, 1.1.17"
+#r "nuget: Fun.Build, 1.2.0"
 #r "nuget: Fake.IO.FileSystem, 6.1.4"
+// Must stay on the version Fun.Build depends on: a newer Spectre.Console moves types Fun.Build
+// looks up and every pipeline dies with a TypeLoadException before it starts.
+#r "nuget: Spectre.Console, 0.46.0"
 
 open System
 open System.IO
@@ -10,6 +13,7 @@ open Fun.Build.Internal
 open Fake.IO
 open Fake.IO.FileSystemOperators
 open Fake.IO.Globbing.Operators
+open Spectre.Console
 
 let astPort = 7412
 let oakPort = 8904
@@ -18,6 +22,8 @@ let fantomasPreviewPort = 12007
 let fantomasV5Port = 11009
 let fantomasV6Port = 13042
 let fantomasV7Port = 10707
+/// Mirrors `server.port` and `preview.port` in src/client/vite.config.js.
+let frontendPort = 9060
 let pwd = __SOURCE_DIRECTORY__
 
 /// The branch the preview backend is built from, when there is one.
@@ -251,27 +257,108 @@ pipeline "FormatChanged" {
     runIfOnlySpecified true
 }
 
+/// Where a locally running service can be reached. Gitpod exposes ports on a generated host
+/// instead of on localhost.
+let localUrl (port: int) (subPath: string) : string =
+    let gitpodEnv = Environment.GetEnvironmentVariable("GITPOD_WORKSPACE_URL")
+
+    if String.IsNullOrWhiteSpace(gitpodEnv) then
+        sprintf "http://localhost:%i/%s" port subPath
+    else
+        let gitpodEnv = gitpodEnv.Replace("https://", "")
+        sprintf "https://%i-%s/%s" port gitpodEnv subPath
+
+/// One backend the dev pipelines launch: the project to run, the port it listens on, the route
+/// prefix it serves and the Vite variable the frontend reads its url from.
+type Backend =
+    {
+        Project: string
+        Port: int
+        SubPath: string
+        EnvironmentVariable: string
+    }
+
+    member this.Url = localUrl this.Port this.SubPath
+
+let backends: Backend list =
+    [
+        {
+            Project = "ASTViewer"
+            Port = astPort
+            SubPath = "ast-viewer"
+            EnvironmentVariable = "VITE_AST_BACKEND"
+        }
+        {
+            Project = "OakViewer"
+            Port = oakPort
+            SubPath = "oak-viewer"
+            EnvironmentVariable = "VITE_OAK_BACKEND"
+        }
+        {
+            Project = "FantomasOnlineV5"
+            Port = fantomasV5Port
+            SubPath = "fantomas/v5"
+            EnvironmentVariable = "VITE_FANTOMAS_V5"
+        }
+        {
+            Project = "FantomasOnlineV6"
+            Port = fantomasV6Port
+            SubPath = "fantomas/v6"
+            EnvironmentVariable = "VITE_FANTOMAS_V6"
+        }
+        {
+            Project = "FantomasOnlineV7"
+            Port = fantomasV7Port
+            SubPath = "fantomas/v7"
+            EnvironmentVariable = "VITE_FANTOMAS_V7"
+        }
+        {
+            Project = "FantomasOnlineMain"
+            Port = fantomasMainPort
+            SubPath = "fantomas/main"
+            EnvironmentVariable = "VITE_FANTOMAS_MAIN"
+        }
+        {
+            Project = "FantomasOnlinePreview"
+            Port = fantomasPreviewPort
+            SubPath = "fantomas/preview"
+            EnvironmentVariable = "VITE_FANTOMAS_PREVIEW"
+        }
+    ]
+
 let prepareEnvironmentVariables =
     stage "prepare environment variables" {
         run (fun _ ->
             async {
-                let localhostBackend port subPath =
-                    let gitpodEnv = Environment.GetEnvironmentVariable("GITPOD_WORKSPACE_URL")
-
-                    if String.IsNullOrWhiteSpace(gitpodEnv) then
-                        sprintf "http://localhost:%i/%s" port subPath
-                    else
-                        let gitpodEnv = gitpodEnv.Replace("https://", "")
-                        sprintf "https://%i-%s/%s" port gitpodEnv subPath
-
                 setEnv "NODE_ENV" "development"
-                setEnv "VITE_AST_BACKEND" (localhostBackend astPort "ast-viewer")
-                setEnv "VITE_OAK_BACKEND" (localhostBackend oakPort "oak-viewer")
-                setEnv "VITE_FANTOMAS_V5" (localhostBackend fantomasV5Port "fantomas/v5")
-                setEnv "VITE_FANTOMAS_V6" (localhostBackend fantomasV6Port "fantomas/v6")
-                setEnv "VITE_FANTOMAS_V7" (localhostBackend fantomasV7Port "fantomas/v7")
-                setEnv "VITE_FANTOMAS_MAIN" (localhostBackend fantomasMainPort "fantomas/main")
-                setEnv "VITE_FANTOMAS_PREVIEW" (localhostBackend fantomasPreviewPort "fantomas/preview")
+
+                for backend in backends do
+                    setEnv backend.EnvironmentVariable backend.Url
+
+                return 0
+            })
+    }
+
+/// The services print nothing on startup, so this is the only place that says what is listening
+/// where. It goes up before the parallel stage starts, while the console is still quiet.
+let printOverview (title: string) =
+    stage "overview" {
+        run (fun _ ->
+            async {
+                let table = Table()
+                table.Title <- TableTitle(title)
+                table.Border <- TableBorder.Rounded
+                table.AddColumn("Service") |> ignore
+                table.AddColumn(TableColumn("Port").RightAligned()) |> ignore
+                table.AddColumn("Url") |> ignore
+
+                for backend in backends do
+                    table.AddRow(backend.Project, string backend.Port, backend.Url) |> ignore
+
+                table.AddRow("Frontend", string frontendPort, localUrl frontendPort "fantomas-tools/")
+                |> ignore
+
+                AnsiConsole.Write(table)
                 return 0
             })
     }
@@ -280,6 +367,7 @@ pipeline "Watch" {
     bunInstall
     dotnetInstall
     prepareEnvironmentVariables
+    printOverview "Fantomas Tools (watch)"
     stage "launch services" {
         paralle
         run (runLambda "ASTViewer")
@@ -315,6 +403,7 @@ pipeline "Start" {
     bunInstall
     dotnetInstall
     prepareEnvironmentVariables
+    printOverview "Fantomas Tools (start)"
     stage "launch services" {
         paralle
         runPublishedLambda "ASTViewer"
