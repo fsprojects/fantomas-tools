@@ -51,6 +51,20 @@ dotnet fsi build.fsx -- -p Watch
 
 * Open browser for port `9060`
 
+## Analyzers
+
+The projects and `build.fsx` are checked with the [Ionide](https://github.com/ionide/ionide-analyzers) and
+[G-Research](https://github.com/G-Research/fsharp-analyzers) analyzers, the pair the Fantomas repository uses:
+
+```shell
+dotnet fsi build.fsx -- -p Analyze
+```
+
+Every finding is printed, and none of them fails the run: the two packages report below error severity, so the
+pipeline only fails when a target could not be analyzed at all. Each target also writes a SARIF report to
+`analysisreports/`, and those are merged into `analysis.sarif` in the repository root. CI runs the pipeline on
+every pull request and uploads that merged report to GitHub code scanning.
+
 ## Other pipelines
 
 To see any other avaiable build script pipelines:

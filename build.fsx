@@ -1,19 +1,26 @@
-#!/usr/bin/env -S dotnet fsi
+#!/usr/bin/env -S dotnet fsi --
 
 #r "nuget: Fun.Build, 1.2.0"
 #r "nuget: Fake.IO.FileSystem, 6.1.4"
 // Must stay on the version Fun.Build depends on: a newer Spectre.Console moves types Fun.Build
 // looks up and every pipeline dies with a TypeLoadException before it starts.
 #r "nuget: Spectre.Console, 0.46.0"
+#r "nuget: Humanizer.Core, 3.0.10"
 
 open System
 open System.IO
+open System.Text.Encodings.Web
+open System.Text.Json
+open System.Text.Json.Nodes
+open System.Xml.Linq
+open System.Xml.XPath
 open Fun.Build
 open Fun.Build.Internal
 open Fake.IO
 open Fake.IO.FileSystemOperators
 open Fake.IO.Globbing.Operators
 open Spectre.Console
+open Humanizer
 
 let astPort = 7412
 let oakPort = 8904
@@ -326,6 +333,319 @@ let backends: Backend list =
         }
     ]
 
+// The analyzers, over every project of the solution and over this script.
+//
+// This mirrors what the Fantomas repository does: the same two analyzer packages, referenced by
+// every project so that MSBuild is the only place their versions live, and one process per target
+// so that findings arrive while the rest of the run is still going.
+
+/// The projects the analyzers run over. The Fantomas checkouts under `.deps` are in the solution so
+/// an editor can navigate into them, but their source is not ours: a finding there is something to
+/// report upstream rather than something to fix here.
+let projectsToAnalyze: string list =
+    XDocument.Load(pwd </> "fantomas-tools.slnx").XPathSelectElements("//Project")
+    |> Seq.map (fun (project: XElement) -> project.Attribute(XName.Get "Path").Value.Replace('\\', '/'))
+    |> Seq.filter (fun (path: string) -> not (path.StartsWith(".deps/", StringComparison.Ordinal)))
+    |> Seq.toList
+
+/// Where the analyzer packages are restored to. They are ordinary package references, so MSBuild
+/// already knows the path of each and there is no second place to keep a version in sync. Any
+/// project answers this, they all inherit the references from Directory.Build.props.
+let analyzerPaths (ctx: StageContext) : Async<string list> =
+    async {
+        let! result =
+            ctx.RunCommandCaptureAll(
+                "dotnet msbuild src/server/ASTViewer/ASTViewer.fsproj "
+                + "-getProperty:PkgIonide_Analyzers "
+                + "-getProperty:PkgG-Research_FSharp_Analyzers",
+                workingDir = pwd,
+                disablePrintCommand = true,
+                disablePrintOutput = true
+            )
+
+        if result.ExitCode <> 0 then
+            failwith $"Could not resolve the analyzer packages. Run `dotnet restore` first.\n%s{result.StandardError}"
+
+        use document = JsonDocument.Parse(result.StandardOutput)
+
+        return
+            [
+                for property in document.RootElement.GetProperty("Properties").EnumerateObject() do
+                    match property.Value.GetString() with
+                    | null
+                    | "" -> failwith $"MSBuild has no value for %s{property.Name}. Run `dotnet restore` first."
+                    | path -> path </> "analyzers" </> "dotnet" </> "fs"
+            ]
+    }
+
+/// Where every target writes its own report, before they are merged into one.
+let analysisReportsDir: string = pwd </> "analysisreports"
+
+/// The merged analyzer report, holding the last run and nothing more. This is the file CI uploads
+/// to code scanning, and the reason the per-target reports are merged at all.
+let mergedAnalysisReport: string = pwd </> "analysis.sarif"
+
+/// A child of a JSON node, or null when either the node or the child is missing. SARIF leaves most
+/// of its properties optional, and a report without a single finding writes neither `results` nor
+/// `rules`.
+let private child (name: string) (node: JsonNode) : JsonNode =
+    if isNull node then null else node[name]
+
+let private clone (node: JsonNode) : JsonNode =
+    if isNull node then null else node.DeepClone()
+
+/// The prefix the tool puts in front of every path it reports.
+///
+/// It writes a location relative to the folder that holds the code root rather than to the code
+/// root itself, so every uri starts with the name of this repository's own folder. Code scanning
+/// resolves a relative uri against the repository root and would find nothing under that, so the
+/// segment comes off on the way into the merged report.
+let private reportedPathPrefix: string = $"%s{Path.GetFileName pwd}/"
+
+let private repositoryRelative (uri: string) : string =
+    if uri.StartsWith(reportedPathPrefix, StringComparison.Ordinal) then
+        uri.Substring reportedPathPrefix.Length
+    else
+        uri
+
+/// Rewrites the paths of one result in place, so the merged report points at files as the
+/// repository holds them.
+let private relativizeResult (result: JsonNode) : unit =
+    match child "locations" result with
+    | null -> ()
+    | locations ->
+        for location in locations.AsArray() do
+            match location |> child "physicalLocation" |> child "artifactLocation" with
+            | null -> ()
+            | artifact ->
+                match child "uri" artifact with
+                | null -> ()
+                | uri -> artifact["uri"] <- JsonValue.Create(repositoryRelative (uri.GetValue<string>()))
+
+/// Folds the per-target reports into the one SARIF run that GitHub code scanning takes.
+///
+/// SARIF carries a run per tool invocation, but code scanning rejects a file holding several unless
+/// each names its own category, and one project of this repository is not an analysis of its own.
+/// The runs all come from the same tool, so their results concatenate into a single run. Every
+/// invocation is kept, which is what records that a target was looked at even when it turned up
+/// nothing.
+let mergeSarifReports (reports: string list) (target: string) : unit =
+    let documents =
+        reports
+        |> List.filter File.Exists
+        |> List.map (fun (report: string) -> JsonNode.Parse(File.ReadAllText report))
+
+    let runs =
+        documents
+        |> List.collect (fun (document: JsonNode) -> document["runs"].AsArray() |> List.ofSeq)
+
+    match documents, runs with
+    | firstDocument :: _, firstRun :: _ ->
+        // `ruleIndex` addresses `tool.driver.rules` by position within its own run, so merging the
+        // runs means pointing every result at where its own rule ended up.
+        //
+        // Identical entries collapse. The analyzers write one entry per finding rather than one per
+        // rule, its `name` being that finding's message, so the same entry is written again for
+        // every finding that reads the same: the same rule firing twice in one project, or in two.
+        // GitHub refuses a document whose rules array holds a duplicate.
+        let rules = ResizeArray<JsonNode>()
+        let seen = Collections.Generic.Dictionary<string, int>()
+
+        let indexOf (rule: JsonNode) : int =
+            let key = rule.ToJsonString()
+
+            match seen.TryGetValue key with
+            | true, index -> index
+            | false, _ ->
+                let index = rules.Count
+                rules.Add(clone rule)
+                seen[key] <- index
+                index
+
+        let results = JsonArray()
+        let invocations = JsonArray()
+
+        for run in runs do
+            // Every rule of the run is placed, whether a result points at it or not, so that the
+            // merged report says the same about what the tool knows as the parts did.
+            let placed: int array =
+                match run |> child "tool" |> child "driver" |> child "rules" with
+                | null -> [||]
+                | rules -> rules.AsArray() |> Seq.map indexOf |> Array.ofSeq
+
+            match child "results" run with
+            | null -> ()
+            | runResults ->
+                for result in runResults.AsArray() do
+                    let result = clone result
+
+                    match child "ruleIndex" result with
+                    | null -> ()
+                    | index ->
+                        let original = index.GetValue<int>()
+
+                        if original >= 0 && original < placed.Length then
+                            result["ruleIndex"] <- JsonValue.Create(placed[original])
+
+                    relativizeResult result
+                    results.Add result
+
+            match child "invocations" run with
+            | null -> ()
+            | runInvocations ->
+                for invocation in runInvocations.AsArray() do
+                    invocations.Add(clone invocation)
+
+        let tool = clone firstRun["tool"]
+        tool["driver"]["rules"] <- JsonArray(rules.ToArray())
+
+        let mergedRun = JsonObject()
+        mergedRun["tool"] <- tool
+        mergedRun["columnKind"] <- clone (child "columnKind" firstRun)
+        mergedRun["results"] <- results
+        mergedRun["invocations"] <- invocations
+
+        let merged = JsonObject()
+        merged["$schema"] <- clone (child "$schema" firstDocument)
+        merged["version"] <- clone (child "version" firstDocument)
+        merged["runs"] <- JsonArray(mergedRun)
+
+        // Indented, because this file is read by people as often as by code scanning, and one line
+        // of fifty thousand characters is not something you can read at all. The relaxed encoder is
+        // for the same reason: the default escapes `<` and `>`, and every message about a
+        // `[<Struct>]` attribute then arrives full of `\u003C`.
+        let options =
+            JsonSerializerOptions(WriteIndented = true, Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping)
+        File.WriteAllText(target, merged.ToJsonString(options) + "\n")
+    | _ -> failwith "The analyzers wrote no report to merge."
+
+/// What one analyzer process covers.
+type AnalysisTarget =
+    | Project of project: string
+    /// The scripts that compile on their own. `build.fsx` is the only one, and it is as much source
+    /// as anything under `src`.
+    | Scripts of scripts: string list
+
+let private targetName (target: AnalysisTarget) : string =
+    match target with
+    | Scripts _ -> "Scripts"
+    | Project project -> Path.GetFileNameWithoutExtension project
+
+/// One line of the tool's output that reports a finding, whatever its severity. Counting these is
+/// what lets a target say how it went the moment it finishes; the tool itself only reports that
+/// through the report file, and reads a clean run and a failed one the same way otherwise.
+let private findingLine: Text.RegularExpressions.Regex =
+    Text.RegularExpressions.Regex(@"\(\d+,\d+\): (Hint|Info|Warning|Error) [A-Z][A-Z0-9-]* :")
+
+let private countFindings (output: string) : int =
+    output.Split('\n')
+    |> Array.filter (fun (line: string) -> findingLine.IsMatch line)
+    |> Array.length
+
+/// Runs the analyzers over the given targets, one process each, a few at a time.
+///
+/// Analyzing a project costs what type checking it costs, and the server projects type check
+/// Fantomas.Core on the way, so a single process walking all of them says nothing for a minute.
+/// Each target is instead analyzed on its own and its output held back until it finishes, so
+/// findings arrive as they are found and no two targets interleave their lines.
+///
+/// Returns the highest exit code, so a target the analyzers could not process fails the stage
+/// rather than passing for want of findings. Findings themselves do not fail it: every rule of
+/// these two packages reports below error severity, and the run is there to be read.
+let analyzeTargets (ctx: StageContext) (targets: AnalysisTarget list) : Async<int> =
+    async {
+        let! analyzers = analyzerPaths ctx
+
+        // Whatever is analyzed here is what the report holds afterwards, so a run over a couple of
+        // targets replaces the report of an earlier run over the solution.
+        if Directory.Exists analysisReportsDir then
+            Directory.Delete(analysisReportsDir, true)
+
+        Directory.CreateDirectory analysisReportsDir |> ignore
+
+        printfn
+            $"""Analyzing {"target".ToQuantity targets.Length}: %s{targets |> List.map targetName |> String.concat ", "}"""
+
+        let analyzeTarget (target: AnalysisTarget) : Async<string * int> =
+            async {
+                let name = targetName target
+                let report = analysisReportsDir </> $"%s{name}.sarif"
+                let started = DateTime.UtcNow
+
+                let arguments: string list =
+                    [
+                        for analyzer in analyzers do
+                            "--analyzers-path"
+                            analyzer
+
+                        "--code-root"
+                        pwd
+
+                        "--report"
+                        report
+
+                        match target with
+                        | Scripts scripts ->
+                            "--script"
+                            yield! scripts
+                        | Project project ->
+                            // MSBuild generates an AssemblyInfo per project and it is part of what
+                            // gets type checked. Nobody wrote it, so a finding in it is not a
+                            // finding about this repository.
+                            "--exclude-files"
+                            "**/*.AssemblyInfo.fs"
+
+                            "--project"
+                            pwd </> project
+                    ]
+
+                // Fun.Build takes a command as a single string and splits it on whitespace, so a
+                // path with a space in it has to say that it is one argument.
+                let command =
+                    arguments |> List.map (fun argument -> $"\"%s{argument}\"") |> String.concat " "
+
+                let! result =
+                    ctx.RunCommandCaptureAll(
+                        $"dotnet fsharp-analyzers %s{command}",
+                        workingDir = pwd,
+                        disablePrintCommand = true,
+                        disablePrintOutput = true
+                    )
+
+                let elapsed = DateTime.UtcNow - started
+
+                let findings =
+                    match countFindings result.StandardOutput with
+                    | 0 -> "no findings"
+                    | count -> "finding".ToQuantity count
+
+                // A non-zero exit is worth saying out loud: the tool exits non-zero both for a
+                // finding at error severity and for a run that never happened, and "no findings"
+                // would read the same either way.
+                let summary =
+                    if result.ExitCode = 0 then
+                        findings
+                    else
+                        $"%s{findings}, exit code %i{result.ExitCode}"
+
+                printfn $"\n=== %s{name}: %s{summary} in %.1f{elapsed.TotalSeconds}s"
+                printf $"%s{result.StandardOutput}"
+                eprintf $"%s{result.StandardError}"
+
+                return report, result.ExitCode
+            }
+
+        // Every process type checks a whole project, so a handful at a time keeps the machine busy
+        // without the runs starving each other of memory.
+        let! results =
+            Async.Parallel(List.map analyzeTarget targets, max 2 (Environment.ProcessorCount / 2))
+
+        mergeSarifReports (results |> Array.map fst |> List.ofArray) mergedAnalysisReport
+        printfn $"\nWrote %s{Path.GetFileName mergedAnalysisReport}"
+
+        return results |> Array.map snd |> Array.fold max 0
+    }
+
 let prepareEnvironmentVariables =
     stage "prepare environment variables" {
         run (fun _ ->
@@ -353,9 +673,9 @@ let printOverview (title: string) =
                 table.AddColumn("Url") |> ignore
 
                 for backend in backends do
-                    table.AddRow(backend.Project, string backend.Port, backend.Url) |> ignore
+                    table.AddRow(backend.Project, string<int> backend.Port, backend.Url) |> ignore
 
-                table.AddRow("Frontend", string frontendPort, localUrl frontendPort "fantomas-tools/")
+                table.AddRow("Frontend", string<int> frontendPort, localUrl frontendPort "fantomas-tools/")
                 |> ignore
 
                 AnsiConsole.Write(table)
@@ -418,6 +738,22 @@ pipeline "Start" {
             run "bun run build"
             run "bun run serve"
         }
+    }
+    runIfOnlySpecified true
+}
+
+pipeline "Analyze" {
+    workingDir __SOURCE_DIRECTORY__
+    dotnetInstall
+    stage "Analyze" {
+        run (fun ctx ->
+            [
+                for project in projectsToAnalyze do
+                    Project project
+
+                Scripts [ pwd </> "build.fsx" ]
+            ]
+            |> analyzeTargets ctx)
     }
     runIfOnlySpecified true
 }

@@ -8,6 +8,13 @@
         "fantomas"
       ],
       "rollForward": false
+    },
+    "fsharp-analyzers": {
+      "version": "0.39.1",
+      "commands": [
+        "fsharp-analyzers"
+      ],
+      "rollForward": false
     }
   }
 }
