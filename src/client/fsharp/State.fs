@@ -7,28 +7,7 @@ open Thoth.Json
 open FantomasTools.Client.Routing
 
 let private getBubbleFromUrl () : BubbleModel =
-    let empty =
-        {
-            SourceCode = ""
-            IsFsi = false
-            Defines = ""
-            ResultCode = ""
-            Diagnostics = Array.empty
-            HighLight = Range.Zero
-        }
-
-    UrlTools.restoreModelFromUrl
-        (Decode.object (fun get ->
-            let sourceCode = get.Required.Field "code" Decode.string
-            let isFsi = get.Optional.Field "isFsi" Decode.bool |> Option.defaultValue false
-            let defines = get.Optional.Field "defines" Decode.string |> Option.defaultValue ""
-
-            { empty with
-                SourceCode = sourceCode
-                IsFsi = isFsi
-                Defines = defines
-            }))
-        empty
+    UrlTools.restoreModelFromUrl BubbleModel.decoder BubbleModel.empty
 
 let private getIsFsiFileFromUrl () =
     UrlTools.restoreModelFromUrl (Decode.object (fun get -> get.Required.Field "isFsi" Decode.bool)) false

@@ -181,7 +181,7 @@ let private copySettings (model: Model) _ =
         printfn "%A" err)
     |> Promise.iter (fun () -> showSuccess "Copied .editorconfig settings to clipboard!")
 
-let update isActiveTab (bubble: BubbleModel) msg model =
+let update isActiveTab (bubble: BubbleModel) msg (model: Model) =
     match msg with
     | Msg.Bubble _ -> model, Cmd.none // handle in upper update function
     | VersionReceived version -> { model with Version = version }, Cmd.none

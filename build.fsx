@@ -163,6 +163,13 @@ pipeline "Build" {
         workingDir clientDir
         run "bun run lint"
     }
+    // The links people share carry the whole model through lz-string and the decoders, so a change
+    // to either breaks every link ever posted. These tests run over links taken from Fantomas
+    // issues, and they are what says a new version of those pieces is safe to take.
+    stage "test client" {
+        workingDir clientDir
+        run "bun run test"
+    }
     stage "clean" {
         run (fun _ ->
             async {

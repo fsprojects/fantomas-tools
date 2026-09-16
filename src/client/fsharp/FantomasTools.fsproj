@@ -53,6 +53,8 @@
     <Compile Include="View.fs" />
     <Compile Include="App.fs" />
 
+    <Compile Include="test/UrlCompat.test.fs" />
+
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="FSharp.Core" Version="10.1.203" />
