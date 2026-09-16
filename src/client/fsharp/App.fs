@@ -22,7 +22,11 @@ let App () =
 
     fragment [] [
         View.navigation dispatch
-        main [] [ View.editor model dispatch; RouteListener onUrlChanged routes ]
+        main [] [
+            View.editor model dispatch
+            Splitter.Splitter()
+            RouteListener onUrlChanged routes
+        ]
     ]
 
 let createRoot: Element -> {| render: ReactElement -> unit |} =

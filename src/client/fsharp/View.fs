@@ -234,7 +234,7 @@ let rightPane (model: Model) dispatch =
                                 result.FirstFormat
                         | None -> result.FirstFormat
 
-                    FantomasResultEditor formattedCode
+                    FantomasResultEditor model.FantomasModel.MaxLineLength formattedCode
 
             resultEditor,
             FantomasOnline.View.view model.FantomasModel fantomasDispatch,

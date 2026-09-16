@@ -201,17 +201,85 @@ html, body, #app {
     background-color: var(--page);
 }
 
+/* The divider is a desktop affair: below 768px the two panes are stacked and there is no row to
+   divide. */
+#splitter {
+    display: none;
+}
+
 @media screen and (min-width: 768px) {
     #app main {
         flex-direction: row;
+
+        /* Where the divider was left. The tools pane takes whatever remains, so the two always add
+           up however far the divider has travelled.
+
+           min-width: 0 is what lets the input pane get smaller again: a flex item will not shrink
+           below its content by default, and the editor inside reports the width it was last laid
+           out at, so without this the divider moves right and then never comes back. */
+        #source {
+            flex: 0 0 var(--split, 40%);
+            min-width: 0;
+        }
+
+        #tools {
+            flex: 1 1 0;
+            min-width: 0;
+        }
+
+        /* A gutter rather than a hairline: it is a control, and one nobody is looking for yet, so
+           it gets width of its own and a grip to say what it does. */
+        #splitter {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 var(--unit-2);
+            cursor: col-resize;
+            background-color: var(--raised);
+            border-left: 1px solid var(--line-strong);
+            border-right: 1px solid var(--line-strong);
+            transition: background-color 0.15s ease-in-out;
+            /* Or a drag on a touch screen scrolls the page instead of moving the divider. */
+            touch-action: none;
+
+            i {
+                font-size: var(--unit-2);
+                color: var(--grey);
+                transition: color 0.15s ease-in-out;
+                /* The grip is scenery. Every event belongs to the gutter around it. */
+                pointer-events: none;
+            }
+
+            &:hover {
+                background-color: var(--raised-hover);
+
+                i {
+                    color: var(--accent);
+                }
+            }
+
+            &:focus-visible {
+                outline: 2px solid var(--accent);
+                outline-offset: -2px;
+            }
+        }
+
+        /* A drag that starts on the divider should not select the code it passes over. */
+        &:has(#splitter.dragging) {
+            user-select: none;
+        }
     }
 
-    #app main #source {
-        flex-basis: 40%;
-    }
+    /* Held. This one selector is written out in full rather than nested above, because the type
+       provider behind Style.* parses this file without understanding nesting: a class it cannot see
+       is a class F# cannot name. */
+    #app main #splitter.dragging {
+        background-color: var(--accent);
+        border-color: var(--accent);
 
-    #app main #tools {
-        flex-basis: 60%;
+        i {
+            color: var(--white);
+        }
     }
 }
 
