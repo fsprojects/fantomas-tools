@@ -35,6 +35,26 @@
     --unit-2: calc(2 * var(--unit));
     --unit-3: calc(3 * var(--unit));
     --unit-4: calc(4 * var(--unit));
+    /* Everything below has a dark counterpart, so say so: this is what makes the browser's own
+       colours, the scrollbars and the caret among them, follow the theme, and it is what
+       light-dark() needs to work at all. */
+    color-scheme: light dark;
+
+    /* The colours that differ per scheme, each holding both of its values. A rule that uses one
+       of these is written once and is right in both schemes, where it used to be written here and
+       then again in a dark block at the foot of the file. */
+    --page: light-dark(var(--white), #0d1117);
+    --page-alt: light-dark(var(--light), #0d1117);
+    --raised: light-dark(#FAFBFC, #1c2128);
+    --raised-hover: light-dark(#F3F4F6, #30363d);
+    --raised-active: light-dark(#EDEFF2, #0d1117);
+    --field: light-dark(var(--white), #1c2128);
+    --line: light-dark(rgba(27, 31, 35, 0.15), #30363d);
+    --line-strong: light-dark(var(--light-border), #30363d);
+    --ink: light-dark(#24292E, var(--light));
+    --ink-strong: light-dark(var(--dark), var(--light));
+    --accent: light-dark(var(--primary), var(--secondary));
+    --accent-hover: light-dark(var(--primary-hover), var(--secondary-hover));
 }
 
 /* CSS Reset */
@@ -48,12 +68,12 @@ html, body, #app {
 .btn, button {
     text-decoration: none;
     appearance: none;
-    background-color: #FAFBFC;
-    border: 1px solid rgba(27, 31, 35, 0.15);
+    background-color: var(--raised);
+    border: 1px solid var(--line);
     border-radius: 6px;
     box-shadow: rgba(27, 31, 35, 0.04) 0 1px 0, rgba(255, 255, 255, 0.25) 0 1px 0 inset;
     box-sizing: border-box;
-    color: #24292E;
+    color: var(--ink);
     cursor: pointer;
     display: inline-block;
     font-family: var(--font);
@@ -73,27 +93,33 @@ html, body, #app {
 }
 
 .btn:hover, button:hover {
-    background-color: #F3F4F6;
+    background-color: var(--raised-hover);
     text-decoration: none;
     transition-duration: 0.1s;
-    transform: translateY(1px);
 }
 
 .btn:disabled, button:disabled {
-    background-color: #FAFBFC;
-    border-color: rgba(27, 31, 35, 0.15);
-    color: #959DA5;
+    background-color: var(--raised);
+    border-color: var(--line);
+    color: light-dark(#959DA5, var(--grey));
     cursor: default;
 }
 
 .btn:active, button:active {
-    background-color: #EDEFF2;
+    background-color: var(--raised-active);
     box-shadow: rgba(225, 228, 232, 0.2) 0 1px 0 inset;
+    transform: translateY(1px);
     transition: none 0s;
 }
 
 .btn:focus, button:focus {
-    outline: 1px transparent;
+    outline: none;
+}
+
+/* Keyboard focus used to be invisible. :focus-visible keeps the ring off a mouse click. */
+.btn:focus-visible, button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
 }
 
 .btn:before, button:before {
@@ -172,6 +198,7 @@ html, body, #app {
     display: flex;
     flex-direction: column;
     overflow-x: hidden;
+    background-color: var(--page);
 }
 
 @media screen and (min-width: 768px) {
@@ -190,10 +217,13 @@ html, body, #app {
 
 /* Navbar */
 nav {
-    background-color: var(--light);
+    background-color: var(--page-alt);
     padding: var(--unit-2);
     display: flex;
-    box-shadow: 0 7px 7px -7px rgba(0, 0, 0, 0.25);
+    /* A shadow on a dark background is not a shadow, and there the navbar is the colour of the
+       pane below it, so a line separates them. It is inset, so that adding it costs no height. */
+    box-shadow: 0 7px 7px -7px rgba(0, 0, 0, 0.25),
+                inset 0 -1px 0 light-dark(transparent, var(--line));
     z-index: 1;
 }
 
@@ -202,7 +232,7 @@ nav > a:hover {
 }
 
 nav > a {
-    color: var(--dark);
+    color: var(--ink-strong);
     text-decoration: none;
     font-weight: 500;
     font-family: var(--heading-font);
@@ -274,7 +304,7 @@ nav > div #docs-btn .long-text {
     }
 
     nav > div #repository-btn {
-        background-color: var(--dark);
+        background-color: light-dark(var(--dark), var(--raised));
         color: var(--white);
     }
 
@@ -332,7 +362,7 @@ nav > div #docs-btn .long-text {
     opacity: 0;
     height: 100%;
     z-index: 5;
-    background-color: var(--white);
+    background-color: var(--page);
 }
 
 #settings.open {
@@ -344,13 +374,14 @@ nav > div #docs-btn .long-text {
 #settings .inner {
     margin: var(--unit) var(--unit-3);
     overflow-y: auto;
+    color: light-dark(var(--black), var(--light));
 }
 
 #close-menu-btn {
     font-size: var(--unit-4);
     display: block;
     cursor: pointer;
-    color: var(--dark);
+    color: var(--ink-strong);
     position: absolute;
     right: var(--unit-4);
     top: var(--unit-2);
@@ -360,7 +391,7 @@ nav > div #docs-btn .long-text {
 }
 
 #close-menu-btn:hover {
-    color: var(--dark-hover);
+    color: light-dark(var(--dark-hover), var(--white-hover));
 }
 
 #settings h1 {
@@ -371,9 +402,9 @@ nav > div #docs-btn .long-text {
 }
 
 #settings .version-bar {
-    color: var(--primary);
+    color: var(--accent);
     text-align: center;
-    font-size: calc(var(--unit) * 1.33);
+    font-size: calc(var(--unit) * 1.625);
     margin-bottom: var(--unit);
 }
 
@@ -387,12 +418,16 @@ nav > div #docs-btn .long-text {
     margin-bottom: calc(var(--unit) / 2);
 }
 
+/* Every setting name links to its documentation, so a list of forty of them is forty underlines.
+   The colour already says it is a link; the underline only has to show up when you go for it. */
 #settings .setting label a {
-    color: var(--primary);
+    color: var(--accent);
+    text-decoration: none;
 }
 
 #settings .setting label a:hover {
-    color: var(--primary-hover);
+    color: var(--accent-hover);
+    text-decoration: underline;
 }
 
 #settings .setting input {
@@ -401,9 +436,9 @@ nav > div #docs-btn .long-text {
     font-size: var(--unit-2);
     line-height: 1.5;
     font-weight: 400;
-    color: var(--black);
-    background-color: var(--white);
-    border: 1px solid var(--light-border);
+    color: light-dark(var(--black), var(--light));
+    background-color: var(--field);
+    border: 1px solid var(--line-strong);
     border-radius: 0;
     appearance: none;
     transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
@@ -418,10 +453,12 @@ nav > div #docs-btn .long-text {
     box-shadow: 0 0 0 0.25rem #338cbb40;
 }
 
+/* Outlined rather than filled, so the fill is whatever the drawer is. The active one is filled
+   in --secondary by a rule below. */
 #settings .setting .toggle-button button {
     border-radius: 0;
     border: 1px solid var(--secondary);
-    background-color: var(--white);
+    background-color: light-dark(var(--white), transparent);
     color: var(--secondary);
 }
 
@@ -429,10 +466,17 @@ nav > div #docs-btn .long-text {
     margin-left: -1px;
 }
 
+#settings .setting .toggle-button button:first-child {
+    border-radius: 6px 0 0 6px;
+}
+
+#settings .setting .toggle-button button:last-child {
+    border-radius: 0 6px 6px 0;
+}
+
 #settings .setting .toggle-button button:hover {
     background-color: var(--secondary);
     color: var(--white);
-    transform: none;
 }
 
 #settings .setting .toggle-button button.active {
@@ -469,7 +513,7 @@ nav > div #docs-btn .long-text {
     #settings {
         transition: 300ms all;
         width: 100%;
-        background-color: #22222280;
+        background-color: light-dark(#22222280, #00000080);
     }
 
     #settings .inner {
@@ -479,7 +523,8 @@ nav > div #docs-btn .long-text {
         position: absolute;
         right: 0;
         top: 0;
-        background-color: var(--white);
+        background-color: var(--page);
+        box-shadow: -8px 0 24px rgba(0, 0, 0, 0.15);
         margin: 0;
         padding: var(--unit) var(--unit-3);
     }
@@ -507,20 +552,20 @@ nav > div #docs-btn .long-text {
 }
 
 #tabs li a {
-    color: var(--primary);
+    color: light-dark(var(--primary), var(--light));
     text-decoration: none;
     font-size: var(--unit-2);
 }
 
 #tabs li {
     cursor: pointer;
-    border-bottom: 1px solid var(--light-border);
+    border-bottom: 1px solid var(--line-strong);
 }
 
 #tabs li:hover {
-    border-left: 1px solid var(--white-border);
-    border-right: 1px solid var(--white-border);
-    background-color: var(--light);
+    border-left: 1px solid var(--line-strong);
+    border-right: 1px solid var(--line-strong);
+    background-color: var(--raised);
 }
 
 #tabs li.active {
@@ -532,12 +577,13 @@ nav > div #docs-btn .long-text {
 }
 
 #tabs li.active {
-    border: 1px solid var(--light-border);
+    border: 1px solid var(--line-strong);
     border-bottom: none;
 }
 
 #tabs li.active a {
-    color: var(--dark);
+    color: var(--ink-strong);
+    background-color: light-dark(transparent, var(--raised));
     font-family: var(--heading-font);
     font-weight: 500;
 }
@@ -629,7 +675,7 @@ nav > div #docs-btn .long-text {
     display: block;
     font-size: .8rem;
     font-weight: 400;
-    color: var(--dark);
+    color: var(--ink-strong);
 }
 
 #diagnostics li p {
@@ -675,9 +721,14 @@ nav > div #docs-btn .long-text {
 
 /* Home page tab */
 #home-tab {
-    background-color: var(--light);
+    background-color: var(--page-alt);
+    color: light-dark(var(--black), var(--light-hover));
     padding: var(--unit-3);
     flex: 1;
+}
+
+#home-tab a:visited {
+    color: light-dark(#551A8B, var(--grey));
 }
 
 #home-tab h1 {
@@ -731,6 +782,8 @@ nav > div #docs-btn .long-text {
 /* Oak tab */
 #oak-tab {
     padding: 1px;
+    background-color: var(--page);
+    color: light-dark(var(--black), var(--light));
 }
 
 #oak-tab > div {
@@ -783,7 +836,7 @@ nav > div #docs-btn .long-text {
 }
 
 #idempotent-message {
-    background-color: #c749100d;
+    background-color: light-dark(#c749100d, #c7491026);
     margin-bottom: calc(8 * var(--unit));
     padding: var(--unit-2);
     font-size: calc(1.666 * var(--unit));
@@ -799,84 +852,4 @@ nav > div #docs-btn .long-text {
 
 .reset-settings > button {
     margin: auto;
-}
-
-/* dark mode */
-@media (prefers-color-scheme: dark) {
-    :root {
-        --dark: rgb(13, 17, 23);
-    }
-
-    nav {
-        background-color: var(--dark);
-    }
-
-    nav > a:first-of-type {
-        color: var(--white);
-    }
-
-    #app main #tools {
-        background: var(--dark);
-    }
-
-    #loading {
-        background: var(--dark);
-    }
-
-    #tabs li a {
-        color: var(--light);
-    }
-
-    #tabs li a:hover {
-        background: var(--grey);
-        color: var(--light);
-    }
-
-    #tabs li.active a {
-        background: var(--grey);
-        color: var(--light);
-    }
-
-    #settings .inner {
-        background-color: var(--dark);
-        color: var(--light);
-    }
-
-    #settings .version-bar {
-        color: var(--secondary);
-    }
-
-    #settings .setting label a {
-        color: var(--secondary);
-    }
-
-    #close-menu-btn {
-        color: var(--white);
-    }
-
-    #close-menu-btn:hover {
-        color: var(--white-hover);
-    }
-
-    #home-tab {
-        background-color: var(--dark);
-        color: var(--light-hover);
-    }
-
-    #home-tab a:visited {
-        color: var(--grey);
-    }
-
-    #oak-tab {
-        background-color: var(--dark);
-        color: var(--light);
-    }
-
-    #diagnostics li p {
-        color: var(--light);
-    }
-
-    #diagnostics li strong {
-        color: var(--light);
-    }
 }
