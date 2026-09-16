@@ -1,20 +1,18 @@
 version: 2
 updates:
-# The newest versioned backend, checked daily. Fantomas.Core is the one dependency worth knowing
-# about the day it moves: the 8.x tab is there to serve the current release, so a release it does
-# not have yet is a tab that is out of date. Its other packages come along for the ride, because
-# Dependabot refuses two nuget entries whose directories overlap, so this folder cannot also appear
-# in the monthly list below.
+# Fantomas.Core in the newest versioned backend, and nothing else. It is the one dependency worth
+# knowing about the day it moves: the 8.x tab is there to serve the current release, so a release it
+# does not have yet is a tab that is out of date. Everything else this project pins is pinned by the
+# other backends too and moves with them in the monthly pull request below, which cannot include
+# this folder as well: Dependabot refuses to see one directory in two nuget entries.
 - package-ecosystem: nuget
   directory: "/src/server/FantomasOnlineV8"
   schedule:
     interval: daily
     time: "10:00"
     timezone: Europe/Brussels
-  groups:
-    fantomas-online-v8:
-      patterns:
-      - "*"
+  allow:
+  - dependency-name: "Fantomas.Core"
   ignore:
   # Each versioned backend serves one Fantomas major on purpose, so a major bump does not update
   # this tab, it replaces it. A new major gets a new project alongside the old ones instead, and
