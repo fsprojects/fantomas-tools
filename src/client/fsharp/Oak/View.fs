@@ -54,7 +54,8 @@ let mkTriviaResultDiv (dispatch: Msg -> unit) (isBefore: bool) (key: string) (tr
             let div = (ev.target :?> Element)
             div.classList.add "highlight"
             JS.setTimeout (fun () -> div.classList.remove "highlight") 400 |> ignore
-            dispatch (Bubble(BubbleMessage.HighLight triviaNode.Range)))
+            dispatch (Bubble(BubbleMessage.HighLight triviaNode.Range))
+        )
     ] [ i [ ClassName iconClassName ] []; str content ]
 
 let rec mkResultDiv
@@ -68,7 +69,8 @@ let rec mkResultDiv
         node.Children
         |> Array.mapi (fun idx child ->
             let key = $"%s{key}_%i{idx}"
-            mkResultDiv dispatch (level + 1) key child)
+            mkResultDiv dispatch (level + 1) key child
+        )
         |> Array.toList
 
     let contentBefore =
@@ -91,7 +93,8 @@ let rec mkResultDiv
                 div.classList.add "highlight"
                 JS.setTimeout (fun () -> div.classList.remove "highlight") 400 |> ignore
 
-                dispatch (Bubble(BubbleMessage.HighLight node.Range)))
+                dispatch (Bubble(BubbleMessage.HighLight node.Range))
+            )
         ] [ yield! contentBefore; yield str content; yield! contentAfter ]
 
     let finalContinuation (elements: ReactElement array list) =

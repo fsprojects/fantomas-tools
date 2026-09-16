@@ -29,7 +29,8 @@ let private fetchOak (payload: OakViewer.ParseRequest) dispatch =
             match Decode.fromString FormatError.Decode body with
             | Ok error -> Msg.Failed error
             | Result.Error _ -> Msg.Failed(FormatError.ofMessage body)
-        |> dispatch)
+        |> dispatch
+    )
 
 let private fetchFSCVersion () = sprintf "%s/version" backend |> Http.getText
 

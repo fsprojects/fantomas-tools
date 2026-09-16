@@ -7,28 +7,7 @@ open Thoth.Json
 open FantomasTools.Client.Routing
 
 let private getBubbleFromUrl () : BubbleModel =
-    let empty =
-        {
-            SourceCode = ""
-            IsFsi = false
-            Defines = ""
-            ResultCode = ""
-            Diagnostics = Array.empty
-            HighLight = Range.Zero
-        }
-
-    UrlTools.restoreModelFromUrl
-        (Decode.object (fun get ->
-            let sourceCode = get.Required.Field "code" Decode.string
-            let isFsi = get.Optional.Field "isFsi" Decode.bool |> Option.defaultValue false
-            let defines = get.Optional.Field "defines" Decode.string |> Option.defaultValue ""
-
-            { empty with
-                SourceCode = sourceCode
-                IsFsi = isFsi
-                Defines = defines
-            }))
-        empty
+    UrlTools.restoreModelFromUrl BubbleModel.decoder BubbleModel.empty
 
 let private getIsFsiFileFromUrl () =
     UrlTools.restoreModelFromUrl (Decode.object (fun get -> get.Required.Field "isFsi" Decode.bool)) false
@@ -150,9 +129,9 @@ let update msg model =
             let changeVersion (hashWithoutQuery: string) =
                 let version m =
                     match m with
-                    | FantomasOnline.Model.V5 -> "v5"
                     | FantomasOnline.Model.V6 -> "v6"
                     | FantomasOnline.Model.V7 -> "v7"
+                    | FantomasOnline.Model.V8 -> "v8"
                     | FantomasOnline.Model.Main -> "main"
                     | FantomasOnline.Model.Preview -> "preview"
 
@@ -162,7 +141,8 @@ let update msg model =
 
             Cmd.ofEffect (fun dispatch ->
                 UrlTools.updateUrlBy changeVersion
-                dispatch (SelectTab(ActiveTab.FantomasTab(mode))))
+                dispatch (SelectTab(ActiveTab.FantomasTab(mode)))
+            )
 
         model, cmd
     | FantomasMsg fMsg ->

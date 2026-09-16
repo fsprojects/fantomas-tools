@@ -16,7 +16,7 @@ open Feliz
 
 module private Parsing =
     /// Splits a hash into route segments, keeping any query string as a trailing segment:
-    /// `#/` becomes `[]`, `#/fantomas/v7` becomes `[ "fantomas"; "v7" ]` and
+    /// `#/` becomes `[]`, `#/fantomas/v8` becomes `[ "fantomas"; "v8" ]` and
     /// `#/ast?data=xyz` becomes `[ "ast"; "?data=xyz" ]`.
     let urlSegments (path: string) : string list =
         let withoutHash =
@@ -47,7 +47,8 @@ module private Parsing =
                     | [| value |] -> [ JS.decodeURIComponent value ]
                     | [| value; query |] when String.IsNullOrEmpty query -> [ JS.decodeURIComponent value ]
                     | [| value; query |] -> [ JS.decodeURIComponent value; "?" + query ]
-                    | _ -> [])
+                    | _ -> []
+        )
 
 [<RequireQualifiedAccess>]
 module Route =
@@ -62,7 +63,8 @@ module Route =
             |> List.choose (fun pair ->
                 match pair.Split([| '=' |], 2) with
                 | [| key; value |] -> Some(JS.decodeURIComponent key, JS.decodeURIComponent value)
-                | _ -> None)
+                | _ -> None
+            )
             |> ValueSome
 
 [<RequireQualifiedAccess>]
@@ -94,6 +96,7 @@ module Components =
                         window.removeEventListener ("popstate", onChange)
                 }
 
-            subscription)
+            subscription
+        )
 
         content

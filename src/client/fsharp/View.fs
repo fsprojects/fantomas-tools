@@ -95,7 +95,8 @@ let private settings model dispatch inner =
             let target = ev.target :?> HTMLElement
 
             if target.classList.contains "open" then
-                dispatch ToggleSettings)
+                dispatch ToggleSettings
+        )
     ] [
         i [
             Id "close-menu-btn"
@@ -157,7 +158,8 @@ let diagnostics (caption: string option) (bubble: BubbleModel) =
                     span [ ClassName $"%s{Style.Badge} error-number"; Title "ErrorNumber" ] [ ofInt diag.ErrorNumber ]
                     span [ ClassName $"%s{Style.Badge} subcategory"; Title "SubCategory" ] [ str diag.SubCategory ]
                     p [] [ str diag.Message ]
-                ])
+                ]
+            )
 
         ul [ Id "diagnostics" ] [
             ofOption (
@@ -234,7 +236,7 @@ let rightPane (model: Model) dispatch =
                                 result.FirstFormat
                         | None -> result.FirstFormat
 
-                    FantomasResultEditor formattedCode
+                    FantomasResultEditor model.FantomasModel.MaxLineLength formattedCode
 
             resultEditor,
             FantomasOnline.View.view model.FantomasModel fantomasDispatch,

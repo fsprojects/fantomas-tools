@@ -11,6 +11,7 @@ let private decodeInput =
             Defines = get.Required.Field "defines" (Decode.array Decode.string)
             IsFsi = get.Required.Field "isFsi" Decode.bool
             Expand = get.Required.Field "expand" Decode.bool
-        })
+        }
+    )
 
 let decodeInputRequest json = Decode.fromString decodeInput json

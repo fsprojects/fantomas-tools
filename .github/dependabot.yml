@@ -1,18 +1,62 @@
 version: 2
 updates:
-- package-ecosystem: npm
-  directory: "/src/client"
-  schedule:
-    interval: daily
-    time: "11:00"
-  open-pull-requests-limit: 10
-  allow:
-    - dependency-name: "Fantomas.Core"
+# Fantomas.Core in the newest versioned backend, checked daily. This is the one dependency worth
+# knowing about the day it moves: the 8.x tab is there to serve the current release, so a release
+# it does not have yet is a tab that is out of date.
 - package-ecosystem: nuget
-  directory: "/src/server/FantomasOnlineV7"
+  directory: "/src/server/FantomasOnlineV8"
   schedule:
     interval: daily
     time: "10:00"
-  open-pull-requests-limit: 10
+    timezone: Europe/Brussels
   allow:
-    - dependency-name: "Fantomas.Core"
+  - dependency-name: "Fantomas.Core"
+  ignore:
+  # Each versioned backend serves one Fantomas major on purpose, so a major bump does not update
+  # this tab, it replaces it. A new major gets a new project alongside the old ones instead.
+  - dependency-name: "Fantomas.Core"
+    update-types:
+    - "version-update:semver-major"
+# Everything else, as one grouped pull request per ecosystem per month. Grouping is what keeps this
+# bearable: the alternative is a pull request per package, and every one of them costs a full CI run
+# that builds Fantomas from source.
+- package-ecosystem: nuget
+  directories:
+  # The root holds Directory.Build.props, which is where Suave, the Amazon.Lambda packages and the
+  # two analyzers have their versions: every lambda inherits them rather than naming them itself.
+  - "/"
+  - "/infrastructure"
+  - "/src/client/fsharp"
+  - "/src/server/*"
+  schedule:
+    interval: monthly
+    time: "10:00"
+    timezone: Europe/Brussels
+  groups:
+    nuget:
+      patterns:
+      - "*"
+  ignore:
+  # Fantomas.Core belongs to the daily entry above. The older majors are pinned to their own
+  # release line anyway, which is the whole point of having a tab per version.
+  - dependency-name: "Fantomas.Core"
+- package-ecosystem: npm
+  directory: "/src/client"
+  schedule:
+    interval: monthly
+    time: "11:00"
+    timezone: Europe/Brussels
+  groups:
+    npm:
+      patterns:
+      - "*"
+- package-ecosystem: github-actions
+  directory: "/"
+  schedule:
+    interval: monthly
+    time: "12:00"
+    timezone: Europe/Brussels
+  groups:
+    github-actions:
+      patterns:
+      - "*"

@@ -24,21 +24,22 @@ let main argv =
         request (fun req ctx ->
             async {
                 let json = req.BodyText
-                let! formatResponse = FantomasOnlineV5.FormatCode.formatCode json
+                let! formatResponse = FantomasOnlineV8.FormatCode.formatCode json
                 return! (mapFormatResponseToWebPart formatResponse) ctx
-            })
+            }
+        )
 
     let routes =
         [
-            GET >=> path "/fantomas/v5/version" >=> textPlain >=> OK(FantomasOnlineV5.FormatCode.getVersion ())
-            GET >=> path "/fantomas/v5/options" >=> applicationJson >=> OK(FantomasOnlineV5.FormatCode.getOptions ())
-            POST >=> path "/fantomas/v5/format" >=> formatWebPart
+            GET >=> path "/fantomas/v8/version" >=> textPlain >=> OK(FantomasOnlineV8.FormatCode.getVersion ())
+            GET >=> path "/fantomas/v8/options" >=> applicationJson >=> OK(FantomasOnlineV8.FormatCode.getOptions ())
+            POST >=> path "/fantomas/v8/format" >=> formatWebPart
         ]
 
     let port =
         match List.ofArray argv with
         | [ "--port"; port ] -> System.UInt16.Parse port
-        | _ -> 11009us
+        | _ -> 10808us
 
     startFantomasTool port routes
 

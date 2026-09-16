@@ -25,12 +25,12 @@
       },
       "Fantomas.Core": {
         "type": "Direct",
-        "requested": "[5.2.4, )",
-        "resolved": "5.2.4",
-        "contentHash": "Siwn74SoJCIJ8Vqu8IqXYp0rJ2XqZnzvFQJpgoKWCDCnhCTyBPtC5BUSFEGAqqqPO/TZCRx/TnAet+edXwC4HQ==",
+        "requested": "[8.0.0, )",
+        "resolved": "8.0.0",
+        "contentHash": "hAStn3pDchQBmLokRUlirF6o9UOSH34bAOXY1KtNfH/qjBUvJLBJa5AVOfmSHht/GaKkrK8clQqgg70RriX25A==",
         "dependencies": {
-          "FSharp.Core": "6.0.1",
-          "Fantomas.FCS": "5.2.4"
+          "FSharp.Core": "10.0.100",
+          "Fantomas.FCS": "8.0.0"
         }
       },
       "FSharp.Core": {
@@ -81,10 +81,10 @@
       },
       "Fantomas.FCS": {
         "type": "Transitive",
-        "resolved": "5.2.4",
-        "contentHash": "jqGhrUVHry4lU53vmrG1qTqv83tsyM8uZgYsFEc6tBhl5pSyQnrZCoiCRO19r28I6jPy0m6koabJLUXpJYZy2A==",
+        "resolved": "8.0.0",
+        "contentHash": "IhWN7Ji89hyXSGZmb2pEbdgJ86CuajayaTuaqfyK4exnIZ3TlcX5m0Ssp7A+DQDOdoWLh60oaFWYmai83fcjCA==",
         "dependencies": {
-          "FSharp.Core": "6.0.1"
+          "FSharp.Core": "10.0.100"
         }
       },
       "Microsoft.Extensions.Primitives": {

@@ -3,13 +3,14 @@
     "dev": "bunx --bun vite",
     "build": "bunx --bun vite build",
     "serve": "bunx --bun vite preview",
-    "format": "prettier --write \"src/**/*.{js,jsx}\" vite.config.js",
-    "lint": "prettier --check \"src/**/*.{js,jsx}\" vite.config.js"
+    "test": "vitest run",
+    "fmt": "oxfmt \"src/**/*.{js,jsx,css}\" vite.config.js vitest.config.js",
+    "lint": "oxfmt --check \"src/**/*.{js,jsx,css}\" vite.config.js vitest.config.js"
   },
   "type": "module",
   "dependencies": {
     "@monaco-editor/react": "4.7.0",
-    "lz-string": "1.4.4",
+    "lz-string": "1.5.0",
     "notyf": "3.10.0",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
@@ -19,8 +20,9 @@
   },
   "devDependencies": {
     "@vitejs/plugin-react": "6.1.1",
-    "prettier": "3.9.6",
+    "oxfmt": "^0.68.0",
     "vite": "8.3.0",
-    "vite-plugin-fable": "0.5.1"
+    "vite-plugin-fable": "0.5.1",
+    "vitest": "^5.0.1"
   }
 }

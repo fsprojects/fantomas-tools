@@ -26,9 +26,9 @@ let astPort = 7412
 let oakPort = 8904
 let fantomasMainPort = 11084
 let fantomasPreviewPort = 12007
-let fantomasV5Port = 11009
 let fantomasV6Port = 13042
 let fantomasV7Port = 10707
+let fantomasV8Port = 10808
 /// Mirrors `server.port` and `preview.port` in src/client/vite.config.js.
 let frontendPort = 9060
 let pwd = __SOURCE_DIRECTORY__
@@ -136,9 +136,9 @@ let setViteToProduction () =
 
     setEnv "VITE_AST_BACKEND" $"%s{mainStageUrl}/ast-viewer"
     setEnv "VITE_OAK_BACKEND" $"%s{mainStageUrl}/oak-viewer"
-    setEnv "VITE_FANTOMAS_V5" $"%s{mainStageUrl}/fantomas/v5"
     setEnv "VITE_FANTOMAS_V6" $"%s{mainStageUrl}/fantomas/v6"
     setEnv "VITE_FANTOMAS_V7" $"%s{mainStageUrl}/fantomas/v7"
+    setEnv "VITE_FANTOMAS_V8" $"%s{mainStageUrl}/fantomas/v8"
     setEnv "VITE_FANTOMAS_MAIN" $"%s{mainStageUrl}/fantomas/main"
     setEnv "VITE_FANTOMAS_PREVIEW" $"%s{mainStageUrl}/fantomas/preview"
 
@@ -163,6 +163,13 @@ pipeline "Build" {
         workingDir clientDir
         run "bun run lint"
     }
+    // The links people share carry the whole model through lz-string and the decoders, so a change
+    // to either breaks every link ever posted. These tests run over links taken from Fantomas
+    // issues, and they are what says a new version of those pieces is safe to take.
+    stage "test client" {
+        workingDir clientDir
+        run "bun run test"
+    }
     stage "clean" {
         run (fun _ ->
             async {
@@ -174,9 +181,9 @@ pipeline "Build" {
     stage "publish lambdas" {
         stage "parallel ones" {
             paralle
-            run (publishLambda "FantomasOnlineV5")
             run (publishLambda "FantomasOnlineV6")
             run (publishLambda "FantomasOnlineV7")
+            run (publishLambda "FantomasOnlineV8")
             run (publishLambda "ASTViewer")
         }
         run (publishLambda "FantomasOnlineMain")
@@ -221,11 +228,13 @@ let changedFiles (ctx: StageContext) : Async<string array> =
     }
 
 let fsharpExtensions = set [| ".fs"; ".fsi"; ".fsx" |]
-let jsExtensions = set [| ".js"; ".jsx" |]
+/// What oxfmt formats in this repository. The client stylesheet is in there too, so a changed
+/// stylesheet is formatted by the same pass as a changed component.
+let clientExtensions = set [| ".js"; ".jsx"; ".css" |]
 let isFSharpFile path =
     FileInfo(path).Extension |> fsharpExtensions.Contains
-let isJSFile path =
-    FileInfo(path).Extension |> jsExtensions.Contains
+let isClientFile path =
+    FileInfo(path).Extension |> clientExtensions.Contains
 
 pipeline "FormatChanged" {
     workingDir __SOURCE_DIRECTORY__
@@ -243,25 +252,25 @@ pipeline "FormatChanged" {
                         ctx.RunCommand $"dotnet fantomas %s{fantomasArgument}"
 
                 let! files = changedFiles ctx
-                let prettierArgument =
+                let oxfmtArgument =
                     files
                     |> Array.choose (fun path ->
-                        if isJSFile path then
+                        if isClientFile path then
                             Some(path.Replace("src/client/", ""))
                         else
                             None)
                     |> String.concat " "
 
-                let! prettierResult =
-                    if String.IsNullOrWhiteSpace prettierArgument then
+                let! oxfmtResult =
+                    if String.IsNullOrWhiteSpace oxfmtArgument then
                         alwaysOk
                     else
                         ctx.RunCommand(
-                            $"bun x prettier --write %s{prettierArgument}",
+                            $"bunx oxfmt %s{oxfmtArgument}",
                             workingDir = (__SOURCE_DIRECTORY__ </> "src" </> "client")
                         )
 
-                return (mapResultToCode fsharpResult + mapResultToCode prettierResult)
+                return (mapResultToCode fsharpResult + mapResultToCode oxfmtResult)
             })
     }
     runIfOnlySpecified true
@@ -305,12 +314,6 @@ let backends: Backend list =
             EnvironmentVariable = "VITE_OAK_BACKEND"
         }
         {
-            Project = "FantomasOnlineV5"
-            Port = fantomasV5Port
-            SubPath = "fantomas/v5"
-            EnvironmentVariable = "VITE_FANTOMAS_V5"
-        }
-        {
             Project = "FantomasOnlineV6"
             Port = fantomasV6Port
             SubPath = "fantomas/v6"
@@ -321,6 +324,12 @@ let backends: Backend list =
             Port = fantomasV7Port
             SubPath = "fantomas/v7"
             EnvironmentVariable = "VITE_FANTOMAS_V7"
+        }
+        {
+            Project = "FantomasOnlineV8"
+            Port = fantomasV8Port
+            SubPath = "fantomas/v8"
+            EnvironmentVariable = "VITE_FANTOMAS_V8"
         }
         {
             Project = "FantomasOnlineMain"
@@ -705,9 +714,9 @@ pipeline "Watch" {
         paralle
         run (runLambda "ASTViewer")
         run (runLambda "OakViewer")
-        run (runLambda "FantomasOnlineV5")
         run (runLambda "FantomasOnlineV6")
         run (runLambda "FantomasOnlineV7")
+        run (runLambda "FantomasOnlineV8")
         run (runLambda "FantomasOnlineMain")
         run (runLambda "FantomasOnlinePreview")
         stage "frontend" {
@@ -741,9 +750,9 @@ pipeline "Start" {
         paralle
         runPublishedLambda "ASTViewer"
         runPublishedLambda "OakViewer"
-        runPublishedLambda "FantomasOnlineV5"
         runPublishedLambda "FantomasOnlineV6"
         runPublishedLambda "FantomasOnlineV7"
+        runPublishedLambda "FantomasOnlineV8"
         runPublishedLambda "FantomasOnlineMain"
         runPublishedLambda "FantomasOnlinePreview"
         stage "frontend" {
@@ -759,6 +768,12 @@ pipeline "Analyze" {
     workingDir __SOURCE_DIRECTORY__
     dotnetInstall
     stage "Analyze" {
+        // fsharp-analyzers targets the previous runtime and loads MSBuild from the SDK that
+        // global.json picks. The host never rolls a release app onto a prerelease runtime while
+        // a release one is installed, so an RC SDK needs this or the tool starts on the old
+        // runtime and fails to load the SDK's assemblies.
+        envVars [| "DOTNET_ROLL_FORWARD_TO_PRERELEASE", "1" |]
+
         run (fun ctx ->
             [
                 for project in projectsToAnalyze do

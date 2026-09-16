@@ -12,7 +12,8 @@ open FantomasTools.Client
 let private mapFantomasOptionsToRecord options =
     let newValues =
         options
-        |> Seq.map (function
+        |> Seq.map (
+            function
             | BoolOption(_, _, v) -> box v
             | IntOption(_, _, v) -> box v
             | MultilineFormatterTypeOption(_, _, v) ->
@@ -26,7 +27,8 @@ let private mapFantomasOptionsToRecord options =
             | MultilineBracketStyleOption(_, _, v) ->
                 MultilineBracketStyle.OfConfigString(v)
                 |> Option.defaultValue MultilineBracketStyle.Cramped
-                |> box)
+                |> box
+        )
         |> Seq.toArray
 
     let formatConfigType = typeof<FormatConfig>
@@ -195,7 +197,8 @@ let getOptions () : string =
         | :? MultilineBracketStyle as mbs ->
             FantomasOption.MultilineBracketStyleOption(idx, k, (MultilineBracketStyle.ToConfigString mbs))
             |> Some
-        | _ -> None)
+        | _ -> None
+    )
     |> Seq.toList
     |> mapOptionsToJson
 

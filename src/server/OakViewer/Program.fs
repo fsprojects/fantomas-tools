@@ -26,7 +26,8 @@ let main argv =
                 let json = req.BodyText
                 let astResponse = getOak json
                 return! (mapOakResponseToWebPart astResponse) ctx
-            })
+            }
+        )
 
     let routes =
         [

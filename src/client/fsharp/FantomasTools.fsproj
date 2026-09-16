@@ -49,8 +49,11 @@
     <Compile Include="Model.fs" />
     <Compile Include="Navigation.fs" />
     <Compile Include="State.fs" />
+    <Compile Include="Splitter.fs" />
     <Compile Include="View.fs" />
     <Compile Include="App.fs" />
+
+    <Compile Include="test/UrlCompat.test.fs" />
 
   </ItemGroup>
   <ItemGroup>

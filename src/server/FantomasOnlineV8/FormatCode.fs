@@ -1,9 +1,8 @@
-module FantomasOnlinePreview.FormatCode
+module FantomasOnlineV8.FormatCode
 
 open System
 open Fantomas.FCS.Diagnostics
 open Fantomas.FCS.Parse
-open Fantomas.FCS.Text
 open Fantomas.Core
 open FantomasOnline.Shared
 open FantomasOnline.Server.Shared.Http
@@ -45,7 +44,13 @@ let private format (fileName: string) code config =
 let private toDiagnostic (e: FSharpParserDiagnostic) : Diagnostic =
     let range =
         match e.Range with
-        | None -> Range.Zero
+        | None ->
+            {
+                StartLine = 0
+                StartColumn = 0
+                EndLine = 0
+                EndColumn = 0
+            }
         | Some r ->
             {
                 StartLine = r.StartLine
@@ -92,16 +97,13 @@ let private firstParseError (diagnostics: FSharpParserDiagnostic list) : string 
         | None -> $"%s{error.Message}"
         | Some range -> $"%s{error.Message} at line %i{range.StartLine}, column %i{range.StartColumn + 1}."
 
-/// The exceptions Fantomas raises, told apart. Every failure used to reach the user as the string of
-/// whatever was caught, stack trace and all, which said "this is broken" about source that simply
-/// does not parse as loudly as it did about a genuine bug. Fantomas 8 derives all of them from
-/// `FormatException` and gives each one its data, so the backend can say which of the two happened.
+/// The exceptions Fantomas raises, told apart. Version 8 derives all of them from `FormatException`
+/// and gives each one its data, so the backend can say whether the source is at fault or Fantomas
+/// is. This matches what the main backend does, main being where version 8 came from.
 let private describeException (ex: exn) : FormatError =
     match ex with
     // The submitted code is not valid F#. Fantomas never got as far as formatting it and the parser
     // already said where it gave up, so report that instead of the exception wrapped around it.
-    // The message says whose code it is: the tool formats twice and this is the only failure of the
-    // three that is about what the user typed rather than about what Fantomas made of it.
     | :? ParseException as parseException ->
         {
             Kind = FormatErrorKind.InvalidSource
@@ -124,7 +126,7 @@ let private describeException (ex: exn) : FormatError =
     // The syntax node is what whoever picks the issue up needs, so it travels along as detail.
     // The message is composed from the data rather than taken from the exception: the one the
     // exception writes ends by asking the reader to report this via fantomas-tools, which is where
-    // the reader already is. Saying it is a bug is this tab's job, and it has a button for it.
+    // the reader already is.
     | :? InvariantViolationException as invariantViolation ->
         let range = invariantViolation.Range
 
@@ -158,22 +160,10 @@ let private describeException (ex: exn) : FormatError =
         }
 
 let getVersion () =
-    let date =
-        let lastCommitInfo =
-            sprintf
-                "%s - %s"
-                (System.Environment.GetEnvironmentVariable("LAST_COMMIT_TIMESTAMP"))
-                (System.Environment.GetEnvironmentVariable("LAST_COMMIT_SHA"))
+    let assembly = typeof<FormatConfig>.Assembly
 
-        if lastCommitInfo.Trim() <> "-" then
-            lastCommitInfo
-        else
-            let assembly = typeof<FormatConfig>.Assembly
-
-            System.IO.FileInfo assembly.Location
-            |> fun f -> f.LastWriteTime.ToShortDateString()
-
-    $"main branch at %s{date}"
+    let version = assembly.GetName().Version
+    sprintf "%i.%i.%i" version.Major version.Minor version.Build
 
 let getOptions () : string =
     Reflection.getRecordFields FormatConfig.Default

@@ -5,9 +5,9 @@ open FantomasTools.Client
 
 [<Struct>]
 type FantomasMode =
-    | V5
     | V6
     | V7
+    | V8
     | Main // main branch
     | Preview // also main branch
 

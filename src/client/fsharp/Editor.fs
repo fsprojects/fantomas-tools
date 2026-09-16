@@ -34,12 +34,6 @@ type MonacoEditorProp =
     | Theme of string
     | ClassName of string
 
-    static member rulerOption column =
-        {|
-            rulers = [| {| column = column; color = "#2FBADC" |} |]
-        |}
-        :> obj
-
 let inline private MonacoEditor (props: MonacoEditorProp list) : ReactElement =
     ofImport "default" "@monaco-editor/react" (keyValueList CaseRules.LowerFirst props) []
 
@@ -57,6 +51,17 @@ let private useEffectRaw (_action: unit -> unit, _dependencies: obj array) : uni
 
 let private theme =
     emitJsExpr<string> () "(window.matchMedia(\"(prefers-color-scheme: dark)\").matches ? \"vs-dark\" : \"vs-light\")"
+
+/// The vertical line at max_line_length. Both editors that show F# the user is responsible for
+/// draw it: the input, where it says where the limit is, and the Fantomas result, where it says
+/// whether the formatter stayed inside it.
+let private ruler (maxLineLength: int) =
+    [|
+        {|
+            column = maxLineLength
+            color = "#2FBADC"
+        |}
+    |]
 
 let private editorOptions =
     {|
@@ -79,17 +84,12 @@ let InputEditor (onChange: string -> unit) (value: string) (maxLineLength: int) 
     let handleEditorDidMount =
         Action<_, _>(fun editor _ ->
             editorRef.current <- editor
-            setIsEditorMounted true)
+            setIsEditorMounted true
+        )
 
     let options =
         {| editorOptions with
-            rulers =
-                [|
-                    {|
-                        column = maxLineLength
-                        color = "#2FBADC"
-                    |}
-                |]
+            rulers = ruler maxLineLength
         |}
 
     useEffectRaw (
@@ -160,7 +160,8 @@ let AstResultEditor onCursorChanged value =
     let handleEditorDidMount =
         Action<_, _>(fun editor _ ->
             editorRef.current <- editor
-            setIsEditorMounted true)
+            setIsEditorMounted true
+        )
 
     useEffectRaw (
         fun () ->
@@ -190,11 +191,12 @@ let AstResultEditor onCursorChanged value =
         ]
 
 [<ReactComponent>]
-let FantomasResultEditor (value: string) =
+let FantomasResultEditor (maxLineLength: int) (value: string) =
     let options =
         {| editorOptions with
             readOnly = true
             domReadOnly = true
+            rulers = ruler maxLineLength
         |}
 
     MonacoEditor

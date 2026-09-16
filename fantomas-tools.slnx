@@ -18,9 +18,9 @@
     <Project Path="src/server/ASTViewer/ASTViewer.fsproj" />
     <Project Path="src/server/FantomasOnlineMain/FantomasOnlineMain.fsproj" />
     <Project Path="src/server/FantomasOnlinePreview/FantomasOnlinePreview.fsproj" />
-    <Project Path="src/server/FantomasOnlineV5/FantomasOnlineV5.fsproj" />
     <Project Path="src/server/FantomasOnlineV6/FantomasOnlineV6.fsproj" />
     <Project Path="src/server/FantomasOnlineV7/FantomasOnlineV7.fsproj" />
+    <Project Path="src/server/FantomasOnlineV8/FantomasOnlineV8.fsproj" />
     <Project Path="src/server/OakViewer/OakViewer.fsproj" />
   </Folder>
   <Project Path="infrastructure/infrastructure.fsproj" />

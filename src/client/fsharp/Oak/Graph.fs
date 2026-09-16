@@ -85,7 +85,8 @@ let Graph (props: GraphProps) =
             let network' = VisNetwork.Network(divRef.current, props.data, props.options)
             network'.OnSelect(props.selectNode)
             network'.OnHover(props.hoverNode)
-            setNetwork (Some network'))
+            setNetwork (Some network')
+    )
 
     React.useEffect (
         fun () ->
@@ -95,7 +96,8 @@ let Graph (props: GraphProps) =
                 network.OffHover()
                 network.SetData props.data
                 network.OnSelect(props.selectNode)
-                network.OnHover(props.hoverNode))
+                network.OnHover(props.hoverNode)
+            )
         , [| box network; box props.data |]
     )
 
