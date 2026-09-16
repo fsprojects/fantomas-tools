@@ -221,11 +221,13 @@ let changedFiles (ctx: StageContext) : Async<string array> =
     }
 
 let fsharpExtensions = set [| ".fs"; ".fsi"; ".fsx" |]
-let jsExtensions = set [| ".js"; ".jsx" |]
+/// What oxfmt formats in this repository. The client stylesheet is in there too, so a changed
+/// stylesheet is formatted by the same pass as a changed component.
+let clientExtensions = set [| ".js"; ".jsx"; ".css" |]
 let isFSharpFile path =
     FileInfo(path).Extension |> fsharpExtensions.Contains
-let isJSFile path =
-    FileInfo(path).Extension |> jsExtensions.Contains
+let isClientFile path =
+    FileInfo(path).Extension |> clientExtensions.Contains
 
 pipeline "FormatChanged" {
     workingDir __SOURCE_DIRECTORY__
@@ -243,25 +245,25 @@ pipeline "FormatChanged" {
                         ctx.RunCommand $"dotnet fantomas %s{fantomasArgument}"
 
                 let! files = changedFiles ctx
-                let prettierArgument =
+                let oxfmtArgument =
                     files
                     |> Array.choose (fun path ->
-                        if isJSFile path then
+                        if isClientFile path then
                             Some(path.Replace("src/client/", ""))
                         else
                             None)
                     |> String.concat " "
 
-                let! prettierResult =
-                    if String.IsNullOrWhiteSpace prettierArgument then
+                let! oxfmtResult =
+                    if String.IsNullOrWhiteSpace oxfmtArgument then
                         alwaysOk
                     else
                         ctx.RunCommand(
-                            $"bun x prettier --write %s{prettierArgument}",
+                            $"bunx oxfmt %s{oxfmtArgument}",
                             workingDir = (__SOURCE_DIRECTORY__ </> "src" </> "client")
                         )
 
-                return (mapResultToCode fsharpResult + mapResultToCode prettierResult)
+                return (mapResultToCode fsharpResult + mapResultToCode oxfmtResult)
             })
     }
     runIfOnlySpecified true

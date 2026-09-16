@@ -3,8 +3,8 @@
     "dev": "bunx --bun vite",
     "build": "bunx --bun vite build",
     "serve": "bunx --bun vite preview",
-    "format": "prettier --write \"src/**/*.{js,jsx,css}\" vite.config.js",
-    "lint": "prettier --check \"src/**/*.{js,jsx,css}\" vite.config.js"
+    "fmt": "oxfmt \"src/**/*.{js,jsx,css}\" vite.config.js",
+    "lint": "oxfmt --check \"src/**/*.{js,jsx,css}\" vite.config.js"
   },
   "type": "module",
   "dependencies": {
@@ -19,7 +19,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-react": "6.1.1",
-    "prettier": "3.9.6",
+    "oxfmt": "^0.68.0",
     "vite": "8.3.0",
     "vite-plugin-fable": "0.5.1"
   }
