@@ -52,14 +52,17 @@ updates:
   # Fantomas.Core belongs to the daily entry above. The older majors are pinned to their own
   # release line anyway, which is the whole point of having a tab per version.
   - dependency-name: "Fantomas.Core"
-- package-ecosystem: npm
+# The client is installed with Bun, and Bun has an ecosystem of its own here. Under npm the
+# updater writes package.json and leaves bun.lock behind, because the npm updater knows
+# package-lock.json and yarn.lock and nothing about this one.
+- package-ecosystem: bun
   directory: "/src/client"
   schedule:
     interval: monthly
     time: "11:00"
     timezone: Europe/Brussels
   groups:
-    npm:
+    bun:
       patterns:
       - "*"
 - package-ecosystem: github-actions
