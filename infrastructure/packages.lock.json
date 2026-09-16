@@ -4,9 +4,9 @@
     "net10.0": {
       "FSharp.Core": {
         "type": "Direct",
-        "requested": "[10.1.203, )",
-        "resolved": "10.1.203",
-        "contentHash": "I2MFk72yHqfgI594gKFigq8PVIso0Mh1ZUgG9R4n8gyYQ4IwpBxmvecfjnKA7iMLdVHYULB70PsLwYW/K76gew=="
+        "requested": "[10.1.401, )",
+        "resolved": "10.1.401",
+        "contentHash": "/lvOK51KD8IangBYkfDVna3/HrE/r4VUnX3dI01KDspctoYXmind3POeoYkqWKeXHwiKlf6Hc9TxwSnoSCWcjw=="
       },
       "G-Research.FSharp.Analyzers": {
         "type": "Direct",
@@ -49,21 +49,21 @@
       },
       "Pulumi.Aws": {
         "type": "Direct",
-        "requested": "[7.44.0, )",
-        "resolved": "7.44.0",
-        "contentHash": "LmWzuV/SdAN+OFt+TdVj2BX42rgT81tyI23ssUBiPcVbpfzj+uMHIzzTJM7/Lhpmf2OUYa7bGrEjnubrc4CcXA==",
+        "requested": "[7.46.0, )",
+        "resolved": "7.46.0",
+        "contentHash": "N6NuJjkZoIfrHZp1mZfWO0PAooBYtPx1cy9OQ1HrZ5d8kPGpHrhycgQRbGY0naMRkdjOzMOTXE6d+srNjXLMQw==",
         "dependencies": {
-          "Pulumi": "3.113.0"
+          "Pulumi": "3.113.2"
         }
       },
       "Pulumi.FSharp": {
         "type": "Direct",
-        "requested": "[3.113.0, )",
-        "resolved": "3.113.0",
-        "contentHash": "Dr1a+SLYJtBCPpiz6ftEdEklHS/mNiWACT/tm6Mi+54tYW5BlOYeiRhd/trKwht2Fs9LZ8/7jqyMohnkajgYNw==",
+        "requested": "[3.113.3, )",
+        "resolved": "3.113.3",
+        "contentHash": "r/TBIq3m/t4+8fRuadZWvZQWukUl1iubZiVN4YKLbMA0hAzmlc/vibEwsNx0Gu7AjC2lS8isl2Ax825OFoLhvw==",
         "dependencies": {
           "FSharp.Core": "4.7.2",
-          "Pulumi": "3.113.0"
+          "Pulumi": "3.113.3"
         }
       },
       "Thoth.Json.System.Text.Json": {
@@ -272,8 +272,8 @@
       },
       "Pulumi": {
         "type": "Transitive",
-        "resolved": "3.113.0",
-        "contentHash": "nr/L07nAVPORLfR0VXW81y/y7MAJzs8x5t6GGwppy8xKZpz2fhfYYit+AdiR2UGH6/bJJwmocoHetPFPvM/wxw==",
+        "resolved": "3.113.3",
+        "contentHash": "/zbDy0kvSR+ridX3SiuFkmS1bAVBkFFlG5Yg8nt/fRQICDNHkYVTY8sCRsmRWPMltOF2Y8C1zbrq++kPS1rEPQ==",
         "dependencies": {
           "Ben.Demystifier": "0.4.1",
           "Grpc.AspNetCore.Server": "2.63.0",
