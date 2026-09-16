@@ -768,6 +768,12 @@ pipeline "Analyze" {
     workingDir __SOURCE_DIRECTORY__
     dotnetInstall
     stage "Analyze" {
+        // fsharp-analyzers targets the previous runtime and loads MSBuild from the SDK that
+        // global.json picks. The host never rolls a release app onto a prerelease runtime while
+        // a release one is installed, so an RC SDK needs this or the tool starts on the old
+        // runtime and fails to load the SDK's assemblies.
+        envVars [| "DOTNET_ROLL_FORWARD_TO_PRERELEASE", "1" |]
+
         run (fun ctx ->
             [
                 for project in projectsToAnalyze do
