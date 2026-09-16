@@ -9,7 +9,8 @@ let createHeaders headers =
     Seq.fold
         (fun (acc: Dictionary<string, string>) (key, value) ->
             acc.[key] <- value
-            acc)
+            acc
+        )
         (Dictionary<string, string>())
         headers
 

@@ -43,7 +43,8 @@ let private fixtures: Fixture list =
                 Name = get.Required.Field "name" Decode.string
                 Encoded = get.Required.Field "encoded" Decode.string
                 Json = get.Required.Field "json" Decode.string
-            })
+            }
+        )
 
     // vitest runs from src/client, where the corpus sits next to this file.
     let corpus = readFileSync ("fsharp/test/url-fixtures.json", "utf8")
@@ -56,94 +57,125 @@ let private fixtures: Fixture list =
 let private link (hash: string) (json: string) : string =
     $"https://fsprojects.github.io/fantomas-tools/%s{hash}?data=%s{JS.encodeURIComponent (UrlTools.encodeData json)}"
 
-describe "links that already exist" (fun () ->
-    for fixture in fixtures do
-        test $"decodes %s{fixture.Name}" (fun () -> expect(UrlTools.decodeData fixture.Encoded).toBe(fixture.Json))
+describe
+    "links that already exist"
+    (fun () ->
+        for fixture in fixtures do
+            test $"decodes %s{fixture.Name}" (fun () -> expect(UrlTools.decodeData fixture.Encoded).toBe(fixture.Json))
 
-    for fixture in fixtures do
-        test $"reads the shared state of %s{fixture.Name}" (fun () ->
-            // The decoders, not just the decompression: a renamed field would leave the link
-            // decoding into an empty editor, which is the failure nobody notices in review.
-            let hash = $"#/fantomas/main?data=%s{fixture.Encoded}"
+        for fixture in fixtures do
+            test
+                $"reads the shared state of %s{fixture.Name}"
+                (fun () ->
+                    // The decoders, not just the decompression: a renamed field would leave the link
+                    // decoding into an empty editor, which is the failure nobody notices in review.
+                    let hash = $"#/fantomas/main?data=%s{fixture.Encoded}"
 
-            let bubble =
-                UrlTools.restoreModelFromHash hash BubbleModel.decoder BubbleModel.empty
+                    let bubble =
+                        UrlTools.restoreModelFromHash hash BubbleModel.decoder BubbleModel.empty
 
-            let expectedCode =
-                Decode.unsafeFromString (Decode.field "code" Decode.string) fixture.Json
+                    let expectedCode =
+                        Decode.unsafeFromString (Decode.field "code" Decode.string) fixture.Json
 
-            expect(bubble.SourceCode).toBe(expectedCode)))
+                    expect(bubble.SourceCode).toBe(expectedCode)
+                )
+    )
 
-describe "links made from now on" (fun () ->
-    // Not what keeps old links working, but if the encoder starts producing a different string for
-    // the same document, two links to the same code stop matching, and that is worth a failing
-    // test rather than a bug report.
-    for fixture in fixtures do
-        test $"encodes %s{fixture.Name} to the same string as before" (fun () ->
-            expect(UrlTools.encodeData fixture.Json).toBe(JS.decodeURIComponent fixture.Encoded)))
+describe
+    "links made from now on"
+    (fun () ->
+        // Not what keeps old links working, but if the encoder starts producing a different string for
+        // the same document, two links to the same code stop matching, and that is worth a failing
+        // test rather than a bug report.
+        for fixture in fixtures do
+            test
+                $"encodes %s{fixture.Name} to the same string as before"
+                (fun () -> expect(UrlTools.encodeData fixture.Json).toBe(JS.decodeURIComponent fixture.Encoded))
+    )
 
-describe "the round trip the tool performs" (fun () ->
-    let documents =
-        [
-            "empty", ""
-            "one binding", "let a = 1\n"
-            "unicode", "let ``héllo`` = \"ünïcodé 👋🏽\"\n"
-            "quotes and slashes", "let s = \"a\\b\\\"c\"\r\nlet t = '\\n'\r\n"
-            "the characters a query string cares about", "%&?=#+$ /\\ <>[]{}|^`\"'"
-            "something long", String.replicate 5000 "x"
-        ]
+describe
+    "the round trip the tool performs"
+    (fun () ->
+        let documents =
+            [
+                "empty", ""
+                "one binding", "let a = 1\n"
+                "unicode", "let ``héllo`` = \"ünïcodé 👋🏽\"\n"
+                "quotes and slashes", "let s = \"a\\b\\\"c\"\r\nlet t = '\\n'\r\n"
+                "the characters a query string cares about", "%&?=#+$ /\\ <>[]{}|^`\"'"
+                "something long", String.replicate 5000 "x"
+            ]
 
-    for name, code in documents do
-        test $"survives a link for %s{name}" (fun () ->
-            let json =
-                Encode.object [ "code", Encode.string code; "isFsi", Encode.bool false ]
-                |> Encode.toString 0
+        for name, code in documents do
+            test
+                $"survives a link for %s{name}"
+                (fun () ->
+                    let json =
+                        Encode.object [ "code", Encode.string code; "isFsi", Encode.bool false ]
+                        |> Encode.toString 0
 
-            let bubble =
-                UrlTools.restoreModelFromHash (link "#/fantomas/v8" json) BubbleModel.decoder BubbleModel.empty
+                    let bubble =
+                        UrlTools.restoreModelFromHash
+                            (link "#/fantomas/v8" json)
+                            BubbleModel.decoder
+                            BubbleModel.empty
 
-            expect(bubble.SourceCode).toBe(code))
+                    expect(bubble.SourceCode).toBe(code)
+                )
 
-    test "carries the file extension and the defines" (fun () ->
-        let json =
-            Encode.object
-                [
-                    "code", Encode.string "val x: int"
-                    "isFsi", Encode.bool true
-                    "defines", Encode.string "DEBUG;TRACE"
-                ]
-            |> Encode.toString 0
+        test
+            "carries the file extension and the defines"
+            (fun () ->
+                let json =
+                    Encode.object
+                        [
+                            "code", Encode.string "val x: int"
+                            "isFsi", Encode.bool true
+                            "defines", Encode.string "DEBUG;TRACE"
+                        ]
+                    |> Encode.toString 0
 
-        let bubble =
-            UrlTools.restoreModelFromHash (link "#/fantomas/v8" json) BubbleModel.decoder BubbleModel.empty
+                let bubble =
+                    UrlTools.restoreModelFromHash (link "#/fantomas/v8" json) BubbleModel.decoder BubbleModel.empty
 
-        expect(bubble.IsFsi).toBe(true)
-        expect(bubble.Defines).toBe("DEBUG;TRACE"))
+                expect(bubble.IsFsi).toBe(true)
+                expect(bubble.Defines).toBe("DEBUG;TRACE")
+            )
 
-    test "keeps the tab next to the data" (fun () ->
-        let json = Encode.object [ "code", Encode.string "let a = 1" ] |> Encode.toString 0
+        test
+            "keeps the tab next to the data"
+            (fun () ->
+                let json = Encode.object [ "code", Encode.string "let a = 1" ] |> Encode.toString 0
 
-        for hash in [ "#/fantomas/v8"; "#/fantomas/main"; "#/ast"; "#/oak" ] do
-            let url = link hash json
-            expect(url.Contains($"%s{hash}?data=")).toBe(true)
+                for hash in [ "#/fantomas/v8"; "#/fantomas/main"; "#/ast"; "#/oak" ] do
+                    let url = link hash json
+                    expect(url.Contains($"%s{hash}?data=")).toBe(true)
 
-            let bubble = UrlTools.restoreModelFromHash url BubbleModel.decoder BubbleModel.empty
-            expect(bubble.SourceCode).toBe("let a = 1")))
+                    let bubble = UrlTools.restoreModelFromHash url BubbleModel.decoder BubbleModel.empty
+                    expect(bubble.SourceCode).toBe("let a = 1")
+            )
+    )
 
-describe "a link the tool cannot read" (fun () ->
-    // restoreModelFromHash answers with the default rather than throwing, because a hash is
-    // whatever was pasted into the address bar.
-    let cases =
-        [
-            "no hash at all", ""
-            "a hash without data", "#/fantomas/v8"
-            "a data parameter that is not compressed", "#/fantomas/v8?data=not-compressed"
-            "a truncated parameter", "#/fantomas/v8?data=N4KAB"
-        ]
+describe
+    "a link the tool cannot read"
+    (fun () ->
+        // restoreModelFromHash answers with the default rather than throwing, because a hash is
+        // whatever was pasted into the address bar.
+        let cases =
+            [
+                "no hash at all", ""
+                "a hash without data", "#/fantomas/v8"
+                "a data parameter that is not compressed", "#/fantomas/v8?data=not-compressed"
+                "a truncated parameter", "#/fantomas/v8?data=N4KAB"
+            ]
 
-    for name, hash in cases do
-        test $"falls back for %s{name}" (fun () ->
-            let bubble =
-                UrlTools.restoreModelFromHash hash BubbleModel.decoder BubbleModel.empty
+        for name, hash in cases do
+            test
+                $"falls back for %s{name}"
+                (fun () ->
+                    let bubble =
+                        UrlTools.restoreModelFromHash hash BubbleModel.decoder BubbleModel.empty
 
-            expect(bubble.SourceCode).toBe("")))
+                    expect(bubble.SourceCode).toBe("")
+                )
+    )

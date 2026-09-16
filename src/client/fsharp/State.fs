@@ -141,7 +141,8 @@ let update msg model =
 
             Cmd.ofEffect (fun dispatch ->
                 UrlTools.updateUrlBy changeVersion
-                dispatch (SelectTab(ActiveTab.FantomasTab(mode))))
+                dispatch (SelectTab(ActiveTab.FantomasTab(mode)))
+            )
 
         model, cmd
     | FantomasMsg fMsg ->

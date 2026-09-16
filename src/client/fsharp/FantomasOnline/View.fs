@@ -38,10 +38,12 @@ let mapToOption dispatch (key, fantomasOption) =
             SettingControls.toggleButton
                 (fun _ ->
                     UpdateOption(key, MultilineFormatterTypeOption(o, key, "character_width"))
-                    |> dispatch)
+                    |> dispatch
+                )
                 (fun _ ->
                     UpdateOption(key, MultilineFormatterTypeOption(o, key, "number_of_items"))
-                    |> dispatch)
+                    |> dispatch
+                )
                 "CharacterWidth"
                 "NumberOfItems"
                 label
@@ -84,7 +86,8 @@ let options model dispatch =
                 optionList
                 |> List.filter (fun (n, _) ->
                     let setting = n.ToLowerInvariant()
-                    setting.Contains(settingsFilter))
+                    setting.Contains(settingsFilter)
+                )
 
     optionList |> List.map (mapToOption dispatch) |> ofList
 
@@ -330,7 +333,8 @@ let settings isFsi model dispatch =
                     Label = l
                     OnClick = (fun _ -> ChangeMode m |> dispatch)
                 }
-                : SettingControls.MultiButtonSettings)
+                : SettingControls.MultiButtonSettings
+            )
             |> SettingControls.multiButton "Mode"
 
         let fileExtension =

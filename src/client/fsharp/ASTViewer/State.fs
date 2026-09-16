@@ -28,7 +28,8 @@ let fetchNodeRequest url (payload: Shared.Request) dispatch =
         | 400 -> Failed body
         | 413 -> Failed "the input was too large to process"
         | _ -> Failed body
-        |> dispatch)
+        |> dispatch
+    )
 
 let fetchUntypedAST (payload: Shared.Request) dispatch =
     let url = $"%s{backend}/untyped-ast"

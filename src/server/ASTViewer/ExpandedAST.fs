@@ -119,7 +119,8 @@ let rec map (value: obj) : Expr =
             fieldDefs
             |> Array.map (fun rf ->
                 RecordFieldNode(identList [ rf.Name ], stn "=", map (FSharpValue.GetRecordField(value, rf)), zeroRange)
-                |> ExprRecordFieldOrSpread.Field)
+                |> ExprRecordFieldOrSpread.Field
+            )
             |> Array.toList
 
         ExprRecordNode(stn "{", None, recordFields, stn "}", zeroRange) |> Expr.Record

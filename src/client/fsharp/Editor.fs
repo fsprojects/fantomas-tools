@@ -84,7 +84,8 @@ let InputEditor (onChange: string -> unit) (value: string) (maxLineLength: int) 
     let handleEditorDidMount =
         Action<_, _>(fun editor _ ->
             editorRef.current <- editor
-            setIsEditorMounted true)
+            setIsEditorMounted true
+        )
 
     let options =
         {| editorOptions with
@@ -159,7 +160,8 @@ let AstResultEditor onCursorChanged value =
     let handleEditorDidMount =
         Action<_, _>(fun editor _ ->
             editorRef.current <- editor
-            setIsEditorMounted true)
+            setIsEditorMounted true
+        )
 
     useEffectRaw (
         fun () ->

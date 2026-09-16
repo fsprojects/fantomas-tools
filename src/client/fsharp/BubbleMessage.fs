@@ -47,4 +47,5 @@ module BubbleModel =
                 SourceCode = sourceCode
                 IsFsi = isFsi
                 Defines = defines
-            })
+            }
+        )

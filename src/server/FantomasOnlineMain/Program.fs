@@ -26,7 +26,8 @@ let main argv =
                 let json = req.BodyText
                 let! formatResponse = FantomasOnlineMain.FormatCode.formatCode json
                 return! (mapFormatResponseToWebPart formatResponse) ctx
-            })
+            }
+        )
 
     let routes =
         [

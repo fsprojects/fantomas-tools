@@ -19,7 +19,8 @@ let main argv =
                 let json = req.BodyText
                 let astResponse = getUntypedAST json
                 return! (mapASTResponseToWebPart astResponse) ctx
-            })
+            }
+        )
 
     let routes =
         [

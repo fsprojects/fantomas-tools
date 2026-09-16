@@ -24,7 +24,8 @@ let private optionDecoder: Decoder<FantomasOption> =
             get.Required.Field "$value" (Decode.tuple3 Decode.int Decode.string Decode.string)
             |> FantomasOption.MultilineBracketStyleOption
         else
-            failwithf $"Cannot decode %s{t}")
+            failwithf $"Cannot decode %s{t}"
+    )
 
 let decodeOptions json =
     Decode.fromString (Decode.array optionDecoder) json
@@ -40,4 +41,5 @@ let decodeFormatResponse: Decoder<FormatResponse> =
             FirstValidation = get.Required.Field "firstValidation" (Decode.array Diagnostic.Decode)
             SecondFormat = get.Optional.Field "secondFormat" Decode.string
             SecondValidation = get.Required.Field "secondValidation" (Decode.array Diagnostic.Decode)
-        })
+        }
+    )

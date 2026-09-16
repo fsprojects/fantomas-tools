@@ -51,7 +51,8 @@ let cursorChanged (bubbleMsg: BubbleMessage -> unit) (model: Model) (e: obj) : u
                     |> Array.toList
                     |> Some
                 else
-                    None)
+                    None
+            )
 
         match rangeDigits with
         | Some [ startLine; startColumn; endLine; endColumn ] ->

@@ -18,7 +18,8 @@ let postJson<'TResponse> (url: string) (body: string) : JS.Promise<int * string>
         promise {
             let! text = res.text ()
             return (res.Status, text)
-        })
+        }
+    )
 
 let getText (url: string) : JS.Promise<string> =
     let options =

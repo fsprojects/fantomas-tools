@@ -47,7 +47,8 @@ module private Parsing =
                     | [| value |] -> [ JS.decodeURIComponent value ]
                     | [| value; query |] when String.IsNullOrEmpty query -> [ JS.decodeURIComponent value ]
                     | [| value; query |] -> [ JS.decodeURIComponent value; "?" + query ]
-                    | _ -> [])
+                    | _ -> []
+        )
 
 [<RequireQualifiedAccess>]
 module Route =
@@ -62,7 +63,8 @@ module Route =
             |> List.choose (fun pair ->
                 match pair.Split([| '=' |], 2) with
                 | [| key; value |] -> Some(JS.decodeURIComponent key, JS.decodeURIComponent value)
-                | _ -> None)
+                | _ -> None
+            )
             |> ValueSome
 
 [<RequireQualifiedAccess>]
@@ -94,6 +96,7 @@ module Components =
                         window.removeEventListener ("popstate", onChange)
                 }
 
-            subscription)
+            subscription
+        )
 
         content

@@ -72,7 +72,8 @@ let toEditorConfigName value =
         if System.Char.IsUpper(c) then
             sprintf "_%s" (c.ToString().ToLower())
         else
-            c.ToString())
+            c.ToString()
+    )
     |> String.concat ""
     |> fun s -> s.TrimStart([| '_' |])
     |> fun name ->

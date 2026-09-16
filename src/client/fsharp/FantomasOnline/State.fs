@@ -45,7 +45,8 @@ let private getOptions mode =
     |> Promise.map (fun (json: string) ->
         match Decoders.decodeOptions json with
         | Ok v -> v
-        | Error e -> failwithf "%A" e)
+        | Error e -> failwithf "%A" e
+    )
 
 /// Our backends report a failure as a `FormatError` document. Anything else along the way, a
 /// gateway refusing the request among them, only has the body it sent, which is then all the user
@@ -70,7 +71,8 @@ let private getFormattedCode code isFsi model dispatch =
 
         | 413 -> Msg.FormatFailed(FormatError.ofMessage "the input was too large to process")
         | _ -> Msg.FormatFailed(decodeFormatError body)
-        |> dispatch)
+        |> dispatch
+    )
 
 let private updateUrl code isFsi model _ =
     let json = Encode.toString 2 (Encoders.encodeUrlModel code isFsi model)
@@ -78,12 +80,18 @@ let private updateUrl code isFsi model _ =
     UrlTools.updateUrlWithData json
 
 let getOptionsCmd mode =
-    Cmd.OfPromise.either getOptions mode OptionsReceived (fun exn ->
-        Msg.FormatFailed(FormatError.ofMessage exn.Message))
+    Cmd.OfPromise.either
+        getOptions
+        mode
+        OptionsReceived
+        (fun exn -> Msg.FormatFailed(FormatError.ofMessage exn.Message))
 
 let getVersionCmd mode =
-    Cmd.OfPromise.either getVersion mode VersionReceived (fun exn ->
-        Msg.FormatFailed(FormatError.ofMessage exn.Message))
+    Cmd.OfPromise.either
+        getVersion
+        mode
+        VersionReceived
+        (fun exn -> Msg.FormatFailed(FormatError.ofMessage exn.Message))
 
 let init (mode: FantomasMode) =
     let cmd =
@@ -103,12 +111,14 @@ let init (mode: FantomasMode) =
 
 let optionsListToMap options =
     options
-    |> List.map (function
+    |> List.map (
+        function
         | FantomasOption.BoolOption(_, k, _) as fo -> k, fo
         | FantomasOption.IntOption(_, k, _) as fo -> k, fo
         | FantomasOption.MultilineFormatterTypeOption(_, k, _) as fo -> k, fo
         | FantomasOption.EndOfLineStyleOption(_, k, _) as fo -> k, fo
-        | FantomasOption.MultilineBracketStyleOption(_, k, _) as fo -> k, fo)
+        | FantomasOption.MultilineBracketStyleOption(_, k, _) as fo -> k, fo
+    )
     |> Map.ofList
 
 let private updateOptionValue defaultOption userOption =
@@ -138,7 +148,8 @@ let private restoreUserOptionsFromUrl (defaultOptions: FantomasOption list) =
 
                 match matchingUserOption with
                 | Some muo -> updateOptionValue defOpt muo
-                | None -> defOpt)
+                | None -> defOpt
+            )
             |> optionsListToMap
 
     reconstructedOptions
@@ -162,7 +173,8 @@ let private showError message = notify.error message
 let private copySettings (model: Model) _ =
     let editorconfig =
         model.SettingsChangedByTheUser
-        |> List.map (function
+        |> List.map (
+            function
             | FantomasOption.BoolOption(_, k, v) ->
                 if v then
                     toEditorConfigName k |> sprintf "%s = true"
@@ -171,14 +183,16 @@ let private copySettings (model: Model) _ =
             | FantomasOption.IntOption(_, k, v) -> sprintf "%s = %i" (toEditorConfigName k) v
             | FantomasOption.MultilineFormatterTypeOption(_, k, v)
             | FantomasOption.EndOfLineStyleOption(_, k, v)
-            | FantomasOption.MultilineBracketStyleOption(_, k, v) -> sprintf "%s = %s" (toEditorConfigName k) v)
+            | FantomasOption.MultilineBracketStyleOption(_, k, v) -> sprintf "%s = %s" (toEditorConfigName k) v
+        )
         |> String.concat "\n"
         |> sprintf "[*.{fs,fsx}]\n%s"
 
     writeText editorconfig
     |> Promise.catch (fun err ->
         showError "Something went wrong while copying settings to the clipboard."
-        printfn "%A" err)
+        printfn "%A" err
+    )
     |> Promise.iter (fun () -> showSuccess "Copied .editorconfig settings to clipboard!")
 
 let update isActiveTab (bubble: BubbleModel) msg (model: Model) =

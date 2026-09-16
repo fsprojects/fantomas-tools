@@ -31,7 +31,8 @@ type Range =
                 StartColumn = get.Required.Field "startColumn" Decode.int
                 EndLine = get.Required.Field "endLine" Decode.int
                 EndColumn = get.Required.Field "endColumn" Decode.int
-            })
+            }
+        )
 #else
     static member Encode(range: Range) : IEncodable =
         Encode.object
@@ -61,7 +62,8 @@ type Diagnostic =
                 Severity = get.Required.Field "severity" Decode.string
                 ErrorNumber = get.Required.Field "errorNumber" Decode.int
                 Message = get.Required.Field "message" Decode.string
-            })
+            }
+        )
 #else
     static member Encode(diagnostic: Diagnostic) : IEncodable =
         Encode.object
@@ -108,7 +110,8 @@ type FormatError =
             match kind with
             | "invalidSource" -> FormatErrorKind.InvalidSource
             | "fantomasBug" -> FormatErrorKind.FantomasBug
-            | _ -> FormatErrorKind.Unknown)
+            | _ -> FormatErrorKind.Unknown
+        )
 
     static member Decode: Decoder<FormatError> =
         Decode.object (fun get ->
@@ -117,7 +120,8 @@ type FormatError =
                 Message = get.Required.Field "message" Decode.string
                 Diagnostics = get.Required.Field "diagnostics" (Decode.array Diagnostic.Decode)
                 Detail = get.Optional.Field "detail" Decode.string
-            })
+            }
+        )
 #else
     static member private EncodeKind(kind: FormatErrorKind) : IEncodable =
         match kind with

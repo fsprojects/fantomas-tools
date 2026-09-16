@@ -24,7 +24,8 @@ let optionDecoder: Decoder<FantomasOption> =
             get.Required.Field "$value" (Decode.tuple3 Decode.int Decode.string Decode.string)
             |> FantomasOption.MultilineBracketStyleOption
         else
-            failwithf $"Could not decode %s{t}")
+            failwithf $"Could not decode %s{t}"
+    )
 
 let requestDecoder: Decoder<FormatRequest> =
     Decode.object (fun get ->
@@ -32,6 +33,7 @@ let requestDecoder: Decoder<FormatRequest> =
             SourceCode = get.Required.Field "sourceCode" Decode.string
             Options = get.Required.Field "options" (Decode.list optionDecoder |> Decode.map (List.sortBy sortByOption))
             IsFsi = get.Required.Field "isFsi" Decode.bool
-        })
+        }
+    )
 
 let decodeRequest json = Decode.fromString requestDecoder json
