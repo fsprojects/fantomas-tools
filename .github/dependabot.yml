@@ -1,19 +1,24 @@
 version: 2
 updates:
-# Fantomas.Core in the newest versioned backend, checked daily. This is the one dependency worth
-# knowing about the day it moves: the 8.x tab is there to serve the current release, so a release
-# it does not have yet is a tab that is out of date.
+# The newest versioned backend, checked daily. Fantomas.Core is the one dependency worth knowing
+# about the day it moves: the 8.x tab is there to serve the current release, so a release it does
+# not have yet is a tab that is out of date. Its other packages come along for the ride, because
+# Dependabot refuses two nuget entries whose directories overlap, so this folder cannot also appear
+# in the monthly list below.
 - package-ecosystem: nuget
   directory: "/src/server/FantomasOnlineV8"
   schedule:
     interval: daily
     time: "10:00"
     timezone: Europe/Brussels
-  allow:
-  - dependency-name: "Fantomas.Core"
+  groups:
+    fantomas-online-v8:
+      patterns:
+      - "*"
   ignore:
   # Each versioned backend serves one Fantomas major on purpose, so a major bump does not update
-  # this tab, it replaces it. A new major gets a new project alongside the old ones instead.
+  # this tab, it replaces it. A new major gets a new project alongside the old ones instead, and
+  # that new folder is the one that belongs in this entry.
   - dependency-name: "Fantomas.Core"
     update-types:
     - "version-update:semver-major"
@@ -27,7 +32,14 @@ updates:
   - "/"
   - "/infrastructure"
   - "/src/client/fsharp"
-  - "/src/server/*"
+  # Written out rather than globbed, because a glob over src/server would cover the folder the
+  # entry above already claims, and Dependabot rejects the whole file over that.
+  - "/src/server/ASTViewer"
+  - "/src/server/FantomasOnlineMain"
+  - "/src/server/FantomasOnlinePreview"
+  - "/src/server/FantomasOnlineV6"
+  - "/src/server/FantomasOnlineV7"
+  - "/src/server/OakViewer"
   schedule:
     interval: monthly
     time: "10:00"
