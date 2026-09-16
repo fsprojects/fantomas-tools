@@ -26,9 +26,9 @@ let astPort = 7412
 let oakPort = 8904
 let fantomasMainPort = 11084
 let fantomasPreviewPort = 12007
-let fantomasV5Port = 11009
 let fantomasV6Port = 13042
 let fantomasV7Port = 10707
+let fantomasV8Port = 10808
 /// Mirrors `server.port` and `preview.port` in src/client/vite.config.js.
 let frontendPort = 9060
 let pwd = __SOURCE_DIRECTORY__
@@ -136,9 +136,9 @@ let setViteToProduction () =
 
     setEnv "VITE_AST_BACKEND" $"%s{mainStageUrl}/ast-viewer"
     setEnv "VITE_OAK_BACKEND" $"%s{mainStageUrl}/oak-viewer"
-    setEnv "VITE_FANTOMAS_V5" $"%s{mainStageUrl}/fantomas/v5"
     setEnv "VITE_FANTOMAS_V6" $"%s{mainStageUrl}/fantomas/v6"
     setEnv "VITE_FANTOMAS_V7" $"%s{mainStageUrl}/fantomas/v7"
+    setEnv "VITE_FANTOMAS_V8" $"%s{mainStageUrl}/fantomas/v8"
     setEnv "VITE_FANTOMAS_MAIN" $"%s{mainStageUrl}/fantomas/main"
     setEnv "VITE_FANTOMAS_PREVIEW" $"%s{mainStageUrl}/fantomas/preview"
 
@@ -174,9 +174,9 @@ pipeline "Build" {
     stage "publish lambdas" {
         stage "parallel ones" {
             paralle
-            run (publishLambda "FantomasOnlineV5")
             run (publishLambda "FantomasOnlineV6")
             run (publishLambda "FantomasOnlineV7")
+            run (publishLambda "FantomasOnlineV8")
             run (publishLambda "ASTViewer")
         }
         run (publishLambda "FantomasOnlineMain")
@@ -305,12 +305,6 @@ let backends: Backend list =
             EnvironmentVariable = "VITE_OAK_BACKEND"
         }
         {
-            Project = "FantomasOnlineV5"
-            Port = fantomasV5Port
-            SubPath = "fantomas/v5"
-            EnvironmentVariable = "VITE_FANTOMAS_V5"
-        }
-        {
             Project = "FantomasOnlineV6"
             Port = fantomasV6Port
             SubPath = "fantomas/v6"
@@ -321,6 +315,12 @@ let backends: Backend list =
             Port = fantomasV7Port
             SubPath = "fantomas/v7"
             EnvironmentVariable = "VITE_FANTOMAS_V7"
+        }
+        {
+            Project = "FantomasOnlineV8"
+            Port = fantomasV8Port
+            SubPath = "fantomas/v8"
+            EnvironmentVariable = "VITE_FANTOMAS_V8"
         }
         {
             Project = "FantomasOnlineMain"
@@ -705,9 +705,9 @@ pipeline "Watch" {
         paralle
         run (runLambda "ASTViewer")
         run (runLambda "OakViewer")
-        run (runLambda "FantomasOnlineV5")
         run (runLambda "FantomasOnlineV6")
         run (runLambda "FantomasOnlineV7")
+        run (runLambda "FantomasOnlineV8")
         run (runLambda "FantomasOnlineMain")
         run (runLambda "FantomasOnlinePreview")
         stage "frontend" {
@@ -741,9 +741,9 @@ pipeline "Start" {
         paralle
         runPublishedLambda "ASTViewer"
         runPublishedLambda "OakViewer"
-        runPublishedLambda "FantomasOnlineV5"
         runPublishedLambda "FantomasOnlineV6"
         runPublishedLambda "FantomasOnlineV7"
+        runPublishedLambda "FantomasOnlineV8"
         runPublishedLambda "FantomasOnlineMain"
         runPublishedLambda "FantomasOnlinePreview"
         stage "frontend" {

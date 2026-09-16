@@ -16,7 +16,7 @@ open Feliz
 
 module private Parsing =
     /// Splits a hash into route segments, keeping any query string as a trailing segment:
-    /// `#/` becomes `[]`, `#/fantomas/v7` becomes `[ "fantomas"; "v7" ]` and
+    /// `#/` becomes `[]`, `#/fantomas/v8` becomes `[ "fantomas"; "v8" ]` and
     /// `#/ast?data=xyz` becomes `[ "ast"; "?data=xyz" ]`.
     let urlSegments (path: string) : string list =
         let withoutHash =

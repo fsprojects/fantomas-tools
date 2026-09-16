@@ -7,7 +7,7 @@ open FantomasOnline.Shared
 open FantomasTools.Client
 open FantomasTools.Client.FantomasOnline.Model
 
-let mapToOption dispatch (model: Model) (key, fantomasOption) =
+let mapToOption dispatch (key, fantomasOption) =
     let editor =
         let label =
             a [
@@ -66,18 +66,7 @@ let mapToOption dispatch (model: Model) (key, fantomasOption) =
                     IsActive = v = value
                 }
 
-            SettingControls.multiButton key [
-                yield mkButton "cramped"
-                yield mkButton "aligned"
-                if model.Mode = FantomasMode.V5 then
-                    yield mkButton "experimental_stroustrup"
-                if
-                    model.Mode = FantomasMode.V6
-                    || model.Mode = FantomasMode.Main
-                    || model.Mode = FantomasMode.Preview
-                then
-                    yield mkButton "stroustrup"
-            ]
+            SettingControls.multiButton key [ mkButton "cramped"; mkButton "aligned"; mkButton "stroustrup" ]
 
     div [ Key key ] [ editor ]
 
@@ -97,7 +86,7 @@ let options model dispatch =
                     let setting = n.ToLowerInvariant()
                     setting.Contains(settingsFilter))
 
-    optionList |> List.map (mapToOption dispatch model) |> ofList
+    optionList |> List.map (mapToOption dispatch) |> ofList
 
 type GithubIssue =
     {
@@ -325,11 +314,15 @@ let settings isFsi model dispatch =
     | _ ->
         let fantomasMode =
             [
-                FantomasMode.V5, "5.x"
                 FantomasMode.V6, "6.x"
                 FantomasMode.V7, "7.x"
+                FantomasMode.V8, "8.x"
                 FantomasMode.Main, "Main"
-                FantomasMode.Preview, "Preview"
+                // Preview builds from the same branch as main while there is no next-major branch
+                // to preview, so the button offered a second way to the same formatter. The mode,
+                // its route and its backend are all still there: put this back when a next major
+                // gets a branch of its own. See `previewBranch` in build.fsx.
+                // FantomasMode.Preview, "Preview"
             ]
             |> List.map (fun (m, l) ->
                 {

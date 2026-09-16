@@ -109,13 +109,6 @@ let getAllLambdas (lastSha, lastTime) =
                 mkLambdaInfo "GetOak" "POST" "/oak-viewer/get-oak" List.empty
             ]
         mkLambdaProject
-            "FantomasOnlineV5"
-            [
-                mkLambdaInfo "GetVersion" "GET" "/fantomas/v5/version" List.empty
-                mkLambdaInfo "GetOptions" "GET" "/fantomas/v5/options" List.empty
-                mkLambdaInfo "PostFormat" "POST" "/fantomas/v5/format" List.empty
-            ]
-        mkLambdaProject
             "FantomasOnlineV6"
             [
                 mkLambdaInfo "GetVersion" "GET" "/fantomas/v6/version" List.empty
@@ -128,6 +121,13 @@ let getAllLambdas (lastSha, lastTime) =
                 mkLambdaInfo "GetVersion" "GET" "/fantomas/v7/version" List.empty
                 mkLambdaInfo "GetOptions" "GET" "/fantomas/v7/options" List.empty
                 mkLambdaInfo "PostFormat" "POST" "/fantomas/v7/format" List.empty
+            ]
+        mkLambdaProject
+            "FantomasOnlineV8"
+            [
+                mkLambdaInfo "GetVersion" "GET" "/fantomas/v8/version" List.empty
+                mkLambdaInfo "GetOptions" "GET" "/fantomas/v8/options" List.empty
+                mkLambdaInfo "PostFormat" "POST" "/fantomas/v8/format" List.empty
             ]
         mkLambdaProject
             "FantomasOnlineMain"

@@ -9,14 +9,14 @@ open FantomasTools.Client.FantomasOnline.Model
 open Fetch
 open Thoth.Json
 
-[<Emit("import.meta.env.VITE_FANTOMAS_V5")>]
-let private v5Backend: string = jsNative
-
 [<Emit("import.meta.env.VITE_FANTOMAS_V6")>]
 let private v6Backend: string = jsNative
 
 [<Emit("import.meta.env.VITE_FANTOMAS_V7")>]
 let private v7Backend: string = jsNative
+
+[<Emit("import.meta.env.VITE_FANTOMAS_V8")>]
+let private v8Backend: string = jsNative
 
 [<Emit("import.meta.env.VITE_FANTOMAS_MAIN")>]
 let private mainBackend: string = jsNative
@@ -27,9 +27,9 @@ let private previewBackend: string = jsNative
 let private backend =
     Map.ofList
         [
-            (FantomasMode.V5, v5Backend)
             (FantomasMode.V6, v6Backend)
             (FantomasMode.V7, v7Backend)
+            (FantomasMode.V8, v8Backend)
             (FantomasMode.Main, mainBackend)
             (FantomasMode.Preview, previewBackend)
         ]
