@@ -3,8 +3,8 @@
     "dev": "bunx --bun vite",
     "build": "bunx --bun vite build",
     "serve": "bunx --bun vite preview",
-    "format": "prettier --write \"src/**/*.{js,jsx}\" vite.config.js",
-    "lint": "prettier --check \"src/**/*.{js,jsx}\" vite.config.js"
+    "format": "prettier --write \"src/**/*.{js,jsx,css}\" vite.config.js",
+    "lint": "prettier --check \"src/**/*.{js,jsx,css}\" vite.config.js"
   },
   "type": "module",
   "dependencies": {

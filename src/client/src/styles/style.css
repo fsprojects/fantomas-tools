@@ -1,305 +1,315 @@
 /* Variables */
 :root {
-    --primary: #338CBB;
-    --primary-hover: #65aed5;
-    --primary-border: #235f7f;
-    --secondary: #2FBADC;
-    --secondary-hover: #70d0e7;
-    --secondary-border: #1b88a3;
-    --danger: #C74910;
-    --danger-hover: #ef6f35;
-    --danger-border: #802f0a;
-    --warning: #C7901B;
-    --warning-hover: #e6b448;
-    --warning-border: #845f12;
-    --success: #88D1A6;
-    --success-hover: #bfe6cf;
-    --success-border: #51bc7d;
-    --dark: #222222;
-    --dark-hover: #484848;
-    --dark-border: #000000;
-    --grey: #808080;
-    --grey-hover: #a6a6a6;
-    --grey-border: #5a5a5a;
-    --light: #f8f9fa;
-    --light-hover: #ffffff;
-    --light-border: #cbd3da;
-    --white: #FFFFFF;
-    --white-hover: #ffffff;
-    --white-border: #d9d9d9;
-    --black: #000;
-    --font: 'Poppins', sans-serif;
-    --heading-font: 'Reem Kufi', sans-serif;
-    --logo-size: 192px;
-    --unit: 0.5rem;
-    --unit-2: calc(2 * var(--unit));
-    --unit-3: calc(3 * var(--unit));
-    --unit-4: calc(4 * var(--unit));
-    /* Everything below has a dark counterpart, so say so: this is what makes the browser's own
+  --primary: #338cbb;
+  --primary-hover: #65aed5;
+  --primary-border: #235f7f;
+  --secondary: #2fbadc;
+  --secondary-hover: #70d0e7;
+  --secondary-border: #1b88a3;
+  --danger: #c74910;
+  --danger-hover: #ef6f35;
+  --danger-border: #802f0a;
+  --warning: #c7901b;
+  --warning-hover: #e6b448;
+  --warning-border: #845f12;
+  --success: #88d1a6;
+  --success-hover: #bfe6cf;
+  --success-border: #51bc7d;
+  --dark: #222222;
+  --dark-hover: #484848;
+  --dark-border: #000000;
+  --grey: #808080;
+  --grey-hover: #a6a6a6;
+  --grey-border: #5a5a5a;
+  --light: #f8f9fa;
+  --light-hover: #ffffff;
+  --light-border: #cbd3da;
+  --white: #ffffff;
+  --white-hover: #ffffff;
+  --white-border: #d9d9d9;
+  --black: #000;
+  --font: 'Poppins', sans-serif;
+  --heading-font: 'Reem Kufi', sans-serif;
+  --logo-size: 192px;
+  --unit: 0.5rem;
+  --unit-2: calc(2 * var(--unit));
+  --unit-3: calc(3 * var(--unit));
+  --unit-4: calc(4 * var(--unit));
+  /* Everything below has a dark counterpart, so say so: this is what makes the browser's own
        colours, the scrollbars and the caret among them, follow the theme, and it is what
        light-dark() needs to work at all. */
-    color-scheme: light dark;
+  color-scheme: light dark;
 
-    /* The colours that differ per scheme, each holding both of its values. A rule that uses one
+  /* The colours that differ per scheme, each holding both of its values. A rule that uses one
        of these is written once and is right in both schemes, where it used to be written here and
        then again in a dark block at the foot of the file. */
-    --page: light-dark(var(--white), #0d1117);
-    --page-alt: light-dark(var(--light), #0d1117);
-    --raised: light-dark(#FAFBFC, #1c2128);
-    --raised-hover: light-dark(#F3F4F6, #30363d);
-    --raised-active: light-dark(#EDEFF2, #0d1117);
-    --field: light-dark(var(--white), #1c2128);
-    --line: light-dark(rgba(27, 31, 35, 0.15), #30363d);
-    --line-strong: light-dark(var(--light-border), #30363d);
-    --ink: light-dark(#24292E, var(--light));
-    --ink-strong: light-dark(var(--dark), var(--light));
-    --accent: light-dark(var(--primary), var(--secondary));
-    --accent-hover: light-dark(var(--primary-hover), var(--secondary-hover));
+  --page: light-dark(var(--white), #0d1117);
+  --page-alt: light-dark(var(--light), #0d1117);
+  --raised: light-dark(#fafbfc, #1c2128);
+  --raised-hover: light-dark(#f3f4f6, #30363d);
+  --raised-active: light-dark(#edeff2, #0d1117);
+  --field: light-dark(var(--white), #1c2128);
+  --line: light-dark(rgba(27, 31, 35, 0.15), #30363d);
+  --line-strong: light-dark(var(--light-border), #30363d);
+  --ink: light-dark(#24292e, var(--light));
+  --ink-strong: light-dark(var(--dark), var(--light));
+  --accent: light-dark(var(--primary), var(--secondary));
+  --accent-hover: light-dark(var(--primary-hover), var(--secondary-hover));
 }
 
+/* A note on nesting. The Style.* names F# uses come from a type provider that parses this file,
+   and its parser predates nested CSS: it only sees the selectors of top level rules. So a class F#
+   names has to appear in one, which is why a handful of rules below stay written out in full
+   instead of collapsing into an `&` inside their parent. Everything else nests. */
+
 /* CSS Reset */
-html, body, #app {
-    margin: 0;
-    height: 100%;
-    font-family: var(--font);
+html,
+body,
+#app {
+  margin: 0;
+  height: 100%;
+  font-family: var(--font);
 }
 
 /* Buttons */
-.btn, button {
-    text-decoration: none;
-    appearance: none;
-    background-color: var(--raised);
-    border: 1px solid var(--line);
-    border-radius: 6px;
-    box-shadow: rgba(27, 31, 35, 0.04) 0 1px 0, rgba(255, 255, 255, 0.25) 0 1px 0 inset;
-    box-sizing: border-box;
-    color: var(--ink);
-    cursor: pointer;
-    display: inline-block;
-    font-family: var(--font);
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 20px;
-    list-style: none;
-    padding: 6px 16px;
-    position: relative;
-    transition: background-color 0.2s cubic-bezier(0.3, 0, 0.5, 1);
-    user-select: none;
-    -webkit-user-select: none;
-    touch-action: manipulation;
-    vertical-align: middle;
-    white-space: nowrap;
-    word-wrap: break-word;
-}
+.btn,
+button {
+  text-decoration: none;
+  appearance: none;
+  background-color: var(--raised);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  box-shadow:
+    rgba(27, 31, 35, 0.04) 0 1px 0,
+    rgba(255, 255, 255, 0.25) 0 1px 0 inset;
+  box-sizing: border-box;
+  color: var(--ink);
+  cursor: pointer;
+  display: inline-block;
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  list-style: none;
+  padding: 6px 16px;
+  position: relative;
+  transition: background-color 0.2s cubic-bezier(0.3, 0, 0.5, 1);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: middle;
+  white-space: nowrap;
+  word-wrap: break-word;
 
-.btn:hover, button:hover {
+  &:hover {
     background-color: var(--raised-hover);
     text-decoration: none;
     transition-duration: 0.1s;
-}
+  }
 
-.btn:disabled, button:disabled {
+  &:disabled {
     background-color: var(--raised);
     border-color: var(--line);
-    color: light-dark(#959DA5, var(--grey));
+    color: light-dark(#959da5, var(--grey));
     cursor: default;
-}
+  }
 
-.btn:active, button:active {
+  &:active {
     background-color: var(--raised-active);
     box-shadow: rgba(225, 228, 232, 0.2) 0 1px 0 inset;
     transform: translateY(1px);
     transition: none 0s;
-}
+  }
 
-.btn:focus, button:focus {
+  &:focus {
     outline: none;
-}
+  }
 
-/* Keyboard focus used to be invisible. :focus-visible keeps the ring off a mouse click. */
-.btn:focus-visible, button:focus-visible {
+  /* Keyboard focus used to be invisible. :focus-visible keeps the ring off a mouse click. */
+  &:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
-}
+  }
 
-.btn:before, button:before {
+  &:before {
     display: none;
-}
+  }
 
-.btn::-webkit-details-marker {
+  &::-webkit-details-marker {
     display: none;
-}
+  }
 
-.btn i, button i {
+  i {
     margin-right: var(--unit);
+  }
 }
 
-.btn.primary, button.primary {
-    background-color: var(--primary);
-    border-color: var(--primary-border);
-    color: var(--white);
-}
+.btn.primary,
+button.primary {
+  background-color: var(--primary);
+  border-color: var(--primary-border);
+  color: var(--white);
 
-.btn.primary:hover, button.primary:hover {
+  &:hover {
     background-color: var(--primary-hover);
+  }
 }
 
-.btn.secondary, button.secondary {
-    background-color: var(--secondary);
-    border-color: var(--secondary-border);
-    color: var(--white);
-}
+.btn.secondary,
+button.secondary {
+  background-color: var(--secondary);
+  border-color: var(--secondary-border);
+  color: var(--white);
 
-.btn.secondary:hover, button.secondary:hover {
+  &:hover {
     background-color: var(--secondary-hover);
+  }
 }
 
-.btn.danger, button.danger {
-    background-color: var(--danger);
-    border-color: var(--danger-border);
-    color: var(--white);
-}
+.btn.danger,
+button.danger {
+  background-color: var(--danger);
+  border-color: var(--danger-border);
+  color: var(--white);
 
-.btn.danger:hover, button.danger:hover {
+  &:hover {
     background-color: var(--danger-hover);
+  }
 }
 
-.btn.warning, button.warning {
-    background-color: var(--warning);
-    border-color: var(--warning-border);
-    color: var(--white);
-}
+.btn.warning,
+button.warning {
+  background-color: var(--warning);
+  border-color: var(--warning-border);
+  color: var(--white);
 
-.btn.warning:hover, button.warning:hover {
+  &:hover {
     background-color: var(--warning-hover);
+  }
 }
 
 /* Basic App Layout */
 #app {
-    display: flex;
-    flex-direction: column;
-}
+  display: flex;
+  flex-direction: column;
 
-#app main {
+  main {
     flex: 1;
     display: flex;
     flex-direction: column;
-}
 
-#app main > div {
-    flex: 1;
-}
+    > div {
+      flex: 1;
+    }
 
-#app main #source {
-    display: flex;
-}
+    #source {
+      display: flex;
+    }
 
-#app main #tools {
-    display: flex;
-    flex-direction: column;
-    overflow-x: hidden;
-    background-color: var(--page);
+    #tools {
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      background-color: var(--page);
+    }
+  }
 }
 
 /* The divider is a desktop affair: below 768px the two panes are stacked and there is no row to
    divide. */
 #splitter {
-    display: none;
+  display: none;
 }
 
 @media screen and (min-width: 768px) {
-    #app main {
-        flex-direction: row;
+  #app main {
+    flex-direction: row;
 
-        /* Where the divider was left. The tools pane takes whatever remains, so the two always add
+    /* Where the divider was left. The tools pane takes whatever remains, so the two always add
            up however far the divider has travelled.
 
            min-width: 0 is what lets the input pane get smaller again: a flex item will not shrink
            below its content by default, and the editor inside reports the width it was last laid
            out at, so without this the divider moves right and then never comes back. */
-        #source {
-            flex: 0 0 var(--split, 40%);
-            min-width: 0;
-        }
-
-        #tools {
-            flex: 1 1 0;
-            min-width: 0;
-        }
-
-        /* A gutter rather than a hairline: it is a control, and one nobody is looking for yet, so
-           it gets width of its own and a grip to say what it does. */
-        #splitter {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex: 0 0 var(--unit-2);
-            cursor: col-resize;
-            background-color: var(--raised);
-            border-left: 1px solid var(--line-strong);
-            border-right: 1px solid var(--line-strong);
-            transition: background-color 0.15s ease-in-out;
-            /* Or a drag on a touch screen scrolls the page instead of moving the divider. */
-            touch-action: none;
-
-            i {
-                font-size: var(--unit-2);
-                color: var(--grey);
-                transition: color 0.15s ease-in-out;
-                /* The grip is scenery. Every event belongs to the gutter around it. */
-                pointer-events: none;
-            }
-
-            &:hover {
-                background-color: var(--raised-hover);
-
-                i {
-                    color: var(--accent);
-                }
-            }
-
-            &:focus-visible {
-                outline: 2px solid var(--accent);
-                outline-offset: -2px;
-            }
-        }
-
-        /* A drag that starts on the divider should not select the code it passes over. */
-        &:has(#splitter.dragging) {
-            user-select: none;
-        }
+    #source {
+      flex: 0 0 var(--split, 40%);
+      min-width: 0;
     }
 
-    /* Held. This one selector is written out in full rather than nested above, because the type
-       provider behind Style.* parses this file without understanding nesting: a class it cannot see
-       is a class F# cannot name. */
-    #app main #splitter.dragging {
-        background-color: var(--accent);
-        border-color: var(--accent);
+    #tools {
+      flex: 1 1 0;
+      min-width: 0;
+    }
+
+    /* A gutter rather than a hairline: it is a control, and one nobody is looking for yet, so
+           it gets width of its own and a grip to say what it does. */
+    #splitter {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 var(--unit-2);
+      cursor: col-resize;
+      background-color: var(--raised);
+      border-left: 1px solid var(--line-strong);
+      border-right: 1px solid var(--line-strong);
+      transition: background-color 0.15s ease-in-out;
+      /* Or a drag on a touch screen scrolls the page instead of moving the divider. */
+      touch-action: none;
+
+      i {
+        font-size: var(--unit-2);
+        color: var(--grey);
+        transition: color 0.15s ease-in-out;
+        /* The grip is scenery. Every event belongs to the gutter around it. */
+        pointer-events: none;
+      }
+
+      &:hover {
+        background-color: var(--raised-hover);
 
         i {
-            color: var(--white);
+          color: var(--accent);
         }
+      }
+
+      &:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: -2px;
+      }
     }
+
+    /* A drag that starts on the divider should not select the code it passes over. */
+    &:has(#splitter.dragging) {
+      user-select: none;
+    }
+  }
+
+  /* Held. This one selector is written out in full rather than nested above, because the type
+       provider behind Style.* parses this file without understanding nesting: a class it cannot see
+       is a class F# cannot name. */
+  #app main #splitter.dragging {
+    background-color: var(--accent);
+    border-color: var(--accent);
+
+    i {
+      color: var(--white);
+    }
+  }
 }
 
 /* Navbar */
 nav {
-    background-color: var(--page-alt);
-    padding: var(--unit-2);
-    display: flex;
-    /* A shadow on a dark background is not a shadow, and there the navbar is the colour of the
+  background-color: var(--page-alt);
+  padding: var(--unit-2);
+  display: flex;
+  /* A shadow on a dark background is not a shadow, and there the navbar is the colour of the
        pane below it, so a line separates them. It is inset, so that adding it costs no height. */
-    box-shadow: 0 7px 7px -7px rgba(0, 0, 0, 0.25),
-                inset 0 -1px 0 light-dark(transparent, var(--line));
-    z-index: 1;
-}
+  box-shadow:
+    0 7px 7px -7px rgba(0, 0, 0, 0.25),
+    inset 0 -1px 0 light-dark(transparent, var(--line));
+  z-index: 1;
 
-nav > a:hover {
-    color: var(--dark-hover);
-}
-
-nav > a {
+  > a {
     color: var(--ink-strong);
     text-decoration: none;
     font-weight: 500;
@@ -307,198 +317,234 @@ nav > a {
     font-size: calc(2.5 * var(--unit));
     line-height: 1.5;
     display: flex;
-}
 
-nav > a:first-of-type {
-    flex: 1;
-    align-items: center;
+    &:hover {
+      color: var(--dark-hover);
+    }
+
+    &:first-of-type {
+      flex: 1;
+      align-items: center;
+    }
+
+    img {
+      margin-right: var(--unit-2);
+    }
+  }
+
+  > div {
+    display: none;
+
+    #docs-btn {
+      .short-text {
+        display: inline-block;
+      }
+
+      .long-text {
+        display: none;
+      }
+    }
+  }
 }
 
 /* mobile menu button */
 #mobile-menu-toggle {
-    background-color: var(--secondary);
-    border-color: var(--secondary-border);
-    color: var(--white);
-}
+  background-color: var(--secondary);
+  border-color: var(--secondary-border);
+  color: var(--white);
 
-#mobile-menu-toggle :hover {
+  :hover {
     background-color: var(--secondary-hover);
-}
+  }
 
-#mobile-menu-toggle i {
+  i {
     margin: 0;
-}
-
-nav > a img {
-    margin-right: var(--unit-2);
-}
-
-nav > div {
-    display: none;
-}
-
-nav > div #docs-btn .short-text {
-    display: inline-block;
-}
-
-nav > div #docs-btn .long-text {
-    display: none;
+  }
 }
 
 @media screen and (min-width: 768px) {
+  nav {
     /* hide the last link that is only meant for mobile */
-    nav > a:last-of-type {
-        display: none;
+    > a:last-of-type {
+      display: none;
     }
 
-    nav > div {
-        display: flex;
-        align-items: center;
-    }
+    > div {
+      display: flex;
+      align-items: center;
 
-    nav > div > a {
+      > a {
         display: flex;
         margin-right: var(--unit);
         line-height: 1.5;
         text-decoration: none;
-    }
 
-    nav > div > a i {
-        margin-right: calc(var(--unit) / 2);
-    }
+        i {
+          margin-right: calc(var(--unit) / 2);
+        }
+      }
 
-    nav > div #sponsor-btn i {
+      #sponsor-btn i {
         color: var(--danger);
-    }
+      }
 
-    nav > div #repository-btn {
+      #repository-btn {
         background-color: light-dark(var(--dark), var(--raised));
         color: var(--white);
-    }
 
-    nav > div #repository-btn:hover {
-        background-color: var(--dark-hover);
-    }
+        &:hover {
+          background-color: var(--dark-hover);
+        }
+      }
 
-    nav > div #youtube-btn i {
-        color: #FF0000;
-    }
+      #youtube-btn i {
+        color: #ff0000;
+      }
 
-    nav > div #docs-btn {
+      #docs-btn {
         background-color: var(--grey);
         border-color: var(--grey-border);
         color: var(--white);
-    }
 
-    nav > div #docs-btn:hover {
-        background-color: var(--grey-hover);
-    }
+        &:hover {
+          background-color: var(--grey-hover);
+        }
+      }
 
-    nav > div #menu-toggle {
+      #menu-toggle {
         background-color: var(--secondary);
         border-color: var(--secondary-border);
         color: var(--white);
-    }
 
-    nav > div #menu-toggle:hover {
-        background-color: var(--secondary-hover);
-    }
+        &:hover {
+          background-color: var(--secondary-hover);
+        }
 
-    nav > div #menu-toggle i {
-        margin: 0;
+        i {
+          margin: 0;
+        }
+      }
     }
+  }
 }
 
 @media screen and (min-width: 960px) {
-    nav > div #docs-btn .short-text {
-        display: none;
+  nav > div #docs-btn {
+    .short-text {
+      display: none;
     }
 
-    nav > div #docs-btn .long-text {
-        display: inline-block;
+    .long-text {
+      display: inline-block;
     }
+  }
 }
 
 /* Setting menu */
 #settings {
-    position: fixed;
-    transition: 400ms all;
-    top: 0;
-    right: 0;
-    width: 0;
-    visibility: hidden;
-    opacity: 0;
-    height: 100%;
-    z-index: 5;
-    background-color: var(--page);
-}
+  position: fixed;
+  transition: 400ms all;
+  top: 0;
+  right: 0;
+  width: 0;
+  visibility: hidden;
+  opacity: 0;
+  height: 100%;
+  z-index: 5;
+  background-color: var(--page);
 
-#settings.open {
+  &.open {
     width: 100%;
     visibility: visible;
     opacity: 1;
-}
+  }
 
-#settings .inner {
-    margin: var(--unit) var(--unit-3);
-    overflow-y: auto;
-    color: light-dark(var(--black), var(--light));
-}
-
-#close-menu-btn {
-    font-size: var(--unit-4);
-    display: block;
-    cursor: pointer;
-    color: var(--ink-strong);
-    position: absolute;
-    right: var(--unit-4);
-    top: var(--unit-2);
-    z-index: 10;
-    line-height: 1;
-    box-sizing: border-box;
-}
-
-#close-menu-btn:hover {
-    color: light-dark(var(--dark-hover), var(--white-hover));
-}
-
-#settings h1 {
+  h1 {
     text-align: center;
     font-weight: 500;
     font-size: var(--unit-4);
     margin-top: 0;
+  }
+
+  hr {
+    margin: var(--unit-2) 0;
+    color: inherit;
+    border: 0;
+    border-top: 1px solid;
+    opacity: 0.25;
+  }
+
+  #filter-settings {
+    margin: var(--unit-2) 0;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+
+    label {
+      font-size: var(--unit-3);
+      font-family: var(--heading-font);
+      margin-bottom: var(--unit-2);
+
+      strong {
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+#settings .inner {
+  margin: var(--unit) var(--unit-3);
+  overflow-y: auto;
+  color: light-dark(var(--black), var(--light));
+}
+
+#close-menu-btn {
+  font-size: var(--unit-4);
+  display: block;
+  cursor: pointer;
+  color: var(--ink-strong);
+  position: absolute;
+  right: var(--unit-4);
+  top: var(--unit-2);
+  z-index: 10;
+  line-height: 1;
+  box-sizing: border-box;
+
+  &:hover {
+    color: light-dark(var(--dark-hover), var(--white-hover));
+  }
 }
 
 #settings .version-bar {
-    color: var(--accent);
-    text-align: center;
-    font-size: calc(var(--unit) * 1.625);
-    margin-bottom: var(--unit);
+  color: var(--accent);
+  text-align: center;
+  font-size: calc(var(--unit) * 1.625);
+  margin-bottom: var(--unit);
 }
 
 #settings .setting {
-    margin-bottom: var(--unit-2);
-    width: 100%;
-}
+  margin-bottom: var(--unit-2);
+  width: 100%;
 
-#settings .setting label {
+  label {
     display: block;
     margin-bottom: calc(var(--unit) / 2);
-}
 
-/* Every setting name links to its documentation, so a list of forty of them is forty underlines.
-   The colour already says it is a link; the underline only has to show up when you go for it. */
-#settings .setting label a {
-    color: var(--accent);
-    text-decoration: none;
-}
+    /* Every setting name links to its documentation, so a list of forty of them is forty
+           underlines. The colour already says it is a link; the underline only has to show up
+           when you go for it. */
+    a {
+      color: var(--accent);
+      text-decoration: none;
 
-#settings .setting label a:hover {
-    color: var(--accent-hover);
-    text-decoration: underline;
-}
+      &:hover {
+        color: var(--accent-hover);
+        text-decoration: underline;
+      }
+    }
+  }
 
-#settings .setting input {
+  input {
     display: block;
     width: 100%;
     font-size: var(--unit-2);
@@ -509,318 +555,291 @@ nav > div #docs-btn .long-text {
     border: 1px solid var(--line-strong);
     border-radius: 0;
     appearance: none;
-    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+    transition:
+      border-color 0.15s ease-in-out,
+      box-shadow 0.15s ease-in-out;
     font-family: inherit;
-    padding: calc(var(--unit) / 1.333333) calc(var(--unit) / .66666);
+    padding: calc(var(--unit) / 1.333333) calc(var(--unit) / 0.66666);
     outline: none;
     box-sizing: border-box;
+
+    &:focus {
+      border-color: var(--secondary-border);
+      box-shadow: 0 0 0 0.25rem #338cbb40;
+    }
+  }
 }
 
-#settings .setting input:focus {
-    border-color: var(--secondary-border);
-    box-shadow: 0 0 0 0.25rem #338cbb40;
-}
-
-/* Outlined rather than filled, so the fill is whatever the drawer is. The active one is filled
-   in --secondary by a rule below. */
+/* Outlined rather than filled, so the fill is whatever the drawer is, and the buttons of a group
+   are one control, so the group carries the corners a single button has. */
 #settings .setting .toggle-button button {
-    border-radius: 0;
-    border: 1px solid var(--secondary);
-    background-color: light-dark(var(--white), transparent);
-    color: var(--secondary);
-}
+  border-radius: 0;
+  border: 1px solid var(--secondary);
+  background-color: light-dark(var(--white), transparent);
+  color: var(--secondary);
 
-#settings .setting .toggle-button button + button {
+  & + button {
     margin-left: -1px;
-}
+  }
 
-#settings .setting .toggle-button button:first-child {
+  &:first-child {
     border-radius: 6px 0 0 6px;
-}
+  }
 
-#settings .setting .toggle-button button:last-child {
+  &:last-child {
     border-radius: 0 6px 6px 0;
-}
+  }
 
-#settings .setting .toggle-button button:hover {
+  &:hover,
+  &.active {
     background-color: var(--secondary);
     color: var(--white);
-}
-
-#settings .setting .toggle-button button.active {
-    background-color: var(--secondary);
-    color: var(--white);
-}
-
-#settings hr {
-    margin: var(--unit-2) 0;
-    color: inherit;
-    border: 0;
-    border-top: 1px solid;
-    opacity: .25;
-}
-
-#settings #filter-settings {
-    margin: var(--unit-2) 0;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-}
-
-#settings #filter-settings label {
-    font-size: var(--unit-3);
-    font-family: var(--heading-font);
-    margin-bottom: var(--unit-2);
-}
-
-#settings #filter-settings label strong {
-    font-weight: 500;
+  }
 }
 
 @media screen and (min-width: 768px) {
-    #settings {
-        transition: 300ms all;
-        width: 100%;
-        background-color: light-dark(#22222280, #00000080);
-    }
+  #settings {
+    transition: 300ms all;
+    width: 100%;
+    background-color: light-dark(#22222280, #00000080);
+  }
 
-    #settings .inner {
-        transition: 400ms all;
-        width: 450px;
-        height: 100%;
-        position: absolute;
-        right: 0;
-        top: 0;
-        background-color: var(--page);
-        box-shadow: -8px 0 24px rgba(0, 0, 0, 0.15);
-        margin: 0;
-        padding: var(--unit) var(--unit-3);
-    }
+  /* Written out rather than nested above, so that .inner stays a class F# can name. */
+  #settings .inner {
+    transition: 400ms all;
+    width: 450px;
+    height: 100%;
+    position: absolute;
+    right: 0;
+    top: 0;
+    background-color: var(--page);
+    box-shadow: -8px 0 24px rgba(0, 0, 0, 0.15);
+    margin: 0;
+    padding: var(--unit) var(--unit-3);
+  }
 }
 
 /* Tabs in tools */
 #tabs {
-    list-style-type: none;
-    margin: 0 0 calc(var(--unit) / 8);
-    padding: 0;
-    display: flex;
-}
+  list-style-type: none;
+  margin: 0 0 calc(var(--unit) / 8);
+  padding: 0;
+  display: flex;
 
-#tabs li a {
-    display: block;
-    padding: var(--unit) var(--unit-3);
-}
-
-#tabs li:first-of-type {
-    margin-left: 0;
-}
-
-#tabs li:last-of-type {
-    flex: 1
-}
-
-#tabs li a {
-    color: light-dark(var(--primary), var(--light));
-    text-decoration: none;
-    font-size: var(--unit-2);
-}
-
-#tabs li {
+  li {
     cursor: pointer;
     border-bottom: 1px solid var(--line-strong);
+
+    a {
+      display: block;
+      padding: var(--unit) var(--unit-3);
+      color: light-dark(var(--primary), var(--light));
+      text-decoration: none;
+      font-size: var(--unit-2);
+    }
+
+    &:first-of-type {
+      margin-left: 0;
+    }
+
+    &:last-of-type {
+      flex: 1;
+    }
+
+    &:hover {
+      border-left: 1px solid var(--line-strong);
+      border-right: 1px solid var(--line-strong);
+      background-color: var(--raised);
+    }
+  }
 }
 
-#tabs li:hover {
-    border-left: 1px solid var(--line-strong);
-    border-right: 1px solid var(--line-strong);
-    background-color: var(--raised);
-}
-
+/* The tab you are on. Written out rather than nested above, so that .active stays a class F# can
+   name; every other rule that uses it is nested inside one of these. */
 #tabs li.active {
-    background-color: initial;
-}
+  background-color: initial;
+  border: 1px solid var(--line-strong);
+  border-bottom: none;
 
-#tabs li.active a {
+  a {
     cursor: default;
-}
-
-#tabs li.active {
-    border: 1px solid var(--line-strong);
-    border-bottom: none;
-}
-
-#tabs li.active a {
     color: var(--ink-strong);
     background-color: light-dark(transparent, var(--raised));
     font-family: var(--heading-font);
     font-weight: 500;
-}
+  }
 
-#tabs li:first-of-type.active {
+  &:first-of-type {
     border-left: none;
+  }
 }
 
 @media screen and (min-width: 768px) {
-    #tabs li.active {
-        border-top: none;
-    }
+  #tabs li.active {
+    border-top: none;
+  }
 }
 
-#tools.show-editor section, #tools .tab-content {
-    flex-grow: 1;
+#tools.show-editor section,
+#tools .tab-content {
+  flex-grow: 1;
 }
 
 #tools .hidden-editor {
-    display: none;
+  display: none;
 }
 
 #commands {
-    position: fixed;
-    bottom: var(--unit-2);
-    right: var(--unit-3);
-}
+  position: fixed;
+  bottom: var(--unit-2);
+  right: var(--unit-3);
 
-#commands > button, #commands > a, #commands > .muted {
+  > button,
+  > a,
+  > .muted {
     display: inline-block;
     margin: 0 calc(var(--unit) / 2);
-}
+  }
 
-#commands .muted {
+  .muted {
     color: var(--grey);
     margin-right: var(--unit);
+  }
 }
 
 /* Loader */
 #loading {
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-#loading > div {
+  > div {
     display: inline-block;
     width: 80px;
     height: 80px;
-}
 
-#loading > div:after {
-    content: " ";
-    display: block;
-    width: 64px;
-    height: 64px;
-    margin: 8px;
-    border-radius: 50%;
-    border: 6px solid var(--primary);
-    border-color: var(--primary) transparent var(--primary) transparent;
-    animation: lds-dual-ring 1.2s linear infinite;
+    &:after {
+      content: ' ';
+      display: block;
+      width: 64px;
+      height: 64px;
+      margin: 8px;
+      border-radius: 50%;
+      border: 6px solid var(--primary);
+      border-color: var(--primary) transparent var(--primary) transparent;
+      animation: lds-dual-ring 1.2s linear infinite;
+    }
+  }
 }
 
 @keyframes lds-dual-ring {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Diagnostic errors */
 #diagnostics {
-    border-top: 1px solid var(--primary-border);
-    margin: 0;
-    padding: var(--unit-2);
-    list-style-type: none;
-    display: block;
-    box-sizing: border-box;
-    max-height: 200px;
-    height: 100%;
-    overflow-y: auto;
-    background-color: rgba(199, 73, 16, 0.05);
+  border-top: 1px solid var(--primary-border);
+  margin: 0;
+  padding: var(--unit-2);
+  list-style-type: none;
+  display: block;
+  box-sizing: border-box;
+  max-height: 200px;
+  height: 100%;
+  overflow-y: auto;
+  background-color: rgba(199, 73, 16, 0.05);
 }
 
 #diagnostics li {
-    display: block;
-    font-size: .8rem;
-    font-weight: 400;
-    color: var(--ink-strong);
-}
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--ink-strong);
 
-#diagnostics li p {
+  p {
     margin: 0 0 var(--unit) 0;
+  }
 }
 
-/* Says whose code the list below it is about, so it must not read as one of the entries. */
+/* Says whose code the list below it is about, so it must not read as one of the entries. Written
+   out rather than nested above, so that .muted stays a class F# can name. */
 #diagnostics li.muted {
-    color: var(--grey);
-    margin-bottom: var(--unit);
+  color: var(--grey);
+  margin-bottom: var(--unit);
 }
 
+/* Same for .badge: the severity and the error number are named from F#, the variants below are
+   not, so only this one has to stand on its own. */
 #diagnostics .badge {
-    display: inline-block;
-    padding: 3px 6px;
-    margin-right: calc(var(--unit) / 2);
-    color: var(--black);
-    font-weight: 700;
-    font-size: .6rem;
-    line-height: 1;
-}
+  display: inline-block;
+  padding: 3px 6px;
+  margin-right: calc(var(--unit) / 2);
+  color: var(--black);
+  font-weight: 700;
+  font-size: 0.6rem;
+  line-height: 1;
 
-#diagnostics .badge:first-of-type {
+  &:first-of-type {
     margin-left: calc(var(--unit) / 2);
-}
+  }
 
-#diagnostics .badge.error {
+  &.error {
     background-color: var(--danger);
-}
+  }
 
-#diagnostics .badge.warning {
+  &.warning {
     background-color: var(--warning);
-}
+  }
 
-#diagnostics .badge.error-number {
+  &.error-number {
     background-color: var(--dark);
     color: var(--white);
-}
+  }
 
-#diagnostics .badge.subcategory {
+  &.subcategory {
     background-color: var(--white);
+  }
 }
 
 /* Home page tab */
 #home-tab {
-    background-color: var(--page-alt);
-    color: light-dark(var(--black), var(--light-hover));
-    padding: var(--unit-3);
-    flex: 1;
-}
+  background-color: var(--page-alt);
+  color: light-dark(var(--black), var(--light-hover));
+  padding: var(--unit-3);
+  flex: 1;
 
-#home-tab a:visited {
-    color: light-dark(#551A8B, var(--grey));
-}
+  a:visited {
+    color: light-dark(#551a8b, var(--grey));
+  }
 
-#home-tab h1 {
+  h1 {
     margin-top: var(--unit-3);
-}
+  }
 
-#home-tab p:first-of-type {
+  p:first-of-type {
     font-size: var(--unit-3);
     font-weight: 300;
+  }
 }
 
 .shine {
-    position: relative;
-    top: 0;
-    left: calc(var(--logo-size) / 2);
-    transform: translate(-50%, 0%);
-    width: var(--logo-size);
-    height: var(--logo-size);
-    overflow: hidden;
-    border-radius: 10%;
-    cursor: none;
-}
+  position: relative;
+  top: 0;
+  left: calc(var(--logo-size) / 2);
+  transform: translate(-50%, 0%);
+  width: var(--logo-size);
+  height: var(--logo-size);
+  overflow: hidden;
+  border-radius: 10%;
+  cursor: none;
 
-.shine:before {
+  &:before {
     content: '';
     position: absolute;
     top: 0;
@@ -830,31 +849,30 @@ nav > div #docs-btn .long-text {
     background: rgba(255, 255, 255, 0.3);
     transform: skewX(-30deg);
     transition: 0.3s;
-}
+  }
 
-.shine:hover:before {
+  &:hover:before {
     left: var(--logo-size);
     background: rgba(255, 255, 255, 0.2);
-}
+  }
 
-.shine img {
+  img {
     width: 100%;
     height: 100%;
+  }
 }
 
 /* AST tab */
 #ast-tab {
-
 }
 
 /* Oak tab */
 #oak-tab {
-    padding: 1px;
-    background-color: var(--page);
-    color: light-dark(var(--black), var(--light));
-}
+  padding: 1px;
+  background-color: var(--page);
+  color: light-dark(var(--black), var(--light));
 
-#oak-tab > div {
+  > div {
     cursor: pointer;
     padding: 0;
     line-height: var(--unit-2);
@@ -863,61 +881,62 @@ nav > div #docs-btn .long-text {
     margin-top: 2px;
     margin-bottom: 2px;
     font-family: Consolas, monospace;
-}
 
-#oak-tab > div:hover {
-    outline: 1px solid var(--black);
-}
+    &:hover {
+      outline: 1px solid var(--black);
+    }
 
-#oak-tab > div.highlight {
-    background-color: var(--secondary);
-    color: var(--white);
-}
+    &.highlight {
+      background-color: var(--secondary);
+      color: var(--white);
+    }
 
-#oak-tab > div > div {
-    padding: 2px 0;
-}
+    > div {
+      padding: 2px 0;
 
-#oak-tab > div > div > i {
-    margin: 0 3px;
-    display: inline-block;
-}
+      > i {
+        margin: 0 3px;
+        display: inline-block;
+      }
+    }
 
-#oak-tab > div .comment {
-    color: var(--white);
-    background: var(--success);
-}
+    .comment {
+      color: var(--white);
+      background: var(--success);
+    }
 
-#oak-tab > div .newline {
-    color: var(--white);
-    background: var(--grey);
-}
+    .newline {
+      color: var(--white);
+      background: var(--grey);
+    }
 
-#oak-tab > div .directive {
-    color: var(--white);
-    background: var(--primary);
+    .directive {
+      color: var(--white);
+      background: var(--primary);
+    }
+  }
 }
 
 /* Fantomas tab */
 #fantomas-editor-container {
-    height: 100%;
+  height: 100%;
 }
 
 #idempotent-message {
-    background-color: light-dark(#c749100d, #c7491026);
-    margin-bottom: calc(8 * var(--unit));
-    padding: var(--unit-2);
-    font-size: calc(1.666 * var(--unit));
-}
+  background-color: light-dark(#c749100d, #c7491026);
+  margin-bottom: calc(8 * var(--unit));
+  padding: var(--unit-2);
+  font-size: calc(1.666 * var(--unit));
 
-#idempotent-message h4 {
+  h4 {
     margin: 0;
+  }
 }
 
 .reset-settings {
-    display: flex;
-}
+  display: flex;
 
-.reset-settings > button {
+  > button {
     margin: auto;
+  }
 }
