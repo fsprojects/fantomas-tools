@@ -23,7 +23,7 @@
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Fantomas.Core" Version="8.0.1" />
+    <PackageReference Include="Fantomas.Core" Version="8.0.2" />
     <PackageReference Include="FSharp.Core" Version="10.1.401" />
     <PackageReference Include="Thoth.Json.System.Text.Json" Version="0.4.0" />
   </ItemGroup>
