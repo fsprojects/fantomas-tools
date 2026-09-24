@@ -50,6 +50,7 @@
     <Compile Include="Navigation.fs" />
     <Compile Include="State.fs" />
     <Compile Include="Splitter.fs" />
+    <Compile Include="SkillBanner.fs" />
     <Compile Include="View.fs" />
     <Compile Include="App.fs" />
 
