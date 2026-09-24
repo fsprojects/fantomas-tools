@@ -440,6 +440,72 @@ nav {
   }
 }
 
+/* The fantomas-report skill, shown until it is closed */
+#skill-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--unit) var(--unit-2);
+  padding: var(--unit) var(--unit-2);
+  background-color: color-mix(in srgb, var(--accent) 12%, var(--page));
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  font-size: 0.9rem;
+
+  > i {
+    color: var(--accent);
+  }
+
+  p {
+    margin: 0;
+
+    a {
+      color: var(--accent);
+      font-weight: 600;
+    }
+  }
+
+  > div {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background-color: light-dark(var(--white), #010409);
+
+    code {
+      padding: calc(var(--unit) / 2) var(--unit);
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+  }
+
+  button {
+    border: none;
+    background: none;
+    color: var(--grey);
+    cursor: pointer;
+    padding: calc(var(--unit) / 2) var(--unit);
+
+    /* Buttons here hold an icon and nothing else, so the gap the global rule leaves for a label
+       would only push the icon off centre. */
+    i {
+      margin-right: 0;
+    }
+
+    &:hover {
+      color: var(--accent);
+    }
+  }
+
+  #close-skill-banner {
+    margin-left: auto;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background-color: light-dark(var(--white), #010409);
+  }
+}
+
 /* Setting menu */
 #settings {
   position: fixed;

@@ -22,6 +22,7 @@ let App () =
 
     fragment [] [
         View.navigation dispatch
+        SkillBanner.SkillBanner()
         main [] [
             View.editor model dispatch
             Splitter.Splitter()

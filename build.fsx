@@ -122,11 +122,19 @@ pipeline "Fantomas-Git" {
 let publishLambda name =
     $"dotnet publish --tl -c Release %s{serverDir}/%s{name}/%s{name}.fsproj"
 
+// The backends are only watched when asked for with `--server`: most work happens in the client,
+// and seven projects rebuilding on every change is a lot of noise for code that did not change.
+//
 // Hot Reload has no F# support, so `dotnet watch` announces that every project does not support it
 // and rebuilds anyway, once per change per project. Ask for the rebuild it was going to do and the
 // output stays about the code.
-let runLambda name =
-    $"dotnet watch --no-hot-reload run --project %s{serverDir </> name </> name}.fsproj --tl"
+let runLambda name (ctx: StageContext) =
+    let project = serverDir </> name </> $"%s{name}.fsproj"
+
+    if List.contains "--server" (ctx.GetAllCmdArgs()) then
+        $"dotnet watch --no-hot-reload run --project %s{project} --tl"
+    else
+        $"dotnet run --project %s{project} --tl"
 
 let setViteToProduction () =
     setEnv "NODE_ENV" "production"
