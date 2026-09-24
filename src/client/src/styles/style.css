@@ -487,6 +487,12 @@ nav {
     cursor: pointer;
     padding: calc(var(--unit) / 2) var(--unit);
 
+    /* Buttons here hold an icon and nothing else, so the gap the global rule leaves for a label
+       would only push the icon off centre. */
+    i {
+      margin-right: 0;
+    }
+
     &:hover {
       color: var(--accent);
     }
@@ -494,6 +500,9 @@ nav {
 
   #close-skill-banner {
     margin-left: auto;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background-color: light-dark(var(--white), #010409);
   }
 }
 

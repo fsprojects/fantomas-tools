@@ -23,7 +23,11 @@ dotnet fsi build.fsx -- -p Fantomas-Git
 dotnet fsi build.fsx -- -p Watch
 ```
 
-Making changes should reflect in the tool.
+Making changes to the client should reflect in the tool. The backends are started once; add `--server` to have them rebuild on changes too:
+
+```shell
+dotnet fsi build.fsx -- -p Watch --server
+```
 
 Or try the Run pipeline:
 
