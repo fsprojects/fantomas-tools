@@ -321,11 +321,8 @@ let settings isFsi model dispatch =
                 FantomasMode.V7, "7.x"
                 FantomasMode.V8, "8.x"
                 FantomasMode.Main, "Main"
-                // Preview builds from the same branch as main while there is no next-major branch
-                // to preview, so the button offered a second way to the same formatter. The mode,
-                // its route and its backend are all still there: put this back when a next major
-                // gets a branch of its own. See `previewBranch` in build.fsx.
-                // FantomasMode.Preview, "Preview"
+                // The next major's branch, see `previewBranch` in build.fsx.
+                FantomasMode.Preview, "Preview v9.0"
             ]
             |> List.map (fun (m, l) ->
                 {

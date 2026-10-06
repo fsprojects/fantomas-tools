@@ -13,10 +13,10 @@
         <LangVersion>preview</LangVersion>
         <OtherFlags>$(OtherFlags) --realsig+</OtherFlags>
         <!-- Override these values to point to your local fantomas repository.
-             Preview builds from the same checkout as main while there is no next-major branch to
-             preview; `previewBranch` in build.fsx decides what gets cloned, and the two go together. -->
+             Preview builds from the next-major branch; `previewBranch` in build.fsx decides what
+             gets cloned, and the two go together. -->
         <FantomasMainRepository>$(MSBuildThisFileDirectory).deps\fantomas</FantomasMainRepository>
-        <FantomasPreviewRepository>$(MSBuildThisFileDirectory).deps\fantomas</FantomasPreviewRepository>
+        <FantomasPreviewRepository>$(MSBuildThisFileDirectory).deps\v9.0</FantomasPreviewRepository>
         <RollForward>LatestMajor</RollForward>
         <UseArtifactsOutput>true</UseArtifactsOutput>
         <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
