@@ -36,14 +36,14 @@ let pwd = __SOURCE_DIRECTORY__
 /// The branch the preview backend is built from, when there is one.
 ///
 /// Preview exists so the next major version can be worked on in its own branch while the stable
-/// release keeps shipping. There is no such branch right now: everything is on main, and
-/// `FantomasPreviewRepository` in Directory.Build.props points at the same checkout as main. A
-/// second clone would then be a second copy of what main already built, and nothing would read it.
+/// release keeps shipping from main. The AST and Oak viewers build against it too.
 ///
-/// When the next major gets its own branch, name it here and point `FantomasPreviewRepository` at
-/// `.deps/<branch>`. The two go together: this decides what is cloned and built, that decides what
-/// the preview backend compiles against.
-let previewBranch: string option = None
+/// This decides what is cloned and built, `FantomasPreviewRepository` in Directory.Build.props
+/// decides what the preview backend compiles against, and the two go together. With no next-major
+/// branch, set this to None and point `FantomasPreviewRepository` at `.deps/fantomas`, the checkout
+/// of main: a second clone would only be a second copy of main. Then hide the Preview button in
+/// `FantomasOnline/View.fs`.
+let previewBranch: string option = Some "v9.0"
 
 /// Every Fantomas checkout the tools build against, as the branch to clone and the folder under
 /// `.deps` to keep it in.

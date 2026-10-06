@@ -9,7 +9,7 @@ type FantomasMode =
     | V7
     | V8
     | Main // main branch
-    | Preview // also main branch
+    | Preview // next major branch
 
 type Msg =
     | Bubble of BubbleMessage
