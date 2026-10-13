@@ -206,6 +206,76 @@ Fantomas %s
 
     uri |> Href
 
+/// Where an issue was found, said only when there is something to say: see `FormatIssue`.
+let private underDefines (defines: string list) : string =
+    match defines with
+    | [] -> ""
+    | defines ->
+        let named = String.concat ", " defines
+        $" with %s{named} defined"
+
+/// An issue as a heading and the lines that explain it, in plain text: the tab shows them as they
+/// are and the GitHub issue lists them.
+let private describeIssue (issue: FormatIssue) : string * string list =
+    let atLine (comment: SourceComment) =
+        $"\"%s{comment.Text}\" at line %i{comment.Range.StartLine}"
+
+    let changes (missing: string seq) (added: string seq) =
+        [
+            for m in missing do
+                $"Lost: %s{m}"
+            for a in added do
+                $"Added: \"%s{a}\""
+        ]
+
+    match issue with
+    | FormatIssue.MissingComment comment ->
+        "Fantomas lost a comment", [ $"The result does not have the comment %s{atLine comment} of your code." ]
+    | FormatIssue.NotValidFSharp(defines, _) ->
+        "The result is not valid F#",
+        [
+            $"Fantomas cannot parse the code it produced%s{underDefines defines}. The diagnostics are about that code."
+        ]
+    | FormatIssue.CommentsChanged(defines, missing, added) ->
+        $"The comments changed%s{underDefines defines}", changes (Array.map atLine missing) added
+    | FormatIssue.DirectivesChanged(defines, missing, added) ->
+        $"The directives changed%s{underDefines defines}", changes (Array.map (sprintf "\"%s\"") missing) added
+    | FormatIssue.NotIdempotent _ ->
+        "The result was not idempotent",
+        [
+            "Formatting the result again changed it. The result after the first format is shown."
+        ]
+    | FormatIssue.CheckFailed("Idempotency", message) -> "Formatting the result again failed", [ message ]
+    | FormatIssue.CheckFailed("TriviaComparison", message) -> "Reading the comments of the result failed", [ message ]
+    | FormatIssue.CheckFailed(check, message) -> $"The %s{check} check failed", [ message ]
+
+/// The title a GitHub issue about this issue starts from.
+let private issueTitle (issue: FormatIssue) : string =
+    match issue with
+    | FormatIssue.MissingComment _ -> "Comment lost when <add use-case>"
+    | FormatIssue.NotValidFSharp _ -> "Invalid result when <add use-case>"
+    | FormatIssue.CommentsChanged _ -> "Comments changed when <add use-case>"
+    | FormatIssue.DirectivesChanged _ -> "Directives changed when <add use-case>"
+    | FormatIssue.NotIdempotent _ -> "Idempotency problem when <add use-case>"
+    | FormatIssue.CheckFailed _ -> "Formatting the result fails when <add use-case>"
+
+/// Every issue as a markdown list, trimmed like `FormatError.toIssueText`: the GitHub issue travels
+/// as a URL, and the code in it gives back whatever is left out here.
+let private issuesAsMarkdown (issues: FormatIssue array) : string =
+    let text =
+        issues
+        |> Array.map (fun issue ->
+            let heading, lines = describeIssue issue
+            let lines = lines |> List.map (sprintf "  - %s") |> String.concat "\n"
+            $"- **%s{heading}**\n%s{lines}"
+        )
+        |> String.concat "\n"
+
+    if text.Length <= 1000 then
+        text
+    else
+        text.Substring(0, 1000) + "\n\n(truncated)"
+
 let createGitHubIssue (bubble: BubbleModel) model =
     let description =
         """Please describe here the Fantomas problem you encountered.
@@ -214,9 +284,27 @@ let createGitHubIssue (bubble: BubbleModel) model =
     let bh, bc, ah, ac =
         match model.State with
         | FantomasTabState.FormatFailed error -> "Code", bubble.SourceCode, "Error", FormatError.toIssueText error
-        | FantomasTabState.FormatResult result ->
-            "Code", bubble.SourceCode, "Result", (Option.defaultValue result.FirstFormat result.SecondFormat)
+        // Not being idempotent is about the result and what became of it, not about the code.
+        | FantomasTabState.FormatResult {
+                                            Code = code
+                                            Issues = [| FormatIssue.NotIdempotent formattedAgain |]
+                                        } -> "Formatted code", code, "Reformatted code", formattedAgain
+        | FantomasTabState.FormatResult result -> "Code", bubble.SourceCode, "Result", result.Code
         | _ -> "Code", bubble.SourceCode, "", ""
+
+    // What Fantomas found wrong with its own result names the problem better than the user can be
+    // asked to, so the issue starts from it.
+    let issues =
+        match model.State with
+        | FantomasTabState.FormatResult result -> result.Issues
+        | _ -> Array.empty
+
+    let title, description =
+        match Array.tryHead issues with
+        | None -> "<Insert meaningful title>", description
+        | Some first ->
+            issueTitle first,
+            $"Fantomas found this wrong with its result:\n\n%s{issuesAsMarkdown issues}\n\n%s{description}"
 
     // Source that does not parse is the one failure Fantomas is not to blame for. Inviting an issue
     // for it sends the user to the wrong place, so say what happened instead.
@@ -240,40 +328,26 @@ let createGitHubIssue (bubble: BubbleModel) model =
                     AfterHeader = ah
                     AfterContent = ac
                     Description = description
-                    Title = "<Insert meaningful title>"
+                    Title = title
                     DefaultOptions = model.DefaultOptions
                     UserOptions = model.UserOptions
                     Version = model.Version
                     IsFsi = bubble.IsFsi
                 }
 
-            a [
-                ClassName $"%s{Style.Btn} %s{Style.Danger}"
-                githubIssueUri githubIssue
-                Target "_blank"
-            ] [ str "Looks wrong? Create an issue!" ]
+            if Array.isEmpty issues then
+                a [
+                    ClassName $"%s{Style.Btn} %s{Style.Danger}"
+                    githubIssueUri githubIssue
+                    Target "_blank"
+                ] [ str "Looks wrong? Create an issue!" ]
+            else
+                a [
+                    ClassName $"%s{Style.Btn} %s{Style.Warning}"
+                    githubIssueUri githubIssue
+                    Target "_blank"
+                ] [ str "Report this problem!" ]
         | _ -> span [ ClassName Style.Muted ] [ str "Looks wrong? Try using the main version!" ]
-
-let createIdempotencyIssue isFsi (model: Model) firstFormat secondFormat =
-    let githubIssue =
-        {
-            BeforeHeader = "Formatted code"
-            BeforeContent = firstFormat
-            AfterHeader = "Reformatted code"
-            AfterContent = secondFormat
-            Description = "Fantomas was not able to produce the same code after reformatting the result."
-            Title = "Idempotency problem when <add use-case>"
-            DefaultOptions = model.DefaultOptions
-            UserOptions = model.UserOptions
-            Version = model.Version
-            IsFsi = isFsi
-        }
-
-    a [
-        ClassName $"%s{Style.Btn} %s{Style.Warning}"
-        githubIssueUri githubIssue
-        Target "_blank"
-    ] [ str "Report idempotency issue!" ]
 
 let userChangedSettings (model: Model) =
     model.SettingsChangedByTheUser |> List.isEmpty |> not
@@ -289,26 +363,12 @@ let commands (bubble: BubbleModel) model dispatch =
         else
             None
 
-    let idempotencyButton model =
-        match model.State with
-        | FantomasTabState.FormatResult {
-                                            FirstFormat = ff
-                                            SecondFormat = Some sf
-                                        } when ff <> sf -> [ createIdempotencyIssue bubble.IsFsi model ff sf ]
-        | _ -> []
-
     match model.State with
     | FantomasTabState.LoadingOptions -> []
     | FantomasTabState.LoadingFormatRequest -> [ formatButton; ofOption copySettingButton ]
     | FantomasTabState.OptionsLoaded
     | FantomasTabState.FormatResult _
-    | FantomasTabState.FormatFailed _ ->
-        [
-            yield! idempotencyButton model
-            createGitHubIssue bubble model
-            formatButton
-            ofOption copySettingButton
-        ]
+    | FantomasTabState.FormatFailed _ -> [ createGitHubIssue bubble model; formatButton; ofOption copySettingButton ]
     |> fragment []
 
 let settings isFsi model dispatch =
@@ -375,21 +435,22 @@ let settings isFsi model dispatch =
             options
         ]
 
-let idempotencyProblem =
-    div [ Id "idempotent-message" ] [
-        h4 [] [ str "The result was not idempotent" ]
-        str "Fantomas was able to format the code, but when formatting the result again, the code changed."
-        br []
-        str "The result after the first format is being displayed."
-        br []
+/// What Fantomas found wrong with its result, above the result.
+let private issuesPanel (issues: FormatIssue array) =
+    div [ Id "format-issues" ] [
+        for idx, issue in Array.indexed issues do
+            let heading, lines = describeIssue issue
+
+            section [ Key(string idx) ] [
+                h4 [] [ str heading ]
+                for line in lines do
+                    p [] [ str line ]
+            ]
     ]
 
 let view (model: Model) (dispatch: Msg -> unit) =
     match model.State with
     | FantomasTabState.LoadingOptions
     | FantomasTabState.LoadingFormatRequest -> Loader.tabLoading
-    | FantomasTabState.FormatResult result ->
-        match result.SecondFormat with
-        | Some secondFormat when (result.FirstFormat <> secondFormat) -> idempotencyProblem
-        | _ -> null
+    | FantomasTabState.FormatResult result when not (Array.isEmpty result.Issues) -> issuesPanel result.Issues
     | _ -> null

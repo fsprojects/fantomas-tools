@@ -249,20 +249,18 @@ let update isActiveTab (bubble: BubbleModel) msg (model: Model) =
         error.Diagnostics |> BubbleMessage.SetDiagnostics |> Msg.Bubble |> Cmd.ofMsg
 
     | FormattedReceived result ->
+        // The diagnostics of a result that does not parse go where every other diagnostic in the tool
+        // shows up. An empty list clears what an earlier request left there.
         let cmd =
-            if Array.isEmpty result.FirstValidation && Array.isEmpty result.SecondValidation then
-                // Make sure to reset the diagnostics if there are no errors
-                Array.empty |> BubbleMessage.SetDiagnostics |> Msg.Bubble |> Cmd.ofMsg
-            elif Array.isEmpty result.SecondValidation then
-                result.FirstValidation
-                |> BubbleMessage.SetDiagnostics
-                |> Msg.Bubble
-                |> Cmd.ofMsg
-            else
-                result.SecondValidation
-                |> BubbleMessage.SetDiagnostics
-                |> Msg.Bubble
-                |> Cmd.ofMsg
+            result.Issues
+            |> Array.collect (
+                function
+                | FormatIssue.NotValidFSharp(_, diagnostics) -> diagnostics
+                | _ -> Array.empty
+            )
+            |> BubbleMessage.SetDiagnostics
+            |> Msg.Bubble
+            |> Cmd.ofMsg
 
         { model with
             State = FantomasTabState.FormatResult result

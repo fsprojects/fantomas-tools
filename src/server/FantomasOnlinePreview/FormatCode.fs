@@ -34,29 +34,18 @@ let private mapFantomasOptionsToRecord options =
     let formatConfigType = typeof<FormatConfig>
     Microsoft.FSharp.Reflection.FSharpValue.MakeRecord(formatConfigType, newValues) :?> FormatConfig
 
-let private format (fileName: string) code config =
-    let isSignature = fileName.EndsWith(".fsi", StringComparison.Ordinal)
-
-    async {
-        let! result = CodeFormatter.FormatDocumentAsync(isSignature, code, config)
-        return result.Code
+let private toRange (r: range) : Range =
+    {
+        StartLine = r.StartLine
+        StartColumn = r.StartColumn
+        EndLine = r.EndLine
+        EndColumn = r.EndColumn
     }
 
 let private toDiagnostic (e: FSharpParserDiagnostic) : Diagnostic =
-    let range =
-        match e.Range with
-        | None -> Range.Zero
-        | Some r ->
-            {
-                StartLine = r.StartLine
-                StartColumn = r.StartColumn
-                EndLine = r.EndLine
-                EndColumn = r.EndColumn
-            }
-
     {
         SubCategory = e.SubCategory
-        Range = range
+        Range = e.Range |> Option.map toRange |> Option.defaultValue Range.Zero
         Severity = $"%O{e.Severity}".ToLower()
         ErrorNumber = Option.defaultValue -1 e.ErrorNumber
         Message = e.Message
@@ -164,6 +153,37 @@ let private describeException (ex: exn) : FormatError =
             Diagnostics = Array.empty
             Detail = None
         }
+
+let private toSourceComment (comment: Fantomas.Core.SourceComment) : FantomasOnline.Shared.SourceComment =
+    {
+        Range = toRange comment.Range
+        Text = comment.Text
+    }
+
+let private toFormatIssue (issue: ValidationIssue) : FormatIssue =
+    match issue with
+    | ValidationIssue.MissingComment comment -> FormatIssue.MissingComment(toSourceComment comment)
+    | ValidationIssue.NotValidFSharp(defines, diagnostics) ->
+        FormatIssue.NotValidFSharp(defines, diagnostics |> List.map toDiagnostic |> Array.ofList)
+    | ValidationIssue.CommentsChanged(defines, missing, added) ->
+        FormatIssue.CommentsChanged(defines, missing |> List.map toSourceComment |> Array.ofList, Array.ofList added)
+    | ValidationIssue.DirectivesChanged(defines, missing, added) ->
+        FormatIssue.DirectivesChanged(defines, Array.ofList missing, Array.ofList added)
+    | ValidationIssue.NotIdempotent formattedAgain -> FormatIssue.NotIdempotent formattedAgain
+    | ValidationIssue.CheckFailed(check, error) ->
+        FormatIssue.CheckFailed($"%O{check}", (describeException error).Message)
+
+/// Fantomas 9 checks its own result, every way it knows: whether it lost a comment or a directive
+/// is something only it can say. The tool used to check by hand and could see neither.
+let private format (fileName: string) code config =
+    let isSignature = fileName.EndsWith(".fsi", StringComparison.Ordinal)
+
+    async {
+        let! result =
+            CodeFormatter.FormatDocumentWithValidationsAsync(isSignature, code, config, Validations.All)
+
+        return result.Code, result.Issues |> List.map toFormatIssue
+    }
 
 let getVersion () =
     let date =

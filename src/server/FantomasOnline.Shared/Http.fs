@@ -41,9 +41,42 @@ let describeFailure (error: FormatError) : int * string =
 
     statusCode, (FormatError.Encode error |> Encode.toString 4)
 
+/// Formatting checked the way a Fantomas without checks of its own allows: the result is parsed, and
+/// formatted again when it parses. Fantomas 9 runs these checks and more itself; before it, the
+/// tool has to. What they find is reported the way Fantomas 9 reports it, so the tab reads every
+/// version's findings the same way. A failure of the first format is left to the caller: that one
+/// can be the user's doing. Anything that goes wrong after it is Fantomas', however the exception
+/// words it, and is reported as an issue with the result rather than in place of it.
+let checkByHand
+    (format: string -> string -> 'options -> Async<string>)
+    (validate: string -> string -> Async<Diagnostic list>)
+    (describeException: exn -> FormatError)
+    (fileName: string)
+    (code: string)
+    (config: 'options)
+    : Async<string * FormatIssue list>
+    =
+    async {
+        let! formatted = format fileName code config
+        let! diagnostics = validate fileName formatted
+
+        if not (List.isEmpty diagnostics) then
+            return formatted, [ FormatIssue.NotValidFSharp([], Array.ofList diagnostics) ]
+        else
+            let! secondAttempt = Async.Catch(format fileName formatted config)
+
+            match secondAttempt with
+            | Choice2Of2 exn ->
+                let error = describeException exn
+                return formatted, [ FormatIssue.CheckFailed("Idempotency", error.Message) ]
+            | Choice1Of2 formattedAgain when formattedAgain <> formatted ->
+                return formatted, [ FormatIssue.NotIdempotent formattedAgain ]
+            | Choice1Of2 _ -> return formatted, []
+    }
+
 let formatCode
     (mapFantomasOptionsToRecord: FantomasOption list -> 'options)
-    (format: string -> string -> 'options -> Async<string>)
+    (format: string -> string -> 'options -> Async<string * FormatIssue list>)
     (validate: string -> string -> Async<Diagnostic list>)
     (describeException: exn -> FormatError)
     (json: string)
@@ -55,29 +88,14 @@ let formatCode
         let configResult =
             Result.map (fun r -> r, mapFantomasOptionsToRecord r.Options) model
 
-        // The code is formatted twice: once to produce a result and once to see whether Fantomas
-        // agrees with what it wrote. The two are caught apart, because they fail for different
-        // reasons and only one of them can be the user's doing. Code that formatted once parses;
-        // anything that goes wrong after that is Fantomas', however the exception words it.
-        let respond firstFormat firstValidation secondFormat secondValidation =
-            {
-                FirstFormat = firstFormat
-                FirstValidation = Array.ofList firstValidation
-                SecondFormat = secondFormat
-                SecondValidation = Array.ofList secondValidation
-            }
-            |> Encoders.encodeFormatResponse
-            |> Encode.toString 4
-            |> FormatResponse.Ok
-
         match configResult with
         | Ok({ SourceCode = code; IsFsi = isFsi }, config) ->
             let fileName = if isFsi then "tmp.fsi" else "tmp.fsx"
 
             try
-                let! firstAttempt = Async.Catch(format fileName code config)
+                let! attempt = Async.Catch(format fileName code config)
 
-                match firstAttempt with
+                match attempt with
                 | Choice2Of2 exn ->
                     let error = describeException exn
 
@@ -94,32 +112,17 @@ let formatCode
                                 }
                     else
                         return FormatResponse.Failed error
-                | Choice1Of2 firstFormat ->
-                    let! firstValidation = validate fileName firstFormat
-
-                    if not (List.isEmpty firstValidation) then
-                        // Fantomas wrote something it does not accept. The result is reported as a
-                        // result, so the tab shows it beside the diagnostics that condemn it and
-                        // keeps the button that files the issue.
-                        return respond firstFormat firstValidation None []
-                    else
-                        let! secondAttempt = Async.Catch(format fileName firstFormat config)
-
-                        match secondAttempt with
-                        | Choice2Of2 exn ->
-                            let error = describeException exn
-
-                            return
-                                FormatResponse.Failed
-                                    { error with
-                                        Kind = FormatErrorKind.FantomasBug
-                                        Message =
-                                            $"Fantomas formatted your code, and formatting that result again failed: %s{error.Message}"
-                                        Detail = Some firstFormat
-                                    }
-                        | Choice1Of2 secondFormat ->
-                            let! secondValidation = validate fileName secondFormat
-                            return respond firstFormat firstValidation (Some secondFormat) secondValidation
+                | Choice1Of2(formatted, issues) ->
+                    // Whatever the checks found, the result is reported as a result, so the tab
+                    // shows it beside the issues that condemn it and keeps the button that files them.
+                    return
+                        {
+                            Code = formatted
+                            Issues = Array.ofList issues
+                        }
+                        |> Encoders.encodeFormatResponse
+                        |> Encode.toString 4
+                        |> FormatResponse.Ok
             with exn ->
                 return FormatResponse.Failed(describeException exn)
         | Error err -> return FormatResponse.BadRequest err
