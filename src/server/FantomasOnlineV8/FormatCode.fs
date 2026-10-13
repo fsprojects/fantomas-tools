@@ -187,4 +187,4 @@ let getOptions () : string =
     |> mapOptionsToJson
 
 let formatCode: string -> Async<FormatResponse> =
-    formatCode mapFantomasOptionsToRecord format validate describeException
+    formatCode mapFantomasOptionsToRecord (checkByHand format validate describeException) validate describeException

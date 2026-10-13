@@ -179,7 +179,12 @@ let private diagnosticsCaption (model: Model) : string option =
     | FantomasTab _ ->
         match model.FantomasModel.State with
         | FantomasTabState.FormatResult result when
-            not (Array.isEmpty result.FirstValidation && Array.isEmpty result.SecondValidation)
+            result.Issues
+            |> Array.exists (
+                function
+                | FormatIssue.NotValidFSharp _ -> true
+                | _ -> false
+            )
             ->
             Some "About the code Fantomas produced, not the code you submitted."
         | FantomasTabState.FormatFailed _ -> Some "About the code you submitted."
@@ -226,17 +231,7 @@ let rightPane (model: Model) dispatch =
                 | FantomasTabState.OptionsLoaded -> HiddenEditor()
                 | FantomasTabState.FormatFailed error -> ReadOnlyEditor(FormatError.toText error)
                 | FantomasTabState.FormatResult result ->
-                    let formattedCode =
-                        match result.SecondFormat with
-                        | Some sf ->
-                            if sf = result.FirstFormat then
-                                sf
-                            else
-                                // Result is not idempotent.
-                                result.FirstFormat
-                        | None -> result.FirstFormat
-
-                    FantomasResultEditor model.FantomasModel.MaxLineLength formattedCode
+                    FantomasResultEditor model.FantomasModel.MaxLineLength result.Code
 
             resultEditor,
             FantomasOnline.View.view model.FantomasModel fantomasDispatch,

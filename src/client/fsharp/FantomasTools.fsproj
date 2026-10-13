@@ -55,6 +55,7 @@
     <Compile Include="App.fs" />
 
     <Compile Include="test/UrlCompat.test.fs" />
+    <Compile Include="test/FormatResponse.test.fs" />
 
   </ItemGroup>
   <ItemGroup>

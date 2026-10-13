@@ -988,14 +988,22 @@ nav {
   height: 100%;
 }
 
-#idempotent-message {
+#format-issues {
   background-color: light-dark(#c749100d, #c7491026);
   margin-bottom: calc(8 * var(--unit));
   padding: var(--unit-2);
   font-size: calc(1.666 * var(--unit));
 
+  section + section {
+    margin-top: var(--unit-2);
+  }
+
   h4 {
     margin: 0;
+  }
+
+  p {
+    margin: var(--unit) 0 0;
   }
 }
 
