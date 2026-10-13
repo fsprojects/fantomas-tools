@@ -441,7 +441,7 @@ let private issuesPanel (issues: FormatIssue array) =
         for idx, issue in Array.indexed issues do
             let heading, lines = describeIssue issue
 
-            section [ Key(string idx) ] [
+            section [ Key(string<int> idx) ] [
                 h4 [] [ str heading ]
                 for line in lines do
                     p [] [ str line ]
