@@ -112,7 +112,15 @@ let private describeException (ex: exn) : FormatError =
     // The code parses with nothing defined and not with something defined. Fantomas names the
     // combinations and drops their diagnostics; the caller fills those back in.
     | :? DefineParseException as defineParseException ->
-        let combinations = defineParseException.Combinations |> String.concat "; "
+        // Fantomas 9 hands each combination over as its defines, `[]` being the one without any.
+        let combinations =
+            defineParseException.Combinations
+            |> List.map (
+                function
+                | [] -> "no defines"
+                | defines -> String.concat ", " defines
+            )
+            |> String.concat "; "
 
         {
             Kind = FormatErrorKind.InvalidSource
