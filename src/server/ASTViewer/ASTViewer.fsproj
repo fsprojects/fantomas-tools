@@ -17,8 +17,10 @@
     <Compile Include="..\SuaveExtensions.fs" />
     <Compile Include="Encoders.fs" />
     <Compile Include="Decoders.fs" />
-    <Compile Include="ExpandedAST.fsi" />
-    <Compile Include="ExpandedAST.fs" />
+    <Compile Include="SyntaxNode.fs" />
+    <Compile Include="SyntaxReader.fs" />
+    <Compile Include="PrintAST.fsi" />
+    <Compile Include="PrintAST.fs" />
     <Compile Include="GetAST.fs" />
     <Compile Include="Lambda.fs" />
     <Compile Include="Program.fs" />
