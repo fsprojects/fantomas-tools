@@ -69,6 +69,26 @@ pipeline only fails when a target could not be analyzed at all. Each target also
 `analysisreports/`, and those are merged into `analysis.sarif` in the repository root. CI runs the pipeline on
 every pull request and uploads that merged report to GitHub code scanning.
 
+## AST viewer syntax reader
+
+The AST viewer reads the untyped syntax tree without F# reflection, so it can run under Native AOT.
+`src/server/ASTViewer/SyntaxReader.fs` has one function per syntax type that turns a value into a `SyntaxNode`.
+Do not edit that file: it is generated from `SyntaxTree.fsi` and `SyntaxTrivia.fsi` of the FCS commit the
+preview Fantomas checkout (`FantomasPreviewRepository`) builds Fantomas.FCS from.
+
+Run the generator again each time that FCS commit changes:
+
+```shell
+dotnet fsi build.fsx -- -p Fantomas-Git
+dotnet fsi src/server/ASTViewer/GenerateSyntaxReader.fsx
+```
+
+The first command clones or pulls the Fantomas checkouts and builds them, which puts the FCS sources under
+`.deps`. The
+generator then writes and formats `SyntaxReader.fs`. If the syntax files use a type they do not define, the
+generator stops and names it. Add a function with that name, starting with a lowercase letter, to the `Leaf`
+module in `src/server/ASTViewer/SyntaxNode.fs`, and run the generator again.
+
 ## Other pipelines
 
 To see any other avaiable build script pipelines:
