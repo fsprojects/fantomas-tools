@@ -20,6 +20,7 @@
     <Compile Include="UrlTools.fs" />
     <Compile Include="Http.fs" />
     <Compile Include="Utils.fs" />
+    <Compile Include="Keyboard.fs" />
     <Compile Include="BubbleMessage.fs" />
 
     <Compile Include="Oak\Model.fs" />

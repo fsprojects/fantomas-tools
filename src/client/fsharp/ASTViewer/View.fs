@@ -70,7 +70,11 @@ let cursorChanged (bubbleMsg: BubbleMessage -> unit) (model: Model) (e: obj) : u
     | _ -> ()
 
 let commands dispatch =
-    button [ ClassName Style.Primary; OnClick(fun _ -> dispatch DoParse) ] [ str "Show Untyped AST" ]
+    button [
+        ClassName Style.Primary
+        Keyboard.runShortcut
+        OnClick(fun _ -> dispatch DoParse)
+    ] [ str "Show Untyped AST"; Keyboard.hint (Keyboard.runKeys ()) ]
 
 let settings (bubble: BubbleModel) (model: Model) dispatch =
     fragment [] [

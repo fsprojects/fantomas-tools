@@ -11,6 +11,26 @@ type FantomasMode =
     | Main // main branch
     | Preview // next major branch
 
+/// The versions the Fantomas tab offers, in the order it shows them, with their labels.
+let modes: (FantomasMode * string) list =
+    [
+        V6, "6.x"
+        V7, "7.x"
+        V8, "8.x"
+        Main, "Main"
+        // The next major's branch, see `previewBranch` in build.fsx.
+        Preview, "Preview v9.0"
+    ]
+
+/// The label of `mode` in `modes`.
+let modeLabel (mode: FantomasMode) : string =
+    modes |> List.find (fun (m, _) -> m = mode) |> snd
+
+/// The version after `mode` in `modes`, and after the last one the first.
+let nextMode (mode: FantomasMode) : FantomasMode =
+    let index = modes |> List.findIndex (fun (m, _) -> m = mode)
+    fst modes[(index + 1) % modes.Length]
+
 type Msg =
     | Bubble of BubbleMessage
     | VersionReceived of string

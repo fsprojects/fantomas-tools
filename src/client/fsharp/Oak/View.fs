@@ -131,9 +131,14 @@ let view (model: Model) dispatch =
     | OakViewerTabState.Loading -> Loader.tabLoading
 
 let commands dispatch =
-    button [ ClassName Style.Primary; OnClick(fun _ -> dispatch GetOak) ] [
+    button [
+        ClassName Style.Primary
+        Keyboard.runShortcut
+        OnClick(fun _ -> dispatch GetOak)
+    ] [
         i [ ClassName $"fas fa-code" ] []
         str "Get oak"
+        Keyboard.hint (Keyboard.runKeys ())
     ]
 
 let settings (bubble: BubbleModel) (model: Model) dispatch =

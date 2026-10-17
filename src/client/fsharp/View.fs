@@ -52,9 +52,13 @@ let navigation dispatch =
                 span [ ClassName "short-text" ] [ str "Docs" ]
                 span [ ClassName "long-text" ] [ str "Fantomas.FCS Docs" ]
             ]
-            a [ Class "btn"; Id "menu-toggle"; OnClick(fun _ -> dispatch ToggleSettings) ] [
-                i [ ClassName "fas fa-sliders-h" ] []
-            ]
+            a [
+                Class "btn"
+                Id "menu-toggle"
+                Title("Settings (" + Keyboard.altKeysText "S" + ")")
+                Keyboard.altShortcut "S"
+                OnClick(fun _ -> dispatch ToggleSettings)
+            ] [ i [ ClassName "fas fa-sliders-h" ] []; Keyboard.hint (Keyboard.altKeys "S") ]
         ]
     ]
 
@@ -85,6 +89,22 @@ let private homeTab =
             ] [ str "documentation" ]
             str "."
         ]
+        // The one place that lists every shortcut, and says what pressing Alt+F again does. The run
+        // buttons, the issue link, the tabs and the settings button show their own.
+        p [ Id "shortcuts" ] [
+            Keyboard.keycap (Keyboard.runKeys ())
+            str " runs the tab, "
+            Keyboard.keycap (Keyboard.ctrlKeys "I")
+            str " reports what Fantomas got wrong, "
+            Keyboard.keycap (Keyboard.altKeys "A")
+            str " opens AST, "
+            Keyboard.keycap (Keyboard.altKeys "O")
+            str " Oak, "
+            Keyboard.keycap (Keyboard.altKeys "F")
+            str " Fantomas and then its next version, "
+            Keyboard.keycap (Keyboard.altKeys "S")
+            str " the settings."
+        ]
     ]
 
 let private settings model dispatch inner =
@@ -107,38 +127,46 @@ let private settings model dispatch inner =
     ]
 
 let tabs model =
-    let navItem tab label isActive =
-        let href =
-            let page = Navigation.toHash tab
-
-            let query =
-                let hash = Browser.Dom.window.location.hash
-
-                if hash.Contains("?") then
-                    $"?%s{hash.Split('?').[1]}"
-                else
-                    ""
-
-            $"%s{page}%s{query}"
-
+    let navItem tab (label: ReactElement) isActive (shortcut: Shortcut option) =
         let isActiveClass = if isActive then Style.Active else ""
 
         let onClick (ev: Event) =
             if isActive then
                 ev.preventDefault ()
 
-        li [ ClassName isActiveClass ] [ a [ Href href; OnClick onClick ] [ str label ] ]
+        let shortcut = shortcut |> Option.bind Navigation.altLetter
+
+        let shortcutProps: IHTMLProp list =
+            match shortcut with
+            | Some letter -> [ Title(Keyboard.altKeysText letter); Keyboard.altShortcut letter ]
+            | None -> []
+
+        li [ ClassName isActiveClass ] [
+            a [ Href(Navigation.href tab); OnClick onClick; yield! shortcutProps ] [
+                label
+                yield! shortcut |> Option.map (Keyboard.altKeys >> Keyboard.hint) |> Option.toList
+            ]
+        ]
 
     let isFantomasTab =
         function
         | FantomasTab _ -> true
         | _ -> false
 
+    // The Fantomas tab says which version it is on, or was last on, which is the one it opens.
+    let fantomasMode = model.FantomasModel.Mode
+
+    let fantomasLabel =
+        fragment [] [
+            str "Fantomas"
+            span [ ClassName Style.TabVersion ] [ str (modeLabel fantomasMode) ]
+        ]
+
     ul [ Id "tabs" ] [
-        navItem HomeTab "Home" (model.ActiveTab = HomeTab)
-        navItem ASTTab "AST" (model.ActiveTab = ASTTab)
-        navItem OakTab "Oak" (model.ActiveTab = OakTab)
-        navItem (FantomasTab Main) "Fantomas" (isFantomasTab model.ActiveTab)
+        navItem HomeTab (str "Home") (model.ActiveTab = HomeTab) None
+        navItem ASTTab (str "AST") (model.ActiveTab = ASTTab) (Some Shortcut.OpenAst)
+        navItem OakTab (str "Oak") (model.ActiveTab = OakTab) (Some Shortcut.OpenOak)
+        navItem (FantomasTab fantomasMode) fantomasLabel (isFantomasTab model.ActiveTab) (Some Shortcut.OpenFantomas)
         li [] []
     ]
 

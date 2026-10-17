@@ -720,6 +720,12 @@ nav {
   }
 }
 
+/* The version the Fantomas tab is on, after its name. */
+#tabs .tab-version {
+  margin-left: calc(var(--unit) / 2);
+  color: var(--grey);
+}
+
 /* The tab you are on. Written out rather than nested above, so that .active stays a class F# can
    name; every other rule that uses it is nested inside one of these. */
 #tabs li.active {
@@ -770,6 +776,63 @@ nav {
   .muted {
     color: var(--grey);
     margin-right: var(--unit);
+  }
+}
+
+/* Keyboard shortcuts, see App.fs: a key, or keys pressed together, next to what they do. */
+kbd.keycap {
+  --keycap-plus: light-dark(var(--warning), var(--warning-hover));
+  display: inline-block;
+  font-family: var(--font);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 16px;
+  padding: 0 5px;
+  border: 1px solid var(--line-strong);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  color: var(--ink);
+  background-color: var(--raised);
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+/* In a button, after its label and in its colour, quieter than the label. Another hue for the plus
+   is lost on a coloured button, so there it is the label's colour at full strength, and the keys
+   around it are not. */
+button kbd.keycap,
+.btn kbd.keycap {
+  margin-left: var(--unit);
+  color: color-mix(in srgb, currentColor 65%, transparent);
+  background-color: transparent;
+  border-color: color-mix(in srgb, currentColor 45%, transparent);
+  --keycap-plus: var(--white);
+}
+
+/* The plus between the keys pressed together, in a colour of its own. */
+kbd.keycap .keycap-plus {
+  margin: 0 2px;
+  color: var(--keycap-plus);
+}
+
+/* After the label of a tab, quieter than the label. */
+#tabs kbd.keycap {
+  margin-left: var(--unit);
+  color: var(--grey);
+  background-color: transparent;
+}
+
+#home-tab #shortcuts {
+  color: var(--grey);
+  font-size: 14px;
+  line-height: 2;
+}
+
+/* Nothing to press them on without a keyboard, which a screen without hover usually means. */
+@media (hover: none) {
+  kbd.keycap,
+  #home-tab #shortcuts {
+    display: none;
   }
 }
 
