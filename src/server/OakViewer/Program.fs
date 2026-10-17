@@ -6,8 +6,7 @@ open Suave.RequestErrors
 open SuaveExtensions
 open OakViewer.GetOak
 
-[<EntryPoint>]
-let main argv =
+let private serveLocally argv =
     let mapOakResponseToWebPart (response: GetOakResponse) : WebPart =
         match response with
         | GetOakResponse.Ok body -> (applicationText >=> OK body)
@@ -43,3 +42,11 @@ let main argv =
     startFantomasTool port routes
 
     0
+
+// Lambda sets AWS_LAMBDA_RUNTIME_API for the `bootstrap` it starts. Anywhere else this is the local
+// server the Watch and Start pipelines run.
+[<EntryPoint>]
+let main argv =
+    match Option.ofObj (System.Environment.GetEnvironmentVariable "AWS_LAMBDA_RUNTIME_API") with
+    | None -> serveLocally argv
+    | Some runtimeApi -> (LambdaRuntime.run runtimeApi OakViewer.Lambda.handlers).GetAwaiter().GetResult()

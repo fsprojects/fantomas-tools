@@ -24,7 +24,7 @@ let optionDecoder: Decoder<FantomasOption> =
             get.Required.Field "$value" (Decode.tuple3 Decode.int Decode.string Decode.string)
             |> FantomasOption.MultilineBracketStyleOption
         else
-            failwithf $"Could not decode %s{t}"
+            failwith ("Could not decode " + t)
     )
 
 let requestDecoder: Decoder<FormatRequest> =

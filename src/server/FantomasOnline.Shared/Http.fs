@@ -3,9 +3,7 @@ module FantomasOnline.Server.Shared.Http
 open System.Net
 open FantomasTools.Client
 open Thoth.Json.Core
-open Thoth.Json.System.Text.Json
 open HttpConstants
-open AWSLambdaExtensions
 open FantomasOnline.Server.Shared
 open FantomasOnline.Shared
 
@@ -39,7 +37,7 @@ let describeFailure (error: FormatError) : int * string =
         | FormatErrorKind.FantomasBug
         | FormatErrorKind.Unknown -> 500
 
-    statusCode, (FormatError.Encode error |> Encode.toString 4)
+    statusCode, (FormatError.Encode error |> LambdaJson.toString)
 
 /// Formatting checked the way a Fantomas without checks of its own allows: the result is parsed, and
 /// formatted again when it parses. Fantomas 9 runs these checks and more itself; before it, the
@@ -85,8 +83,16 @@ let formatCode
     async {
         let model = Decoders.decodeRequest json
 
+        // Options of another Fantomas version, a link from before an option came or went, do not
+        // make a config. That is the request's fault, and a 400 that says so.
         let configResult =
-            Result.map (fun r -> r, mapFantomasOptionsToRecord r.Options) model
+            model
+            |> Result.bind (fun r ->
+                try
+                    Ok(r, mapFantomasOptionsToRecord r.Options)
+                with ex ->
+                    Error("The options do not match the ones this Fantomas has: " + ex.Message)
+            )
 
         match configResult with
         | Ok({ SourceCode = code; IsFsi = isFsi }, config) ->
@@ -121,18 +127,18 @@ let formatCode
                             Issues = Array.ofList issues
                         }
                         |> Encoders.encodeFormatResponse
-                        |> Encode.toString 4
+                        |> LambdaJson.toString
                         |> FormatResponse.Ok
             with exn ->
                 return FormatResponse.Failed(describeException exn)
         | Error err -> return FormatResponse.BadRequest err
     }
 
-let mapFormatResponseToAPIGatewayProxyResponse (response: FormatResponse) =
+/// The status code, content type and body a lambda answers a format with.
+let mapFormatResponse (response: FormatResponse) : HttpStatusCode * string * string =
     match response with
     | FormatResponse.Ok json -> HttpStatusCode.OK, HeaderValues.ApplicationJson, json
     | FormatResponse.BadRequest error -> HttpStatusCode.BadRequest, HeaderValues.ApplicationText, error
     | FormatResponse.Failed error ->
         let statusCode, json = describeFailure error
         enum<HttpStatusCode> statusCode, HeaderValues.ApplicationJson, json
-    |> mkAPIGatewayProxyResponse

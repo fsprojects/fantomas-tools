@@ -13,6 +13,7 @@
     <Compile Include="../../shared/Types.fs" />
     <Compile Include="../../shared/FantomasOnlineShared.fs" />
     <Compile Include="..\HttpConstants.fs" />
+    <Compile Include="..\LambdaJson.fs" />
     <Compile Include="..\AWSLambdaExtensions.fs" />
     <Compile Include="..\SuaveExtensions.fs" />
     <Compile Include="../FantomasOnline.Shared/Encoders.fs" />
@@ -25,6 +26,6 @@
   <ItemGroup>
     <PackageReference Include="Fantomas.Core" Version="8.0.10" />
     <PackageReference Include="FSharp.Core" Version="10.1.401" />
-    <PackageReference Include="Thoth.Json.System.Text.Json" Version="0.4.0" />
+    <PackageReference Include="Thoth.Json.System.Text.Json" Version="0.5.0" />
   </ItemGroup>
 </Project>

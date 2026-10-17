@@ -51,6 +51,16 @@ let private getLastCommit () =
 
 let (</>) a b = Path.Combine(a, b)
 
+/// How a lambda project runs on AWS.
+[<Struct>]
+type LambdaHosting =
+    /// On the managed .NET runtime, which calls a method of the assembly by its handler string.
+    | Managed
+    /// As a native `bootstrap` on `provided.al2023`, compiled with Native AOT. It runs its own loop
+    /// against the Lambda Runtime API and picks the function from the handler name, see
+    /// src/server/LambdaRuntime.fs.
+    | Native
+
 type LambdaProject =
     {
         Name: string
@@ -58,6 +68,7 @@ type LambdaProject =
         HandlerPrefix: string
         Lambdas: LambdaInfo list
         FunctionPrefix: string
+        Hosting: LambdaHosting
     }
 
 and LambdaInfo =
@@ -77,14 +88,15 @@ let getAllLambdas (lastSha, lastTime) =
             Environment = environment
         }
 
-    let mkLambdaProject (name: string) lambdas =
+    let mkLambdaProject (hosting: LambdaHosting) (name: string) lambdas =
+        // A native lambda is built apart from the rest, in artifacts/native, and deploys from the zip
+        // build.fsx makes of its publish folder, which keeps `bootstrap` executable.
         let archive =
-            __SOURCE_DIRECTORY__
-            </> ".."
-            </> "artifacts"
-            </> "publish"
-            </> name
-            </> "release"
+            let artifacts = __SOURCE_DIRECTORY__ </> ".." </> "artifacts"
+
+            match hosting with
+            | Managed -> artifacts </> "publish" </> name </> "release"
+            | Native -> artifacts </> "native" </> "publish" </> name </> "release_linux-x64.zip"
 
         {
             Name = name
@@ -92,23 +104,26 @@ let getAllLambdas (lastSha, lastTime) =
             HandlerPrefix = name.Kebaberize()
             Lambdas = lambdas
             FunctionPrefix = $"%s{name}::%s{name}.Lambda"
+            Hosting = hosting
         }
 
     [
         mkLambdaProject
+            Native
             "ASTViewer"
             [
                 mkLambdaInfo "GetVersion" "GET" "/ast-viewer/version" List.empty
                 mkLambdaInfo "PostUntypedAST" "POST" "/ast-viewer/untyped-ast" List.empty
-                mkLambdaInfo "PostTypedAST" "POST" "/ast-viewer/typed-ast" List.empty
             ]
         mkLambdaProject
+            Native
             "OakViewer"
             [
                 mkLambdaInfo "GetVersion" "GET" "/oak-viewer/version" List.empty
                 mkLambdaInfo "GetOak" "POST" "/oak-viewer/get-oak" List.empty
             ]
         mkLambdaProject
+            Managed
             "FantomasOnlineV6"
             [
                 mkLambdaInfo "GetVersion" "GET" "/fantomas/v6/version" List.empty
@@ -116,6 +131,7 @@ let getAllLambdas (lastSha, lastTime) =
                 mkLambdaInfo "PostFormat" "POST" "/fantomas/v6/format" List.empty
             ]
         mkLambdaProject
+            Managed
             "FantomasOnlineV7"
             [
                 mkLambdaInfo "GetVersion" "GET" "/fantomas/v7/version" List.empty
@@ -123,6 +139,7 @@ let getAllLambdas (lastSha, lastTime) =
                 mkLambdaInfo "PostFormat" "POST" "/fantomas/v7/format" List.empty
             ]
         mkLambdaProject
+            Managed
             "FantomasOnlineV8"
             [
                 mkLambdaInfo "GetVersion" "GET" "/fantomas/v8/version" List.empty
@@ -130,6 +147,7 @@ let getAllLambdas (lastSha, lastTime) =
                 mkLambdaInfo "PostFormat" "POST" "/fantomas/v8/format" List.empty
             ]
         mkLambdaProject
+            Managed
             "FantomasOnlineMain"
             [
                 mkLambdaInfo
@@ -141,6 +159,7 @@ let getAllLambdas (lastSha, lastTime) =
                 mkLambdaInfo "PostFormat" "POST" "/fantomas/main/format" List.empty
             ]
         mkLambdaProject
+            Native
             "FantomasOnlinePreview"
             [
                 mkLambdaInfo "GetVersion" "GET" "/fantomas/preview/version" List.empty
@@ -229,11 +248,16 @@ let infra () =
 
                             input (FunctionEnvironmentArgs(Variables = inputMap variables))
 
+                    let handler, runtime =
+                        match lambdaProject.Hosting with
+                        | Managed -> $"%s{lambdaProject.FunctionPrefix}::%s{lambdaInfo.Name}", Lambda.Runtime.Dotnet10
+                        | Native -> lambdaInfo.Name, Lambda.Runtime.CustomAL2023
+
                     let lambda =
                         let args =
                             Lambda.FunctionArgs(
-                                Handler = input $"%s{lambdaProject.FunctionPrefix}::%s{lambdaInfo.Name}",
-                                Runtime = inputUnion2Of2 Lambda.Runtime.Dotnet10,
+                                Handler = input handler,
+                                Runtime = inputUnion2Of2 runtime,
                                 Code = input (FileArchive(lambdaProject.FileArchive) :> Archive),
                                 Role = io lambdaRole.Arn,
                                 Timeout = input 30,

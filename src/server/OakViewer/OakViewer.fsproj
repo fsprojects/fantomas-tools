@@ -2,20 +2,30 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
-    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
-    <AWSProjectType>Lambda</AWSProjectType>
     <OutputType>exe</OutputType>
-    <!-- This property makes the build directory similar to a publish directory and helps the AWS .NET Lambda Mock Test Tool find project dependencies. -->
-    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
     <IsLambda>true</IsLambda>
     <Tailcalls>true</Tailcalls>
+    <!-- The lambda runs on `provided.al2023` as a native `bootstrap`, see LambdaRuntime.fs. A build
+         and `dotnet run` stay on the JIT; only `dotnet publish -r linux-x64` compiles it ahead of time.
+         Native AOT compiles for the machine it runs on, so the publish only works on Linux x64. -->
+    <PublishAot>true</PublishAot>
+    <RuntimeIdentifiers>linux-x64</RuntimeIdentifiers>
+    <!-- provided.al2023 has no ICU, and nothing here formats for a culture. -->
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <!-- One request at a time in 256 MB: server GC's heap per core leaves less of it for the request,
+         and Directory.Build.props turns it on for every project. -->
+    <ServerGarbageCollection>false</ServerGarbageCollection>
+    <!-- The native debug symbols are about as large as the executable, and Lambda has no use for them. -->
+    <CopyOutputSymbolsToPublishDirectory>false</CopyOutputSymbolsToPublishDirectory>
+    <PublishReferencesDocumentationFiles>false</PublishReferencesDocumentationFiles>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="../../shared/Types.fs" />
     <Compile Include="../../shared/OakShared.fs" />
     <Compile Include="..\HttpConstants.fs" />
-    <Compile Include="..\AWSLambdaExtensions.fs" />
+    <Compile Include="..\LambdaJson.fs" />
+    <Compile Include="..\LambdaRuntime.fs" />
     <Compile Include="..\SuaveExtensions.fs" />
     <Compile Include="Decoders.fs" />
     <Compile Include="Encoders.fsi" />
@@ -29,6 +39,12 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="FSharp.Core" Version="10.1.203" />
-    <PackageReference Include="Thoth.Json.System.Text.Json" Version="0.4.0" />
+    <PackageReference Include="Thoth.Json.System.Text.Json" Version="0.5.0" />
   </ItemGroup>
+  <!-- A custom runtime starts the executable named `bootstrap` at the root of the archive.
+       CopyNativeBinary is the Native AOT target that puts the executable in the publish folder, and it
+       runs after Publish itself. -->
+  <Target Name="NameTheExecutableBootstrap" AfterTargets="CopyNativeBinary" Condition="'$(RuntimeIdentifier)' == 'linux-x64'">
+    <Move SourceFiles="$(PublishDir)$(TargetName)" DestinationFiles="$(PublishDir)bootstrap" />
+  </Target>
 </Project>

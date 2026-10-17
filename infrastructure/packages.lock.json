@@ -68,12 +68,12 @@
       },
       "Thoth.Json.System.Text.Json": {
         "type": "Direct",
-        "requested": "[0.4.0, )",
-        "resolved": "0.4.0",
-        "contentHash": "HTnGXeo2Q9E4lBO5yeEZMrL86lfqe6Nk6kezKc9Nw//bfPc612qnrxPAwDM6ZAdTBR0/xsuP/P0mB1isi66kEA==",
+        "requested": "[0.5.0, )",
+        "resolved": "0.5.0",
+        "contentHash": "OjMgfdSADy9VxUXkYayR/1jyn+XafRfPh3aSNTXPA+dwz2rKzip23swJK59BdYYMbne2muOhL9f2BODKs9vlwg==",
         "dependencies": {
           "FSharp.Core": "10.1.203",
-          "Thoth.Json.Core": "0.9.1"
+          "Thoth.Json.Core": "0.10.0"
         }
       },
       "Ben.Demystifier": {
@@ -322,8 +322,8 @@
       },
       "Thoth.Json.Core": {
         "type": "Transitive",
-        "resolved": "0.9.1",
-        "contentHash": "SutN30fiRfeKyGv9TEaze9L5/4ikkiqz37tlM8DyS3qhyB/7UgXeKV6D1boMKNh4phSvL031mQipSU+C27Vx0A==",
+        "resolved": "0.10.0",
+        "contentHash": "Xl8hOPVl40SvtuTAHXEbGBRi2pmKBcUNmpRrgD6r5zqGXT9/2lgtWjXHryFOmaXlGtJ5u4Tyfr88Fes0vs3Dtg==",
         "dependencies": {
           "FSharp.Core": "10.1.203"
         }

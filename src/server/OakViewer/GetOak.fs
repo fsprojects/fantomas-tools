@@ -1,7 +1,6 @@
 module OakViewer.GetOak
 
 open Fantomas.Core
-open Thoth.Json.System.Text.Json
 open Fantomas.FCS.Diagnostics
 open Fantomas.FCS.Parse
 open FantomasTools.Client
@@ -30,7 +29,7 @@ let describeFailure (error: FormatError) : int * string =
         | FormatErrorKind.FantomasBug
         | FormatErrorKind.Unknown -> 500
 
-    statusCode, (FormatError.Encode error |> Encode.toString 4)
+    statusCode, (FormatError.Encode error |> LambdaJson.toString)
 
 /// What the parser said about the source, as one sentence naming the earliest error.
 let private firstParseError (errors: FSharpParserDiagnostic list) : string =
@@ -107,7 +106,7 @@ let private describeException (diagnostics: FSharpParserDiagnostic list) (ex: ex
         // The stack trace goes to the log and no further. It is of no use to whoever pasted the
         // code, and the tool hands the error to GitHub as part of a URL: one long enough to push
         // that URL past what GitHub accepts takes the report down with it.
-        eprintfn $"%O{ex}"
+        System.Console.Error.WriteLine ex
 
         {
             Kind = FormatErrorKind.Unknown
@@ -148,10 +147,13 @@ let getOak json : GetOakResponse =
         try
             let oak = CodeFormatter.TransformAST(ast, content)
 
-            let responseText = Encoders.encode oak diagnostics |> Encode.toString 4
+            let responseText = Encoders.encode oak diagnostics |> LambdaJson.toString
 
             GetOakResponse.Ok responseText
-        with ex ->
-            GetOakResponse.Failed(describeException diagnostics ex)
+        with
+        // The Oak of a long file can take more memory than the function has. That is no failure of
+        // Fantomas, and LambdaRuntime answers it with a 413 that says so.
+        | :? System.OutOfMemoryException -> reraise ()
+        | ex -> GetOakResponse.Failed(describeException diagnostics ex)
 
     | Error err -> GetOakResponse.BadRequest err
