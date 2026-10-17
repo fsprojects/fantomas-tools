@@ -276,6 +276,9 @@ let private issuesAsMarkdown (issues: FormatIssue array) : string =
     else
         text.Substring(0, 1000) + "\n\n(truncated)"
 
+[<Literal>]
+let IssueLinkId = "create-issue"
+
 let createGitHubIssue (bubble: BubbleModel) model =
     let description =
         """Please describe here the Fantomas problem you encountered.
@@ -335,18 +338,19 @@ let createGitHubIssue (bubble: BubbleModel) model =
                     IsFsi = bubble.IsFsi
                 }
 
+            let link (style: string) (label: string) =
+                a [
+                    Id IssueLinkId
+                    ClassName $"%s{Style.Btn} %s{style}"
+                    githubIssueUri githubIssue
+                    Target "_blank"
+                    Keyboard.ctrlShortcut "I"
+                ] [ str label; Keyboard.hint (Keyboard.ctrlKeys "I") ]
+
             if Array.isEmpty issues then
-                a [
-                    ClassName $"%s{Style.Btn} %s{Style.Danger}"
-                    githubIssueUri githubIssue
-                    Target "_blank"
-                ] [ str "Looks wrong? Create an issue!" ]
+                link Style.Danger "Looks wrong? Create an issue!"
             else
-                a [
-                    ClassName $"%s{Style.Btn} %s{Style.Warning}"
-                    githubIssueUri githubIssue
-                    Target "_blank"
-                ] [ str "Report this problem!" ]
+                link Style.Warning "Report this problem!"
         | _ -> span [ ClassName Style.Muted ] [ str "Looks wrong? Try using the main version!" ]
 
 let userChangedSettings (model: Model) =
@@ -354,7 +358,11 @@ let userChangedSettings (model: Model) =
 
 let commands (bubble: BubbleModel) model dispatch =
     let formatButton =
-        button [ ClassName Style.Primary; OnClick(fun _ -> dispatch Msg.Format) ] [ str "Format" ]
+        button [
+            ClassName Style.Primary
+            Keyboard.runShortcut
+            OnClick(fun _ -> dispatch Msg.Format)
+        ] [ str "Format"; Keyboard.hint (Keyboard.runKeys ()) ]
 
     let copySettingButton =
         if userChangedSettings model then
@@ -376,14 +384,7 @@ let settings isFsi model dispatch =
     | FantomasTabState.LoadingOptions -> Loader.loading
     | _ ->
         let fantomasMode =
-            [
-                FantomasMode.V6, "6.x"
-                FantomasMode.V7, "7.x"
-                FantomasMode.V8, "8.x"
-                FantomasMode.Main, "Main"
-                // The next major's branch, see `previewBranch` in build.fsx.
-                FantomasMode.Preview, "Preview v9.0"
-            ]
+            modes
             |> List.map (fun (m, l) ->
                 {
                     IsActive = model.Mode = m

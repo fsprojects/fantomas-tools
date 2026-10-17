@@ -1,15 +1,22 @@
 module OakViewer.GetOak
 
+open System.Reflection
 open Fantomas.Core
 open Fantomas.FCS.Diagnostics
 open Fantomas.FCS.Parse
 open FantomasTools.Client
 open OakViewer.Server
 
+/// The version Fantomas.FCS was built as. Through a type it defines: `parseFile` as a value is a
+/// closure this assembly makes, which would give the version of the Oak viewer itself.
 let getVersion () : string =
-    let assembly = Fantomas.FCS.Parse.parseFile.GetType().Assembly
-    let version = assembly.GetName().Version
-    $"%i{version.Major}.%i{version.Minor}.%i{version.Revision}"
+    let assembly = typeof<FSharpParserDiagnostic>.Assembly
+
+    match Option.ofObj (assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()) with
+    | Some attr -> attr.InformationalVersion
+    | None ->
+        let version = assembly.GetName().Version
+        $"%i{version.Major}.%i{version.Minor}.%i{version.Revision}"
 
 let private parseAST source defines isFsi = Fantomas.FCS.Parse.parseFile isFsi source defines
 

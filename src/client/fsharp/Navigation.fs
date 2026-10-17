@@ -37,6 +37,31 @@ let toHash =
     | FantomasTab FantomasOnline.Model.Main -> "#/fantomas/main"
     | FantomasTab FantomasOnline.Model.Preview -> "#/fantomas/preview"
 
+/// The address of `tab`, with the query of the current address, which carries the code.
+let href (tab: ActiveTab) : string =
+    let hash = Browser.Dom.window.location.hash
+
+    let query =
+        if hash.Contains("?") then
+            $"?%s{hash.Split('?').[1]}"
+        else
+            ""
+
+    $"%s{toHash tab}%s{query}"
+
+/// The shortcuts that go with Alt, by their letter, see App.fs.
+let altShortcuts: (string * Shortcut) list =
+    [
+        "A", Shortcut.OpenAst
+        "O", Shortcut.OpenOak
+        "F", Shortcut.OpenFantomas
+        "S", Shortcut.Settings
+    ]
+
+/// The letter that goes with Alt for `shortcut`.
+let altLetter (shortcut: Shortcut) : string option =
+    altShortcuts |> List.tryFind (fun (_, s) -> s = shortcut) |> Option.map fst
+
 let parseUrl segments =
     match segments with
     | [ "ast" ]

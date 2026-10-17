@@ -47,15 +47,23 @@ let init _ =
 
     model, cmd
 
+/// What the button of the tab does: show the AST, format, or get the Oak.
+let private runTab (tab: ActiveTab) : Cmd<Msg> =
+    match tab with
+    | ASTTab -> Cmd.ofMsg FantomasTools.Client.ASTViewer.Model.DoParse |> Cmd.map ASTMsg
+    | FantomasTab _ ->
+        Cmd.ofMsg FantomasTools.Client.FantomasOnline.Model.Format
+        |> Cmd.map FantomasMsg
+    | OakTab -> Cmd.ofMsg FantomasTools.Client.OakViewer.Model.GetOak |> Cmd.map OakMsg
+    | HomeTab -> Cmd.none
+
+/// Opens `tab` the way its link does, so the address and the history are the same either way.
+let private openTab (tab: ActiveTab) : Cmd<Msg> =
+    Cmd.ofEffect (fun _ -> Browser.Dom.window.location.hash <- Navigation.href tab)
+
 let private reload model =
     if not model.SettingsOpen then
-        match model.ActiveTab with
-        | ASTTab -> Cmd.ofMsg FantomasTools.Client.ASTViewer.Model.DoParse |> Cmd.map ASTMsg
-        | FantomasTab _ ->
-            Cmd.ofMsg FantomasTools.Client.FantomasOnline.Model.Format
-            |> Cmd.map FantomasMsg
-        | OakTab -> Cmd.ofMsg FantomasTools.Client.OakViewer.Model.GetOak |> Cmd.map OakMsg
-        | _ -> Cmd.none
+        runTab model.ActiveTab
     else
         Cmd.none
 
@@ -95,6 +103,24 @@ let update msg model =
             }
 
         m, reload m
+
+    | Pressed Shortcut.Run -> model, runTab model.ActiveTab
+
+    | Pressed Shortcut.OpenAst -> model, openTab ASTTab
+    | Pressed Shortcut.OpenOak -> model, openTab OakTab
+    | Pressed Shortcut.OpenFantomas ->
+        match model.ActiveTab with
+        | FantomasTab mode ->
+            let next = FantomasOnline.Model.nextMode mode
+            model, Cmd.ofMsg (FantomasMsg(FantomasOnline.Model.ChangeMode next))
+        | _ -> model, openTab (FantomasTab model.FantomasModel.Mode)
+
+    | Pressed Shortcut.Settings ->
+        // The home tab has no settings.
+        if model.ActiveTab = HomeTab then
+            model, Cmd.none
+        else
+            model, Cmd.ofMsg ToggleSettings
 
     | ASTMsg(ASTViewer.Model.Msg.Bubble bubbleMsg)
     | OakMsg(OakViewer.Model.Msg.Bubble bubbleMsg)
