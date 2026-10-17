@@ -1,6 +1,8 @@
 module FantomasOnlinePreview.FormatCode
 
 open System
+open System.Reflection
+open Microsoft.FSharp.Reflection
 open Fantomas.FCS.Diagnostics
 open Fantomas.FCS.Parse
 open Fantomas.FCS.Text
@@ -31,8 +33,7 @@ let private mapFantomasOptionsToRecord options =
         )
         |> Seq.toArray
 
-    let formatConfigType = typeof<FormatConfig>
-    Microsoft.FSharp.Reflection.FSharpValue.MakeRecord(formatConfigType, newValues) :?> FormatConfig
+    FSharpValue.MakeRecord(typeof<FormatConfig>, newValues) :?> FormatConfig
 
 let private toRange (r: range) : Range =
     {
@@ -42,11 +43,18 @@ let private toRange (r: range) : Range =
         EndColumn = r.EndColumn
     }
 
+let private severity (severity: FSharpDiagnosticSeverity) : string =
+    match severity with
+    | FSharpDiagnosticSeverity.Hidden -> "hidden"
+    | FSharpDiagnosticSeverity.Info -> "info"
+    | FSharpDiagnosticSeverity.Warning -> "warning"
+    | FSharpDiagnosticSeverity.Error -> "error"
+
 let private toDiagnostic (e: FSharpParserDiagnostic) : Diagnostic =
     {
         SubCategory = e.SubCategory
         Range = e.Range |> Option.map toRange |> Option.defaultValue Range.Zero
-        Severity = $"%O{e.Severity}".ToLower()
+        Severity = severity e.Severity
         ErrorNumber = Option.defaultValue -1 e.ErrorNumber
         Message = e.Message
     }
@@ -145,7 +153,7 @@ let private describeException (ex: exn) : FormatError =
         // The stack trace goes to the log and no further. It is of no use to whoever pasted the
         // code, and the tool hands the error to GitHub as part of a URL: one long enough to push
         // that URL past what GitHub accepts takes the report down with it.
-        eprintfn $"%O{ex}"
+        Console.Error.WriteLine ex
 
         {
             Kind = FormatErrorKind.Unknown
@@ -160,6 +168,15 @@ let private toSourceComment (comment: Fantomas.Core.SourceComment) : FantomasOnl
         Text = comment.Text
     }
 
+/// The check as Fantomas names it. `Validations` is a flags enum, and only one check fails at a time.
+let private checkName (check: Validations) : string =
+    match check with
+    | Validations.CommentSearch -> "CommentSearch"
+    | Validations.Parse -> "Parse"
+    | Validations.TriviaComparison -> "TriviaComparison"
+    | Validations.Idempotency -> "Idempotency"
+    | _ -> check.ToString()
+
 let private toFormatIssue (issue: ValidationIssue) : FormatIssue =
     match issue with
     | ValidationIssue.MissingComment comment -> FormatIssue.MissingComment(toSourceComment comment)
@@ -171,7 +188,7 @@ let private toFormatIssue (issue: ValidationIssue) : FormatIssue =
         FormatIssue.DirectivesChanged(defines, Array.ofList missing, Array.ofList added)
     | ValidationIssue.NotIdempotent formattedAgain -> FormatIssue.NotIdempotent formattedAgain
     | ValidationIssue.CheckFailed(check, error) ->
-        FormatIssue.CheckFailed($"%O{check}", (describeException error).Message)
+        FormatIssue.CheckFailed(checkName check, (describeException error).Message)
 
 /// Fantomas 9 checks its own result, every way it knows: whether it lost a comment or a directive
 /// is something only it can say. The tool used to check by hand and could see neither.
@@ -186,25 +203,30 @@ let private format (fileName: string) code config =
     }
 
 let getVersion () =
-    let date =
-        let lastCommitInfo =
-            sprintf
-                "%s - %s"
-                (System.Environment.GetEnvironmentVariable("LAST_COMMIT_TIMESTAMP"))
-                (System.Environment.GetEnvironmentVariable("LAST_COMMIT_SHA"))
+    let lastCommitInfo =
+        Environment.GetEnvironmentVariable("LAST_COMMIT_TIMESTAMP")
+        + " - "
+        + Environment.GetEnvironmentVariable("LAST_COMMIT_SHA")
 
-        if lastCommitInfo.Trim() <> "-" then
-            lastCommitInfo
-        else
-            let assembly = typeof<FormatConfig>.Assembly
+    if lastCommitInfo.Trim() <> "-" then
+        $"main branch at %s{lastCommitInfo}"
+    else
+        // The version Fantomas.Core was built as, commit and all. A native executable has no
+        // assembly files, so there is no file date to fall back on.
+        let assembly = typeof<FormatConfig>.Assembly
 
-            System.IO.FileInfo assembly.Location
-            |> fun f -> f.LastWriteTime.ToShortDateString()
-
-    $"main branch at %s{date}"
+        match Option.ofObj (assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()) with
+        | Some attribute -> attribute.InformationalVersion
+        | None -> string<Version>(assembly.GetName().Version)
 
 let getOptions () : string =
-    Reflection.getRecordFields FormatConfig.Default
+    // Through `typeof<FormatConfig>` rather than the type of a value, so Native AOT keeps the
+    // record's properties, the way Fantomas itself reads .editorconfig into a `FormatConfig`.
+    let names =
+        FSharpType.GetRecordFields(typeof<FormatConfig>)
+        |> Array.map (fun property -> property.Name)
+
+    Array.zip names (FSharpValue.GetRecordFields FormatConfig.Default)
     |> Seq.indexed
     |> Seq.choose (fun (idx, (k: string, v: obj)) ->
         match v with

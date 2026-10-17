@@ -2,27 +2,6 @@
   "version": 1,
   "dependencies": {
     "net10.0": {
-      "Amazon.Lambda.APIGatewayEvents": {
-        "type": "Direct",
-        "requested": "[3.0.1, )",
-        "resolved": "3.0.1",
-        "contentHash": "+gTGEtrcoCBRtCgcqEl3AlFrYrQY4pFreL22KkmpvXaNX1Lwlrbgk/crEcfuD3Q0wO2AspsJ3xMMj7pJxDYTKA=="
-      },
-      "Amazon.Lambda.Core": {
-        "type": "Direct",
-        "requested": "[3.3.0, )",
-        "resolved": "3.3.0",
-        "contentHash": "CZKlX8ZDMi6aKPo5lPAjmsJFDXNJHX00aiiYeRQOEszP8cjx6qklBvTPj4qpr4dlp3YYQjmB87CqAiWV7vk2fA=="
-      },
-      "Amazon.Lambda.Serialization.SystemTextJson": {
-        "type": "Direct",
-        "requested": "[3.0.1, )",
-        "resolved": "3.0.1",
-        "contentHash": "QsHygaMyxQdgh5NPs5GGyBjK6mqQr5nv8rpqlrWC5+e1k7sVx+2xwDHv493S5IMw461S/PyHfjkUDjIQU5ArSA==",
-        "dependencies": {
-          "Amazon.Lambda.Core": "3.3.0"
-        }
-      },
       "FSharp.Core": {
         "type": "Direct",
         "requested": "[10.1.203, )",
@@ -41,14 +20,17 @@
         "resolved": "0.19.0",
         "contentHash": "FBp/etThPSWhbvlM8wLxWtGYWgZ768yYjhwW83y18xZI9VBniG6kFVy4TEleyDkB7QnqfUgVepbT6ryHHFnZEA=="
       },
-      "Microsoft.Net.Http.Headers": {
+      "Microsoft.DotNet.ILCompiler": {
         "type": "Direct",
-        "requested": "[10.0.12, )",
-        "resolved": "10.0.12",
-        "contentHash": "7YfRtZxxv9vFyycxPQPJArcXvBvojzWpJmrnFnuepdrUVE5bYGSAUN1YDaa4VsIYgqMRLGAvAoklnoSVQQnwnw==",
-        "dependencies": {
-          "Microsoft.Extensions.Primitives": "10.0.12"
-        }
+        "requested": "[10.0.13, )",
+        "resolved": "10.0.13",
+        "contentHash": "MnT222WlxhelguLZTQx9soBHKW7TeY6A9YUwVaprjUd+ARlhLAkfsXGFNX9w6kRq89/yxUcAQ/lzvmgndSFfOw=="
+      },
+      "Microsoft.NET.ILLink.Tasks": {
+        "type": "Direct",
+        "requested": "[10.0.13, )",
+        "resolved": "10.0.13",
+        "contentHash": "40yrBMsLEcjixBR4G+FiUaBPvxXIPSKJ2OgSrbOZcmSDBda4Sb0k7BWrfDpIvn3IvvDzwOL/tEPa6gDQfh6aRw=="
       },
       "Suave": {
         "type": "Direct",
@@ -61,23 +43,18 @@
       },
       "Thoth.Json.System.Text.Json": {
         "type": "Direct",
-        "requested": "[0.4.0, )",
-        "resolved": "0.4.0",
-        "contentHash": "HTnGXeo2Q9E4lBO5yeEZMrL86lfqe6Nk6kezKc9Nw//bfPc612qnrxPAwDM6ZAdTBR0/xsuP/P0mB1isi66kEA==",
+        "requested": "[0.5.0, )",
+        "resolved": "0.5.0",
+        "contentHash": "OjMgfdSADy9VxUXkYayR/1jyn+XafRfPh3aSNTXPA+dwz2rKzip23swJK59BdYYMbne2muOhL9f2BODKs9vlwg==",
         "dependencies": {
           "FSharp.Core": "10.1.203",
-          "Thoth.Json.Core": "0.9.1"
+          "Thoth.Json.Core": "0.10.0"
         }
-      },
-      "Microsoft.Extensions.Primitives": {
-        "type": "Transitive",
-        "resolved": "10.0.12",
-        "contentHash": "dYfCLR52UA+3DL7C4I/pvSaRPkNqxrUAQmbFL2u0zvYKKzqgrFCJl08Df+F1aYc8leu9JvpC9bsURUdpExcBXQ=="
       },
       "Thoth.Json.Core": {
         "type": "Transitive",
-        "resolved": "0.9.1",
-        "contentHash": "SutN30fiRfeKyGv9TEaze9L5/4ikkiqz37tlM8DyS3qhyB/7UgXeKV6D1boMKNh4phSvL031mQipSU+C27Vx0A==",
+        "resolved": "0.10.0",
+        "contentHash": "Xl8hOPVl40SvtuTAHXEbGBRi2pmKBcUNmpRrgD6r5zqGXT9/2lgtWjXHryFOmaXlGtJ5u4Tyfr88Fes0vs3Dtg==",
         "dependencies": {
           "FSharp.Core": "10.1.203"
         }
@@ -94,6 +71,22 @@
         "dependencies": {
           "FSharp.Core": "[10.0.100, )"
         }
+      }
+    },
+    "net10.0/linux-x64": {
+      "Microsoft.DotNet.ILCompiler": {
+        "type": "Direct",
+        "requested": "[10.0.13, )",
+        "resolved": "10.0.13",
+        "contentHash": "MnT222WlxhelguLZTQx9soBHKW7TeY6A9YUwVaprjUd+ARlhLAkfsXGFNX9w6kRq89/yxUcAQ/lzvmgndSFfOw==",
+        "dependencies": {
+          "runtime.linux-x64.Microsoft.DotNet.ILCompiler": "10.0.13"
+        }
+      },
+      "runtime.linux-x64.Microsoft.DotNet.ILCompiler": {
+        "type": "Transitive",
+        "resolved": "10.0.13",
+        "contentHash": "cyR6nLIi+teN7+T6pYDeeoVRTzz4RQYimON6CxqvRVTylz0XVCWj/wcfa1IsI4yR/3zKkX6hfR4E2cEuAit49A=="
       }
     }
   }

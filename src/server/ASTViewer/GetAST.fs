@@ -2,7 +2,6 @@ module ASTViewer.GetAST
 
 open System.Reflection
 open Thoth.Json.Core
-open Thoth.Json.System.Text.Json
 open Fantomas.FCS.Text
 open Fantomas.FCS.Parse
 open ASTViewer.Shared
@@ -18,7 +17,7 @@ let getVersion () =
     | Some attr -> attr.InformationalVersion
     | None ->
         let version = assembly.GetName().Version
-        sprintf "%i.%i.%i" version.Major version.Minor version.Revision
+        $"%i{version.Major}.%i{version.Minor}.%i{version.Revision}"
 
 [<RequireQualifiedAccess; Struct>]
 type ASTResponse =
@@ -37,10 +36,14 @@ let getUntypedAST json : ASTResponse =
         let astString =
             try
                 PrintAST.printAST input.Expand ast
-            with ex ->
-                $"Failed to print AST, please contribute a fix for this.\nError:%s{ex.Message}"
+            with
+            // Too much code for the memory the function has, which LambdaRuntime answers with a 413.
+            | :? System.OutOfMemoryException -> reraise ()
+            | ex -> $"Failed to print AST, please contribute a fix for this.\nError:%s{ex.Message}"
 
-        Encoders.encodeResponse astString errors |> Encode.toString 2 |> ASTResponse.Ok
+        Encoders.encodeResponse astString errors
+        |> LambdaJson.toString
+        |> ASTResponse.Ok
 
     | Ok _ -> ASTResponse.TooLarge
-    | Error err -> ASTResponse.InternalError $"%A{err}"
+    | Error err -> ASTResponse.InternalError err

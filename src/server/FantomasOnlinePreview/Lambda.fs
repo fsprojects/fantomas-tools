@@ -1,26 +1,20 @@
-﻿module FantomasOnlinePreview.Lambda
+module FantomasOnlinePreview.Lambda
 
 open System.Net
-open Amazon.Lambda.APIGatewayEvents
-open Amazon.Lambda.Core
-open AWSLambdaExtensions
 open HttpConstants
 open FantomasOnline.Server.Shared.Http
 open FantomasOnlinePreview.FormatCode
 
-// Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
-[<assembly: LambdaSerializer(typeof<Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer>)>]
-()
-
-let GetVersion (_request: APIGatewayProxyRequest) (_context: ILambdaContext) =
-    mkAPIGatewayProxyResponse (HttpStatusCode.OK, HeaderValues.TextPlain, getVersion ())
-
-let GetOptions (_request: APIGatewayProxyRequest) (_context: ILambdaContext) =
-    mkAPIGatewayProxyResponse (HttpStatusCode.OK, HeaderValues.ApplicationJson, getOptions ())
-
-let PostFormat (request: APIGatewayProxyRequest) (_context: ILambdaContext) =
-    async {
-        let! response = formatCode request.Body
-        return mapFormatResponseToAPIGatewayProxyResponse response
-    }
-    |> Async.StartAsTask
+/// The functions of this lambda, by the handler name each is deployed with in infrastructure/Program.fs.
+let handlers: (string * LambdaRuntime.Handler) list =
+    [
+        "GetVersion", (fun _ -> task { return HttpStatusCode.OK, HeaderValues.TextPlain, getVersion () })
+        "GetOptions", (fun _ -> task { return HttpStatusCode.OK, HeaderValues.ApplicationJson, getOptions () })
+        "PostFormat",
+        (fun body ->
+            task {
+                let! response = Async.StartImmediateAsTask(formatCode body)
+                return mapFormatResponse response
+            }
+        )
+    ]

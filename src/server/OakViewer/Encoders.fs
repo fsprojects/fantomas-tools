@@ -46,7 +46,7 @@ let rec encodeNode (node: Node) (continuation: IEncodable -> IEncodable) : IEnco
             if stn.Text.Length < 13 then
                 stn.Text
             else
-                sprintf "%s.." (stn.Text.Substring(0, 10))
+                stn.Text.Substring(0, 10) + ".."
             |> Some
         | _ -> None
 

@@ -60,3 +60,11 @@ updates:
     github-actions:
       patterns:
       - "*"
+# The image the native lambdas are compiled in, src/server/NativeBuild/Dockerfile, whose base is
+# pinned by digest.
+- package-ecosystem: docker
+  directory: "/src/server/NativeBuild"
+  schedule:
+    interval: monthly
+    time: "12:00"
+    timezone: Europe/Brussels

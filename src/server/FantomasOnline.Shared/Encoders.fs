@@ -1,7 +1,6 @@
 module FantomasOnline.Server.Shared.Encoders
 
 open Thoth.Json.Core
-open Thoth.Json.System.Text.Json
 open FantomasOnline.Shared
 open FantomasTools.Client
 
@@ -42,7 +41,7 @@ let encodeOptions options =
                 ]
     )
     |> Encode.array
-    |> Encode.toString 4
+    |> LambdaJson.toString
 
 let private encodeSourceComment (comment: SourceComment) : IEncodable =
     Encode.object [ "range", Range.Encode comment.Range; "text", Encode.string comment.Text ]
