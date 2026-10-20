@@ -60,16 +60,16 @@
 
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="FSharp.Core" Version="10.1.401" />
+    <PackageReference Include="FSharp.Core" Version="10.1.402" />
     <PackageReference Include="Fable.Browser.Url" Version="1.4.0" />
-    <PackageReference Include="Fable.Core" Version="5.3.0" />
+    <PackageReference Include="Fable.Core" Version="5.4.0" />
     <PackageReference Include="Fable.Fetch" Version="2.7.0" />
     <PackageReference Include="Fable.React" Version="9.4.0" />
     <PackageReference Include="Fable.ReactDom.Types" Version="18.2.0" />
     <PackageReference Include="Feliz" Version="3.3.3" />
     <PackageReference Include="Feliz.CompilerPlugins" Version="3.2.0" />
     <PackageReference Include="Feliz.UseElmish" Version="5.0.0" />
-    <PackageReference Include="Thoth.Json" Version="10.5.1" />
+    <PackageReference Include="Thoth.Json" Version="10.5.2" />
     <PackageReference Include="Zanaptak.TypedCssClasses" Version="1.0.0" />
   </ItemGroup>
 </Project>
