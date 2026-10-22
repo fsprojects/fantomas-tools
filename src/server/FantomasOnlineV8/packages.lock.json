@@ -25,12 +25,12 @@
       },
       "Fantomas.Core": {
         "type": "Direct",
-        "requested": "[8.0.10, )",
-        "resolved": "8.0.10",
-        "contentHash": "c9h7h7sZOGLKruzSYtjmtRBlSMfy2jmQwfvaVrXav9CaNu5ltABiO6NuZr3qkWfNGlqgzUDoGXpwVVdnTC911g==",
+        "requested": "[8.1.0, )",
+        "resolved": "8.1.0",
+        "contentHash": "5SP8hSMfLm1eF8686SGNxXiRJXhoZk9DYHI+WX/qBAIkm1cyjmDc6ZbM3nFDG9hoO7FJDpWzsxdaqtxywFrong==",
         "dependencies": {
           "FSharp.Core": "10.0.100",
-          "Fantomas.FCS": "8.0.10"
+          "Fantomas.FCS": "8.1.0"
         }
       },
       "FSharp.Core": {
@@ -81,8 +81,8 @@
       },
       "Fantomas.FCS": {
         "type": "Transitive",
-        "resolved": "8.0.10",
-        "contentHash": "A1bHpXVHpzsbSRSd6yP3XoiH0N+/0aFbJtqQFrhx+E6IWxgXGKYYGWETT2Y07d0JWJuULfZIwzCpOm8l0MyAkw==",
+        "resolved": "8.1.0",
+        "contentHash": "Yla69yDb6A7JDHPKxzosjaS2ngbJGZunp0MNCJnB8UJ5BwRzUwmW/ul5ToG9+3PDzeYhbs5lhkLge3emIdyJQQ==",
         "dependencies": {
           "FSharp.Core": "10.0.100"
         }
