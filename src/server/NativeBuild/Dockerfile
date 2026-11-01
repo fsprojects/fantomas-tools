@@ -5,7 +5,7 @@
 #
 # Pinned by digest, which pins the packages too: Amazon Linux 2023 locks its package repositories to
 # the release the image is. Dependabot moves the digest.
-FROM public.ecr.aws/amazonlinux/amazonlinux:2023@sha256:c07ab0773eddf9449c0994a87d8148300db98bdf8d8dad672a9dc26321c104fc
+FROM public.ecr.aws/amazonlinux/amazonlinux:2023@sha256:381352c430f36d8aa6b8b670de06e7e4e5642fe0cb9dbd463bb8d1e79aefc0c7
 
 RUN dnf install -y --setopt=install_weak_deps=False clang zlib-devel libicu tar gzip findutils \
     && dnf clean all
