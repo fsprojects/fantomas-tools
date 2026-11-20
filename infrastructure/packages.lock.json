@@ -10,9 +10,9 @@
       },
       "G-Research.FSharp.Analyzers": {
         "type": "Direct",
-        "requested": "[0.26.0, )",
-        "resolved": "0.26.0",
-        "contentHash": "UHl03E3O4qdgJJXBHBAP0ip+iYpZ7HRp58UX6/WdUiGYLp5DQCgk/OZOejO4EsAPYvwaJauWeTM8YRnl27pXJQ=="
+        "requested": "[0.28.0, )",
+        "resolved": "0.28.0",
+        "contentHash": "ePoubbnNE40ttNs6cchaeb/1/3egVyw68N3//2rpk1z+p/64104gAcUCVt9m6pxR2cGyWdIzePjiD8uKS0i0Bw=="
       },
       "Humanizer.Core": {
         "type": "Direct",
@@ -22,9 +22,9 @@
       },
       "Ionide.Analyzers": {
         "type": "Direct",
-        "requested": "[0.20.0, )",
-        "resolved": "0.20.0",
-        "contentHash": "40upZgbWL+Qsf5WHQfVShXAkCoUrFaygt2UlCAUMHQmvcQ4JWC4y1Dnxgem+lxkv3AJzkfpxngTy7aE/AActOQ=="
+        "requested": "[0.22.0, )",
+        "resolved": "0.22.0",
+        "contentHash": "Lja7U1yPgqftL54Q/La0oZ6wEbn8xkYeMdYWXgSwzKNE5ThfAbS8Jumt6Q9BHbWsHlRwXsdHS6CeI47ZnY4xug=="
       },
       "OpenTelemetry": {
         "type": "Direct",
