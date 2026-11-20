@@ -26,11 +26,11 @@
          into the output; the Analyze pipeline in build.fsx points fsharp-analyzers at the folders
          these packages restore to. -->
     <ItemGroup>
-        <PackageReference Include="G-Research.FSharp.Analyzers" Version="0.26.0">
+        <PackageReference Include="G-Research.FSharp.Analyzers" Version="0.28.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>build</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Ionide.Analyzers" Version="0.20.0">
+        <PackageReference Include="Ionide.Analyzers" Version="0.22.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
